@@ -200,9 +200,9 @@ Contenido:
 
 ## G.3 Diferencias entre tu prompt y el PDF
 
-Por tu regla "cumplimiento del documento > …", **prevalece el PDF** en todas hasta que decidas otra cosa.
+**Resueltas (26/09/2026):** el usuario indicó que **siempre manda el PDF** y que el prompt solo define el método de trabajo. Todas se resuelven a favor del PDF (ver J.0).
 
-| ID | Tu prompt | El PDF | Qué se hace por defecto |
+| ID | Tu prompt | El PDF | Resolución |
 | -- | --- | --- | --- |
 | PR-01 | §17: OU "Grupos" dentro de OU=ATLAS | **OU=Grupos en la raíz del dominio**, al mismo nivel que OU=ATLAS (p. 58, verificado sobre la imagen) | Raíz del dominio |
 | PR-02 | §27: "Windows debe poder utilizar el recurso [Samba] definido como destino de backup" | El destino de los respaldos es **una carpeta compartida en el servidor Windows**; Linux escribe ahí por SMB (Tabla 35 p. 61; Tabla 29 p. 55; §28.5 p. 55). Samba en Linux es para las máquinas del dominio | Linux → carpeta compartida del DC |
