@@ -4,7 +4,7 @@
 | --- | --- |
 | Fuente única | [`docs/especificacion/TC4-Error404-ATLAS-V2.2.pdf`](../especificacion/TC4-Error404-ATLAS-V2.2.pdf) (123 págs., V2.2 del 18/09/2026) |
 | Fecha de la auditoría | 26/09/2026 |
-| Estado | Entregada para revisión. **No se implementó nada.** |
+| Estado | **Aprobada** el 26/09/2026 (todas las recomendaciones aceptadas). Decisiones en [fase-02/01-registro-decisiones](../fase-02-arquitectura/01-registro-decisiones.md). No se implementó nada. |
 | Regla vigente | **Siempre manda el PDF**; el prompt solo define el método de trabajo (indicado por el usuario el 26/09/2026) |
 | Siguiente paso | Tus respuestas a [J.1](J-informacion-requerida.md#j1-decisiones-que-necesito) → Fase 2 |
 
