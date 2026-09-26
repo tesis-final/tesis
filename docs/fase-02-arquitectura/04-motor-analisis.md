@@ -1,6 +1,6 @@
-# 04 — Motor de análisis (BORRADOR para aprobación)
+# 04 — Motor de análisis
 
-> **Estado: PROPUESTA (DEC-23).** El PDF define los 4 indicadores (§25.4) y exige al menos 8 reglas (Tabla 5), pero no las enumera. Todo lo marcado como PROPUESTA sale de este documento, no del PDF. **No se programa hasta que el equipo lo apruebe o lo corrija.** Los umbrales numéricos son valores iniciales editables por el administrador (§27.3), no verdades pedagógicas.
+> **Estado: APROBADO por el usuario el 26/09/2026 (DEC-23).** Origen: El PDF define los 4 indicadores (§25.4) y exige al menos 8 reglas (Tabla 5), pero no las enumera. Todo lo marcado como PROPUESTA sale de este documento, no del PDF. Los umbrales numéricos son valores iniciales editables por el administrador (§27.3), no verdades pedagógicas.
 
 ## 1. Indicadores del Nivel 1
 

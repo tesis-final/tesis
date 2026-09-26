@@ -1,0 +1,72 @@
+# Ejecución: 2026-09-26T20:01:22Z
+# Servidor: 8.0.46
+# Imagen: mirror.gcr.io/library/mysql:8.0
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.19
+Configuration: /home/user/tesis/atlas/phpunit.xml
+
+.............................................                     45 / 45 (100%)
+
+Time: 00:10.035, Memory: 8.00 MB
+
+Analisis Grupal (Atlas\Tests\Database\AnalisisGrupal)
+ ✔ Agregados del grupo con datos conocidos
+ ✔ El docente no cuenta como estudiante en el grupo
+ ✔ Preguntas con mayor proporcion de error
+
+Auditoria (Atlas\Tests\Database\Auditoria)
+ ✔ Auditoria no se modifica ni borra ni siquiera como root
+ ✔ Cambio de usuario queda auditado con autor
+ ✔ Contrasena no se copia a la auditoria
+ ✔ Editar una regla incrementa version y se audita
+
+Ciclo Actividad (Atlas\Tests\Database\CicloActividad)
+ ✔ Recorrido completo por los cinco estados
+ ✔ Transicion no permitida rechazada
+ ✔ Actividad sin preguntas no se envia a aprobacion
+ ✔ Pregunta con dos correctas no se envia
+ ✔ Contenido inmutable fuera de borrador
+ ✔ Transiciones registran autor y observaciones
+
+Esquema (Atlas\Tests\Database\Esquema)
+ ✔ Existen las 29 tablas del modelo y al menos 15
+ ✔ Todas las tablas son inno db para integridad referencial
+ ✔ Cada columna terminada en id tiene clave foranea
+ ✔ Indice compuesto usuario actividad en intentos
+ ✔ Vistas procedimiento y triggers presentes
+ ✔ Catalogos semilla
+ ✔ Ninguna vista expone correo ni hash
+
+Integridad (Atlas\Tests\Database\Integridad)
+ ✔ Clave foranea rechaza referencia inexistente
+ ✔ Correo duplicado rechazado rf 01
+ ✔ Campos obligatorios vacios rechazados rf 01
+ ✔ Puntaje fuera de rango rechazado
+ ✔ Intento cerrado debe tener fecha y duracion
+ ✔ Opcion debe pertenecer a la pregunta respondida
+ ✔ Secuencia de interacciones unica por intento
+ ✔ Indicador de nivel 1 requiere actividad y rango
+
+Privilegios (Atlas\Tests\Database\Privilegios)
+ ✔ App no puede alterar ni borrar auditoria
+ ✔ App puede insertar auditoria
+ ✔ App no puede cambiar estructura ni borrar usuarios
+ ✔ App no puede falsear resultados
+ ✔ App no modifica transiciones ni conversaciones
+ ✔ Read solo ve vistas
+ ✔ Analysis no lee nombres ni correos
+ ✔ Analysis solo inserta en analisis
+ ✔ Backup lee todo pero no escribe datos
+ ✔ Admin solo desde dentro del contenedor
+ ✔ App puede borrar contenido solo en borrador ct 13
+
+Resultados (Atlas\Tests\Database\Resultados)
+ ✔ Finalizar genera resultado con puntaje correcto
+ ✔ Pregunta sin responder cuenta como incorrecta
+ ✔ Intento abandonado no genera resultado
+ ✔ Cada inicio es un intento distinguible
+ ✔ Intento cerrado no se reabre
+ ✔ No se responde un intento cerrado ni otra actividad
+
+OK (45 tests, 130 assertions)

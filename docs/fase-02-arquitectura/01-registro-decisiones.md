@@ -50,7 +50,7 @@ Aplicaciones directas de DEC-00:
 | DEC-11 | Indicadores (DISC-12) | **PHP** calcula indicadores y reglas (Nivel 1); los procedimientos almacenados solo hacen agregaciones del análisis grupal | — | ANA-01..07, BD-06 |
 | DEC-12 | Ciclo (DISC-13) | **Publica el docente autor**, eligiendo los grupos; una actividad rechazada vuelve a borrador con las observaciones | Transiciones en 03-modelo-datos, §3.3 | RF-17, OBJ-02 |
 | DEC-13 | Samba + SSSD (DISC-24) | **Prueba de concepto temprana con SSSD** (`idmap_sss`); si falla, winbind, que se presenta para aprobación antes de aplicarlo | — | WIN-10, OBJ-08 |
-| DEC-14 | Repositorio de análisis (AMB-24) | **Repositorio aparte `atlas-analysis`**, fiel a §26.2 | **Requiere que el usuario cree `SVinas73/atlas-analysis`** y lo agregue a la sesión. Mientras tanto, el código Python no se puede publicar | ARQ-08 |
+| DEC-14 | Repositorio de análisis (AMB-24) | **Repositorio aparte `atlas-analysis`**, fiel a §26.2 | Repositorio creado por el usuario el 26/09/2026 y conectado a la sesión | ARQ-08 |
 
 ## Decisiones sobre vacíos del PDF
 
@@ -64,8 +64,8 @@ Aplicaciones directas de DEC-00:
 | DEC-20 | Certificado (AMB-16) | **CA interna propia ("ATLAS-CA")** distribuida por GPO | Certificado de atlas-web con CN `atlas-srv01.atlas.local` y SAN IP 172.16.40.10 (los docentes por VPN entran por IP) | ARQ-02, P-01, P-13 |
 | DEC-21 | sudo (AMB-21) | **sudo acotado** para atlasadmin (lista explícita de comandos) | atlasadmin no pertenece al grupo `docker` (equivale a root). La protección real de los respaldos es la copia en Windows sin permiso de borrado (CT-05) | LNX-05, p. 52 |
 | DEC-22 | Puertos en GNS3 (DISC-22) | **Tabla de correspondencia** puerto de la Tabla 41 → puerto de GNS3, solo para los puertos usados | Packet Tracer mantiene la Tabla 41 literal | RED-06, RED-11 |
-| DEC-23 | Definiciones del motor (AMB-01..06) | Claude propone un **borrador** (ver 04-motor-analisis). **Requiere aprobación del equipo** antes de programar | — | ANA-02, ANA-06, ANA-11, RF-02, RF-06..08, RF-18 |
-| DEC-24 | Proveedor del LLM (AMB-10) | **PENDIENTE: no fue respondido.** El diseño no depende del proveedor: interfaz única configurada por variables de entorno | Bloquea solo la prueba real de RF-20 | RF-20 |
+| DEC-23 | Definiciones del motor (AMB-01..06) | **Aprobado por el usuario el 26/09/2026**: 8 reglas, fórmula de eficiencia, atención prioritaria, parámetros de ML, bloqueo, pausa y abandono de 04-motor-analisis | Los umbrales quedan editables por el administrador (§27.3) | ANA-02, ANA-06, ANA-11, RF-02, RF-06..08, RF-18 |
+| DEC-24 | Proveedor del LLM (AMB-10) | **Groq** ("por ahora, ya que es gratis", usuario, 26/09/2026) | API compatible con OpenAI (`https://api.groq.com/openai/v1`); modelo configurable (por defecto `llama-3.3-70b-versatile`); clave `LLM_API_KEY` solo en `atlas.conf`. La interfaz sigue siendo independiente del proveedor, así que se puede cambiar sin tocar código. Como es un servicio externo gratuito, la anonimización de H28 es obligatoria y se prueba | RF-20 |
 
 ## Consecuencias técnicas nuevas de esta fase
 
@@ -78,12 +78,10 @@ Son valores o elementos que ninguna decisión fija explícitamente, pero que el 
 | CT-09 | Cuenta de servicio `svc_atlas_backup` en OU=ServiciosTI y carpeta `\\atlas-dc01\atlas-backups` | Destino de los respaldos (DEC-R2, DEC-09) | — |
 | CT-10 | Carpetas compartidas: `\\atlas-srv01\administracion` (GG_Administracion), `\\atlas-srv01\docentes` (GG_Docentes), `\\atlas-dc01\estudiantes` (GG_Estudiantes) | Samba en Linux para las máquinas del dominio (Tabla 35) y unidad de estudiantes (DEC-08) | — |
 | CT-11 | atlas-analysis corre como UID 65534 (`nobody`) | No escribe archivos; la Tabla 26 no define un usuario para el servicio de análisis y no se inventa uno | — |
+| CT-13 | `atlas_app` tiene DELETE solo sobre `preguntas` y `opciones`, y un trigger lo limita a actividades en BORRADOR | RF-16 exige poder editar el contenido de un borrador (quitar preguntas u opciones); la Tabla 21 no incluye DELETE. Surgió en la Fase 5 | No |
 | CT-12 | El archivo de secretos de la pila es `/srv/atlas/config/atlas.conf` (el mismo que §28.3 protege con `chattr +i`) | El PDF ya define ese archivo protegido; se usa como `.env` de producción | — |
 
 ## Pendientes que no son decisiones
 
 - Datos de J.2: IP de fw01 (red de tránsito y WAN), IP de gestión (switch, router, estación), modelos de PT, reenviadores DNS.
 - Recursos de J.3: hardware, imágenes de GNS3, ISO de Windows, quién ejecuta el laboratorio.
-- DEC-24: proveedor del LLM.
-- DEC-14: crear el repositorio `SVinas73/atlas-analysis`.
-- DEC-23: aprobación del borrador del motor de análisis.
