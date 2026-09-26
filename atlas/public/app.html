@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>ATLAS — Plataforma de aprendizaje</title>
+  <link rel="stylesheet" href="/css/atlas.css">
+  <link rel="icon" href="/assets/atlas.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="saltar" href="#principal">Saltar al contenido</a>
+  <header class="barra">
+    <a class="marca" href="#/"><img src="/assets/atlas.svg" alt="" width="28" height="28"><span>ATLAS</span></a>
+    <nav id="menu" class="menu" aria-label="Menú principal"></nav>
+    <div id="sesion" class="sesion"></div>
+  </header>
+  <main id="principal" tabindex="-1">
+    <noscript><p class="aviso">ATLAS necesita JavaScript habilitado.</p></noscript>
+    <div id="app" aria-live="polite"></div>
+  </main>
+  <div id="mensajes" class="mensajes" role="status" aria-live="polite"></div>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

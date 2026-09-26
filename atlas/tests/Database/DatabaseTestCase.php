@@ -61,8 +61,12 @@ abstract class DatabaseTestCase extends TestCase
     }
 
     /** Afirma que la sentencia falla y devuelve el mensaje de error. */
-    protected function assertFalla(string $sql, array $params = [], string $usuario = 'root', ?string $contiene = null): string
-    {
+    protected function assertFalla(
+        string $sql,
+        array $params = [],
+        string $usuario = 'root',
+        ?string $contiene = null
+    ): string {
         try {
             self::ejecutar($sql, $params, $usuario);
         } catch (PDOException $e) {
@@ -125,9 +129,18 @@ abstract class DatabaseTestCase extends TestCase
                 'INSERT INTO preguntas (actividad_id, orden, enunciado) VALUES (?, ?, ?)',
                 [$actividad, $i, "Pregunta {$i}"]
             );
-            $ok = self::ejecutar('INSERT INTO opciones (pregunta_id, orden, texto, es_correcta) VALUES (?, 1, ?, TRUE)', [$p, 'A']);
-            $mal = self::ejecutar('INSERT INTO opciones (pregunta_id, orden, texto, es_correcta) VALUES (?, 2, ?, FALSE)', [$p, 'B']);
-            self::ejecutar('INSERT INTO opciones (pregunta_id, orden, texto, es_correcta) VALUES (?, 3, ?, FALSE)', [$p, 'C']);
+            $ok = self::ejecutar(
+                'INSERT INTO opciones (pregunta_id, orden, texto, es_correcta) VALUES (?, 1, ?, TRUE)',
+                [$p, 'A']
+            );
+            $mal = self::ejecutar(
+                'INSERT INTO opciones (pregunta_id, orden, texto, es_correcta) VALUES (?, 2, ?, FALSE)',
+                [$p, 'B']
+            );
+            self::ejecutar(
+                'INSERT INTO opciones (pregunta_id, orden, texto, es_correcta) VALUES (?, 3, ?, FALSE)',
+                [$p, 'C']
+            );
             $mapa[$p] = [$ok, $mal];
         }
 

@@ -1,0 +1,22 @@
+# E-APP-003 — Prueba de interfaz en navegador real (Chromium headless, Playwright)
+# Fecha: 2026-09-26T21:02:03Z  Entorno: stack Docker Compose local (NO es el laboratorio)
+# Comando: python atlas/tests/e2e/interfaz.py https://127.0.0.1 docs/evidencias/B/capturas $ATLAS_DEMO_CONTRASENA
+PASS RF-02 mensaje genérico en la interfaz
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 375px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 480px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 768px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 1024px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 1366px
+PASS RF-18 análisis grupal visible
+PASS RNF-12 tablas como tarjetas en celular (sin desplazamiento horizontal)
+PASS RF-12 '¿por qué?' muestra regla, versión y datos
+PASS RF-20 / RNF-15 el asistente responde con datos verificados sin LLM
+PASS RNF-12 resolución en celular sin desplazamiento horizontal
+PASS RF-07 el estudiante ve su resultado
+PASS DEC-00b el estudiante no ve menú docente
+PASS ANA-05 reglas editables visibles para la coordinación
+PASS RF-15 auditoría consultable
+PASS Sin violaciones de CSP
+PASS Sin errores de JavaScript
+
+17/17 PASS

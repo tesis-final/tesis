@@ -1,0 +1,87 @@
+[
+  {
+    "prueba": "RF-02 mensaje genérico en la interfaz",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "RNF-12 sin desplazamiento horizontal · docente inicio · 375px",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "RNF-12 sin desplazamiento horizontal · docente inicio · 480px",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "RNF-12 sin desplazamiento horizontal · docente inicio · 768px",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "RNF-12 sin desplazamiento horizontal · docente inicio · 1024px",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "RNF-12 sin desplazamiento horizontal · docente inicio · 1366px",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "RF-18 análisis grupal visible",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "RNF-12 tablas como tarjetas en celular (sin desplazamiento horizontal)",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "RF-12 '¿por qué?' muestra regla, versión y datos",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "RF-20 / RNF-15 el asistente responde con datos verificados sin LLM",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "RNF-12 resolución en celular sin desplazamiento horizontal",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "RF-07 el estudiante ve su resultado",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "DEC-00b el estudiante no ve menú docente",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "ANA-05 reglas editables visibles para la coordinación",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "RF-15 auditoría consultable",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "Sin violaciones de CSP",
+    "resultado": "PASS",
+    "detalle": ""
+  },
+  {
+    "prueba": "Sin errores de JavaScript",
+    "resultado": "PASS",
+    "detalle": ""
+  }
+]

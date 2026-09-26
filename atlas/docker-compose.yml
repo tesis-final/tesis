@@ -1,0 +1,129 @@
+# =============================================================================
+# ATLAS — pila de contenedores (PDF §25.5, Tabla 15; DEC-01, DEC-02, CT-07, CT-11, CT-12).
+#
+#   atlas-web       nginx:alpine       80/443 publicados (solo en la IP del servidor)
+#   atlas-php       php:8.3-fpm        interno (UID 5002 = atlasweb)
+#   atlas-db        mysql:8.0          interno, red sin salida, 3306 NO publicado (UID 5003 = atlasdb)
+#   atlas-analysis  python:3.11-slim   interno (UID 65534); salida HTTPS solo para el LLM
+#
+# Uso en atlas-srv01:  docker compose --env-file /srv/atlas/config/atlas.conf up -d
+# Secretos: solo en /srv/atlas/config/atlas.conf (chattr +i). Nunca en Git.
+# =============================================================================
+name: atlas
+
+x-registro: &registro
+  logging:
+    driver: ${ATLAS_LOG_DRIVER:-journald}
+    options:
+      tag: "{{.Name}}"
+
+services:
+  atlas-web:
+    image: nginx:alpine
+    container_name: atlas-web
+    restart: unless-stopped
+    depends_on:
+      atlas-php:
+        condition: service_started
+    ports:
+      - "${ATLAS_BIND_IP:-172.16.40.10}:443:443"
+      - "${ATLAS_BIND_IP:-172.16.40.10}:80:80"
+    volumes:
+      - ${ATLAS_WEB:-/srv/atlas/web}/public:/srv/atlas/web/public:ro
+      - ${ATLAS_WEB:-/srv/atlas/web}/app/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ${ATLAS_TLS_DIR:-/srv/atlas/config/tls}:/etc/nginx/tls:ro
+    networks: [atlas_front]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --no-check-certificate -O /dev/null https://127.0.0.1/api/v1/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    <<: *registro
+
+  atlas-php:
+    build:
+      context: ${ATLAS_WEB:-/srv/atlas/web}/app
+      dockerfile: docker/php/Dockerfile
+    image: atlas/php:1.0
+    container_name: atlas-php
+    restart: unless-stopped
+    user: "5002:5002"
+    env_file: [ "${ATLAS_CONF:-/srv/atlas/config/atlas.conf}" ]
+    environment:
+      ATLAS_DB_HOST: atlas-db
+      ATLAS_ANALYSIS_URL: http://atlas-analysis:8000
+      ATLAS_AUDIT_LOG: /srv/atlas/logs/auditoria.log
+    volumes:
+      - ${ATLAS_WEB:-/srv/atlas/web}/public:/srv/atlas/web/public:ro
+      - ${ATLAS_WEB:-/srv/atlas/web}/app:/srv/atlas/web/app:ro
+      - ${ATLAS_LOGS:-/srv/atlas/logs}:/srv/atlas/logs
+    depends_on:
+      atlas-db:
+        condition: service_healthy
+    networks: [atlas_front, atlas_back]
+    <<: *registro
+
+  atlas-db:
+    image: ${ATLAS_MYSQL_IMAGE:-mysql:8.0}
+    container_name: atlas-db
+    restart: unless-stopped
+    user: "5003:5003"
+    env_file: [ "${ATLAS_CONF:-/srv/atlas/config/atlas.conf}" ]
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+      - --default-time-zone=+00:00
+      # Binlog para el respaldo incremental (DEC-09): 8 días de retención.
+      - --log-bin=atlas-bin
+      - --binlog-expire-logs-seconds=691200
+      - --server-id=1
+    volumes:
+      - ${ATLAS_DATOS:-/srv/atlas/datos}:/var/lib/mysql
+      - ${ATLAS_WEB:-/srv/atlas/web}/app/database:/atlas/database:ro
+      - ${ATLAS_WEB:-/srv/atlas/web}/app/docker/mysql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ${ATLAS_WEB:-/srv/atlas/web}/app/docker/mysql/02-usuarios.sh:/docker-entrypoint-initdb.d/02-usuarios.sh:ro
+    networks: [atlas_back]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    <<: *registro
+
+  atlas-analysis:
+    build:
+      context: ${ANALYSIS_BUILD_CONTEXT:-/srv/atlas/web/analysis}
+    image: atlas/analysis:1.0
+    container_name: atlas-analysis
+    restart: unless-stopped
+    user: "65534:65534"
+    env_file: [ "${ATLAS_CONF:-/srv/atlas/config/atlas.conf}" ]
+    environment:
+      ATLAS_DB_HOST: atlas-db
+    depends_on:
+      atlas-db:
+        condition: service_healthy
+    networks: [atlas_back, atlas_egress]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    <<: *registro
+
+networks:
+  atlas_front:
+    name: atlas_front
+    ipam:
+      config: [ { subnet: 192.168.250.0/28 } ]
+  # Red de la base de datos: interna, sin salida a ninguna VLAN ni a Internet (DEC-02).
+  atlas_back:
+    name: atlas_back
+    internal: true
+    ipam:
+      config: [ { subnet: 192.168.250.16/28 } ]
+  # Salida del servicio de análisis hacia la API del LLM (regla 7, DEC-R5).
+  atlas_egress:
+    name: atlas_egress
+    ipam:
+      config: [ { subnet: 192.168.250.32/28 } ]

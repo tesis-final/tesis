@@ -32,9 +32,13 @@ final class ResultadosTest extends DatabaseTestCase
         }
         self::finalizar($intento);
 
-        $r = self::pdo()->query("SELECT correctas, total_preguntas, puntaje FROM resultados WHERE intento_id = {$intento}")->fetch();
+        $r = self::pdo()
+            ->query("SELECT correctas, total_preguntas, puntaje FROM resultados WHERE intento_id = {$intento}")
+            ->fetch();
         $this->assertSame(['correctas' => 3, 'total_preguntas' => 4, 'puntaje' => '75.00'], [
-            'correctas' => (int) $r['correctas'], 'total_preguntas' => (int) $r['total_preguntas'], 'puntaje' => $r['puntaje'],
+            'correctas' => (int) $r['correctas'],
+            'total_preguntas' => (int) $r['total_preguntas'],
+            'puntaje' => $r['puntaje'],
         ]);
     }
 
@@ -59,8 +63,11 @@ final class ResultadosTest extends DatabaseTestCase
         );
 
         $this->assertSame(0, (int) self::valor('SELECT COUNT(*) FROM resultados WHERE intento_id = ?', [$intento]));
-        $this->assertSame(42, (int) self::valor('SELECT duracion_seg FROM intentos WHERE id = ?', [$intento]),
-            'RF-09: el intento interrumpido registra el tiempo hasta la interrupción');
+        $this->assertSame(
+            42,
+            (int) self::valor('SELECT duracion_seg FROM intentos WHERE id = ?', [$intento]),
+            'RF-09: el intento interrumpido registra el tiempo hasta la interrupción'
+        );
     }
 
     public function testCadaInicioEsUnIntentoDistinguible(): void
@@ -74,7 +81,8 @@ final class ResultadosTest extends DatabaseTestCase
             "SELECT numero_intento, estado FROM intentos WHERE usuario_id = {$estudiante} ORDER BY numero_intento"
         )->fetchAll();
         $this->assertSame([[1, 'FINALIZADO'], [2, 'EN_CURSO']], array_map(
-            fn ($f) => [(int) $f['numero_intento'], $f['estado']], $filas
+            fn ($f) => [(int) $f['numero_intento'], $f['estado']],
+            $filas
         ));
         $this->assertNotSame($a, $b);
     }

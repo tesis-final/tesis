@@ -1,0 +1,87 @@
+# Ejecución: 2026-09-26T20:57:10Z
+# Servidor: 8.0.46
+# Imagen: mirror.gcr.io/library/mysql:8.0
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.19
+Configuration: /home/user/tesis/atlas/phpunit.xml
+
+..........................................................        58 / 58 (100%)
+
+Time: 01:18.967, Memory: 10.00 MB
+
+Asistente Api (Atlas\Tests\Api\AsistenteApi)
+ ✔ Explicar recomendacion para un estudiante
+ ✔ Dificultad esta semana
+ ✔ Estado del grupo en una categoria
+ ✔ Sin llm el docente recibe los datos verificados
+ ✔ Consulta no reconocida no llama al modelo
+ ✔ Historial guarda pregunta respuesta y lo enviado
+
+Autenticacion (Atlas\Tests\Api\Autenticacion)
+ ✔ Credenciales validas entran al panel de su rol
+ ✔ Error no revela que dato esta mal
+ ✔ Tres intentos fallidos bloquean temporalmente
+ ✔ Login correcto reinicia el contador y se audita
+ ✔ Cuenta desactivada no entra
+ ✔ Cerrar sesion
+ ✔ El log de auditoria en archivo recibe lineas
+
+Ciclo Aprobacion Api (Atlas\Tests\Api\CicloAprobacionApi)
+ ✔ Recorrido completo con rechazo y observaciones
+ ✔ El administrador ve pendientes y no puede publicar
+ ✔ No se publica en un grupo ajeno
+ ✔ Saltear la aprobacion no esta permitido
+ ✔ Estudiante ve solo publicadas de sus grupos con nivel
+ ✔ El estudiante no recibe la respuesta correcta
+
+Control Acceso (Atlas\Tests\Api\ControlAcceso)
+ ✔ Acceso cruzado entre roles devuelve 403 y queda registrado with data set "C01 estudiante → panel docente"
+ ✔ Acceso cruzado entre roles devuelve 403 y queda registrado with data set "C02 estudiante → reportes"
+ ✔ Acceso cruzado entre roles devuelve 403 y queda registrado with data set "C03 estudiante → crear actividad"
+ ✔ Acceso cruzado entre roles devuelve 403 y queda registrado with data set "C04 estudiante → asistente"
+ ✔ Acceso cruzado entre roles devuelve 403 y queda registrado with data set "C05 docente → gestión de usuarios"
+ ✔ Acceso cruzado entre roles devuelve 403 y queda registrado with data set "C06 docente → aprobar actividad"
+ ✔ Acceso cruzado entre roles devuelve 403 y queda registrado with data set "C07 docente → auditoría"
+ ✔ Acceso cruzado entre roles devuelve 403 y queda registrado with data set "C08 docente → editar reglas"
+ ✔ Acceso cruzado entre roles devuelve 403 y queda registrado with data set "C09 administrador → resolver actividades"
+ ✔ Acceso cruzado entre roles devuelve 403 y queda registrado with data set "C10 administrador → asistente docente"
+ ✔ Sin sesion devuelve 401
+ ✔ Sin token csrf no se modifica nada
+ ✔ Validacion devuelve 422 con detalle por campo
+ ✔ Docente no ve actividades de otro docente
+ ✔ Estudiante no ve intentos de otro estudiante
+
+Gestion Administrativa (Atlas\Tests\Api\GestionAdministrativa)
+ ✔ Alta valida queda disponible para iniciar sesion
+ ✔ Correo repetido se rechaza informando el motivo
+ ✔ Campos obligatorios vacios no se persisten
+ ✔ Contrasena corta rechazada
+ ✔ Modificar y desactivar quedan registrados con autor y fecha
+ ✔ Administrador no puede desactivarse a si mismo
+ ✔ Instituciones grupos y permisos
+ ✔ Auditoria consultable por el administrador
+
+Motor Analisis Api (Atlas\Tests\Api\MotorAnalisisApi)
+ ✔ Puntaje bajo dispara r 01 y r07 con fundamento rastreable
+ ✔ Mejora y persistencia disparan r 04 y r06
+ ✔ Docente de otro grupo no ve perfil ni fundamento
+ ✔ Editar una regla cambia el resultado y versiona
+
+Panel Grupal (Atlas\Tests\Api\PanelGrupal)
+ ✔ Donde intervenir hoy
+ ✔ Sin servicio de analisis el panel sigue funcionando
+ ✔ Sin servicio de analisis se sigue resolviendo
+ ✔ Docente solo ve sus grupos
+ ✔ Reportes filtrables por grupo actividad y periodo
+
+Resolucion (Atlas\Tests\Api\Resolucion)
+ ✔ Resolver genera resultado y secuencia reconstruible
+ ✔ Reenviar un lote no duplica eventos
+ ✔ Tiempo total y por pregunta en segundos
+ ✔ Abandono sin resultado y con tiempo
+ ✔ Cada inicio es distinguible y se reanuda el en curso
+ ✔ No se responde con opciones de otra pregunta
+ ✔ Cincuenta resoluciones quedan completamente registradas
+
+OK (58 tests, 1193 assertions)

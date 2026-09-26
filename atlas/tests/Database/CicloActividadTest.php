@@ -70,7 +70,11 @@ final class CicloActividadTest extends DatabaseTestCase
         $pregunta = array_key_first($mapa);
 
         $this->assertFalla('DELETE FROM opciones WHERE pregunta_id = ?', [$pregunta], contiene: 'borrador');
-        $this->assertFalla('UPDATE preguntas SET enunciado = ? WHERE id = ?', ['cambio', $pregunta], contiene: 'borrador');
+        $this->assertFalla(
+            'UPDATE preguntas SET enunciado = ? WHERE id = ?',
+            ['cambio', $pregunta],
+            contiene: 'borrador'
+        );
     }
 
     public function testTransicionesRegistranAutorYObservaciones(): void
@@ -81,7 +85,8 @@ final class CicloActividadTest extends DatabaseTestCase
         self::cambiarEstado($actividad, 'PENDIENTE');
         self::cambiarEstado($actividad, 'RECHAZADA');
         self::ejecutar(
-            'INSERT INTO transiciones_actividad (actividad_id, estado_origen_id, estado_destino_id, usuario_id, observaciones)
+            'INSERT INTO transiciones_actividad
+               (actividad_id, estado_origen_id, estado_destino_id, usuario_id, observaciones)
              VALUES (?, ?, ?, ?, ?)',
             [$actividad, self::id('estados_actividad', 'PENDIENTE'), self::id('estados_actividad', 'RECHAZADA'),
              $admin, 'Falta una pregunta de cierre']

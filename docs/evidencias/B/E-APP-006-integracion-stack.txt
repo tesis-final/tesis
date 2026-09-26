@@ -1,0 +1,40 @@
+# E-APP-006 — Integración del stack (Docker Compose local, entorno de desarrollo; NO es el laboratorio)
+# Fecha: 2026-09-26T21:02:11Z
+
+## docker compose ps
+NAMES            IMAGE                STATUS                   PORTS
+atlas-web        nginx:alpine         Up 2 minutes (healthy)   127.0.0.1:80->80/tcp, 127.0.0.1:443->443/tcp
+atlas-php        atlas/php:1.0        Up 2 minutes             9000/tcp
+atlas-analysis   atlas/analysis:1.0   Up 2 minutes (healthy)   8000/tcp
+atlas-db         mysql:8.0            Up 3 minutes (healthy)   3306/tcp, 33060/tcp
+
+## Salud (GET /api/v1/health)
+{"estado":"ok","base_de_datos":true,"servicio_analisis":true,"ms":7}
+
+## HTTP → HTTPS
+301 -> https://127.0.0.1/
+
+## Cabeceras de seguridad
+strict-transport-security: max-age=31536000
+x-content-type-options: nosniff
+x-frame-options: DENY
+referrer-policy: same-origin
+content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
+
+## MySQL no publicado (se esperan 0 puertos)
+0
+
+## Usuarios de proceso (no root)
+atlas-php: 5002
+atlas-db: 5003
+atlas-analysis: 65534
+
+## Redes
+atlas_front: 192.168.250.0/28 internal=false
+atlas_back: 192.168.250.16/28 internal=true
+atlas_egress: 192.168.250.32/28 internal=false
+
+## atlas-db sin salida a Internet (se espera fallo)
+bash: connect: Network is unreachable
+bash: line 1: /dev/tcp/1.1.1.1/443: Network is unreachable
+SIN SALIDA (correcto)

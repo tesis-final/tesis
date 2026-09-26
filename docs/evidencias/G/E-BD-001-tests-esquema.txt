@@ -1,4 +1,4 @@
-# Ejecución: 2026-09-26T20:01:22Z
+# Ejecución: 2026-09-26T20:56:51Z
 # Servidor: 8.0.46
 # Imagen: mirror.gcr.io/library/mysql:8.0
 PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
@@ -8,7 +8,7 @@ Configuration: /home/user/tesis/atlas/phpunit.xml
 
 .............................................                     45 / 45 (100%)
 
-Time: 00:10.035, Memory: 8.00 MB
+Time: 00:09.090, Memory: 8.00 MB
 
 Analisis Grupal (Atlas\Tests\Database\AnalisisGrupal)
  ✔ Agregados del grupo con datos conocidos

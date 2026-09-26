@@ -11,7 +11,11 @@ final class PrivilegiosTest extends DatabaseTestCase
 {
     public function testAppNoPuedeAlterarNiBorrarAuditoria(): void
     {
-        $this->assertFalla("UPDATE auditoria SET accion = 'x' WHERE id = 1", usuario: 'atlas_app', contiene: 'command denied');
+        $this->assertFalla(
+            "UPDATE auditoria SET accion = 'x' WHERE id = 1",
+            usuario: 'atlas_app',
+            contiene: 'command denied'
+        );
         $this->assertFalla('DELETE FROM auditoria WHERE id = 1', usuario: 'atlas_app', contiene: 'command denied');
     }
 
@@ -44,28 +48,53 @@ final class PrivilegiosTest extends DatabaseTestCase
 
     public function testAppNoModificaTransicionesNiConversaciones(): void
     {
-        $this->assertFalla('UPDATE transiciones_actividad SET observaciones = NULL', usuario: 'atlas_app', contiene: 'command denied');
-        $this->assertFalla('UPDATE conversaciones SET respuesta = NULL', usuario: 'atlas_app', contiene: 'command denied');
+        $this->assertFalla(
+            'UPDATE transiciones_actividad SET observaciones = NULL',
+            usuario: 'atlas_app',
+            contiene: 'command denied'
+        );
+        $this->assertFalla(
+            'UPDATE conversaciones SET respuesta = NULL',
+            usuario: 'atlas_app',
+            contiene: 'command denied'
+        );
     }
 
     public function testReadSoloVeVistas(): void
     {
         $this->assertFalla('SELECT * FROM usuarios LIMIT 1', usuario: 'atlas_read', contiene: 'command denied');
         $this->assertIsInt((int) self::valor('SELECT COUNT(*) FROM v_resultados_detalle', usuario: 'atlas_read'));
-        $this->assertFalla('INSERT INTO auditoria (accion, resultado) VALUES (?, ?)', ['x', 'OK'], 'atlas_read', 'command denied');
+        $this->assertFalla(
+            'INSERT INTO auditoria (accion, resultado) VALUES (?, ?)',
+            ['x', 'OK'],
+            'atlas_read',
+            'command denied'
+        );
     }
 
     public function testAnalysisNoLeeNombresNiCorreos(): void
     {
-        $this->assertFalla('SELECT nombre, correo FROM usuarios LIMIT 1', usuario: 'atlas_analysis', contiene: 'command denied');
-        $this->assertFalla('SELECT * FROM v_resultados_detalle LIMIT 1', usuario: 'atlas_analysis', contiene: 'command denied');
+        $this->assertFalla(
+            'SELECT nombre, correo FROM usuarios LIMIT 1',
+            usuario: 'atlas_analysis',
+            contiene: 'command denied'
+        );
+        $this->assertFalla(
+            'SELECT * FROM v_resultados_detalle LIMIT 1',
+            usuario: 'atlas_analysis',
+            contiene: 'command denied'
+        );
         $this->assertIsInt((int) self::valor('SELECT COUNT(*) FROM intentos', usuario: 'atlas_analysis'));
         $this->assertIsInt((int) self::valor('SELECT COUNT(grupo_id) FROM usuario_grupo', usuario: 'atlas_analysis'));
     }
 
     public function testAnalysisSoloInsertaEnAnalisis(): void
     {
-        $this->assertFalla('UPDATE intentos SET duracion_seg = 1', usuario: 'atlas_analysis', contiene: 'command denied');
+        $this->assertFalla(
+            'UPDATE intentos SET duracion_seg = 1',
+            usuario: 'atlas_analysis',
+            contiene: 'command denied'
+        );
         $this->assertFalla('DELETE FROM indicadores', usuario: 'atlas_analysis', contiene: 'command denied');
 
         $grupo = self::crearGrupo();

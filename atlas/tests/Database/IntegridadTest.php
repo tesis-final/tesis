@@ -108,7 +108,8 @@ final class IntegridadTest extends DatabaseTestCase
     {
         $estudiante = self::crearUsuario('estudiante');
         $perfil = self::ejecutar(
-            "INSERT INTO perfiles_aprendizaje (usuario_id, periodo_inicio, periodo_fin) VALUES (?, '2026-09-01', '2026-09-30')",
+            "INSERT INTO perfiles_aprendizaje (usuario_id, periodo_inicio, periodo_fin)
+             VALUES (?, '2026-09-01', '2026-09-30')",
             [$estudiante]
         );
 

@@ -14,7 +14,11 @@ final class AuditoriaTest extends DatabaseTestCase
         $id = self::ejecutar(
             "INSERT INTO auditoria (accion, resultado) VALUES ('prueba.inmutable', 'OK')"
         );
-        $this->assertFalla('UPDATE auditoria SET accion = ? WHERE id = ?', ['alterada', $id], contiene: 'no se puede modificar');
+        $this->assertFalla(
+            'UPDATE auditoria SET accion = ? WHERE id = ?',
+            ['alterada', $id],
+            contiene: 'no se puede modificar'
+        );
         $this->assertFalla('DELETE FROM auditoria WHERE id = ?', [$id], contiene: 'no se puede borrar');
     }
 
@@ -40,7 +44,8 @@ final class AuditoriaTest extends DatabaseTestCase
         $docente = self::crearUsuario('docente');
         self::ejecutar('UPDATE usuarios SET hash_contrasena = ? WHERE id = ?', ['$argon2id$nuevo', $docente]);
         $detalle = (string) self::valor(
-            "SELECT detalle FROM auditoria WHERE recurso = 'usuarios' AND recurso_id = ? AND accion = 'usuarios.modificar'
+            "SELECT detalle FROM auditoria
+              WHERE recurso = 'usuarios' AND recurso_id = ? AND accion = 'usuarios.modificar'
               ORDER BY id DESC LIMIT 1",
             [(string) $docente]
         );
