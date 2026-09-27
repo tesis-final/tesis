@@ -81,6 +81,15 @@ Son valores o elementos que ninguna decisión fija explícitamente, pero que el 
 | CT-13 | `atlas_app` tiene DELETE solo sobre `preguntas` y `opciones`, y un trigger lo limita a actividades en BORRADOR | RF-16 exige poder editar el contenido de un borrador (quitar preguntas u opciones); la Tabla 21 no incluye DELETE. Surgió en la Fase 5 | No |
 | CT-12 | El archivo de secretos de la pila es `/srv/atlas/config/atlas.conf` (el mismo que §28.3 protege con `chattr +i`) | El PDF ya define ese archivo protegido; se usa como `.env` de producción | — |
 
+## Consecuencias técnicas de las Fases 6 a 8
+
+| ID | Qué | Por qué | Visible en la red |
+| --- | --- | --- | --- |
+| CT-14 | El servicio web tiene r-x sobre `web/` gracias al montaje de solo lectura (`:ro`) del código en los contenedores; en disco, atlasweb sigue siendo el dueño (750) | §28.3 hace dueño a atlasweb (rwx) y la Tabla 27 pide r-x: se cumplen las dos (DEC-06). Fase 6, hallazgo H6-01 | No |
+| CT-15 | GPO_Servidores se vincula a OU=Servidores **y** a "Domain Controllers" | Microsoft exige que los DC queden en "Domain Controllers"; sin el segundo vínculo la GPO no le llegaría a ningún servidor Windows. Fase 7, hallazgo H7-02 | No |
+| CT-16 | Docker: `bip` 192.168.250.225/28 y `default-address-pools` 192.168.251.0/24 | Que Docker no elija solo sus redes y no se acerque a 172.16.0.0/16, 10.8.0.0/24 ni a redes hogareñas (misma intención que CT-07) | No |
+| CT-17 | **Propuestos** (pendientes de J.2): gestión de atlas-sw01 172.16.50.2/24, estación de administración 172.16.50.10/24, red de tránsito rt01 ↔ fw01 172.16.255.0/30 (rt01 .1, fw01 .2) | El PDF no los fija y sin ellos no se puede configurar. La red de tránsito queda dentro de 172.16.0.0/16 para que "interno" siga siendo 172.16.0.0/16 en todas las reglas | Sí |
+
 ## Pendientes que no son decisiones
 
 - Datos de J.2: IP de fw01 (red de tránsito y WAN), IP de gestión (switch, router, estación), modelos de PT, reenviadores DNS.

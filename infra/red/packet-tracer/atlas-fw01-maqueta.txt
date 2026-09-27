@@ -1,0 +1,24 @@
+! =============================================================================
+! ATLAS — MAQUETA de atlas-fw01 para Packet Tracer (router genérico ISR 1941)
+! Packet Tracer no puede ejecutar la VM real de atlas-fw01 (Ubuntu + nftables +
+! WireGuard, DEC-03). Esta maqueta SOLO representa el siguiente salto y una
+! "Internet simulada" para probar rutas y, en la Fase 9, las reglas 5 y 7.
+! No filtra, no hace NAT ni VPN: eso lo hace la VM real (Fases 9 y 10).
+! Direcciones de documentación RFC 5737 (203.0.113.0/24) para la "Internet".
+! =============================================================================
+hostname atlas-fw01-maqueta
+no ip domain-lookup
+!
+interface GigabitEthernet0/0
+ description Transito hacia atlas-rt01 Gi0/1
+ ip address 172.16.255.2 255.255.255.252
+ no shutdown
+!
+interface GigabitEthernet0/1
+ description Internet simulada (servidor web de prueba 203.0.113.10)
+ ip address 203.0.113.1 255.255.255.0
+ no shutdown
+!
+! Vuelta hacia la red interna de ATLAS.
+ip route 172.16.0.0 255.255.0.0 172.16.255.1
+end

@@ -1,0 +1,115 @@
+! =============================================================================
+! ATLAS — atlas-rt01, configuración BASE (Cisco ISR 2911, Packet Tracer)
+! Fase 8 · PDF §30.1: Tabla 38 (gateways), §29.4 (reenvío DHCP, regla 4),
+! p. 66 (VLAN 999 nativa), p. 67 (gestión en VLAN 50).
+!
+! Esta es la parte de ENRUTAMIENTO. El filtrado entre VLAN (firewall por zonas,
+! Tabla 44) se agrega en la Fase 9 con atlas-rt01-zbf.txt. Hasta entonces el
+! router deja pasar todo entre VLAN: es un estado de prueba, no de operación.
+!
+! ANTES DE PEGAR: reemplazar <ENABLE_SECRET> y <CLAVE_ADMIN_RED>.
+! Pegar en "configure terminal". Al final: "copy running-config startup-config".
+! =============================================================================
+hostname atlas-rt01
+no ip domain-lookup
+ip domain-name atlas.local
+service password-encryption
+service timestamps log datetime msec
+security passwords min-length 10
+login block-for 120 attempts 3 within 60
+enable secret <ENABLE_SECRET>
+username admin-red privilege 15 secret <CLAVE_ADMIN_RED>
+banner motd ^C
+ atlas-rt01 - Acceso restringido a Soporte TI de ATLAS. Actividad registrada.
+^C
+!
+! --- Troncal hacia atlas-sw01: una subinterfaz por VLAN (Tabla 38) -----------
+interface GigabitEthernet0/0
+ description Troncal 802.1Q hacia atlas-sw01 Gi0/1
+ no ip address
+ no shutdown
+!
+interface GigabitEthernet0/0.10
+ description VLAN 10 - Administracion
+ encapsulation dot1Q 10
+ ip address 172.16.10.1 255.255.255.0
+ ip helper-address 172.16.40.20
+!
+interface GigabitEthernet0/0.20
+ description VLAN 20 - Docentes
+ encapsulation dot1Q 20
+ ip address 172.16.20.1 255.255.255.0
+ ip helper-address 172.16.40.20
+!
+interface GigabitEthernet0/0.30
+ description VLAN 30 - Estudiantes
+ encapsulation dot1Q 30
+ ip address 172.16.30.1 255.255.255.0
+ ip helper-address 172.16.40.20
+!
+interface GigabitEthernet0/0.40
+ description VLAN 40 - Servidores (IP fijas, sin DHCP)
+ encapsulation dot1Q 40
+ ip address 172.16.40.1 255.255.255.0
+!
+interface GigabitEthernet0/0.50
+ description VLAN 50 - Gestion (IP fijas, sin DHCP)
+ encapsulation dot1Q 50
+ ip address 172.16.50.1 255.255.255.0
+!
+! VLAN nativa del troncal: sin IP ni servicios (p. 66). Coincide con el switch.
+interface GigabitEthernet0/0.999
+ description VLAN 999 nativa - sin servicio
+ encapsulation dot1Q 999 native
+!
+! --- Enlace de tránsito hacia el firewall perimetral (Figura 1) ---------------
+! Red de tránsito: VALOR PROPUESTO 172.16.255.0/30 (pendiente J.2).
+interface GigabitEthernet0/1
+ description Transito hacia atlas-fw01
+ ip address 172.16.255.1 255.255.255.252
+ no cdp enable
+ no shutdown
+!
+interface GigabitEthernet0/2
+ description Sin uso
+ no ip address
+ shutdown
+!
+! --- Rutas (fase-02/05 §1): todo lo que no es interno va al firewall ----------
+ip route 0.0.0.0 0.0.0.0 172.16.255.2
+! VPN (Tabla 45): los clientes WireGuard están detrás de atlas-fw01.
+ip route 10.8.0.0 255.255.255.0 172.16.255.2
+!
+! --- Gestión: SSH solo desde VLAN 50 (p. 67) ---------------------------------
+ip access-list standard ACL_GESTION_VTY
+ permit 172.16.50.0 0.0.0.255
+ deny any log
+!
+crypto key generate rsa general-keys modulus 2048
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 3
+!
+line con 0
+ exec-timeout 10 0
+ logging synchronous
+ login local
+line aux 0
+ no exec
+ transport input none
+line vty 0 15
+ access-class ACL_GESTION_VTY in
+ exec-timeout 10 0
+ login local
+ transport input ssh
+!
+! --- Registro y hora ---------------------------------------------------------
+! Hora desde el DC (Tabla 35: el DC es la fuente de hora). Los logs quedan en el
+! búfer del router (DEC-R8: sin syslog externo). Ver con "show logging".
+ntp server 172.16.40.20
+logging buffered 16384 informational
+!
+no ip http server
+no ip http secure-server
+no ip source-route
+end

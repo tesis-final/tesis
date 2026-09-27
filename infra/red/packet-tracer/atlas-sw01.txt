@@ -1,0 +1,154 @@
+! =============================================================================
+! ATLAS — atlas-sw01 (Cisco Catalyst 2960-24TT, Packet Tracer)
+! Fase 8 · PDF §30.1: Tabla 38 (VLAN), Tabla 41 (puertos), p. 66 (VLAN 999
+! nativa y puertos sin uso), p. 67 (gestión en VLAN 50).
+!
+! ANTES DE PEGAR: reemplazar <ENABLE_SECRET> y <CLAVE_ADMIN_RED> por las
+! contraseñas del equipo (mínimo 10 caracteres). No se guardan en Git.
+! Pegar en modo "configure terminal". Al final: "copy running-config startup-config".
+! =============================================================================
+hostname atlas-sw01
+no ip domain-lookup
+ip domain-name atlas.local
+service password-encryption
+service timestamps log datetime msec
+enable secret <ENABLE_SECRET>
+username admin-red privilege 15 secret <CLAVE_ADMIN_RED>
+banner motd ^C
+ atlas-sw01 - Acceso restringido a Soporte TI de ATLAS. Actividad registrada.
+^C
+!
+! --- VLAN (Tabla 38 + VLAN 999, p. 66) --------------------------------------
+vtp mode transparent
+vlan 10
+ name Administracion
+vlan 20
+ name Docentes
+vlan 30
+ name Estudiantes
+vlan 40
+ name Servidores
+vlan 50
+ name Gestion
+vlan 999
+ name Sin_uso_nativa
+!
+spanning-tree mode rapid-pvst
+!
+! --- Puertos de acceso (Tabla 41) --------------------------------------------
+interface range FastEthernet0/1 - 4
+ description Equipos de Administracion (VLAN 10)
+ switchport mode access
+ switchport access vlan 10
+ switchport nonegotiate
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+!
+interface range FastEthernet0/5 - 10
+ description Equipos de Docentes (VLAN 20)
+ switchport mode access
+ switchport access vlan 20
+ switchport nonegotiate
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+!
+interface range FastEthernet0/11 - 20
+ description Equipos de Estudiantes (VLAN 30)
+ switchport mode access
+ switchport access vlan 30
+ switchport nonegotiate
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+!
+interface FastEthernet0/21
+ description atlas-srv01 Linux (VLAN 40)
+ switchport mode access
+ switchport access vlan 40
+ switchport nonegotiate
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+!
+interface FastEthernet0/22
+ description atlas-dc01 Windows Server (VLAN 40)
+ switchport mode access
+ switchport access vlan 40
+ switchport nonegotiate
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+!
+interface FastEthernet0/23
+ description Estacion de administracion (VLAN 50)
+ switchport mode access
+ switchport access vlan 50
+ switchport nonegotiate
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+!
+! --- Puertos sin uso: VLAN 999 y apagados (Tabla 41, p. 66) ------------------
+interface FastEthernet0/24
+ description Sin uso - deshabilitado
+ switchport mode access
+ switchport access vlan 999
+ switchport nonegotiate
+ shutdown
+!
+interface GigabitEthernet0/2
+ description Reserva - deshabilitado
+ switchport mode access
+ switchport access vlan 999
+ switchport nonegotiate
+ shutdown
+!
+! --- Troncal 802.1Q hacia el router (Tabla 41, p. 66) ------------------------
+interface GigabitEthernet0/1
+ description Troncal 802.1Q hacia atlas-rt01 Gi0/0
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,30,40,50
+ switchport nonegotiate
+ no shutdown
+!
+! --- Gestión: solo por VLAN 50 (p. 67) ---------------------------------------
+interface Vlan1
+ no ip address
+ shutdown
+!
+! IP de gestión del switch: VALOR PROPUESTO (el PDF no la fija; pendiente J.2).
+interface Vlan50
+ description Gestion de atlas-sw01
+ ip address 172.16.50.2 255.255.255.0
+ no shutdown
+!
+ip default-gateway 172.16.50.1
+!
+ip access-list standard ACL_GESTION_VTY
+ permit 172.16.50.0 0.0.0.255
+ deny any log
+!
+! SSH v2. En Packet Tracer, si "crypto key generate rsa general-keys modulus 2048"
+! no se acepta en una sola línea: escribir "crypto key generate rsa" y responder 2048.
+crypto key generate rsa general-keys modulus 2048
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 3
+!
+line con 0
+ exec-timeout 10 0
+ logging synchronous
+ login local
+line vty 0 15
+ access-class ACL_GESTION_VTY in
+ exec-timeout 10 0
+ login local
+ transport input ssh
+!
+no ip http server
+no ip http secure-server
+logging buffered 16384
+end
