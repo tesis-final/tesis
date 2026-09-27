@@ -15,14 +15,17 @@ REPO="${1:?ruta del repositorio tesis}"
 ANALISIS="${2:?ruta del repositorio atlas-analysis}"
 ROOT="${ATLAS_ROOT:-/srv/atlas}"
 
-command -v composer >/dev/null || { echo "Falta composer"; exit 1; }
-
-echo "→ Dependencias de producción (sin herramientas de desarrollo)"
+echo "→ Autoload de producción (la aplicación no tiene dependencias de ejecución; solo se genera vendor/autoload.php)"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 cp -a "$REPO/atlas/." "$TMP/"
-rm -rf "$TMP/vendor" "$TMP/tests" "$TMP/.phpunit.cache"
-composer install --no-dev --optimize-autoloader --no-interaction --working-dir="$TMP" >/dev/null
+rm -rf "$TMP/vendor" "$TMP/tests" "$TMP/.phpunit.cache" "$TMP/.env"
+if command -v composer >/dev/null; then
+  composer dump-autoload --no-dev --optimize --no-interaction --working-dir="$TMP" >/dev/null
+else
+  # Sin composer en el servidor: se usa la imagen oficial de Composer, sin instalar PHP en el host.
+  docker run --rm -v "$TMP:/app" -w /app composer:2 dump-autoload --no-dev --optimize --no-interaction >/dev/null
+fi
 
 echo "→ Copiando a $ROOT/web"
 mkdir -p "$ROOT/web/public" "$ROOT/web/app" "$ROOT/web/analysis" "$ROOT/logs" "$ROOT/datos" "$ROOT/config/tls"
@@ -36,5 +39,9 @@ if [ "${SIN_CHOWN:-0}" != "1" ]; then
   chown -R atlasweb:atlas-web "$ROOT/web"
   find "$ROOT/web/public" -type d -exec chmod 755 {} + ; find "$ROOT/web/public" -type f -exec chmod 644 {} +
   chmod 750 "$ROOT/web" "$ROOT/web/app" "$ROOT/web/analysis"
+fi
+if [ "${SIN_CHOWN:-0}" != "1" ] && [ -x "$(dirname "$0")/03-directorios-permisos.sh" ]; then
+  echo "→ Reaplicando las ACL de la Tabla 27"
+  "$(dirname "$0")/03-directorios-permisos.sh" --acl >/dev/null
 fi
 echo "Listo. Siguiente: docker compose --env-file $ROOT/config/atlas.conf -f $ROOT/config/docker-compose.yml up -d --build"

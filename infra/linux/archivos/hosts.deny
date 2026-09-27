@@ -1,0 +1,2 @@
+# ATLAS — /etc/hosts.deny (PDF §28.4, TCP Wrappers). Se niega todo lo demás.
+ALL: ALL

@@ -1,0 +1,16 @@
+## ATLAS — /etc/audit/rules.d/50-atlas.rules
+## §28.3: "sacar el atributo [+a / +i] también queda registrado". Estas reglas lo hacen verdad.
+## Ver:  sudo ausearch -k atlas-atributos   ·   sudo aureport -k
+-w /usr/bin/chattr -p x -k atlas-atributos
+-w /srv/atlas/config/atlas.conf -p wa -k atlas-config
+-w /srv/atlas/config/docker-compose.yml -p wa -k atlas-config
+-w /etc/ssh/sshd_config -p wa -k atlas-acceso
+-w /etc/ssh/sshd_config.d/ -p wa -k atlas-acceso
+-w /etc/hosts.allow -p wa -k atlas-acceso
+-w /etc/hosts.deny -p wa -k atlas-acceso
+-w /etc/ufw/ -p wa -k atlas-firewall
+-w /etc/sudoers -p wa -k atlas-sudo
+-w /etc/sudoers.d/ -p wa -k atlas-sudo
+-w /etc/passwd -p wa -k atlas-identidades
+-w /etc/group -p wa -k atlas-identidades
+-w /etc/security/group.conf -p wa -k atlas-identidades

@@ -1,0 +1,31 @@
+# E-LNX-003 — Paso 7 (solo configuración): atlas.conf con secretos aleatorios y certificado/CSR TLS
+# Fecha: 2026-09-27T13:30:25Z · Entorno: contenedor ubuntu:24.04 (NO es la VM)
+# Comando: ATLAS_SOLO_CONFIG=1 infra/linux/07-atlas.sh (los secretos se muestran ocultos)
+
+==> 1/5 Archivo de secretos /srv/atlas/config/atlas.conf
+   Generado con contraseñas aleatorias.
+AVISO: LLM_API_KEY vacía: el asistente responde con los datos verificados, sin redactar con el LLM (RNF-15). Para activarlo: chattr -i, editar, chattr +i.
+==> 2/5 Certificado TLS (DEC-20: CN atlas-srv01.atlas.local, SAN IP 172.16.40.10)
+   CSR listo en /srv/atlas/config/tls/atlas.csr → firmarlo en atlas-dc01 (Fase 7, 09-certificado-srv01.ps1).
+   Mientras tanto: certificado TEMPORAL autofirmado (30 días).
+==> ATLAS_SOLO_CONFIG=1: se detiene después de la configuración.
+
+Claves del archivo (valores ocultos):
+ATLAS_BIND_IP=172.16.40.10
+MYSQL_ROOT_PASSWORD=<32 caracteres aleatorios>
+ATLAS_DB_APP_PASSWORD=<32 caracteres aleatorios>
+ATLAS_DB_READ_PASSWORD=<32 caracteres aleatorios>
+ATLAS_DB_ANALYSIS_PASSWORD=<32 caracteres aleatorios>
+ATLAS_DB_BACKUP_PASSWORD=<32 caracteres aleatorios>
+ATLAS_DB_ADMIN_PASSWORD=<32 caracteres aleatorios>
+ATLAS_ADMIN_CONTRASENA=<32 caracteres aleatorios>
+LLM_API_KEY=
+ATLAS_DEMO_CONTRASENA=
+Contraseñas distintas entre sí: 6 de 6
+Modo y dueño: atlasadmin:atlas-admin 640
+
+subject=C = UY, O = ITI-CETP UTU, OU = ATLAS, CN = atlas-srv01.atlas.local
+X509v3 Subject Alternative Name: 
+    DNS:atlas-srv01.atlas.local, DNS:atlas-srv01, IP Address:172.16.40.10
+notAfter=Oct 27 13:30:27 2026 GMT
+Certificate request self-signature verify OK

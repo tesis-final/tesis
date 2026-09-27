@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# =============================================================================
+# ATLAS — /usr/local/sbin/atlas-ctl (DEC-21)
+# Operaciones de ATLAS que atlasadmin y GG_SoporteTI pueden hacer con sudo SIN
+# ser root ni pertenecer al grupo docker. Está en /usr/local/sbin, es de root y
+# nadie más puede modificarlo (si estuviera en /srv/atlas/scripts, atlasadmin
+# podría editarlo y usar sudo para cualquier cosa).
+# =============================================================================
+set -euo pipefail
+CONF=/srv/atlas/config/atlas.conf
+COMPOSE=(docker compose --env-file "$CONF" -f /srv/atlas/config/docker-compose.yml)
+SERVICIOS='^(atlas-web|atlas-php|atlas-db|atlas-analysis)$'
+
+uso() {
+  cat <<'TXT'
+Uso: sudo atlas-ctl <orden>
+  estado                 contenedores, salud y puertos publicados
+  logs <contenedor> [n]  últimas n líneas (por defecto 100) de un contenedor
+  iniciar | detener | reiniciar
+  reiniciar-uno <contenedor>
+  salud                  respuesta de /api/v1/health
+  desbloquear-config     saca +i de atlas.conf para editarlo (con tu propio usuario)
+  bloquear-config        vuelve a poner +i y reinicia ATLAS para tomar los cambios
+TXT
+}
+
+case "${1:-}" in
+  estado)    "${COMPOSE[@]}" ps; echo; ss -ltn '( sport = :443 or sport = :80 or sport = :3306 )' ;;
+  logs)      [[ "${2:-}" =~ $SERVICIOS ]] || { echo "Contenedor inválido"; exit 2; }
+             journalctl CONTAINER_NAME="$2" -n "${3:-100}" --no-pager ;;
+  iniciar)   systemctl start atlas.service ;;
+  detener)   systemctl stop atlas.service ;;
+  reiniciar) systemctl restart atlas.service ;;
+  reiniciar-uno) [[ "${2:-}" =~ $SERVICIOS ]] || { echo "Contenedor inválido"; exit 2; }
+             "${COMPOSE[@]}" restart "$2" ;;
+  salud)     curl -sk --max-time 5 https://172.16.40.10/api/v1/health; echo ;;
+  # No se abre un editor como root (un editor puede ejecutar comandos): se edita
+  # con el usuario propio, que ya tiene escritura por la Tabla 27 (admin rwx).
+  desbloquear-config) chattr -i "$CONF"; echo "atlas.conf desbloqueado: editarlo y después 'sudo atlas-ctl bloquear-config'." ;;
+  bloquear-config)    chattr +i "$CONF"; systemctl restart atlas.service; lsattr "$CONF" ;;
+  *) uso; exit 2 ;;
+esac

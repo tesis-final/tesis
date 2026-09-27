@@ -1,0 +1,278 @@
+# E-LNX-001 — Prueba de los scripts de atlas-srv01 en Ubuntu 24.04 real (contenedor privilegiado)
+# Fecha: 2026-09-27T13:29:58Z
+# Comando: infra/linux/pruebas/probar-en-contenedor.sh
+# Entorno: contenedor Docker ubuntu:24.04 con disco ext4 en /srv y espacios de red que simulan VLAN 30 y VLAN 50.
+# NO es la VM del laboratorio: netplan, systemd, Docker de la pila, dominio y chrony se prueban en la VM (E-LNX-002, NO EJECUTADA — requiere laboratorio).
+# El único FAIL esperado es 'smbd activo' (el contenedor no tiene systemd).
+
+
+══════ Entorno ══════
+Ubuntu 24.04.5 LTS · kernel 6.18.44-fc-v37
+
+══════ Disco ext4 para /srv (chattr no funciona sobre overlay) ══════
+/dev/loop0     ext4  224M   24K  206M   1% /srv
+
+══════ Clave pública de prueba para atlasadmin ══════
+
+══════ Paso 2 — usuarios y grupos ══════
+==> Grupos (Tabla 25)
+==> Usuarios (Tabla 26)
+useradd warning: atlasweb's uid 5002 is greater than SYS_UID_MAX 999
+useradd warning: atlasdb's uid 5003 is greater than SYS_UID_MAX 999
+useradd warning: atlasbkp's uid 5004 is greater than SYS_UID_MAX 999
+==> Clave pública de atlasadmin (acceso de emergencia, DEC-07)
+==> Listo. Siguiente: 03-directorios-permisos.sh
+
+══════ Paso 3 — directorios, permisos, ACL y atributos ══════
+==> Árbol de §28.3
+==> ACL para llegar a la Tabla 27
+==> Atributos (§28.3)
+----i---------e------- /srv/atlas/config/atlas.conf
+-----a--------e------- /srv/atlas/logs/auditoria.log
+==> Listo. Verificar con: sudo ./verificar.sh permisos
+
+══════ Paso 3 otra vez (idempotencia) ══════
+segunda ejecución sin errores
+
+══════ Verificación: usuarios, permisos (Tabla 27), atributos ══════
+ATLAS — verificación de atlas-srv01 · 2026-09-27T13:27:02+00:00
+
+[usuarios] Grupos y usuarios (Tabla 25, Tabla 26)
+  PASS  grupo atlas-admin GID 5001
+  PASS  grupo atlas-web GID 5002
+  PASS  grupo atlas-db GID 5003
+  PASS  grupo atlas-backup GID 5004
+  PASS  grupo atlas-audit GID 5005
+  PASS  usuario atlasadmin UID 5001 grupo atlas-admin shell /bin/bash
+  PASS  usuario atlasweb UID 5002 grupo atlas-web shell /usr/sbin/nologin
+  PASS  usuario atlasdb UID 5003 grupo atlas-db shell /usr/sbin/nologin
+  PASS  usuario atlasbkp UID 5004 grupo atlas-backup shell /usr/sbin/nologin
+  PASS  atlasweb sin contraseña utilizable
+  PASS  atlasdb sin contraseña utilizable
+  PASS  atlasbkp sin contraseña utilizable
+
+[permisos] Dueños y modos (§28.3)
+  PASS  /srv/atlas/. atlasadmin:atlas-admin 750
+  PASS  /srv/atlas/web atlasweb:atlas-web 750
+  PASS  /srv/atlas/web/public atlasweb:atlas-web 755
+  PASS  /srv/atlas/web/app atlasweb:atlas-web 750
+  PASS  /srv/atlas/datos atlasdb:atlas-db 770
+  PASS  /srv/atlas/logs atlasadmin:atlas-admin 770
+  PASS  /srv/atlas/scripts atlasadmin:atlas-admin 750
+  PASS  /srv/atlas/config atlasadmin:atlas-admin 750
+  PASS  /srv/atlas/backups atlasbkp:atlas-backup 700
+
+[permisos] Permisos efectivos (Tabla 27). 'r--' en directorios = r-x (DEC-06)
+  Recurso                admin   web     db      backup  audit  
+  /srv/atlas/web/        rwx     rwx     ---     r-x     ---    
+  PASS  Tabla 27 fila web
+  /srv/atlas/datos/      rwx     ---     rwx     r-x     ---    
+  PASS  Tabla 27 fila datos
+  /srv/atlas/logs/       rwx     -wx     -wx     r-x     r-x    
+  PASS  Tabla 27 fila logs
+  /srv/atlas/scripts/    rwx     ---     ---     r-x     ---    
+  PASS  Tabla 27 fila scripts
+  /srv/atlas/backups/    r-x     ---     ---     rwx     ---    
+  PASS  Tabla 27 fila backups
+  /srv/atlas/config/     rwx     r-x     r-x     r-x     ---    
+  PASS  Tabla 27 fila config
+  Nota: web/ para el servicio web figura rwx en disco (es el dueño, §28.3); la Tabla 27 pide r-x
+        y se cumple porque los contenedores montan el código en solo lectura (CT-14, ver sección atlas).
+  PASS  atlas-web puede agregar a logs/auditoria.log (RF-15)
+  PASS  atlas-audit lee y no modifica logs/auditoria.log
+
+[atributos] Atributos inmutable y solo-agregar (§28.3)
+  PASS  chattr +i config/atlas.conf
+  PASS  chattr +a logs/auditoria.log
+  PASS  ni root puede vaciar auditoria.log
+  PASS  se puede agregar una línea a auditoria.log
+  PASS  ni root puede modificar atlas.conf
+
+Resultado: 34 PASS · 0 FAIL
+
+══════ Paso 4 — SSH y TCP Wrappers ══════
+==> sshd: /etc/ssh/sshd_config.d/10-atlas.conf
+==> TCP Wrappers: /etc/hosts.allow y /etc/hosts.deny
+==> Configuración efectiva para un origen de VLAN 50 y uno de VLAN 30:
+maxauthtries 3
+permitrootlogin no
+passwordauthentication no
+allowtcpforwarding local
+allowusers *
+allowgroups atlas-admin
+allowgroups gg_soporteti
+---
+allowtcpforwarding no
+allowusers atlasadmin@172.16.50.*
+allowgroups atlas-admin
+==> Listo. Siguiente: 05-firewall.sh
+ATLAS — verificación de atlas-srv01 · 2026-09-27T13:27:02+00:00
+
+[ssh] SSH y TCP Wrappers (§28.4, DEC-07)
+  PASS  sshd -t (configuración válida)
+  PASS  PermitRootLogin no
+  PASS  PasswordAuthentication no
+  PASS  PubkeyAuthentication yes
+  PASS  MaxAuthTries 3
+  PASS  desde VLAN 30 solo rige AllowUsers atlasadmin@172.16.50.* (nadie entra)
+  PASS  desde VLAN 50: AllowGroups atlas-admin gg_soporteti
+  PASS  sshd enlazado con libwrap (TCP Wrappers efectivos)
+  PASS  /etc/hosts.deny: ALL: ALL
+  PASS  /etc/hosts.allow: sshd: 172.16.50.0/255.255.255.0
+  PASS  atlasadmin tiene clave pública (acceso de emergencia)
+
+Resultado: 11 PASS · 0 FAIL
+
+══════ Red de prueba: 'VLAN 50' (172.16.50.10) y 'VLAN 30' (172.16.30.100) → srv01 172.16.40.10 ══════
+
+══════ Conexiones SSH reales (solo TCP Wrappers + sshd, todavía sin firewall) ══════
+  PASS  atlasadmin desde VLAN 50 entra
+        ENTRO
+        uid=5001(atlasadmin) gid=5001(atlas-admin) groups=5001(atlas-admin)
+  PASS  soporte1 (GG_SoporteTI) desde VLAN 50 entra y recibe atlas-admin y atlas-audit
+        ENTRO
+        uid=5005(soporte1) gid=5007(soporte1) groups=5007(soporte1),5001(atlas-admin),5005(atlas-audit),5006(gg_soporteti)
+  PASS  intruso (no es Soporte TI) desde VLAN 50 NO entra (AllowGroups)
+        intruso@172.16.40.10: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+  PASS  atlasadmin desde VLAN 30 NO entra (TCP Wrappers corta antes de autenticar)
+        kex_exchange_identification: read: Connection reset by peer
+  PASS  root desde VLAN 50 NO entra (PermitRootLogin no)
+        root@172.16.40.10: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+  Registro de sshd de esas conexiones:
+        Accepted publickey for atlasadmin from 172.16.50.10 port 44462 ssh2: ED25519 SHA256:InNJqPY4lPXvyZyzQJ2hEZ3B6i+4ulrhShnYS4SuJsQ
+        Accepted publickey for soporte1 from 172.16.50.10 port 40896 ssh2: ED25519 SHA256:InNJqPY4lPXvyZyzQJ2hEZ3B6i+4ulrhShnYS4SuJsQ
+        User intruso from 172.16.50.10 not allowed because none of user's groups are listed in AllowGroups
+        User root from 172.16.50.10 not allowed because none of user's groups are listed in AllowGroups
+
+══════ Paso 5 — UFW + DOCKER-USER ══════
+Logging enabled
+==> Filtro para los puertos que publica Docker (cadena DOCKER-USER)
+Firewall is active and enabled on system startup
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    172.16.50.0/24             # R6 SSH desde Gestion
+443/tcp                    ALLOW IN    172.16.10.0/24             # R1 HTTPS VLAN10
+443/tcp                    ALLOW IN    172.16.20.0/24             # R1 HTTPS VLAN20
+443/tcp                    ALLOW IN    172.16.30.0/24             # R1 HTTPS VLAN30
+443/tcp                    ALLOW IN    10.8.0.128/25              # R9 HTTPS VPN docentes
+445/tcp                    ALLOW IN    172.16.10.0/24             # R3 SMB VLAN10
+445/tcp                    ALLOW IN    172.16.20.0/24             # R3 SMB VLAN20
+445/tcp                    ALLOW IN    172.16.40.20               # Dominio SMB desde DC
+
+
+-N DOCKER-USER
+-A DOCKER-USER -m conntrack --ctstate RELATED,ESTABLISHED -j RETURN
+-A DOCKER-USER ! -i br-lan -j RETURN
+-A DOCKER-USER -s 172.16.10.0/24 -i br-lan -p tcp -m conntrack --ctorigdstport 443 --ctdir ORIGINAL -j RETURN
+-A DOCKER-USER -s 172.16.20.0/24 -i br-lan -p tcp -m conntrack --ctorigdstport 443 --ctdir ORIGINAL -j RETURN
+-A DOCKER-USER -s 172.16.30.0/24 -i br-lan -p tcp -m conntrack --ctorigdstport 443 --ctdir ORIGINAL -j RETURN
+-A DOCKER-USER -s 10.8.0.128/25 -i br-lan -p tcp -m conntrack --ctorigdstport 443 --ctdir ORIGINAL -j RETURN
+-A DOCKER-USER -i br-lan -m limit --limit 5/min --limit-burst 10 -j LOG --log-prefix "[ATLAS DOCKER-USER DROP] "
+-A DOCKER-USER -i br-lan -j DROP
+==> Listo. Siguiente: 06-docker.sh
+ATLAS — verificación de atlas-srv01 · 2026-09-27T13:28:47+00:00
+
+[firewall] UFW alineado con la Tabla 44 + DOCKER-USER (DEC-05, CT-04)
+  PASS  UFW activo
+  PASS  negar entrante / permitir saliente
+  PASS  registro activado
+  PASS  permitido 22/tcp desde 172.16.50.0/24
+  PASS  permitido 443/tcp desde 172.16.10.0/24
+  PASS  permitido 443/tcp desde 172.16.20.0/24
+  PASS  permitido 443/tcp desde 172.16.30.0/24
+  PASS  permitido 443/tcp desde 10.8.0.128/25
+  PASS  permitido 445/tcp desde 172.16.10.0/24
+  PASS  permitido 445/tcp desde 172.16.20.0/24
+  PASS  permitido 445/tcp desde 172.16.40.20
+  PASS  no hay reglas para 80, 139 ni 3306
+  PASS  DOCKER-USER limita el 443 publicado por Docker
+  PASS  DOCKER-USER descarta (y registra) el resto
+
+Resultado: 14 PASS · 0 FAIL
+
+══════ Conexiones SSH con el firewall activo (dos capas) ══════
+  PASS  atlasadmin desde VLAN 50 sigue entrando
+        ENTRO
+        uid=5001(atlasadmin) gid=5001(atlas-admin) groups=5001(atlas-admin)
+  PASS  atlasadmin desde VLAN 30 NO entra
+        ssh: connect to host 172.16.40.10 port 22: Connection timed out
+
+══════ Otros puertos desde VLAN 30 hacia srv01 (nc -z, se espera que ninguno conecte) ══════
+  PASS  puerto 22 cerrado desde VLAN 30
+  PASS  puerto 3306 cerrado desde VLAN 30
+  PASS  puerto 139 cerrado desde VLAN 30
+  PASS  puerto 80 cerrado desde VLAN 30
+  Denegaciones registradas por UFW (kernel):
+        líneas UFW BLOCK: 0
+
+══════ DOCKER-USER en acción: se simula lo que hace Docker al publicar 443 de atlas-web ══════
+  PASS  VLAN 30 llega a HTTPS de ATLAS (regla 1)
+  PASS  VLAN 50 NO llega a HTTPS: DOCKER-USER lo descarta (la Tabla 44 no lo permite)
+  Contadores de DOCKER-USER (paquetes descartados y registrados):
+        Chain DOCKER-USER (1 references)
+         pkts bytes target     prot opt in     out     source               destination         
+            3   180 LOG        0    --  br-lan *       0.0.0.0/0            0.0.0.0/0            limit: avg 5/min burst 10 LOG flags 0 level 4 prefix "[ATLAS DOCKER-USER DROP] "
+            3   180 DROP       0    --  br-lan *       0.0.0.0/0            0.0.0.0/0           
+  Contraprueba: vaciando DOCKER-USER (como si no existiera el paso 5)…
+  PASS  sin DOCKER-USER, VLAN 50 SÍ llega: el riesgo R-01 es real y el paso 5 lo cierra
+  PASS  'ufw reload' vuelve a cargar DOCKER-USER
+  PASS  tras recargar, VLAN 50 vuelve a quedar bloqueada
+
+══════ Paso 12 — sudo acotado ══════
+==> Herramientas en /usr/local/sbin (de root, no editables por atlasadmin)
+==> sudoers
+==> Qué puede hacer atlasadmin con sudo:
+User atlasadmin may run the following commands on atlas-srv01:
+    (root) /usr/local/sbin/atlas-ctl, /usr/bin/apt-get update, /usr/bin/apt-get -y upgrade, NOEXEC: /usr/sbin/ufw status, /usr/sbin/ufw status verbose, /usr/sbin/ufw status numbered, /usr/bin/journalctl, /usr/bin/systemctl status *, /usr/sbin/ausearch, /usr/sbin/aureport, /usr/bin/chronyc tracking, /usr/bin/chronyc sources, /usr/sbin/realm list, /usr/bin/lsattr, /usr/local/sbin/atlas-verificar
+==> Listo. Verificar todo con: sudo atlas-verificar
+ATLAS — verificación de atlas-srv01 · 2026-09-27T13:29:48+00:00
+
+[sudo] sudo acotado (DEC-21)
+  PASS  sudoers válido
+  PASS  atlasadmin NO tiene sudo total
+  PASS  atlasadmin puede operar ATLAS con atlas-ctl
+  PASS  atlas-ctl es de root y no editable por otros
+
+Resultado: 4 PASS · 0 FAIL
+  ¿atlasadmin puede abrir una shell de root con sudo?
+  PASS  no puede (sudo: comando no permitido)
+
+══════ Paso 10 — Samba (smb.conf; grupos locales en lugar de los de AD) ══════
+
+AVISO: Sin systemd: se omite 'systemctl enable smbd'
+AVISO: Sin systemd: se omite 'systemctl restart smbd'
+==> Comprobación
+[global]
+[administracion]
+	path = /srv/samba/administracion
+	valid users = @gg_administracion @gg_soporteti
+[docentes]
+	path = /srv/samba/docentes
+	valid users = @gg_docentes @gg_soporteti
+==> Listo. Siguiente: 11-registros.sh
+ATLAS — verificación de atlas-srv01 · 2026-09-27T13:29:48+00:00
+
+[samba] Samba (Tabla 35, CT-10)
+  PASS  testparm sin errores
+  PASS  recurso administracion
+  PASS  recurso docentes
+  PASS  sin NetBIOS (139)
+
+Resultado: 4 PASS · 1 FAIL
+
+══════ Paso 11 — registros (sin systemd ni auditd en contenedor: solo archivos) ══════
+==> journald persistente
+AVISO: Sin systemd: se omite 'systemctl restart systemd-journald'
+==> auditd (reglas ATLAS)
+auditd: unrecognized service
+AVISO: No se pudieron cargar las reglas de auditd.
+==> logrotate
+AVISO: logrotate informó problemas con /etc/logrotate.d/atlas.
+==> Listo. Siguiente: 12-sudo.sh
+
+══════ FIN ══════

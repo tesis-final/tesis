@@ -1,0 +1,20 @@
+# =============================================================================
+# ATLAS — /etc/sudoers.d/atlas (DEC-21: sudo ACOTADO, lista explícita)
+# Validar SIEMPRE con:  sudo visudo -cf /etc/sudoers.d/atlas
+# atlasadmin y GG_SoporteTI administran ATLAS sin ser root. La cuenta del
+# instalador de Ubuntu queda como acceso de emergencia solo por consola.
+# =============================================================================
+Defaults:%atlas-admin  log_output, logfile=/var/log/sudo-atlas.log
+Defaults:%gg_soporteti log_output, logfile=/var/log/sudo-atlas.log
+
+Cmnd_Alias ATLAS_OPERAR  = /usr/local/sbin/atlas-ctl
+Cmnd_Alias ATLAS_ESTADO  = /usr/sbin/ufw status, /usr/sbin/ufw status verbose, /usr/sbin/ufw status numbered, \
+                           /usr/bin/journalctl, /usr/bin/systemctl status *, \
+                           /usr/sbin/ausearch, /usr/sbin/aureport, /usr/bin/chronyc tracking, /usr/bin/chronyc sources, \
+                           /usr/sbin/realm list, /usr/bin/lsattr, /usr/local/sbin/atlas-verificar
+Cmnd_Alias ATLAS_PARCHES = /usr/bin/apt-get update, /usr/bin/apt-get -y upgrade
+
+# NOEXEC: journalctl y systemctl no pueden lanzar otro programa (p. ej. el
+# paginador "less", desde el que se podría abrir una shell de root).
+%atlas-admin  ALL=(root) ATLAS_OPERAR, ATLAS_PARCHES, NOEXEC: ATLAS_ESTADO
+%gg_soporteti ALL=(root) ATLAS_OPERAR, ATLAS_PARCHES, NOEXEC: ATLAS_ESTADO
