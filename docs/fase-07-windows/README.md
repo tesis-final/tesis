@@ -32,7 +32,7 @@ Convierte una instalación limpia de Windows Server 2022 en atlas-dc01: el contr
 | 11 | `11-firewall-y-hora.ps1` | Firewall de Windows, fuente de hora, rango RPC | AMB-19, DEC-R8, DEC-17 |
 | 12 | `12-usuarios.ps1` | Cuentas desde un CSV (cuentas administrativas separadas) | Tabla 32 |
 | — | `instalar.ps1 -Etapa 1/2/3` | Corre todo en orden, en tres etapas por los reinicios | — |
-| — | `verificar-dc01.ps1` | PASS/FAIL por ítem (≈ 70 comprobaciones) | todas |
+| — | `verificar-dc01.ps1` | PASS/FAIL por ítem (más de 60 comprobaciones) | todas |
 | — | `clientes/unir-al-dominio.ps1` | Une un equipo de VLAN 10/20/30 en la OU que corresponde según su IP | §29.2 |
 | — | `AtlasComun.psm1` | Funciones comunes (plantillas de seguridad de GPO, unidades de red, versiones) | — |
 | — | `parametros.psd1` | Todos los valores del PDF. **Sin contraseñas** | — |
