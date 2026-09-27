@@ -2,7 +2,7 @@
 # =============================================================================
 # ATLAS · Fase 6 — Instalar el certificado firmado por ATLAS-CA (DEC-20)
 # Reemplaza el certificado TEMPORAL del paso 7 por el que firmó atlas-dc01
-# (Fase 7, 09-certificado-srv01.ps1).
+# (Fase 7, 10-certificado-srv01.ps1).
 #
 # Uso: sudo ./instalar-certificado.sh atlas-srv01.cer ATLAS-CA.cer
 #      (los dos archivos en PEM o DER; se copian desde el DC por SMB o USB)

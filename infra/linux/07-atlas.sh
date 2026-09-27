@@ -59,7 +59,7 @@ if [ ! -f "$TLS/atlas.key" ]; then
     -addext "extendedKeyUsage=serverAuth" 2>/dev/null
   openssl x509 -req -in "$TLS/atlas.csr" -signkey "$TLS/atlas.key" -days 30 -out "$TLS/atlas.crt" \
     -copy_extensions copyall 2>/dev/null
-  echo "   CSR listo en $TLS/atlas.csr → firmarlo en atlas-dc01 (Fase 7, 09-certificado-srv01.ps1)."
+  echo "   CSR listo en $TLS/atlas.csr → firmarlo en atlas-dc01 (Fase 7, 10-certificado-srv01.ps1)."
   echo "   Mientras tanto: certificado TEMPORAL autofirmado (30 días)."
 fi
 chown -R atlasadmin:atlas-admin "$TLS"; chmod 640 "$TLS"/*

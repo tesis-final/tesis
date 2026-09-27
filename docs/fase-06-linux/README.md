@@ -103,7 +103,7 @@ El paso 7 muestra **una sola vez** la contraseña del primer administrador de AT
 ### 3.5 Certificado de ATLAS-CA (después de la Fase 7)
 
 1. Copiar `/srv/atlas/config/tls/atlas.csr` al DC.
-2. En el DC: `09-certificado-srv01.ps1` (Fase 7) devuelve `atlas-srv01.cer` y `ATLAS-CA.cer`.
+2. En el DC: `10-certificado-srv01.ps1` (Fase 7) devuelve `atlas-srv01.cer` y `ATLAS-CA.cer`.
 3. En srv01: `sudo ./instalar-certificado.sh atlas-srv01.cer ATLAS-CA.cer`.
 
 El script comprueba que el certificado corresponde a la clave del servidor, que lo firmó ATLAS-CA y que tiene la IP 172.16.40.10 en el SAN; si algo no coincide, no instala nada.
