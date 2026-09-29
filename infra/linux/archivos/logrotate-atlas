@@ -1,0 +1,12 @@
+# ATLAS — /etc/logrotate.d/atlas
+# auditoria.log NO se rota automáticamente: tiene chattr +a (§28.3). Su rotación
+# es un procedimiento manual documentado en el manual de operación.
+/srv/atlas/logs/respaldo*.log /srv/atlas/logs/verificacion*.log {
+    weekly
+    rotate 12
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0660 atlasbkp atlas-backup
+}

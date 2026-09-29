@@ -1,0 +1,2 @@
+# ATLAS — /etc/hosts.allow (PDF §28.4, TCP Wrappers). Se permite solo lo necesario.
+sshd: 172.16.50.0/255.255.255.0

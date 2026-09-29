@@ -1,0 +1,283 @@
+erDiagram
+    actividad_grupo {
+        bigint actividad_id PK,FK
+        bigint grupo_id PK,FK
+        bigint publicado_por FK
+        datetime publicado_en
+    }
+    actividades {
+        bigint id PK
+        bigint autor_id FK
+        tinyint nivel_id FK
+        smallint categoria_id FK
+        tinyint estado_id FK
+        varchar titulo
+        text descripcion
+        datetime creado_en
+        datetime actualizado_en
+    }
+    agrupamientos {
+        bigint id PK
+        bigint grupo_id FK
+        date periodo_inicio
+        date periodo_fin
+        tinyint k
+        decimal silueta
+        int n_muestras
+        varchar modelo_version
+        datetime generado_en
+    }
+    analisis_grupal {
+        bigint id PK
+        bigint grupo_id FK
+        bigint actividad_id FK
+        date periodo_inicio
+        date periodo_fin
+        int n_estudiantes
+        decimal promedio
+        decimal mediana
+        decimal minimo
+        decimal maximo
+        datetime generado_en
+    }
+    auditoria {
+        bigint id PK
+        bigint usuario_id FK
+        varchar accion
+        varchar recurso
+        varchar recurso_id
+        enum resultado
+        varchar ip
+        json detalle
+        datetime creado_en
+    }
+    categorias {
+        smallint id PK
+        varchar codigo UK
+        varchar nombre
+    }
+    conversaciones {
+        bigint id PK
+        bigint docente_id FK
+        varchar pregunta
+        enum tipo_consulta
+        json contexto_enviado
+        text respuesta
+        enum estado
+        datetime creado_en
+    }
+    estados_actividad {
+        tinyint id PK
+        varchar codigo UK
+        varchar nombre
+    }
+    grupos_clase {
+        bigint id PK
+        bigint institucion_id FK
+        varchar nombre
+        smallint anio_lectivo
+    }
+    indicadores {
+        bigint id PK
+        bigint perfil_id FK
+        bigint actividad_id FK
+        bigint agrupamiento_id FK
+        enum tipo
+        decimal valor
+        enum origen
+        datetime calculado_en
+    }
+    instituciones {
+        bigint id PK
+        varchar nombre UK
+        tinyint activa
+        datetime creado_en
+    }
+    intentos {
+        bigint id PK
+        bigint usuario_id FK
+        bigint actividad_id FK
+        smallint numero_intento
+        enum estado
+        datetime iniciado_en
+        datetime finalizado_en
+        int duracion_seg
+    }
+    interacciones {
+        bigint id PK
+        bigint intento_id FK
+        int secuencia
+        enum tipo
+        bigint pregunta_id FK
+        bigint opcion_id FK
+        datetime ocurrido_en
+        int duracion_ms
+    }
+    niveles_dificultad {
+        tinyint id PK
+        varchar codigo UK
+        varchar nombre
+        tinyint orden UK
+    }
+    opciones {
+        bigint id PK
+        bigint pregunta_id FK
+        tinyint orden
+        varchar texto
+        tinyint es_correcta
+    }
+    perfiles_aprendizaje {
+        bigint id PK
+        bigint usuario_id FK
+        date periodo_inicio
+        date periodo_fin
+        datetime actualizado_en
+    }
+    permisos {
+        smallint id PK
+        varchar codigo UK
+        varchar descripcion
+    }
+    preguntas {
+        bigint id PK
+        bigint actividad_id FK
+        smallint orden
+        text enunciado
+    }
+    recomendacion_regla {
+        bigint recomendacion_id PK,FK
+        smallint regla_id PK,FK
+        smallint version_regla
+        json valores_entrada
+    }
+    recomendaciones {
+        bigint id PK
+        bigint perfil_id FK
+        bigint actividad_sugerida_id FK
+        varchar texto
+        datetime generado_en
+    }
+    registro_respaldos {
+        bigint id PK
+        enum tipo
+        enum destino
+        datetime iniciado_en
+        datetime finalizado_en
+        enum resultado
+        varchar archivo
+        char sha256
+        bigint tamano_bytes
+        tinyint verificado
+    }
+    reglas_analisis {
+        smallint id PK
+        varchar codigo UK
+        varchar nombre
+        varchar descripcion
+        enum tipo
+        json condicion
+        json sugerencia
+        varchar recomendacion_plantilla
+        tinyint prioridad
+        tinyint activa
+        smallint version
+        bigint actualizado_por FK
+        datetime actualizado_en
+    }
+    respuestas {
+        bigint id PK
+        bigint intento_id FK
+        bigint pregunta_id FK
+        bigint opcion_id FK
+        int tiempo_seg
+        datetime respondido_en
+    }
+    resultados {
+        bigint id PK
+        bigint intento_id FK
+        smallint correctas
+        smallint total_preguntas
+        decimal puntaje
+        datetime calculado_en
+    }
+    rol_permiso {
+        tinyint rol_id PK,FK
+        smallint permiso_id PK,FK
+        tinyint activo
+    }
+    roles {
+        tinyint id PK
+        varchar codigo UK
+        varchar nombre
+    }
+    transiciones_actividad {
+        bigint id PK
+        bigint actividad_id FK
+        tinyint estado_origen_id FK
+        tinyint estado_destino_id FK
+        bigint usuario_id FK
+        text observaciones
+        datetime creado_en
+    }
+    usuario_grupo {
+        bigint usuario_id PK,FK
+        bigint grupo_id PK,FK
+        tinyint activo
+    }
+    usuarios {
+        bigint id PK
+        bigint institucion_id FK
+        tinyint rol_id FK
+        varchar nombre
+        varchar apellido
+        varchar correo UK
+        varchar hash_contrasena
+        tinyint activo
+        tinyint intentos_fallidos
+        datetime bloqueado_hasta
+        datetime creado_en
+        datetime actualizado_en
+    }
+    actividades ||--o{ actividad_grupo : "actividad_id"
+    grupos_clase ||--o{ actividad_grupo : "grupo_id"
+    usuarios ||--o{ actividad_grupo : "publicado_por"
+    usuarios ||--o{ actividades : "autor_id"
+    categorias ||--o{ actividades : "categoria_id"
+    estados_actividad ||--o{ actividades : "estado_id"
+    niveles_dificultad ||--o{ actividades : "nivel_id"
+    grupos_clase ||--o{ agrupamientos : "grupo_id"
+    actividades ||--o{ analisis_grupal : "actividad_id"
+    grupos_clase ||--o{ analisis_grupal : "grupo_id"
+    usuarios ||--o{ auditoria : "usuario_id"
+    usuarios ||--o{ conversaciones : "docente_id"
+    instituciones ||--o{ grupos_clase : "institucion_id"
+    actividades ||--o{ indicadores : "actividad_id"
+    agrupamientos ||--o{ indicadores : "agrupamiento_id"
+    perfiles_aprendizaje ||--o{ indicadores : "perfil_id"
+    actividades ||--o{ intentos : "actividad_id"
+    usuarios ||--o{ intentos : "usuario_id"
+    intentos ||--o{ interacciones : "intento_id"
+    opciones ||--o{ interacciones : "opcion_id"
+    preguntas ||--o{ interacciones : "pregunta_id"
+    preguntas ||--o{ opciones : "pregunta_id"
+    usuarios ||--o{ perfiles_aprendizaje : "usuario_id"
+    actividades ||--o{ preguntas : "actividad_id"
+    recomendaciones ||--o{ recomendacion_regla : "recomendacion_id"
+    reglas_analisis ||--o{ recomendacion_regla : "regla_id"
+    actividades ||--o{ recomendaciones : "actividad_sugerida_id"
+    perfiles_aprendizaje ||--o{ recomendaciones : "perfil_id"
+    usuarios ||--o{ reglas_analisis : "actualizado_por"
+    intentos ||--o{ respuestas : "intento_id"
+    opciones ||--o{ respuestas : "opcion_id"
+    preguntas ||--o{ respuestas : "pregunta_id"
+    intentos ||--o{ resultados : "intento_id"
+    permisos ||--o{ rol_permiso : "permiso_id"
+    roles ||--o{ rol_permiso : "rol_id"
+    actividades ||--o{ transiciones_actividad : "actividad_id"
+    estados_actividad ||--o{ transiciones_actividad : "estado_destino_id"
+    estados_actividad ||--o{ transiciones_actividad : "estado_origen_id"
+    usuarios ||--o{ transiciones_actividad : "usuario_id"
+    grupos_clase ||--o{ usuario_grupo : "grupo_id"
+    usuarios ||--o{ usuario_grupo : "usuario_id"
+    instituciones ||--o{ usuarios : "institucion_id"
+    roles ||--o{ usuarios : "rol_id"

@@ -1,0 +1,49 @@
+# E-APP-001 — Pruebas unitarias PHP
+# Fecha: 2026-09-26T20:56:17Z
+# Comando: vendor/bin/phpunit --testsuite unit --testdox
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.19
+Configuration: /home/user/tesis/atlas/phpunit.xml
+
+..........................                                        26 / 26 (100%)
+
+Time: 00:00.013, Memory: 8.00 MB
+
+Asistente (Atlas\Tests\Unit\Asistente)
+ ✔ Las tres consultas de ejemplo del pdf
+ ✔ Nombre ambiguo requiere apellido
+ ✔ Pregunta fuera de alcance no se reconoce
+ ✔ Anonimizacion y reidentificacion
+ ✔ E 10 no se confunde con e 1
+
+Indicadores (Atlas\Tests\Unit\Indicadores)
+ ✔ Puntaje mejora y persistencia
+ ✔ Sin intentos finalizados no hay indicadores
+ ✔ Eficiencia
+ ✔ Determinismo
+
+Motor Reglas (Atlas\Tests\Unit\MotorReglas)
+ ✔ Se cargan las ocho reglas y son validas
+ ✔ R 01 y r07 puntaje bajo en primer intento
+ ✔ R 02 listo para avanzar
+ ✔ R 03 domina con lentitud
+ ✔ R 04 aprende con la practica
+ ✔ R 05 estancamiento
+ ✔ R 06 persistencia con logro
+ ✔ R 08 dificultad sostenida en la categoria
+ ✔ Sin dato no dispara y queda registrado
+ ✔ Valores usados quedan para el por que
+ ✔ Validacion de condiciones editadas por el administrador
+
+Router (Atlas\Tests\Unit\Router)
+ ✔ Resuelve parametros
+ ✔ Metodo incorrecto 405 y ruta inexistente 404
+ ✔ Todas las rutas declaradas son validas
+
+Validator (Atlas\Tests\Unit\Validator)
+ ✔ Campos obligatorios y tipos
+ ✔ Rechaza valores invalidos
+ ✔ Maximo y minimo
+
+OK (26 tests, 192 assertions)

@@ -1,0 +1,75 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/*
+ * ATLAS — herramienta de consola (tareas de operación).
+ *
+ *   php bin/atlas usuario:crear-admin      Crea el primer administrador leyendo
+ *                                          ATLAS_ADMIN_NOMBRE, ATLAS_ADMIN_APELLIDO,
+ *                                          ATLAS_ADMIN_CORREO y ATLAS_ADMIN_CONTRASENA.
+ *   php bin/atlas intentos:cerrar-abandonados
+ *                                          Cierra los intentos sin actividad ≥ 30 min (DEC-23).
+ *   php bin/atlas demo:datos-sinteticos    Carga datos de DEMOSTRACIÓN, rotulados como
+ *                                          sintéticos (nunca usar como evidencia real, R-10).
+ */
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+use Atlas\Core\App;
+use Atlas\Core\ArraySession;
+use Atlas\Core\Config;
+use Atlas\Services\AuthService;
+
+$app = new App(Config::desdeEntorno(), new ArraySession());
+$comando = $argv[1] ?? 'ayuda';
+
+try {
+    switch ($comando) {
+        case 'usuario:crear-admin':
+            $cfg = $app->config;
+            $correo = mb_strtolower(trim($cfg->texto('ATLAS_ADMIN_CORREO')));
+            if ($app->usuarios()->existeCorreo($correo)) {
+                fwrite(STDOUT, "Ya existe un usuario con {$correo}.\n");
+                exit(0);
+            }
+            $u = $app->usuariosService()->crear([
+                'nombre' => $cfg->texto('ATLAS_ADMIN_NOMBRE', 'Coordinación'),
+                'apellido' => $cfg->texto('ATLAS_ADMIN_APELLIDO', 'ITI'),
+                'correo' => $correo,
+                'contrasena' => $cfg->texto('ATLAS_ADMIN_CONTRASENA'),
+                'rol' => 'ADMIN',
+                'institucion_id' => 1,
+            ]);
+            $app->auditoria()->registrar(
+                null,
+                'usuarios.crear_admin_inicial',
+                'usuarios',
+                (string) $u['id'],
+                'OK',
+                [],
+                'cli'
+            );
+            fwrite(STDOUT, "Administrador creado: {$u['correo']} (id {$u['id']}).\n");
+            break;
+
+        case 'intentos:cerrar-abandonados':
+            $n = $app->intentos()->cerrarAbandonados();
+            fwrite(STDOUT, "Intentos cerrados como abandonados: {$n}\n");
+            break;
+
+        case 'demo:datos-sinteticos':
+            require __DIR__ . '/demo-datos.php';
+            break;
+
+        default:
+            fwrite(
+                STDOUT,
+                "Uso: php bin/atlas usuario:crear-admin | intentos:cerrar-abandonados | demo:datos-sinteticos\n"
+            );
+    }
+} catch (Throwable $e) {
+    fwrite(STDERR, 'Error: ' . $e->getMessage() . "\n");
+    exit(1);
+}

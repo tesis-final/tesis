@@ -1,0 +1,64 @@
+# E-WIN-001 — Análisis estático y pruebas de lógica de los scripts de atlas-dc01
+# Fecha: 2026-09-27T13:44:24Z · PowerShell 7.4.6 · PSScriptAnalyzer 1.23.0
+# Entorno: Linux (PowerShell 7). NO es Windows Server: los scripts se EJECUTAN en atlas-dc01 (E-WIN-002, NO EJECUTADA — requiere laboratorio).
+
+## 1. Análisis sintáctico (parser de PowerShell) y PSScriptAnalyzer (todas las reglas, severidad Error/Warning/Information; excluida PSAvoidUsingWriteHost)
+Errores de sintaxis: 0
+
+Severity RuleName                ScriptName        Line Message
+-------- --------                ----------        ---- -------
+ Warning PSAvoidGlobalVars       probar-modulo.ps1   39 Found global variable 'global:atributos'.
+ Warning PSAvoidGlobalVars       probar-modulo.ps1   42 Found global variable 'global:atributos'.
+ Warning PSReviewUnusedParameter probar-modulo.ps1   42 The parameter 'Identity' has been declared but not used. 
+ Warning PSAvoidGlobalVars       probar-modulo.ps1   43 Found global variable 'global:atributos'.
+ Warning PSReviewUnusedParameter probar-modulo.ps1   43 The parameter 'Identity' has been declared but not used. 
+ Warning PSAvoidGlobalVars       probar-modulo.ps1   48 Found global variable 'global:atributos'.
+ Warning PSAvoidGlobalVars       probar-modulo.ps1   50 Found global variable 'global:atributos'.
+ Warning PSAvoidGlobalVars       probar-modulo.ps1   52 Found global variable 'global:atributos'.
+ Warning PSAvoidGlobalVars       probar-modulo.ps1   54 Found global variable 'global:atributos'.
+ Warning PSAvoidGlobalVars       probar-modulo.ps1   55 Found global variable 'global:atributos'.
+ Warning PSAvoidGlobalVars       probar-modulo.ps1   58 Found global variable 'global:atributos'.
+
+
+Hallazgos PSScriptAnalyzer: 11
+
+## 2. Archivos con BOM UTF-8 (Windows PowerShell 5.1 los lee bien con acentos)
+  efbbbf ./01-red-y-nombre.ps1
+  efbbbf ./02-promover-dc.ps1
+  efbbbf ./03-estructura-ad.ps1
+  efbbbf ./04-politicas-seguridad.ps1
+  efbbbf ./05-dns.ps1
+  efbbbf ./06-dhcp.ps1
+  efbbbf ./07-gpo.ps1
+  efbbbf ./08-recursos-compartidos.ps1
+  efbbbf ./09-ca-atlas.ps1
+  efbbbf ./10-certificado-srv01.ps1
+  efbbbf ./11-firewall-y-hora.ps1
+  efbbbf ./12-usuarios.ps1
+  efbbbf ./AtlasComun.psm1
+  efbbbf ./clientes/unir-al-dominio.ps1
+  efbbbf ./instalar.ps1
+  efbbbf ./parametros.psd1
+  efbbbf ./pruebas/probar-modulo.ps1
+  efbbbf ./verificar-dc01.ps1
+
+## 3. Pruebas de lógica del módulo (pruebas/probar-modulo.ps1)
+[parámetros]
+  PASS  parametros.psd1: IP 172.16.40.20 (Tabla 40)
+  PASS  parametros.psd1: 3 ámbitos DHCP (Tabla 34)
+  PASS  parametros.psd1: VLAN 30 hasta .250
+  PASS  parametros.psd1: sin contraseñas
+  PASS  usuarios-ejemplo.csv: 4 cuentas de prueba, una por perfil
+[contraseñas]
+  PASS  500 contraseñas de 16 caracteres
+  PASS  todas con mayúscula, minúscula, dígito y símbolo (complejidad, Tabla 32)
+  PASS  todas distintas
+  PASS  sin caracteres ambiguos (0, O, 1, l, I)
+  PASS  ConvertTo-AtlasSecureString devuelve SecureString de solo lectura
+[extensiones de GPO]
+  PASS  agrega "Seguridad" sin borrar la extensión del Registro
+  PASS  agrega "Auditoría avanzada" y mantiene el orden por GUID
+  PASS  es idempotente (volver a correr no duplica)
+  PASS  unidades de red: {00000000…} primero, como lo guarda la consola GPMC
+
+Resultado: 14 PASS · 0 FAIL

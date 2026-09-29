@@ -1,0 +1,5 @@
+# E-APP-005 — Estándar de código PSR-12 (RNF-13)
+# Fecha: 2026-09-26T20:56:16Z  Herramienta: PHP_CodeSniffer version 3.13.6 (stable) by Squiz and PHPCSStandards
+# Comando: vendor/bin/phpcs --standard=PSR12 app config public/index.php bin tests
+rc=0 (0 = sin errores ni advertencias)
+Archivos PHP revisados: 78

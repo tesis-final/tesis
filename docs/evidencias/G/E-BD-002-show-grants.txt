@@ -1,0 +1,52 @@
+GRANT USAGE ON *.* TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`actividad_grupo` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`actividades` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`agrupamientos` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`analisis_grupal` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT ON `atlas_db`.`auditoria` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`categorias` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT ON `atlas_db`.`conversaciones` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`estados_actividad` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`grupos_clase` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`indicadores` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`instituciones` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`intentos` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`interacciones` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`niveles_dificultad` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE, DELETE ON `atlas_db`.`opciones` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`perfiles_aprendizaje` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`permisos` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE, DELETE ON `atlas_db`.`preguntas` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`recomendacion_regla` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`recomendaciones` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`registro_respaldos` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`reglas_analisis` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`respuestas` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`resultados` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`rol_permiso` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`roles` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT ON `atlas_db`.`transiciones_actividad` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`usuario_grupo` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`usuarios` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT EXECUTE ON PROCEDURE `atlas_db`.`sp_analisis_grupal` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT USAGE ON *.* TO `atlas_read`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`v_distribucion_puntajes` TO `atlas_read`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`v_evolucion_estudiante` TO `atlas_read`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`v_preguntas_error` TO `atlas_read`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`v_recomendaciones_riesgo` TO `atlas_read`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`v_resultados_detalle` TO `atlas_read`@`192.168.250.16/255.255.255.240`
+GRANT USAGE ON *.* TO `atlas_analysis`@`192.168.250.16/255.255.255.240`
+GRANT INSERT ON `atlas_db`.`agrupamientos` TO `atlas_analysis`@`192.168.250.16/255.255.255.240`
+GRANT INSERT ON `atlas_db`.`indicadores` TO `atlas_analysis`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`intentos` TO `atlas_analysis`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`interacciones` TO `atlas_analysis`@`192.168.250.16/255.255.255.240`
+GRANT SELECT (`id`, `periodo_fin`, `periodo_inicio`, `usuario_id`) ON `atlas_db`.`perfiles_aprendizaje` TO `atlas_analysis`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`respuestas` TO `atlas_analysis`@`192.168.250.16/255.255.255.240`
+GRANT SELECT ON `atlas_db`.`resultados` TO `atlas_analysis`@`192.168.250.16/255.255.255.240`
+GRANT SELECT (`activo`, `grupo_id`, `usuario_id`) ON `atlas_db`.`usuario_grupo` TO `atlas_analysis`@`192.168.250.16/255.255.255.240`
+GRANT USAGE ON *.* TO `atlas_backup`@`192.168.250.16/255.255.255.240`
+GRANT SHOW_ROUTINE ON *.* TO `atlas_backup`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, LOCK TABLES, SHOW VIEW, TRIGGER ON `atlas_db`.* TO `atlas_backup`@`192.168.250.16/255.255.255.240`
+GRANT INSERT ON `atlas_db`.`registro_respaldos` TO `atlas_backup`@`192.168.250.16/255.255.255.240`
+GRANT USAGE ON *.* TO `atlas_admin`@`localhost`
+GRANT ALL PRIVILEGES ON `atlas_db`.* TO `atlas_admin`@`localhost`
