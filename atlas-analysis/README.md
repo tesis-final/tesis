@@ -11,7 +11,7 @@ contenedor `atlas-analysis` (PDF Tabla 15: `python:3.11-slim`) y cubre:
 El Nivel 1 (indicadores y reglas R01–R08) vive en la aplicación PHP: ATLAS
 funciona completo aunque este servicio esté caído (RNF-15; prueba
 `PanelGrupalTest::testSinServicioDeAnalisis*`). Diseño completo:
-`tesis/docs/fase-02-arquitectura/04-motor-analisis.md`.
+`../docs/fase-02-arquitectura/04-motor-analisis.md`.
 
 ## Reglas de diseño
 
@@ -21,7 +21,7 @@ funciona completo aunque este servicio esté caído (RNF-15; prueba
   se exigen además ≥ 100 ejemplos y cada clase ≥ 20 %.
 - **Sin datos personales.** El usuario de base de datos `atlas_analysis` no
   puede leer nombres ni correos (verificado en
-  `tesis/atlas/tests/Database/PrivilegiosTest.php`); trabaja con ids.
+  `../atlas/tests/Database/PrivilegiosTest.php`); trabaja con ids.
 - **Solo escribe en tablas de análisis** (`agrupamientos` e `indicadores` con origen `NIVEL2`),
   nunca en datos académicos.
 - **Barrera final antes del LLM.** `app/llm/client.py` rechaza cualquier texto
@@ -57,7 +57,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python -m pytest -v          # 23 pruebas; no necesitan MySQL ni Internet
 ```
 
-Construcción de la imagen (la hace `docker compose` desde el repositorio `tesis`):
+Construcción de la imagen (normalmente la hace `docker compose` desde `atlas/`):
 
 ```bash
 docker build -t atlas/analysis:1.0 .

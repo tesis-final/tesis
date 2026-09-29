@@ -5,7 +5,7 @@
 | Fecha | 26/09/2026 |
 | Estado | **Implementada y verificada en el entorno de desarrollo** (Docker Compose local con los 4 contenedores de la Tabla 15). Falta desplegarla en atlas-srv01 del laboratorio (Fases 6 y 13) |
 | Diseño | [fase-02/02-arquitectura-final](../fase-02-arquitectura/02-arquitectura-final.md), [04-motor-analisis](../fase-02-arquitectura/04-motor-analisis.md), [06-estructura-repositorio](../fase-02-arquitectura/06-estructura-repositorio.md) |
-| Repositorios | `SVinas73/tesis` (carpeta `atlas/`) y `SVinas73/atlas-analysis` (servicio Python) |
+| Código | `SVinas73/tesis`: carpeta `atlas/` (PHP) y carpeta `atlas-analysis/` (servicio Python, DEC-14b) |
 
 > Convención de estados (prompt §4): **DISEÑADO** = está en el documento · **CONFIGURADO** = existe el archivo · **EJECUTADO** = se corrió · **VERIFICADO** = se corrió y la salida está guardada como evidencia. Todo lo de esta fase está **VERIFICADO en el entorno de desarrollo**; nada de esto reemplaza las pruebas en el laboratorio (Fase 14).
 
@@ -19,7 +19,7 @@
 | Seguridad transversal | Cadena de middleware [1] Autenticación 401 → [2] Permisos 403 + auditoría → [3] Validación 422 → [4] Auditoría (§26.3, Fig. 11) | `atlas/app/Middleware/` |
 | Datos | MySQL 8.0 (Fase 5) con 5 usuarios de privilegios distintos | `atlas/database/`, `atlas/docker/mysql/` |
 | Análisis Nivel 1 | Indicadores + reglas R01–R08 en PHP, deterministas, versionadas y auditadas | `atlas/app/Services/Analysis/` |
-| Análisis Nivel 2 | Python 3.11 + FastAPI + scikit-learn (K-means, regresión logística) | repo `atlas-analysis` |
+| Análisis Nivel 2 | Python 3.11 + FastAPI + scikit-learn (K-means, regresión logística) | `atlas-analysis/` |
 | Asistente Nivel 3 | Intérprete local + anonimizador en PHP; redacción con Groq vía `atlas-analysis` | `atlas/app/Services/Asistente/`, `atlas-analysis/app/llm/` |
 | Operación | CLI `bin/atlas` (crear admin, cerrar intentos abandonados, datos sintéticos) | `atlas/bin/` |
 
@@ -132,7 +132,7 @@ vendor/bin/phpunit --testsuite unit                                   # E-APP-00
 ATLAS_TEST_SUITES=api tests/Database/run.sh                            # E-APP-002 (MySQL 8.0 real y efímero)
 ATLAS_TEST_SUITES=database tests/Database/run.sh                       # E-BD-001
 vendor/bin/phpcs --standard=PSR12 app config public/index.php bin tests  # E-APP-005
-cd ../../atlas-analysis && python -m pytest -v                         # E-APP-004
+cd ../atlas-analysis && python -m pytest -v                            # E-APP-004
 ```
 
 Si Docker Hub limita las descargas: `ATLAS_TEST_MYSQL_IMAGE=mirror.gcr.io/library/mysql:8.0`. `run.sh` usa la subred de `atlas_back` (192.168.250.16/28), así que hay que detener el stack antes de correrlo.
@@ -140,7 +140,7 @@ Si Docker Hub limita las descargas: `ATLAS_TEST_MYSQL_IMAGE=mirror.gcr.io/librar
 Stack completo (entorno de prueba, sin `chown`):
 
 ```bash
-SIN_CHOWN=1 ATLAS_ROOT=/ruta/prueba infra/linux/desplegar-app.sh "$PWD" ../atlas-analysis
+SIN_CHOWN=1 ATLAS_ROOT=/ruta/prueba infra/linux/desplegar-app.sh "$PWD"
 # crear /ruta/prueba/config/atlas.conf a partir de atlas/.env.example (secretos aleatorios) y tls/
 docker compose --env-file /ruta/prueba/config/atlas.conf -f /ruta/prueba/config/docker-compose.yml up -d --build
 docker exec atlas-php php bin/atlas usuario:crear-admin        # lee ATLAS_ADMIN_* del entorno

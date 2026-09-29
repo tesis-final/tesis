@@ -15,7 +15,8 @@ declare(strict_types=1);
  *                                          sintéticos (nunca usar como evidencia real, R-10).
  */
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+$raiz = dirname(__DIR__);
+require is_file($raiz . '/vendor/autoload.php') ? $raiz . '/vendor/autoload.php' : $raiz . '/app/autoload.php';
 
 use Atlas\Core\App;
 use Atlas\Core\ArraySession;

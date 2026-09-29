@@ -1,0 +1,12 @@
+# Los scripts que corren en Linux o dentro de los contenedores tienen que conservar
+# los saltos de línea LF aunque se clone en Windows (con CRLF, bash falla).
+*.sh            text eol=lf
+atlas/bin/atlas text eol=lf
+Dockerfile      text eol=lf
+*.conf          text eol=lf
+*.ini           text eol=lf
+*.yml           text eol=lf
+*.sql           text eol=lf
+*.py            text eol=lf
+*.tpl           text eol=lf
+infra/linux/archivos/* text eol=lf

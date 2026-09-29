@@ -230,7 +230,7 @@ Pensémoslo como un restaurante:
 - **La aplicación PHP** es la cocina, organizada en capas: el *controlador* toma el pedido, el *servicio* hace el trabajo y el *repositorio* va a buscar los ingredientes a la base de datos.
 - **Los "middleware"** son los controles de la puerta, en orden: ¿tiene sesión? (si no, 401) → ¿tiene permiso? (si no, 403 y queda registrado) → ¿los datos son válidos? (si no, 422) → se registra en la auditoría.
 
-Y hay un segundo programa en **Python** (repositorio `atlas-analysis`) para el aprendizaje automático y la conexión con Groq.
+Y hay un segundo programa en **Python** (carpeta `atlas-analysis/`) para el aprendizaje automático y la conexión con Groq.
 
 ### Lo que hace
 
@@ -569,7 +569,8 @@ La IP de gestión del switch (172.16.50.2), la de la estación de administració
 | --- | --- |
 | El PDF (fuente de todo) | `docs/especificacion/` |
 | Auditoría, decisiones y plan | `docs/fase-01-auditoria/`, `docs/fase-02-arquitectura/`, `docs/fase-03-plan/` |
-| Aplicación y base de datos | `atlas/` (y el repositorio `atlas-analysis`) |
+| Aplicación y base de datos | `atlas/` y `atlas-analysis/` (servicio Python) |
+| Probar todo en tu PC | `./probar-local.sh` (ver el README de la raíz) |
 | Manual de cada fase | `docs/fase-04-aplicacion/` … `docs/fase-08-redes/` |
 | Scripts de Linux, Windows y red | `infra/linux/`, `infra/windows/`, `infra/red/` |
 | Evidencias | `docs/evidencias/` (B aplicación, C Linux, D Windows, E redes, G base de datos) |
