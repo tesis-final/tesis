@@ -50,7 +50,8 @@ Aplicaciones directas de DEC-00:
 | DEC-11 | Indicadores (DISC-12) | **PHP** calcula indicadores y reglas (Nivel 1); los procedimientos almacenados solo hacen agregaciones del análisis grupal | — | ANA-01..07, BD-06 |
 | DEC-12 | Ciclo (DISC-13) | **Publica el docente autor**, eligiendo los grupos; una actividad rechazada vuelve a borrador con las observaciones | Transiciones en 03-modelo-datos, §3.3 | RF-17, OBJ-02 |
 | DEC-13 | Samba + SSSD (DISC-24) | **Prueba de concepto temprana con SSSD** (`idmap_sss`); si falla, winbind, que se presenta para aprobación antes de aplicarlo | — | WIN-10, OBJ-08 |
-| DEC-14 | Repositorio de análisis (AMB-24) | **Repositorio aparte `atlas-analysis`**, fiel a §26.2 | Repositorio creado por el usuario el 26/09/2026 y conectado a la sesión | ARQ-08 |
+| DEC-14 | Repositorio de análisis (AMB-24) | ~~Repositorio aparte `atlas-analysis`~~ → **reemplazada por DEC-14b** | — | ARQ-08 |
+| DEC-14b | Un solo repositorio | **Carpeta `atlas-analysis/` dentro de `SVinas73/tesis`**, con la estructura literal de §26.2 y su historial. Decidido por el usuario el 29/09/2026 para clonar, probar y desplegar todo junto | §26.2 dice "repositorio aparte": es la única diferencia y es de organización, no técnica. El servicio sigue siendo un componente separado (su propio contenedor, sus pruebas y su Dockerfile). `SVinas73/atlas-analysis` queda como copia histórica | ARQ-08 |
 
 ## Decisiones sobre vacíos del PDF
 

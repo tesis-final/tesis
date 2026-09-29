@@ -51,7 +51,7 @@ if [ "$SOLO_ACL" = no ]; then
   dir "$R/web"      atlasweb:atlas-web     750
   dir "$R/web/public" atlasweb:atlas-web   755
   dir "$R/web/app"  atlasweb:atlas-web     750
-  dir "$R/web/analysis" atlasweb:atlas-web 750   # repo atlas-analysis (fase-02 §3)
+  dir "$R/web/analysis" atlasweb:atlas-web 750   # servicio atlas-analysis (fase-02 §3)
   dir "$R/datos"    atlasdb:atlas-db       770
   dir "$R/logs"     atlasadmin:atlas-admin 770
   dir "$R/scripts"  atlasadmin:atlas-admin 750

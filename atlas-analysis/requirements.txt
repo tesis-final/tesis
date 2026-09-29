@@ -1,0 +1,11 @@
+# ATLAS — servicio de análisis (PDF §26.1: Python 3.11 + FastAPI; pandas, scikit-learn, numpy)
+fastapi==0.115.6
+uvicorn==0.34.0
+pandas==2.2.3
+numpy==2.2.1
+scikit-learn==1.6.0
+scipy==1.15.1
+PyMySQL==1.1.1
+# Necesario para la autenticación caching_sha2_password de MySQL 8 (detectado en integración).
+cryptography==44.0.0
+httpx==0.28.1

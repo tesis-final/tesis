@@ -59,12 +59,11 @@ Durante la instalación de Ubuntu:
 3. Marcar "Install OpenSSH server".
 4. Disco: ext4 (los atributos `chattr` necesitan ext4; no usar un sistema de archivos que no los soporte).
 
-### 3.2 Traer los repositorios
+### 3.2 Traer el repositorio
 
 ```bash
 sudo apt update && sudo apt install -y git
-sudo git clone https://github.com/SVinas73/tesis /opt/atlas/tesis
-sudo git clone https://github.com/SVinas73/atlas-analysis /opt/atlas/atlas-analysis
+sudo git clone https://github.com/SVinas73/tesis /opt/atlas/tesis   # trae también atlas-analysis/
 cd /opt/atlas/tesis/infra/linux
 ```
 
@@ -188,7 +187,7 @@ El PDF dice que sacar el atributo "también queda registrado". Para que eso sea 
 | Ver qué bloqueó el firewall | `sudo journalctl -k | grep -E 'UFW BLOCK|ATLAS DOCKER-USER'` o `/var/log/ufw.log` |
 | Ver quién usó chattr | `sudo ausearch -k atlas-atributos -i` |
 | Revisar todo | `sudo atlas-verificar` |
-| Actualizar ATLAS después de un `git pull` | `sudo /opt/atlas/tesis/infra/linux/desplegar-app.sh /opt/atlas/tesis /opt/atlas/atlas-analysis && sudo atlas-ctl reiniciar` |
+| Actualizar ATLAS después de un `git pull` | `sudo /opt/atlas/tesis/infra/linux/desplegar-app.sh /opt/atlas/tesis && sudo atlas-ctl reiniciar` |
 
 **Rotar `auditoria.log`** (por ejemplo, una vez por semestre). Es la única tarea que necesita la cuenta de emergencia, porque implica sacar el `+a`:
 

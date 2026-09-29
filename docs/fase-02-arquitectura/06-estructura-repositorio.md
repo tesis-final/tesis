@@ -34,9 +34,9 @@ tesis/
 └── README.md
 ```
 
-## Repositorio `SVinas73/atlas-analysis` (DEC-14; lo tiene que crear el usuario)
+## Carpeta `atlas-analysis/` (DEC-14b: en el mismo repositorio)
 
-Estructura literal de §26.2:
+Estructura literal de §26.2 (el PDF la pone en un repositorio aparte; el equipo decidió tenerla en este):
 
 ```
 atlas-analysis/
@@ -49,8 +49,9 @@ atlas-analysis/
 
 ## Despliegue en atlas-srv01
 
-- Se clonan ambos repositorios.
-- `docker-compose.yml` de `atlas/` construye atlas-analysis desde la ruta del segundo clon (variable `ANALYSIS_BUILD_CONTEXT` en `atlas.conf`).
+- Se clona un solo repositorio.
+- `desplegar-app.sh` copia `atlas-analysis/` a `/srv/atlas/web/analysis` y `docker-compose.yml` lo construye desde ahí (variable `ANALYSIS_BUILD_CONTEXT` en `atlas.conf`).
+- Para probar en una PC: `./probar-local.sh` en la raíz del repositorio.
 - Los archivos se copian a las rutas de §28.3 (ver 02-arquitectura-final, sección 3).
 
 ## Convenciones

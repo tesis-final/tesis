@@ -10,17 +10,17 @@
 #  5. Primer administrador de ATLAS; su contraseña se muestra UNA vez y se borra
 #     de atlas.conf.
 #
-# Uso: sudo ATLAS_REPO_TESIS=/opt/atlas/tesis ATLAS_REPO_ANALISIS=/opt/atlas/atlas-analysis ./07-atlas.sh
+# Uso: sudo ATLAS_REPO_TESIS=/opt/atlas/tesis ./07-atlas.sh
 # =============================================================================
 source "$(dirname "$0")/lib/comun.sh"
 requiere_root
 
 REPO="${ATLAS_REPO_TESIS:-/opt/atlas/tesis}"
-ANALISIS="${ATLAS_REPO_ANALISIS:-/opt/atlas/atlas-analysis}"
+ANALISIS="${ATLAS_REPO_ANALISIS:-$REPO/atlas-analysis}"
 CONF="$ATLAS_ROOT/config/atlas.conf"
 TLS="$ATLAS_ROOT/config/tls"
 [ -f "$REPO/atlas/docker-compose.yml" ] || error "No encuentro el repositorio tesis en $REPO (git clone https://github.com/SVinas73/tesis $REPO)."
-[ -f "$ANALISIS/Dockerfile" ] || error "No encuentro atlas-analysis en $ANALISIS (git clone https://github.com/SVinas73/atlas-analysis $ANALISIS)."
+[ -f "$ANALISIS/Dockerfile" ] || error "No encuentro el servicio de análisis en $ANALISIS (carpeta atlas-analysis del repositorio)."
 [ -d "$ATLAS_ROOT/config" ] || error "Falta $ATLAS_ROOT/config: correr antes el paso 3."
 
 secreto() { openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 32; }

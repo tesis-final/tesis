@@ -8,8 +8,10 @@ declare(strict_types=1);
  * el resto recibe la interfaz web (aplicación de una página).
  */
 
-$base = is_file(dirname(__DIR__) . '/vendor/autoload.php') ? dirname(__DIR__) : dirname(__DIR__) . '/app';
-require $base . '/vendor/autoload.php';
+// En el repositorio, public/ está junto a app/; en el servidor (§28.3), junto a app/ va
+// la carpeta con todo el código (/srv/atlas/web/app).
+$raiz = is_dir(dirname(__DIR__) . '/app/Core') ? dirname(__DIR__) : dirname(__DIR__) . '/app';
+require is_file($raiz . '/vendor/autoload.php') ? $raiz . '/vendor/autoload.php' : $raiz . '/app/autoload.php';
 
 use Atlas\Core\App;
 use Atlas\Core\Config;
