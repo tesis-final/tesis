@@ -1,0 +1,241 @@
+! =============================================================================
+! ATLAS — atlas-rt01, FASE 9: filtrado entre VLAN (Tabla 44) con ACL extendidas
+! Se pega DESPUÉS de atlas-rt01-base.txt (Fase 8), en "configure terminal".
+!
+! Por qué ACL y no firewall por zonas en este router: es el plan B que ya estaba
+! decidido en DEC-04 ("ACL extendidas entrantes por subinterfaz con el mismo
+! orden; el retorno TCP con established"). Se usa porque es lo que Packet Tracer
+! acepta sin sorpresas. El firewall CON ESTADO está en atlas-fw01 (ZBF), entre
+! la red interna e Internet, que es lo que pide el Hito 2 de Conectividad.
+!
+! Cada ACL se aplica ENTRANDO al router desde su VLAN ("lo que esa VLAN puede
+! pedir"). Las líneas "established" dejan pasar solo respuestas de conexiones
+! que ya se permitieron del otro lado.
+!
+! Reglas: R1..R12 = Tabla 44 del PDF. M2 = tabla de políticas del profesor
+! (LAN -> servidor 22 denegar). R9b = sede satélite por el túnel IPsec (agregada
+! para la VPN opcional del Hito 2, solo HTTPS a ATLAS).
+!
+! Si Packet Tracer marca error en una línea que termina en "log", pegala de
+! nuevo sin la palabra "log".
+! =============================================================================
+!
+! ---------------- VLAN 10 · Administración ----------------------------------
+ip access-list extended ACL_VLAN10_ENTRADA
+ remark DHCP: pedidos de IP (el router los reenvia al DC)
+ permit udp any host 255.255.255.255 eq 67
+ permit udp 172.16.10.0 0.0.0.255 host 172.16.40.20 eq 67
+ remark R10 MySQL nunca / M2 SSH al servidor desde la LAN, no
+ deny tcp any host 172.16.40.10 eq 3306 log
+ deny tcp any host 172.16.40.10 eq 22 log
+ remark R1 HTTPS a ATLAS
+ permit tcp 172.16.10.0 0.0.0.255 host 172.16.40.10 eq 443
+ remark R3 SMB a srv01
+ permit tcp 172.16.10.0 0.0.0.255 host 172.16.40.10 eq 445
+ remark R2 servicios de dominio al DC
+ permit udp 172.16.10.0 0.0.0.255 host 172.16.40.20 eq 53
+ permit tcp 172.16.10.0 0.0.0.255 host 172.16.40.20 eq 53
+ permit udp 172.16.10.0 0.0.0.255 host 172.16.40.20 eq 88
+ permit tcp 172.16.10.0 0.0.0.255 host 172.16.40.20 eq 88
+ permit udp 172.16.10.0 0.0.0.255 host 172.16.40.20 eq 464
+ permit tcp 172.16.10.0 0.0.0.255 host 172.16.40.20 eq 464
+ permit udp 172.16.10.0 0.0.0.255 host 172.16.40.20 eq 389
+ permit tcp 172.16.10.0 0.0.0.255 host 172.16.40.20 eq 389
+ permit tcp 172.16.10.0 0.0.0.255 host 172.16.40.20 eq 636
+ permit tcp 172.16.10.0 0.0.0.255 host 172.16.40.20 range 3268 3269
+ permit tcp 172.16.10.0 0.0.0.255 host 172.16.40.20 eq 445
+ permit udp 172.16.10.0 0.0.0.255 host 172.16.40.20 eq 123
+ permit tcp 172.16.10.0 0.0.0.255 host 172.16.40.20 eq 135
+ permit tcp 172.16.10.0 0.0.0.255 host 172.16.40.20 range 49152 65535
+ remark R6 respuestas a la estacion de gestion (SSH y RDP)
+ permit tcp 172.16.10.0 0.0.0.255 eq 22 172.16.50.0 0.0.0.255 established
+ permit tcp 172.16.10.0 0.0.0.255 eq 3389 172.16.50.0 0.0.0.255 established
+ remark R12 todo lo demas hacia adentro, negado y registrado
+ deny ip any 172.16.0.0 0.0.255.255 log
+ deny ip any 10.8.0.0 0.0.0.255 log
+ deny ip any 192.168.100.0 0.0.0.255 log
+ remark R5 navegar en Internet
+ permit tcp 172.16.10.0 0.0.0.255 any eq 80
+ permit tcp 172.16.10.0 0.0.0.255 any eq 443
+ remark R12
+ deny ip any any log
+!
+! ---------------- VLAN 20 · Docentes ----------------------------------------
+ip access-list extended ACL_VLAN20_ENTRADA
+ remark DHCP
+ permit udp any host 255.255.255.255 eq 67
+ permit udp 172.16.20.0 0.0.0.255 host 172.16.40.20 eq 67
+ remark R10 / M2
+ deny tcp any host 172.16.40.10 eq 3306 log
+ deny tcp any host 172.16.40.10 eq 22 log
+ remark R1
+ permit tcp 172.16.20.0 0.0.0.255 host 172.16.40.10 eq 443
+ remark R3
+ permit tcp 172.16.20.0 0.0.0.255 host 172.16.40.10 eq 445
+ remark R2
+ permit udp 172.16.20.0 0.0.0.255 host 172.16.40.20 eq 53
+ permit tcp 172.16.20.0 0.0.0.255 host 172.16.40.20 eq 53
+ permit udp 172.16.20.0 0.0.0.255 host 172.16.40.20 eq 88
+ permit tcp 172.16.20.0 0.0.0.255 host 172.16.40.20 eq 88
+ permit udp 172.16.20.0 0.0.0.255 host 172.16.40.20 eq 464
+ permit tcp 172.16.20.0 0.0.0.255 host 172.16.40.20 eq 464
+ permit udp 172.16.20.0 0.0.0.255 host 172.16.40.20 eq 389
+ permit tcp 172.16.20.0 0.0.0.255 host 172.16.40.20 eq 389
+ permit tcp 172.16.20.0 0.0.0.255 host 172.16.40.20 eq 636
+ permit tcp 172.16.20.0 0.0.0.255 host 172.16.40.20 range 3268 3269
+ permit tcp 172.16.20.0 0.0.0.255 host 172.16.40.20 eq 445
+ permit udp 172.16.20.0 0.0.0.255 host 172.16.40.20 eq 123
+ permit tcp 172.16.20.0 0.0.0.255 host 172.16.40.20 eq 135
+ permit tcp 172.16.20.0 0.0.0.255 host 172.16.40.20 range 49152 65535
+ remark R6 respuestas a gestion
+ permit tcp 172.16.20.0 0.0.0.255 eq 22 172.16.50.0 0.0.0.255 established
+ permit tcp 172.16.20.0 0.0.0.255 eq 3389 172.16.50.0 0.0.0.255 established
+ remark R12
+ deny ip any 172.16.0.0 0.0.255.255 log
+ deny ip any 10.8.0.0 0.0.0.255 log
+ deny ip any 192.168.100.0 0.0.0.255 log
+ remark R5
+ permit tcp 172.16.20.0 0.0.0.255 any eq 80
+ permit tcp 172.16.20.0 0.0.0.255 any eq 443
+ remark R12
+ deny ip any any log
+!
+! ---------------- VLAN 30 · Estudiantes -------------------------------------
+ip access-list extended ACL_VLAN30_ENTRADA
+ remark DHCP
+ permit udp any host 255.255.255.255 eq 67
+ permit udp 172.16.30.0 0.0.0.255 host 172.16.40.20 eq 67
+ remark R10 / M2
+ deny tcp any host 172.16.40.10 eq 3306 log
+ deny tcp any host 172.16.40.10 eq 22 log
+ remark R1 (los estudiantes NO tienen SMB a srv01: R3 es solo VLAN 10 y 20)
+ permit tcp 172.16.30.0 0.0.0.255 host 172.16.40.10 eq 443
+ remark R2
+ permit udp 172.16.30.0 0.0.0.255 host 172.16.40.20 eq 53
+ permit tcp 172.16.30.0 0.0.0.255 host 172.16.40.20 eq 53
+ permit udp 172.16.30.0 0.0.0.255 host 172.16.40.20 eq 88
+ permit tcp 172.16.30.0 0.0.0.255 host 172.16.40.20 eq 88
+ permit udp 172.16.30.0 0.0.0.255 host 172.16.40.20 eq 464
+ permit tcp 172.16.30.0 0.0.0.255 host 172.16.40.20 eq 464
+ permit udp 172.16.30.0 0.0.0.255 host 172.16.40.20 eq 389
+ permit tcp 172.16.30.0 0.0.0.255 host 172.16.40.20 eq 389
+ permit tcp 172.16.30.0 0.0.0.255 host 172.16.40.20 eq 636
+ permit tcp 172.16.30.0 0.0.0.255 host 172.16.40.20 range 3268 3269
+ permit tcp 172.16.30.0 0.0.0.255 host 172.16.40.20 eq 445
+ permit udp 172.16.30.0 0.0.0.255 host 172.16.40.20 eq 123
+ permit tcp 172.16.30.0 0.0.0.255 host 172.16.40.20 eq 135
+ permit tcp 172.16.30.0 0.0.0.255 host 172.16.40.20 range 49152 65535
+ remark R6 respuestas a gestion (van ANTES de la R11)
+ permit tcp 172.16.30.0 0.0.0.255 eq 22 172.16.50.0 0.0.0.255 established
+ permit tcp 172.16.30.0 0.0.0.255 eq 3389 172.16.50.0 0.0.0.255 established
+ remark R11 estudiantes hacia Administracion, Docentes y Gestion: negado y registrado
+ deny ip any 172.16.10.0 0.0.0.255 log
+ deny ip any 172.16.20.0 0.0.0.255 log
+ deny ip any 172.16.50.0 0.0.0.255 log
+ remark R12
+ deny ip any 172.16.0.0 0.0.255.255 log
+ deny ip any 10.8.0.0 0.0.0.255 log
+ deny ip any 192.168.100.0 0.0.0.255 log
+ remark R5
+ permit tcp 172.16.30.0 0.0.0.255 any eq 80
+ permit tcp 172.16.30.0 0.0.0.255 any eq 443
+ remark R12
+ deny ip any any log
+!
+! ---------------- VLAN 40 · Servidores --------------------------------------
+! Los servidores no inician conexiones hacia los usuarios (P-09): solo responden.
+ip access-list extended ACL_VLAN40_ENTRADA
+ remark R4 respuestas del DHCP del DC al router (relay)
+ permit udp host 172.16.40.20 eq 67 any eq 67
+ remark Hora del router desde el DC (Tabla 35)
+ permit udp host 172.16.40.20 eq 123 host 172.16.40.1
+ remark Respuestas de ATLAS (R1, R9, R9b) y de Samba (R3)
+ permit tcp host 172.16.40.10 eq 443 172.16.0.0 0.0.31.255 established
+ permit tcp host 172.16.40.10 eq 443 10.8.0.128 0.0.0.127 established
+ permit tcp host 172.16.40.10 eq 443 192.168.100.0 0.0.0.255 established
+ permit tcp host 172.16.40.10 eq 445 172.16.10.0 0.0.0.255 established
+ permit tcp host 172.16.40.10 eq 445 172.16.20.0 0.0.0.255 established
+ remark Respuestas del DC (R2). 172.16.0.0 0.0.31.255 = VLAN 10, 20 y 30
+ permit tcp host 172.16.40.20 172.16.0.0 0.0.31.255 established
+ permit udp host 172.16.40.20 eq 53 172.16.0.0 0.0.31.255
+ permit udp host 172.16.40.20 eq 88 172.16.0.0 0.0.31.255
+ permit udp host 172.16.40.20 eq 464 172.16.0.0 0.0.31.255
+ permit udp host 172.16.40.20 eq 389 172.16.0.0 0.0.31.255
+ permit udp host 172.16.40.20 eq 123 172.16.0.0 0.0.31.255
+ permit udp host 172.16.40.20 eq 67 172.16.0.0 0.0.31.255
+ remark R6 respuestas a gestion
+ permit tcp 172.16.40.0 0.0.0.255 eq 22 172.16.50.0 0.0.0.255 established
+ permit tcp 172.16.40.0 0.0.0.255 eq 3389 172.16.50.0 0.0.0.255 established
+ remark R12
+ deny ip any 172.16.0.0 0.0.255.255 log
+ deny ip any 10.8.0.0 0.0.0.255 log
+ deny ip any 192.168.100.0 0.0.0.255 log
+ remark R7 servidores a Internet: web, y DNS solo desde el DC
+ permit tcp 172.16.40.0 0.0.0.255 any eq 80
+ permit tcp 172.16.40.0 0.0.0.255 any eq 443
+ permit udp host 172.16.40.20 any eq 53
+ permit tcp host 172.16.40.20 any eq 53
+ remark R12
+ deny ip any any log
+!
+! ---------------- VLAN 50 · Gestión -----------------------------------------
+ip access-list extended ACL_VLAN50_ENTRADA
+ remark SSH al propio router (p. 67)
+ permit tcp 172.16.50.0 0.0.0.255 host 172.16.50.1 eq 22
+ remark R6 SSH y RDP hacia VLAN 10, 20, 30 y 40
+ permit tcp 172.16.50.0 0.0.0.255 172.16.10.0 0.0.0.255 eq 22
+ permit tcp 172.16.50.0 0.0.0.255 172.16.10.0 0.0.0.255 eq 3389
+ permit tcp 172.16.50.0 0.0.0.255 172.16.20.0 0.0.0.255 eq 22
+ permit tcp 172.16.50.0 0.0.0.255 172.16.20.0 0.0.0.255 eq 3389
+ permit tcp 172.16.50.0 0.0.0.255 172.16.30.0 0.0.0.255 eq 22
+ permit tcp 172.16.50.0 0.0.0.255 172.16.30.0 0.0.0.255 eq 3389
+ permit tcp 172.16.50.0 0.0.0.255 172.16.40.0 0.0.0.255 eq 22
+ permit tcp 172.16.50.0 0.0.0.255 172.16.40.0 0.0.0.255 eq 3389
+ remark R8 respuestas a los administradores por VPN
+ permit ip 172.16.50.0 0.0.0.255 10.8.0.0 0.0.0.127
+ remark R12
+ deny ip any 172.16.0.0 0.0.255.255 log
+ deny ip any 10.8.0.0 0.0.0.255 log
+ deny ip any 192.168.100.0 0.0.0.255 log
+ remark R5
+ permit tcp 172.16.50.0 0.0.0.255 any eq 80
+ permit tcp 172.16.50.0 0.0.0.255 any eq 443
+ remark R12
+ deny ip any any log
+!
+! ---------------- Desde atlas-fw01 (Internet y túneles) ---------------------
+ip access-list extended ACL_DESDE_FW01
+ remark R10 MySQL nunca, ni desde afuera
+ deny tcp any host 172.16.40.10 eq 3306 log
+ remark Respuestas de Internet a lo que se pidio de adentro (R5, R7)
+ permit tcp any 172.16.0.0 0.0.255.255 established
+ permit udp any eq 53 host 172.16.40.20
+ remark R8 VPN administradores hacia Gestion
+ permit ip 10.8.0.0 0.0.0.127 172.16.50.0 0.0.0.255
+ remark R9 VPN docentes hacia ATLAS
+ permit tcp 10.8.0.128 0.0.0.127 host 172.16.40.10 eq 443
+ remark R9b sede satelite (tunel IPsec) hacia ATLAS
+ permit tcp 192.168.100.0 0.0.0.255 host 172.16.40.10 eq 443
+ remark Monitoreo: registros (syslog) de atlas-fw01 hacia srv01
+ permit udp host 172.16.255.2 host 172.16.40.10 eq 514
+ remark R12
+ deny ip any any log
+!
+! ---------------- Aplicar cada ACL a su interfaz ----------------------------
+interface GigabitEthernet0/0.10
+ ip access-group ACL_VLAN10_ENTRADA in
+interface GigabitEthernet0/0.20
+ ip access-group ACL_VLAN20_ENTRADA in
+interface GigabitEthernet0/0.30
+ ip access-group ACL_VLAN30_ENTRADA in
+interface GigabitEthernet0/0.40
+ ip access-group ACL_VLAN40_ENTRADA in
+interface GigabitEthernet0/0.50
+ ip access-group ACL_VLAN50_ENTRADA in
+interface GigabitEthernet0/1
+ ip access-group ACL_DESDE_FW01 in
+!
+! ---------------- Monitoreo: registros a srv01 ------------------------------
+logging host 172.16.40.10
+logging trap informational
+end
