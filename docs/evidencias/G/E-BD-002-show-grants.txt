@@ -1,3 +1,4 @@
+# Ejecución: 2026-10-20T22:19:30Z · MySQL 8.0.46
 GRANT USAGE ON *.* TO `atlas_app`@`192.168.250.16/255.255.255.240`
 GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`actividad_grupo` TO `atlas_app`@`192.168.250.16/255.255.255.240`
 GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`actividades` TO `atlas_app`@`192.168.250.16/255.255.255.240`
@@ -8,6 +9,7 @@ GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`categorias` TO `atlas_app`@`192.168.
 GRANT SELECT, INSERT ON `atlas_db`.`conversaciones` TO `atlas_app`@`192.168.250.16/255.255.255.240`
 GRANT SELECT ON `atlas_db`.`estados_actividad` TO `atlas_app`@`192.168.250.16/255.255.255.240`
 GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`grupos_clase` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`habilidades` TO `atlas_app`@`192.168.250.16/255.255.255.240`
 GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`indicadores` TO `atlas_app`@`192.168.250.16/255.255.255.240`
 GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`instituciones` TO `atlas_app`@`192.168.250.16/255.255.255.240`
 GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`intentos` TO `atlas_app`@`192.168.250.16/255.255.255.240`
@@ -16,6 +18,7 @@ GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`niveles_dificultad` TO `atlas_app`@`
 GRANT SELECT, INSERT, UPDATE, DELETE ON `atlas_db`.`opciones` TO `atlas_app`@`192.168.250.16/255.255.255.240`
 GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`perfiles_aprendizaje` TO `atlas_app`@`192.168.250.16/255.255.255.240`
 GRANT SELECT ON `atlas_db`.`permisos` TO `atlas_app`@`192.168.250.16/255.255.255.240`
+GRANT SELECT, INSERT, DELETE ON `atlas_db`.`pregunta_habilidad` TO `atlas_app`@`192.168.250.16/255.255.255.240`
 GRANT SELECT, INSERT, UPDATE, DELETE ON `atlas_db`.`preguntas` TO `atlas_app`@`192.168.250.16/255.255.255.240`
 GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`recomendacion_regla` TO `atlas_app`@`192.168.250.16/255.255.255.240`
 GRANT SELECT, INSERT, UPDATE ON `atlas_db`.`recomendaciones` TO `atlas_app`@`192.168.250.16/255.255.255.240`
@@ -48,5 +51,9 @@ GRANT USAGE ON *.* TO `atlas_backup`@`192.168.250.16/255.255.255.240`
 GRANT SHOW_ROUTINE ON *.* TO `atlas_backup`@`192.168.250.16/255.255.255.240`
 GRANT SELECT, LOCK TABLES, SHOW VIEW, TRIGGER ON `atlas_db`.* TO `atlas_backup`@`192.168.250.16/255.255.255.240`
 GRANT INSERT ON `atlas_db`.`registro_respaldos` TO `atlas_backup`@`192.168.250.16/255.255.255.240`
+GRANT USAGE ON *.* TO `atlas_backup`@`localhost`
+GRANT SHOW_ROUTINE ON *.* TO `atlas_backup`@`localhost`
+GRANT SELECT, LOCK TABLES, SHOW VIEW, TRIGGER ON `atlas_db`.* TO `atlas_backup`@`localhost`
+GRANT INSERT ON `atlas_db`.`registro_respaldos` TO `atlas_backup`@`localhost`
 GRANT USAGE ON *.* TO `atlas_admin`@`localhost`
 GRANT ALL PRIVILEGES ON `atlas_db`.* TO `atlas_admin`@`localhost`

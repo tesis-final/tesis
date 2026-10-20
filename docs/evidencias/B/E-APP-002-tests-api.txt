@@ -1,6 +1,6 @@
-# Ejecución: 2026-09-26T20:57:10Z
+# Ejecución: 2026-10-20T22:07:11Z
 # Servidor: 8.0.46
-# Imagen: mirror.gcr.io/library/mysql:8.0
+# Imagen: mysql:8.0
 PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
 
 Runtime:       PHP 8.4.19
@@ -8,7 +8,7 @@ Configuration: /home/user/tesis/atlas/phpunit.xml
 
 ..........................................................        58 / 58 (100%)
 
-Time: 01:18.967, Memory: 10.00 MB
+Time: 01:25.026, Memory: 10.00 MB
 
 Asistente Api (Atlas\Tests\Api\AsistenteApi)
  ✔ Explicar recomendacion para un estudiante

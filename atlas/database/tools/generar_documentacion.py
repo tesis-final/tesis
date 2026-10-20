@@ -20,7 +20,7 @@ def q(sql):
 GRUPOS = {
     "Identidad": ["instituciones", "roles", "permisos", "rol_permiso", "usuarios", "grupos_clase", "usuario_grupo"],
     "Contenido": ["niveles_dificultad", "categorias", "estados_actividad", "actividades", "preguntas", "opciones",
-                  "transiciones_actividad", "actividad_grupo"],
+                  "transiciones_actividad", "actividad_grupo", "habilidades", "pregunta_habilidad"],
     "Interacción": ["intentos", "respuestas", "interacciones", "resultados"],
     "Análisis": ["perfiles_aprendizaje", "indicadores", "reglas_analisis", "recomendaciones",
                  "recomendacion_regla", "analisis_grupal", "agrupamientos"],

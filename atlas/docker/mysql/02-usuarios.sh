@@ -37,6 +37,8 @@ GRANT SELECT, INSERT, UPDATE ON atlas_db.categorias           TO 'atlas_app'@'${
 GRANT SELECT, INSERT, UPDATE ON atlas_db.actividades          TO 'atlas_app'@'${HOST}';
 GRANT SELECT, INSERT, UPDATE, DELETE ON atlas_db.preguntas    TO 'atlas_app'@'${HOST}';  -- CT-13
 GRANT SELECT, INSERT, UPDATE, DELETE ON atlas_db.opciones     TO 'atlas_app'@'${HOST}';  -- CT-13
+GRANT SELECT, INSERT, UPDATE ON atlas_db.habilidades          TO 'atlas_app'@'${HOST}';  -- Hito 2: se desactivan, no se borran
+GRANT SELECT, INSERT, DELETE ON atlas_db.pregunta_habilidad   TO 'atlas_app'@'${HOST}';  -- Hito 2: se borran y crean, no se modifican
 GRANT SELECT, INSERT, UPDATE ON atlas_db.actividad_grupo      TO 'atlas_app'@'${HOST}';
 GRANT SELECT, INSERT, UPDATE ON atlas_db.intentos             TO 'atlas_app'@'${HOST}';
 GRANT SELECT, INSERT, UPDATE ON atlas_db.respuestas           TO 'atlas_app'@'${HOST}';

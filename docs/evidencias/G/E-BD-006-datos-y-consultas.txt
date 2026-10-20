@@ -1,0 +1,333 @@
+ATLAS — Evidencia E-BD-006: instalación, datos representativos y consultas de prueba
+Fecha (UTC): 2026-10-20T22:17:25Z
+Motor: MySQL 8.0.46 (imagen mysql:8.0, contenedor descartable)
+Entorno: entorno de desarrollo (Docker). No es atlas-srv01.
+
+== 1. Instalación desde cero (init.sql + 02-usuarios.sh, los mismos de producción)
+Tiempo hasta base lista: 10 s (incluye el arranque de MySQL)
++--------+--------+----------+---------+-----------------+--------+---------+
+| tablas | vistas | triggers | rutinas | claves_foraneas | checks | indices |
++--------+--------+----------+---------+-----------------+--------+---------+
+|     31 |      5 |       20 |       1 |              45 |     37 |      88 |
++--------+--------+----------+---------+-----------------+--------+---------+
+
+== 2. Datos representativos (database/tools/datos_representativos.sql)
++----------+--------+-------------+----------+------------+---------------+------------+--------------------+
+| usuarios | grupos | actividades | intentos | respuestas | interacciones | resultados | vinculos_habilidad |
++----------+--------+-------------+----------+------------+---------------+------------+--------------------+
+|      305 |     10 |          30 |     9000 |      88745 |         88745 |       8749 |                393 |
++----------+--------+-------------+----------+------------+---------------+------------+--------------------+
+Tiempo de carga: 7 s
+
+== 3. Consultas de prueba (el dato que vale es el tiempo en el servidor; el del cliente suma el costo de docker exec)
+
+--- Q1 · Promedio por estudiante de un grupo, usando el puntaje guardado (desnormalizado)
+Tiempo en el servidor (SHOW PROFILES, promedio de 3): 2.7 ms
+Tiempo desde el cliente (promedio de 3, incluye ~80 ms de docker exec): 89 ms
+SQL: SELECT i.usuario_id, COUNT(*) AS intentos, ROUND(AVG(r.puntaje),2) AS promedio
+   FROM resultados r JOIN intentos i ON i.id = r.intento_id
+   JOIN usuario_grupo ug ON ug.usuario_id = i.usuario_id AND ug.grupo_id = (SELECT id FROM grupos_clase WHERE nombre='S03' AND anio_lectivo=2026 ORDER BY id DESC LIMIT 1)
+  GROUP BY i.usuario_id ORDER BY promedio LIMIT 10
++------------+----------+----------+
+| usuario_id | intentos | promedio |
++------------+----------+----------+
+|         68 |       30 |    38.00 |
+|         95 |       29 |    40.00 |
+|         86 |       29 |    41.03 |
+|         71 |       30 |    45.33 |
+|         93 |       28 |    46.79 |
+|         90 |       30 |    48.33 |
+|         76 |       30 |    50.67 |
+|         77 |       29 |    52.41 |
+|         72 |       30 |    55.33 |
+|         89 |       30 |    57.67 |
++------------+----------+----------+
+Plan real (EXPLAIN ANALYZE, recortado):
+-> Limit: 10 row(s)  (actual time=2.78..2.78 rows=10 loops=1)
+    -> Sort: promedio, limit input to 10 row(s) per chunk  (actual time=2.78..2.78 rows=10 loops=1)
+        -> Table scan on <temporary>  (actual time=2.76..2.76 rows=30 loops=1)
+            -> Aggregate using temporary table  (actual time=2.75..2.75 rows=30 loops=1)
+                -> Nested loop inner join  (cost=433 rows=935) (actual time=0.0469..2.38 rows=881 loops=1)
+                    -> Nested loop inner join  (cost=105 rows=935) (actual time=0.0316..0.377 rows=900 loops=1)
+                        -> Filter: (ug.grupo_id = (select #2))  (cost=3.37 rows=31) (actual time=0.0127..0.0249 rows=31 loops=1)
+                            -> Covering index lookup on ug using ix_usuario_grupo_grupo (grupo_id=(select #2))  (cost=3.37 rows=31) (actual time=0.0115..0.0176 rows=31 loops=1)
+                            -> Select #2 (subquery in condition; run only once)
+                                -> Limit: 1 row(s)  (cost=1.3 rows=1) (actual time=0.0571..0.0572 rows=1 loops=1)
+                                    -> Sort: grupos_clase.id DESC, limit input to 1 row(s) per chunk  (cost=1.3 rows=1) (actual time=0.0566..0.0566 rows=1 loops=1)
+                                        -> Filter: ((grupos_clase.anio_lectivo = 2026) and (grupos_clase.nombre = 'S03'))  (cost=1.3 rows=1) (actual time=0.0392..0.0455 rows=1 loops=1)
+                                            -> Index skip scan on grupos_clase using uq_grupos over nombre = 'S03'  (cost=1.3 rows=1) (actual time=0.0365..0.0427 rows=1 loops=1)
+                        -> Covering index lookup on i using ix_intentos_usuario_actividad (usuario_id=ug.usuario_id)  (cost=0.369 rows=30.2) (actual time=0.00462..0.00938 rows=29 loops=31)
+
+--- Q1b · Lo mismo calculado desde respuestas y opciones (sin desnormalizar)
+Tiempo en el servidor (SHOW PROFILES, promedio de 3): 24.5 ms
+Tiempo desde el cliente (promedio de 3, incluye ~80 ms de docker exec): 101 ms
+SQL: SELECT x.usuario_id, COUNT(*) AS intentos, ROUND(AVG(x.p),2) AS promedio
+   FROM (SELECT i.id, i.usuario_id, 100 * SUM(o.es_correcta) / (SELECT COUNT(*) FROM preguntas p WHERE p.actividad_id = i.actividad_id) AS p
+           FROM intentos i
+           JOIN usuario_grupo ug ON ug.usuario_id = i.usuario_id AND ug.grupo_id = (SELECT id FROM grupos_clase WHERE nombre='S03' AND anio_lectivo=2026 ORDER BY id DESC LIMIT 1)
+           JOIN respuestas re ON re.intento_id = i.id
+           JOIN opciones o ON o.id = re.opcion_id
+          WHERE i.estado = 'FINALIZADO' GROUP BY i.id) x
+  GROUP BY x.usuario_id ORDER BY promedio LIMIT 10
++------------+----------+----------+
+| usuario_id | intentos | promedio |
++------------+----------+----------+
+|         68 |       30 |    38.00 |
+|         95 |       29 |    40.00 |
+|         86 |       29 |    41.03 |
+|         71 |       30 |    45.33 |
+|         93 |       28 |    46.79 |
+|         90 |       30 |    48.33 |
+|         76 |       30 |    50.67 |
+|         77 |       29 |    52.41 |
+|         72 |       30 |    55.33 |
+|         89 |       30 |    57.67 |
++------------+----------+----------+
+Plan real (EXPLAIN ANALYZE, recortado):
+-> Limit: 10 row(s)  (actual time=26.6..26.6 rows=10 loops=1)
+    -> Sort: promedio, limit input to 10 row(s) per chunk  (actual time=26.6..26.6 rows=10 loops=1)
+        -> Table scan on <temporary>  (actual time=26.5..26.5 rows=30 loops=1)
+            -> Aggregate using temporary table  (actual time=26.5..26.5 rows=30 loops=1)
+                -> Table scan on x  (cost=2.5..2.5 rows=0) (actual time=26.2..26.3 rows=881 loops=1)
+                    -> Materialize  (cost=0..0 rows=0) (actual time=26.2..26.2 rows=881 loops=1)
+                        -> Table scan on <temporary>  (actual time=25.8..25.9 rows=881 loops=1)
+                            -> Aggregate using temporary table  (actual time=25.8..25.8 rows=881 loops=1)
+                                -> Nested loop inner join  (cost=2348 rows=2881) (actual time=0.102..19.2 rows=8810 loops=1)
+                                    -> Nested loop inner join  (cost=1339 rows=2881) (actual time=0.0968..12.2 rows=8810 loops=1)
+                                        -> Nested loop inner join  (cost=331 rows=312) (actual time=0.0798..1.28 rows=881 loops=1)
+                                            -> Filter: (ug.grupo_id = (select #4))  (cost=3.37 rows=31) (actual time=0.0103..0.027 rows=31 loops=1)
+                                                -> Covering index lookup on ug using ix_usuario_grupo_grupo (grupo_id=(select #4))  (cost=3.37 rows=31) (actual time=0.00931..0.0179 rows=31 loops=1)
+                                                -> Select #4 (subquery in condition; run only once)
+
+--- Q2 · Desempeño del grupo por habilidad (lo nuevo del Hito 2)
+Tiempo en el servidor (SHOW PROFILES, promedio de 3): 83.4 ms
+Tiempo desde el cliente (promedio de 3, incluye ~80 ms de docker exec): 185 ms
+SQL: SELECT h.nombre AS habilidad, COUNT(*) AS respuestas, ROUND(100 * AVG(o.es_correcta), 1) AS pct_aciertos
+   FROM respuestas re
+   JOIN intentos i ON i.id = re.intento_id
+   JOIN usuario_grupo ug ON ug.usuario_id = i.usuario_id AND ug.grupo_id = (SELECT id FROM grupos_clase WHERE nombre='S03' AND anio_lectivo=2026 ORDER BY id DESC LIMIT 1)
+   JOIN opciones o ON o.id = re.opcion_id
+   JOIN pregunta_habilidad ph ON ph.pregunta_id = re.pregunta_id
+   JOIN habilidades h ON h.id = ph.habilidad_id
+  GROUP BY h.nombre ORDER BY pct_aciertos
++-----------------------+------------+--------------+
+| habilidad             | respuestas | pct_aciertos |
++-----------------------+------------+--------------+
+| Cálculo               |       3030 |         65.5 |
+| Razonamiento espacial |       2948 |         65.9 |
+| Lógica                |       2786 |         66.1 |
+| Comprensión lectora   |       2909 |         66.7 |
++-----------------------+------------+--------------+
+Plan real (EXPLAIN ANALYZE, recortado):
+-> Sort: pct_aciertos  (actual time=94.7..94.7 rows=4 loops=1)
+    -> Stream results  (cost=10046 rows=1) (actual time=24.9..94.6 rows=4 loops=1)
+        -> Group aggregate: avg(o.es_correcta), count(0)  (cost=10046 rows=1) (actual time=24.8..94.5 rows=4 loops=1)
+            -> Nested loop inner join  (cost=9182 rows=8644) (actual time=0.0753..91.5 rows=11673 loops=1)
+                -> Nested loop inner join  (cost=6157 rows=8644) (actual time=0.0713..82.5 rows=11673 loops=1)
+                    -> Nested loop inner join  (cost=3131 rows=8644) (actual time=0.0632..43.2 rows=35620 loops=1)
+                        -> Nested loop inner join  (cost=106 rows=935) (actual time=0.0355..1.56 rows=3600 loops=1)
+                            -> Nested loop inner join  (cost=3.72 rows=31) (actual time=0.0189..0.166 rows=124 loops=1)
+                                -> Covering index scan on h using uq_habilidades_nombre  (cost=0.35 rows=1) (actual time=0.00882..0.0305 rows=4 loops=1)
+                                -> Filter: (ug.grupo_id = (select #2))  (cost=3.37 rows=31) (actual time=0.00758..0.0296 rows=31 loops=4)
+                                    -> Covering index lookup on ug using ix_usuario_grupo_grupo (grupo_id=(select #2))  (cost=3.37 rows=31) (actual time=0.00706..0.0162 rows=31 loops=4)
+                                    -> Select #2 (subquery in condition; run only once)
+                                        -> Limit: 1 row(s)  (cost=1.3 rows=1) (actual time=0.133..0.133 rows=1 loops=1)
+                                            -> Sort: grupos_clase.id DESC, limit input to 1 row(s) per chunk  (cost=1.3 rows=1) (actual time=0.132..0.132 rows=1 loops=1)
+
+--- Q3 · Habilidad más débil de cada estudiante del grupo
+Tiempo en el servidor (SHOW PROFILES, promedio de 3): 81.8 ms
+Tiempo desde el cliente (promedio de 3, incluye ~80 ms de docker exec): 165 ms
+SQL: SELECT usuario_id, habilidad, pct FROM (
+   SELECT i.usuario_id, h.nombre AS habilidad, ROUND(100 * AVG(o.es_correcta), 1) AS pct,
+          ROW_NUMBER() OVER (PARTITION BY i.usuario_id ORDER BY AVG(o.es_correcta), h.nombre) AS n
+     FROM respuestas re JOIN intentos i ON i.id = re.intento_id
+     JOIN usuario_grupo ug ON ug.usuario_id = i.usuario_id AND ug.grupo_id = (SELECT id FROM grupos_clase WHERE nombre='S03' AND anio_lectivo=2026 ORDER BY id DESC LIMIT 1)
+     JOIN opciones o ON o.id = re.opcion_id
+     JOIN pregunta_habilidad ph ON ph.pregunta_id = re.pregunta_id
+     JOIN habilidades h ON h.id = ph.habilidad_id
+    GROUP BY i.usuario_id, h.nombre) t
+  WHERE n = 1 ORDER BY pct LIMIT 10
++------------+-----------------------+------+
+| usuario_id | habilidad             | pct  |
++------------+-----------------------+------+
+|         68 | Comprensión lectora   | 29.6 |
+|         86 | Comprensión lectora   | 35.1 |
+|         95 | Cálculo               | 36.0 |
+|         90 | Comprensión lectora   | 41.8 |
+|         93 | Lógica                | 42.2 |
+|         71 | Cálculo               | 43.1 |
+|         76 | Cálculo               | 46.1 |
+|         77 | Razonamiento espacial | 49.0 |
+|         89 | Comprensión lectora   | 50.0 |
+|         72 | Cálculo               | 53.9 |
++------------+-----------------------+------+
+Plan real (EXPLAIN ANALYZE, recortado):
+-> Limit: 10 row(s)  (cost=3.6..3.6 rows=0) (actual time=93.6..93.6 rows=10 loops=1)
+    -> Sort: t.pct, limit input to 10 row(s) per chunk  (cost=3.6..3.6 rows=0) (actual time=93.6..93.6 rows=10 loops=1)
+        -> Index lookup on t using <auto_key0> (n=1)  (cost=0.35..3.5 rows=10) (actual time=93.5..93.5 rows=30 loops=1)
+            -> Materialize  (cost=0..0 rows=0) (actual time=93.5..93.5 rows=120 loops=1)
+                -> Window aggregate: row_number() OVER (PARTITION BY i.usuario_id ORDER BY `???`,h.nombre )   (actual time=93.4..93.4 rows=120 loops=1)
+                    -> Sort: i.usuario_id, `???`, h.nombre  (actual time=93.4..93.4 rows=120 loops=1)
+                        -> Table scan on <temporary>  (actual time=93.2..93.3 rows=120 loops=1)
+                            -> Aggregate using temporary table  (actual time=93.2..93.2 rows=120 loops=1)
+                                -> Nested loop inner join  (cost=9182 rows=8644) (actual time=0.0642..85.7 rows=11673 loops=1)
+                                    -> Nested loop inner join  (cost=6157 rows=8644) (actual time=0.0607..77 rows=11673 loops=1)
+                                        -> Nested loop inner join  (cost=3131 rows=8644) (actual time=0.054..39.6 rows=35620 loops=1)
+                                            -> Nested loop inner join  (cost=106 rows=935) (actual time=0.0334..1.46 rows=3600 loops=1)
+                                                -> Nested loop inner join  (cost=3.72 rows=31) (actual time=0.0166..0.15 rows=124 loops=1)
+                                                    -> Covering index scan on h using uq_habilidades_nombre  (cost=0.35 rows=1) (actual time=0.00678..0.0274 rows=4 loops=1)
+
+--- Q4 · Requieren atención: promedio de sus últimas 3 actividades por debajo del promedio del grupo
+Tiempo en el servidor (SHOW PROFILES, promedio de 3): 4.1 ms
+Tiempo desde el cliente (promedio de 3, incluye ~80 ms de docker exec): 80 ms
+SQL: WITH ult AS (
+   SELECT i.usuario_id, r.puntaje, ROW_NUMBER() OVER (PARTITION BY i.usuario_id ORDER BY i.iniciado_en DESC) AS n
+     FROM resultados r JOIN intentos i ON i.id = r.intento_id
+     JOIN usuario_grupo ug ON ug.usuario_id = i.usuario_id AND ug.grupo_id = (SELECT id FROM grupos_clase WHERE nombre='S03' AND anio_lectivo=2026 ORDER BY id DESC LIMIT 1)),
+ est AS (SELECT usuario_id, AVG(puntaje) AS prom3 FROM ult WHERE n <= 3 GROUP BY usuario_id),
+ grp AS (SELECT AVG(prom3) AS prom_grupo FROM est)
+ SELECT e.usuario_id, ROUND(e.prom3, 2) AS ultimas3, ROUND(g.prom_grupo, 2) AS grupo
+   FROM est e CROSS JOIN grp g WHERE e.prom3 < g.prom_grupo ORDER BY e.prom3 LIMIT 10
++------------+----------+-------+
+| usuario_id | ultimas3 | grupo |
++------------+----------+-------+
+|         86 |    30.00 | 63.78 |
+|         76 |    33.33 | 63.78 |
+|         95 |    36.67 | 63.78 |
+|         77 |    43.33 | 63.78 |
+|         94 |    43.33 | 63.78 |
+|         68 |    46.67 | 63.78 |
+|         73 |    50.00 | 63.78 |
+|         89 |    50.00 | 63.78 |
+|         97 |    50.00 | 63.78 |
+|         93 |    50.00 | 63.78 |
++------------+----------+-------+
+Plan real (EXPLAIN ANALYZE, recortado):
+-> Limit: 10 row(s)  (cost=2.6..2.6 rows=0) (actual time=0.017..0.0179 rows=10 loops=1)
+    -> Sort: e.prom3, limit input to 10 row(s) per chunk  (cost=2.6..2.6 rows=0) (actual time=0.0167..0.0171 rows=10 loops=1)
+        -> Filter: (e.prom3 < '63.7777778000')  (cost=2.5..2.5 rows=0) (actual time=0.00181..0.00756 rows=14 loops=1)
+            -> Table scan on e  (cost=2.5..2.5 rows=0) (actual time=761e-6..0.00343 rows=30 loops=1)
+                -> Materialize CTE est if needed (query plan printed elsewhere)  (cost=0..0 rows=0) (never executed)
+
+
+--- Q5 · Preguntas con más errores de un grupo (vista v_preguntas_error, filtrada como la usa la app)
+Tiempo en el servidor (SHOW PROFILES, promedio de 3): 491.8 ms
+Tiempo desde el cliente (promedio de 3, incluye ~80 ms de docker exec): 1796 ms
+SQL: SELECT actividad_id, orden, respuestas, errores, proporcion_error FROM v_preguntas_error
+  WHERE grupo_id = (SELECT id FROM grupos_clase WHERE nombre='S03' AND anio_lectivo=2026 ORDER BY id DESC LIMIT 1) ORDER BY proporcion_error DESC LIMIT 10
++--------------+-------+------------+---------+------------------+
+| actividad_id | orden | respuestas | errores | proporcion_error |
++--------------+-------+------------+---------+------------------+
+|           29 |     8 |         30 |      17 |           0.5667 |
+|           25 |     6 |         29 |      16 |           0.5517 |
+|            5 |     7 |         30 |      16 |           0.5333 |
+|           24 |     1 |         30 |      16 |           0.5333 |
+|           16 |     1 |         30 |      16 |           0.5333 |
+|           17 |     6 |         29 |      15 |           0.5172 |
+|           30 |     4 |         30 |      15 |           0.5000 |
+|           24 |     3 |         30 |      15 |           0.5000 |
+|            5 |     1 |         30 |      15 |           0.5000 |
+|           29 |     2 |         30 |      15 |           0.5000 |
++--------------+-------+------------+---------+------------------+
+Plan real (EXPLAIN ANALYZE, recortado):
+-> Limit: 10 row(s)  (cost=4.9..4.9 rows=0) (actual time=687..687 rows=10 loops=1)
+    -> Sort: v_preguntas_error.proporcion_error DESC, limit input to 10 row(s) per chunk  (cost=4.9..4.9 rows=0) (actual time=687..687 rows=10 loops=1)
+        -> Filter: (v_preguntas_error.grupo_id = (select #2))  (cost=4.8..4.8 rows=0) (actual time=687..687 rows=300 loops=1)
+            -> Index lookup on v_preguntas_error using <auto_key0> (grupo_id=(select #2))  (cost=0.35..3.5 rows=10) (actual time=687..687 rows=300 loops=1)
+                -> Materialize  (cost=0..0 rows=0) (actual time=687..687 rows=3000 loops=1)
+                    -> Table scan on <temporary>  (actual time=683..684 rows=3000 loops=1)
+                        -> Aggregate using temporary table  (actual time=683..683 rows=3000 loops=1)
+                            -> Nested loop inner join  (cost=37701 rows=25507) (actual time=0.155..409 rows=87490 loops=1)
+                                -> Nested loop inner join  (cost=28773 rows=25507) (actual time=0.152..314 rows=87490 loops=1)
+                                    -> Nested loop inner join  (cost=19846 rows=25507) (actual time=0.148..277 rows=87490 loops=1)
+                                        -> Nested loop inner join  (cost=10918 rows=25507) (actual time=0.142..174 rows=87490 loops=1)
+                                            -> Nested loop inner join  (cost=1991 rows=2760) (actual time=0.125..33.2 rows=8749 loops=1)
+                                                -> Filter: (i.estado = 'FINALIZADO')  (cost=930 rows=3018) (actual time=0.113..7.34 rows=8749 loops=1)
+                                                    -> Table scan on i  (cost=930 rows=9053) (actual time=0.111..3.85 rows=9000 loops=1)
+
+--- Q5b · Lo mismo sin la vista: consulta parametrizada que arranca por el grupo
+Tiempo en el servidor (SHOW PROFILES, promedio de 3): 41.1 ms
+Tiempo desde el cliente (promedio de 3, incluye ~80 ms de docker exec): 134 ms
+SQL: SELECT p.actividad_id, p.orden, COUNT(*) AS respuestas, SUM(o.es_correcta = FALSE) AS errores,
+        ROUND(SUM(o.es_correcta = FALSE) / COUNT(*), 4) AS proporcion_error
+   FROM usuario_grupo ug
+   JOIN intentos i ON i.usuario_id = ug.usuario_id AND i.estado = 'FINALIZADO'
+   JOIN respuestas res ON res.intento_id = i.id
+   JOIN preguntas p ON p.id = res.pregunta_id
+   JOIN actividad_grupo ag ON ag.actividad_id = p.actividad_id AND ag.grupo_id = ug.grupo_id
+   JOIN opciones o ON o.id = res.opcion_id
+  WHERE ug.grupo_id = (SELECT id FROM grupos_clase WHERE nombre='S03' AND anio_lectivo=2026 ORDER BY id DESC LIMIT 1) AND ug.activo
+  GROUP BY p.actividad_id, p.id, p.orden ORDER BY proporcion_error DESC LIMIT 10
++--------------+-------+------------+---------+------------------+
+| actividad_id | orden | respuestas | errores | proporcion_error |
++--------------+-------+------------+---------+------------------+
+|           29 |     8 |         30 |      17 |           0.5667 |
+|           25 |     6 |         29 |      16 |           0.5517 |
+|            5 |     7 |         30 |      16 |           0.5333 |
+|           24 |     1 |         30 |      16 |           0.5333 |
+|           16 |     1 |         30 |      16 |           0.5333 |
+|           17 |     6 |         29 |      15 |           0.5172 |
+|           29 |     2 |         30 |      15 |           0.5000 |
+|            5 |     1 |         30 |      15 |           0.5000 |
+|           11 |     1 |         30 |      15 |           0.5000 |
+|           24 |     3 |         30 |      15 |           0.5000 |
++--------------+-------+------------+---------+------------------+
+Plan real (EXPLAIN ANALYZE, recortado):
+-> Limit: 10 row(s)  (actual time=41.9..41.9 rows=10 loops=1)
+    -> Sort: proporcion_error DESC, limit input to 10 row(s) per chunk  (actual time=41.9..41.9 rows=10 loops=1)
+        -> Table scan on <temporary>  (actual time=41.7..41.8 rows=300 loops=1)
+            -> Aggregate using temporary table  (actual time=41.7..41.7 rows=300 loops=1)
+                -> Nested loop inner join  (cost=3929 rows=2593) (actual time=0.174..35.8 rows=8810 loops=1)
+                    -> Nested loop inner join  (cost=3021 rows=2593) (actual time=0.171..28 rows=8810 loops=1)
+                        -> Nested loop inner join  (cost=2113 rows=2593) (actual time=0.165..22 rows=8810 loops=1)
+                            -> Nested loop inner join  (cost=1206 rows=2593) (actual time=0.16..14.1 rows=8810 loops=1)
+                                -> Nested loop inner join  (cost=298 rows=281) (actual time=0.144..1.59 rows=881 loops=1)
+                                    -> Filter: ((ug.grupo_id = (select #2)) and (0 <> ug.activo))  (cost=3.54 rows=27.9) (actual time=0.0642..0.0994 rows=31 loops=1)
+                                        -> Index lookup on ug using ix_usuario_grupo_grupo (grupo_id=(select #2))  (cost=3.54 rows=31) (actual time=0.0625..0.0742 rows=31 loops=1)
+                                        -> Select #2 (subquery in condition; run only once)
+                                            -> Limit: 1 row(s)  (cost=1.3 rows=1) (actual time=0.0547..0.0548 rows=1 loops=1)
+                                                -> Sort: grupos_clase.id DESC, limit input to 1 row(s) per chunk  (cost=1.3 rows=1) (actual time=0.054..0.054 rows=1 loops=1)
+
+--- Q6 · Historial de un estudiante (usa el índice ix_intentos_usuario_actividad)
+Tiempo en el servidor (SHOW PROFILES, promedio de 3): 0.7 ms
+Tiempo desde el cliente (promedio de 3, incluye ~80 ms de docker exec): 82 ms
+SQL: SELECT i.actividad_id, i.numero_intento, i.estado, r.puntaje, i.duracion_seg
+   FROM intentos i LEFT JOIN resultados r ON r.intento_id = i.id
+  WHERE i.usuario_id = (SELECT MIN(id) FROM usuarios WHERE correo LIKE 'est%@sintetico.atlas.local')
+  ORDER BY i.iniciado_en
++--------------+----------------+------------+---------+--------------+
+| actividad_id | numero_intento | estado     | puntaje | duracion_seg |
++--------------+----------------+------------+---------+--------------+
+|            1 |              1 | FINALIZADO |   70.00 |          630 |
+|            2 |              1 | FINALIZADO |   80.00 |          630 |
+|            3 |              1 | FINALIZADO |   70.00 |          630 |
+|            4 |              1 | FINALIZADO |   60.00 |          630 |
+|            5 |              1 | FINALIZADO |   70.00 |          630 |
+|            6 |              1 | FINALIZADO |   70.00 |          630 |
+|            7 |              1 | FINALIZADO |   90.00 |          630 |
+|            8 |              1 | FINALIZADO |   90.00 |          630 |
+|            9 |              1 | FINALIZADO |   80.00 |          630 |
+|           10 |              1 | FINALIZADO |   70.00 |          630 |
+|           11 |              1 | FINALIZADO |   90.00 |          630 |
+Plan real (EXPLAIN ANALYZE, recortado):
+-> Nested loop left join  (cost=21 rows=30) (actual time=0.104..0.203 rows=30 loops=1)
+    -> Sort: i.iniciado_en  (cost=10.5 rows=30) (actual time=0.091..0.0932 rows=30 loops=1)
+        -> Filter: (i.usuario_id = (select #2))  (cost=10.5 rows=30) (actual time=0.0684..0.0748 rows=30 loops=1)
+            -> Index lookup on i using uq_intentos_numero (usuario_id=(select #2))  (cost=10.5 rows=30) (actual time=0.0671..0.0709 rows=30 loops=1)
+            -> Select #2 (subquery in condition; run only once)
+                -> Aggregate: min(usuarios.id)  (cost=61.8 rows=1) (actual time=0.188..0.188 rows=1 loops=1)
+                    -> Filter: (usuarios.correo like 'est%@sintetico.atlas.local')  (cost=31.8 rows=300) (actual time=0.0326..0.166 rows=300 loops=1)
+                        -> Covering index scan on usuarios using uq_usuarios_correo  (cost=31.8 rows=305) (actual time=0.0267..0.0779 rows=305 loops=1)
+    -> Single-row index lookup on r using uq_resultados_intento (intento_id=i.id)  (cost=0.253 rows=1) (actual time=0.0034..0.00343 rows=0.9 loops=30)
+
+
+== 4. Consistencia de la desnormalización resultados.puntaje (excepción a la 3FN)
+Cada fila de resultados se compara con el cálculo hecho desde respuestas y opciones.
++----------------------+----------------+---------------------------+---------------------------+
+| resultados_revisados | inconsistentes | finalizados_sin_resultado | abandonados_con_resultado |
++----------------------+----------------+---------------------------+---------------------------+
+|                 8749 |              0 |                         0 |                         0 |
++----------------------+----------------+---------------------------+---------------------------+
+Esperado: inconsistentes = 0, finalizados_sin_resultado = 0, abandonados_con_resultado = 0.
+Por qué no puede divergir: el puntaje se escribe una sola vez al finalizar; un intento cerrado no
+se reabre ni acepta respuestas nuevas (triggers) y atlas_app no tiene UPDATE sobre resultados.

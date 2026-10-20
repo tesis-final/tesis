@@ -1,0 +1,34 @@
+ATLAS — Evidencia E-BD-005: ejercicio de restauración real (RPO y RTO)
+Fecha (UTC): 2026-10-20T22:17:47Z
+Motor: MySQL 8.0.46 · Entorno: Docker de desarrollo (no es atlas-srv01)
+Objetivos documentados (Hito 1): RPO 24 h · RTO 4 h
+Estrategia probada: respaldo completo con mysqldump (usuario atlas_backup, solo lectura)
++ incremental con el registro binario (binlog) de MySQL.
+
+== Paso a paso y tiempos
+| Paso | Resultado |
+| --- | --- |
+| Respaldo completo (mysqldump, atlas_backup) | 395 ms · 11738507 bytes · sha256 53c49e85b63e9b66… |
+| Inicio del incremental (binlog) | atlas-bin.000004 |
+| Intentos en el respaldo completo | 9000 |
+| Trabajo posterior al respaldo | 50 intentos nuevos con respuestas y resultados |
+| Intentos justo antes del desastre | 9050 |
+| Desastre simulado | DROP DATABASE atlas_db |
+| Restauración del completo | 3599 ms → 9000 intentos (faltan 50) |
+| Aplicación del incremental (atlas-bin.000004 ) | 474 ms → 9050 intentos |
+| **RTO medido** (del desastre a la base completa) | **4252 ms** (objetivo: 4 h) |
+| **RPO medido** (datos perdidos) | **0 intentos perdidos** con completo + incremental; con solo el completo se habrían perdido 50 (todo lo posterior al respaldo) |
+
+== Integridad de los datos recuperados
+| Control | Resultado | Esperado |
+| --- | --- | --- |
+| CHECKSUM TABLE de las 31 tablas, antes contra después | 0 diferencias | 0 |
+| Triggers, rutinas y vistas | antes: 20 triggers, 1 rutinas, 5 vistas · después: 20 triggers, 1 rutinas, 5 vistas | iguales |
+| Filas huérfanas (respuestas, resultados, interacciones, vínculos de habilidad) | 0 | 0 |
+| Privilegios después de restaurar (atlas_backup lee habilidades) | 4 filas | 4 |
+
+Notas honestas:
+- Es una base de prueba de 11738507 bytes en Docker, no la de producción en atlas-srv01.
+  El procedimiento es el mismo; en el servidor los tiempos pueden ser mayores y hay que repetirlo ahí.
+- El RPO real depende de cada cuánto se copian los binlog fuera del servidor (Tabla 29): si el
+  servidor se pierde entero, se pierde lo que no se haya copiado todavía.
