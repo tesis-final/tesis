@@ -1,15 +1,43 @@
-D1 - Laravel
+Acta de decisiones:
 
-D2- C. Recomendación: configurable por institución, con valor por defecto sin aprobación. Si la institución no la exige, el docente pasa de BORRADOR a PUBLICADA para sus propios grupos y el sistema registra la transición igual (queda auditado quién publicó). Cubre las tres alternativas con un solo dato y no rompe el ciclo de estados que ya está probado.
+## D-1 · Framework de la aplicación
+Decidimos migrar la aplicación a Laravel en este hito, siguiendo la recomendación del profesor (4.d).
+Motivo: Laravel resuelve de forma estándar sesiones, CSRF, validación, migraciones y seguridad, y así
+podemos concentrar el esfuerzo en los criterios que más valen (front y back funcionales, DRY, middleware).
+El criterio de independencia de un único framework se cumple con el servicio de análisis en Python,
+separado y comunicado por API. La lógica propia (servicios del motor de análisis) se reutiliza dentro de Laravel.
 
-D3 - A (4.a): una tabla de habilidades (ejemplos: lógica, comprensión lectora, cálculo, razonamiento espacial); cada pregunta asociada a una o más habilidades; indicadores por habilidad.
+## D-2 · Aprobación de actividades
+Decidimos que la aprobación sea configurable por institución, con valor por defecto sin aprobación.
+Si la institución no la exige, el docente pasa la actividad de BORRADOR a PUBLICADA para sus propios grupos,
+y el sistema registra la transición igual (queda auditado quién publicó). Cubre las tres alternativas que
+propuso el profesor (4.c) con un solo dato y no cambia el ciclo de estados.
 
-D4 - A (4.e): indicadores y reglas en PHP, MySQL solo guarda, Python solo el análisis adicional.
+## D-3 · Habilidades
+Decidimos crear una tabla de habilidades (lógica, comprensión lectora, cálculo, razonamiento espacial,
+ampliable), asociar cada pregunta a una o más habilidades y calcular los indicadores por habilidad (4.a).
 
-D5 - A (4.g y conclusión): consultas guiadas como forma principal; el LLM como capa opcional después.
+## D-4 · Dónde se calcula cada cosa
+Decidimos que los indicadores y las reglas se calculen en PHP, que MySQL solo guarde y proteja la
+integridad de los datos, y que Python haga solo el análisis adicional (4.e).
 
-D6 - A (4.h): "Defínanlo, porque es lo primero que les van a preguntar en la defensa." A mano, el equipo respondió: "el sistema recomienda y el docente decide".
+## D-5 · Forma de consulta del docente
+Decidimos que las consultas guiadas sean la forma principal de consulta. El asistente con LLM queda como
+capa opcional, para después (4.g).
 
-D7 - A (4.f): pide justificar el agrupamiento con un ejemplo concreto y decir con qué datos se entrena la detección de riesgo y qué predice. Sugiere resolver "requieren atención" con reglas y estadística simple, y dejar el ML como experimento.
+## D-6 · Qué significa "adaptativo"
+Decidimos que en ATLAS "adaptativo" significa que el sistema recomienda y el docente decide: el sistema
+sugiere la siguiente actividad según el desempeño del estudiante, y el docente la confirma o la cambia (4.h).
 
-D8 - sí se concluye: si acertó, cuánto tardó, si cambió de respuesta y cuántos intentos hizo. No se concluye nada sobre memoria, atención ni estrategias, porque los tiempos tienen ruido (distracciones, conexión). Las pausas de más de 60 segundos sin actividad ya se registran como evento PAUSA, pero hoy la duración del intento no las descuenta: hay que mostrar el tiempo activo aparte del total. Cada actividad debe mostrarse de a una
+## D-7 · Machine learning
+Decidimos resolver "estudiantes que requieren atención" con reglas y estadística simple, que son explicables.
+El machine learning queda como experimento: en el documento justificamos el agrupamiento con un ejemplo
+concreto y decimos con qué datos se entrena la detección de riesgo y qué variable predice (4.f).
+
+## D-8 · Qué se concluye de los tiempos
+Decidimos que de los datos sí se concluye si el estudiante acertó, cuánto tardó, si cambió de respuesta y
+cuántos intentos hizo. No se concluye nada sobre memoria, atención ni estrategias, porque los tiempos tienen
+ruido (distracciones, conexión) (4.b). Las pausas de más de 60 segundos sin actividad se registran como PAUSA
+y se muestra el tiempo activo aparte del total. Cada actividad se muestra de a una.
+
+**Aprobado por:** todos los presentes.
