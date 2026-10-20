@@ -1,0 +1,39 @@
+! =============================================================================
+! ATLAS — atlas-sat01: router de la SEDE SATÉLITE de prueba (ISR 1941, PT)
+! Solo existe para la VPN sitio a sitio opcional del Hito 2 (pedido del
+! profesor de Conectividad): "Empresa — Internet — Empresa satélite".
+! Red de la sede: 192.168.100.0/24 (privada, no choca con 172.16.0.0/16).
+!
+! ANTES DE PEGAR: activar la licencia securityk9 (ver la guía) y reemplazar
+! <CLAVE_VPN> por la MISMA clave que en atlas-fw01.
+! =============================================================================
+hostname atlas-sat01
+no ip domain-lookup
+!
+interface GigabitEthernet0/0
+ description LAN de la sede satelite
+ ip address 192.168.100.1 255.255.255.0
+ no shutdown
+!
+crypto isakmp policy 10
+ encr aes 256
+ hash sha
+ authentication pre-share
+ group 5
+ lifetime 86400
+crypto isakmp key <CLAVE_VPN> address 203.0.113.1
+crypto ipsec transform-set TS_ATLAS esp-aes 256 esp-sha-hmac
+access-list 120 permit ip 192.168.100.0 0.0.0.255 172.16.40.0 0.0.0.255
+crypto map MAPA_VPN 10 ipsec-isakmp
+ set peer 203.0.113.1
+ set transform-set TS_ATLAS
+ match address 120
+!
+interface GigabitEthernet0/1
+ description Internet
+ ip address 203.0.113.2 255.255.255.0
+ crypto map MAPA_VPN
+ no shutdown
+!
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+end

@@ -1,0 +1,99 @@
+! =============================================================================
+! ATLAS — atlas-fw01 en Packet Tracer (ISR 1941), FASE 9 y VPN opcional
+! Se pega DESPUÉS de atlas-fw01-maqueta.txt (Fase 8).
+!
+! Qué agrega:
+!   1) Firewall CON ESTADO por zonas (ZBF): INTERNA (hacia rt01) y EXTERNA
+!      (Internet). De adentro hacia afuera solo sale lo que permite la Tabla 44
+!      (R5 y R7). De afuera hacia adentro no entra nada, salvo la sede satélite
+!      por el túnel y solo a ATLAS (R9b).
+!   2) NAT con sobrecarga (PAT): toda la red 172.16.0.0/16 sale a Internet con
+!      la IP pública del firewall (E.8 del diseño: SNAT sí, DNAT no).
+!   3) VPN sitio a sitio IPsec con la sede satélite (opcional del Hito 2).
+!
+! ANTES DE PEGAR:
+!   - Activar la licencia de seguridad (ver la guía): sin ella no existen los
+!     comandos "zone" ni "crypto".
+!   - Reemplazar <CLAVE_VPN> por la clave compartida (la misma en atlas-sat01).
+!     Mínimo 12 caracteres. No se guarda en Git.
+! Si "drop log" da error, usar "drop".
+! =============================================================================
+!
+! ---------------- 1. Qué se permite (listas) --------------------------------
+access-list 101 remark R5 y R7: la red interna sale a la web; DNS solo el DC
+access-list 101 permit tcp 172.16.0.0 0.0.255.255 any eq 80
+access-list 101 permit tcp 172.16.0.0 0.0.255.255 any eq 443
+access-list 101 permit udp host 172.16.40.20 any eq 53
+access-list 101 permit tcp host 172.16.40.20 any eq 53
+access-list 102 remark R9b: la sede satelite (por el tunel) solo llega a ATLAS por HTTPS
+access-list 102 permit tcp 192.168.100.0 0.0.0.255 host 172.16.40.10 eq 443
+!
+! ---------------- 2. Zonas y políticas (firewall con estado) ----------------
+zone security INTERNA
+zone security EXTERNA
+!
+class-map type inspect match-all CM_INTERNA_A_EXTERNA
+ match access-group 101
+class-map type inspect match-all CM_SATELITE_A_ATLAS
+ match access-group 102
+!
+policy-map type inspect PM_INTERNA_A_EXTERNA
+ class type inspect CM_INTERNA_A_EXTERNA
+  inspect
+ class class-default
+  drop log
+policy-map type inspect PM_EXTERNA_A_INTERNA
+ class type inspect CM_SATELITE_A_ATLAS
+  inspect
+ class class-default
+  drop log
+!
+zone-pair security ZP_INTERNA_A_EXTERNA source INTERNA destination EXTERNA
+ service-policy type inspect PM_INTERNA_A_EXTERNA
+zone-pair security ZP_EXTERNA_A_INTERNA source EXTERNA destination INTERNA
+ service-policy type inspect PM_EXTERNA_A_INTERNA
+!
+! ---------------- 3. NAT (PAT) ----------------------------------------------
+! Lo que va por el túnel a la sede satélite NO se traduce (si no, el túnel no
+! lo reconoce). Todo lo demás de 172.16.0.0/16 sale con la IP 203.0.113.1.
+access-list 110 deny ip 172.16.40.0 0.0.0.255 192.168.100.0 0.0.0.255
+access-list 110 permit ip 172.16.0.0 0.0.255.255 any
+ip nat inside source list 110 interface GigabitEthernet0/1 overload
+!
+! ---------------- 4. VPN sitio a sitio con la sede satélite (opcional) -------
+! Fase 1 (IKE/ISAKMP): cómo se ponen de acuerdo los dos extremos.
+crypto isakmp policy 10
+ encr aes 256
+ hash sha
+ authentication pre-share
+ group 5
+ lifetime 86400
+crypto isakmp key <CLAVE_VPN> address 203.0.113.2
+! Fase 2 (IPsec): cómo se cifra cada paquete.
+crypto ipsec transform-set TS_ATLAS esp-aes 256 esp-sha-hmac
+! Qué tráfico va por el túnel: servidores de ATLAS <-> red de la sede satélite.
+access-list 120 permit ip 172.16.40.0 0.0.0.255 192.168.100.0 0.0.0.255
+crypto map MAPA_VPN 10 ipsec-isakmp
+ set peer 203.0.113.2
+ set transform-set TS_ATLAS
+ match address 120
+!
+! ---------------- 5. Interfaces ---------------------------------------------
+interface GigabitEthernet0/0
+ description Transito hacia atlas-rt01 (zona INTERNA)
+ zone-member security INTERNA
+ ip nat inside
+interface GigabitEthernet0/1
+ description Internet (zona EXTERNA)
+ zone-member security EXTERNA
+ ip nat outside
+ crypto map MAPA_VPN
+!
+! Ruta hacia la sede satélite por Internet (el túnel la cifra al salir).
+ip route 192.168.100.0 255.255.255.0 203.0.113.2
+!
+! ---------------- 6. Monitoreo: registros a srv01 ---------------------------
+service timestamps log datetime msec
+logging host 172.16.40.10
+logging trap informational
+end
