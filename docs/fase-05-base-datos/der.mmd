@@ -77,6 +77,13 @@ erDiagram
         varchar nombre
         smallint anio_lectivo
     }
+    habilidades {
+        smallint id PK
+        varchar codigo UK
+        varchar nombre UK
+        varchar descripcion
+        tinyint activa
+    }
     indicadores {
         bigint id PK
         bigint perfil_id FK
@@ -91,6 +98,7 @@ erDiagram
         bigint id PK
         varchar nombre UK
         tinyint activa
+        tinyint requiere_aprobacion
         datetime creado_en
     }
     intentos {
@@ -137,6 +145,10 @@ erDiagram
         smallint id PK
         varchar codigo UK
         varchar descripcion
+    }
+    pregunta_habilidad {
+        bigint pregunta_id PK,FK
+        smallint habilidad_id PK,FK
     }
     preguntas {
         bigint id PK
@@ -261,6 +273,8 @@ erDiagram
     preguntas ||--o{ interacciones : "pregunta_id"
     preguntas ||--o{ opciones : "pregunta_id"
     usuarios ||--o{ perfiles_aprendizaje : "usuario_id"
+    habilidades ||--o{ pregunta_habilidad : "habilidad_id"
+    preguntas ||--o{ pregunta_habilidad : "pregunta_id"
     actividades ||--o{ preguntas : "actividad_id"
     recomendaciones ||--o{ recomendacion_regla : "recomendacion_id"
     reglas_analisis ||--o{ recomendacion_regla : "regla_id"

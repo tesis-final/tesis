@@ -57,3 +57,39 @@ Para reproducir: `atlas/tests/Database/run.sh` (con `ATLAS_TEST_MYSQL_IMAGE=mirr
 - El despliegue en atlas-srv01 real con `/srv/atlas/datos` y UID 5003 (Fases 6 y 13).
 - El respaldo con `atlas_backup` (Fase 12).
 - P-03 (3306 inaccesible desde VLAN 30): es una prueba de red (Fase 14).
+
+## Hito 2 — Lo que se agregó y se probó
+
+Devolución de Base de Datos (Hito 1): DER y diccionario que coincidan con las tablas · script reproducible con claves, relaciones, restricciones e índices · usuarios y privilegios con rechazos demostrados · datos representativos y consultas con rendimiento · restauración real con tiempos e integridad · pruebas de la excepción a la 3FN. Devolución de Programación 4.a y 4.c: habilidades por pregunta y aprobación configurable.
+
+| Archivo | Qué es |
+| --- | --- |
+| `atlas/database/migrations/003_habilidades_aprobacion.sql` | Tablas `habilidades` y `pregunta_habilidad` (N:M), columna `instituciones.requiere_aprobacion`, triggers de edición en borrador y ciclo de aprobación con la transición BORRADOR → PUBLICADA cuando la institución no exige aprobación |
+| `atlas/database/seeds/002_habilidades.sql` | Las 4 habilidades de ejemplo de la devolución |
+| `atlas/docker/mysql/init.sql`, `02-usuarios.sh` | Instalación desde cero con 003 y los permisos mínimos de `atlas_app` sobre las tablas nuevas |
+| `atlas/database/tools/actualizar_a_003.sh` | Aplica 003 a una base ya instalada, sin borrar datos (idempotente: probado dos veces seguidas) |
+| `atlas/database/tools/datos_representativos.sql` | Datos sintéticos y reproducibles (CRC32, sin RAND): 300 estudiantes, 30 actividades, 9.000 intentos, ~88.700 respuestas, pasando por todos los triggers |
+| `atlas/database/tools/pruebas_hito2.sh` | Instalación desde cero + datos + consultas con tiempos + consistencia de la 3FN + ejercicio de restauración (RPO/RTO) |
+| `atlas/tests/Database/HabilidadesAprobacionTest.php` | 13 pruebas de claves, restricciones, triggers y privilegios de lo nuevo |
+| `der.mmd`, `diccionario-datos.md` | Regenerados desde la base real (31 tablas, 189 columnas, 45 FK, 37 CHECK) |
+
+### Resultados (ejecutados el 2026-10-20 sobre MySQL 8.0.46 en Docker de desarrollo)
+
+| Prueba | Resultado | Evidencia |
+| --- | --- | --- |
+| Suite de base de datos (incluye las 13 nuevas) | **58 pruebas aprobadas** | E-BD-001 |
+| Regresión de la API contra MySQL real (la app sigue funcionando con 003) | **58 pruebas aprobadas** | E-APP-002 |
+| Regresión unitaria PHP | **26 pruebas aprobadas** | `vendor/bin/phpunit --testsuite unit` |
+| Privilegios (SHOW GRANTS de los 6 usuarios) | Permisos nuevos solo para `atlas_app` | E-BD-002 |
+| Consistencia de `resultados.puntaje` (8.749 resultados recalculados) | 0 inconsistencias | E-BD-006 §4 |
+| Rendimiento de la excepción a la 3FN | Promedio por estudiante de un grupo: **2,7 ms** con el puntaje guardado contra **24,5 ms** recalculándolo (≈9 veces) | E-BD-006 Q1 / Q1b |
+| Restauración real (completo + binlog) | **RTO ≈ 4 s** (objetivo 4 h) · **RPO 0** con incremental (sin él se perdían los 50 intentos posteriores al respaldo) · CHECKSUM de 31 tablas sin diferencias · 0 huérfanos | E-BD-005 |
+
+### Hallazgos
+
+| ID | Hallazgo | Qué se hizo / falta |
+| --- | --- | --- |
+| H5-H2-01 | La imagen oficial `mysql:8.0` no trae `mysqlbinlog`: el incremental no se puede aplicar desde el contenedor de producción | En la prueba se usó `mysql:8.0-debian` (misma versión) como herramienta auxiliar. El script de respaldo (Fase 12) tiene que hacer lo mismo |
+| H5-H2-02 | `v_preguntas_error` tarda ~490 ms con 88.700 respuestas aunque se filtre por grupo: MySQL materializa la vista entera (tiene GROUP BY) | La misma consulta arrancando por el grupo tarda ~41 ms (Q5b). Recomendación para Programación (consultas guiadas): usar la consulta parametrizada |
+| H5-H2-03 | Las pruebas corren en Docker de desarrollo, no en atlas-srv01 | Repetir `pruebas_hito2.sh` y la restauración en el servidor (manual del Hito 2) |
+| H5-H2-04 | La regla "cada pregunta tiene al menos una habilidad" todavía no se exige en la base | Se exigirá cuando el editor de preguntas las cargue (tarea P-04 de Programación); antes rompería la creación de actividades |

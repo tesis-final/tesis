@@ -17,9 +17,11 @@ final class EsquemaTest extends DatabaseTestCase
         'perfiles_aprendizaje', 'indicadores', 'reglas_analisis', 'recomendaciones', 'recomendacion_regla',
         'analisis_grupal', 'agrupamientos',
         'auditoria', 'conversaciones', 'registro_respaldos',
+        // Hito 2 (migración 003)
+        'habilidades', 'pregunta_habilidad',
     ];
 
-    public function testExistenLas29TablasDelModeloYAlMenos15(): void
+    public function testExistenLas31TablasDelModeloYAlMenos15(): void
     {
         $tablas = self::pdo()->query(
             "SELECT table_name FROM information_schema.tables

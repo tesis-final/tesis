@@ -7,4 +7,6 @@
 -- =============================================================================
 SOURCE /atlas/database/migrations/001_esquema.sql;
 SOURCE /atlas/database/migrations/002_logica.sql;
+SOURCE /atlas/database/migrations/003_habilidades_aprobacion.sql;
 SOURCE /atlas/database/seeds/001_catalogos.sql;
+SOURCE /atlas/database/seeds/002_habilidades.sql;

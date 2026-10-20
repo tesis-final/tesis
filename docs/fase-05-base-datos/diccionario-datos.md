@@ -11,6 +11,7 @@ Generado automáticamente desde `information_schema` de la base en ejecución (`
 | `id` | bigint unsigned | NO | PRI | auto_increment |  |
 | `nombre` | varchar(150) | NO | UNI |  |  |
 | `activa` | tinyint(1) | NO |  | 1 |  |
+| `requiere_aprobacion` | tinyint(1) | NO |  | 1 |  |
 | `creado_en` | datetime(3) | NO |  | CURRENT_TIMESTAMP(3) DEFAULT_GENERATED |  |
 
 ### `roles`
@@ -173,6 +174,28 @@ Restricciones CHECK:
 | `grupo_id` | bigint unsigned | NO | PRI |  | → `grupos_clase.id` |
 | `publicado_por` | bigint unsigned | NO | MUL |  | → `usuarios.id` |
 | `publicado_en` | datetime(3) | NO |  | CURRENT_TIMESTAMP(3) DEFAULT_GENERATED |  |
+
+### `habilidades`
+
+| Columna | Tipo | Nulo | Clave | Por defecto | Referencia |
+| --- | --- | --- | --- | --- | --- |
+| `id` | smallint unsigned | NO | PRI | auto_increment |  |
+| `codigo` | varchar(40) | NO | UNI |  |  |
+| `nombre` | varchar(80) | NO | UNI |  |  |
+| `descripcion` | varchar(255) | YES |  |  |  |
+| `activa` | tinyint(1) | NO |  | 1 |  |
+
+Restricciones CHECK:
+
+- `ck_habilidades_codigo`: `regexp_like(codigo,_utf8mb4\\'^[A-Z][A-Z0-9_]*$\\',_utf8mb4\\'c\\')`
+- `ck_habilidades_nombre`: `(char_length(trim(nombre)) > 0)`
+
+### `pregunta_habilidad`
+
+| Columna | Tipo | Nulo | Clave | Por defecto | Referencia |
+| --- | --- | --- | --- | --- | --- |
+| `pregunta_id` | bigint unsigned | NO | PRI |  | → `preguntas.id` |
+| `habilidad_id` | smallint unsigned | NO | PRI |  | → `habilidades.id` |
 
 ## Interacción
 

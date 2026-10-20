@@ -1,14 +1,14 @@
-# Ejecución: 2026-09-26T20:56:51Z
+# Ejecución: 2026-10-20T22:21:23Z
 # Servidor: 8.0.46
-# Imagen: mirror.gcr.io/library/mysql:8.0
+# Imagen: mysql:8.0
 PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
 
 Runtime:       PHP 8.4.19
 Configuration: /home/user/tesis/atlas/phpunit.xml
 
-.............................................                     45 / 45 (100%)
+..........................................................        58 / 58 (100%)
 
-Time: 00:09.090, Memory: 8.00 MB
+Time: 00:11.562, Memory: 10.00 MB
 
 Analisis Grupal (Atlas\Tests\Database\AnalisisGrupal)
  ✔ Agregados del grupo con datos conocidos
@@ -30,13 +30,28 @@ Ciclo Actividad (Atlas\Tests\Database\CicloActividad)
  ✔ Transiciones registran autor y observaciones
 
 Esquema (Atlas\Tests\Database\Esquema)
- ✔ Existen las 29 tablas del modelo y al menos 15
+ ✔ Existen las 31 tablas del modelo y al menos 15
  ✔ Todas las tablas son inno db para integridad referencial
  ✔ Cada columna terminada en id tiene clave foranea
  ✔ Indice compuesto usuario actividad en intentos
  ✔ Vistas procedimiento y triggers presentes
  ✔ Catalogos semilla
  ✔ Ninguna vista expone correo ni hash
+
+Habilidades Aprobacion (Atlas\Tests\Database\HabilidadesAprobacion)
+ ✔ Catalogo inicial con las cuatro habilidades de la devolucion
+ ✔ Codigo y nombre unicos y con formato
+ ✔ Una pregunta puede medir varias habilidades sin repetir
+ ✔ Claves foraneas rechazan pregunta o habilidad inexistente
+ ✔ Habilidad desactivada no se asigna y habilidad en uso no se borra
+ ✔ Vinculos solo se editan en borrador
+ ✔ Borrar pregunta en borrador borra sus vinculos
+ ✔ Por defecto la institucion exige aprobacion
+ ✔ Con aprobacion no se publica directo
+ ✔ Sin aprobacion el docente publica directo
+ ✔ Sin aprobacion no se envia a pendiente
+ ✔ Publicar directo tambien valida el contenido
+ ✔ Privilegios de las tablas nuevas
 
 Integridad (Atlas\Tests\Database\Integridad)
  ✔ Clave foranea rechaza referencia inexistente
@@ -69,4 +84,4 @@ Resultados (Atlas\Tests\Database\Resultados)
  ✔ Intento cerrado no se reabre
  ✔ No se responde un intento cerrado ni otra actividad
 
-OK (45 tests, 130 assertions)
+OK (58 tests, 182 assertions)
