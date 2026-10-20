@@ -1,1 +1,15 @@
+D1 - Laravel
 
+D2- C. Recomendación: configurable por institución, con valor por defecto sin aprobación. Si la institución no la exige, el docente pasa de BORRADOR a PUBLICADA para sus propios grupos y el sistema registra la transición igual (queda auditado quién publicó). Cubre las tres alternativas con un solo dato y no rompe el ciclo de estados que ya está probado.
+
+D3 - A (4.a): una tabla de habilidades (ejemplos: lógica, comprensión lectora, cálculo, razonamiento espacial); cada pregunta asociada a una o más habilidades; indicadores por habilidad.
+
+D4 - A (4.e): indicadores y reglas en PHP, MySQL solo guarda, Python solo el análisis adicional.
+
+D5 - A (4.g y conclusión): consultas guiadas como forma principal; el LLM como capa opcional después.
+
+D6 - A (4.h): "Defínanlo, porque es lo primero que les van a preguntar en la defensa." A mano, el equipo respondió: "el sistema recomienda y el docente decide".
+
+D7 - A (4.f): pide justificar el agrupamiento con un ejemplo concreto y decir con qué datos se entrena la detección de riesgo y qué predice. Sugiere resolver "requieren atención" con reglas y estadística simple, y dejar el ML como experimento.
+
+D8 - sí se concluye: si acertó, cuánto tardó, si cambió de respuesta y cuántos intentos hizo. No se concluye nada sobre memoria, atención ni estrategias, porque los tiempos tienen ruido (distracciones, conexión). Las pausas de más de 60 segundos sin actividad ya se registran como evento PAUSA, pero hoy la duración del intento no las descuenta: hay que mostrar el tiempo activo aparte del total. Cada actividad debe mostrarse de a una
