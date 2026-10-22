@@ -52,24 +52,35 @@ for t, n, clause in checks:
     chk[t].append((n, clause))
 
 # ---- DER en Mermaid ----
-lineas = ["erDiagram"]
-for t in sorted(por_tabla):
-    lineas.append(f"    {t} {{")
-    for c, tipo, nul, key, *_ in por_tabla[t]:
-        base = tipo.split("(")[0].split(" ")[0]
-        marca = "PK" if key == "PRI" else ("FK" if (t, c) in fk_col else ("UK" if key == "UNI" else ""))
-        if key == "PRI" and (t, c) in fk_col:
-            marca = "PK,FK"
-        lineas.append(f"        {base} {c} {marca}".rstrip())
-    lineas.append("    }")
-vistos = set()
-for t, c, rt, rc, cname in fks:
-    if (t, cname) in vistos:
-        continue
-    vistos.add((t, cname))
-    lineas.append(f'    {rt} ||--o{{ {t} : "{c}"')
-with open(f"{salida}/der.mmd", "w") as f:
-    f.write("\n".join(lineas) + "\n")
+def der(tablas):
+    """DER de las tablas pedidas, con sus columnas. Las tablas de otras áreas con las que
+    se relacionan aparecen sin columnas (solo para ver la conexión)."""
+    lineas = ["erDiagram"]
+    for t in sorted(tablas):
+        lineas.append(f"    {t} {{")
+        for c, tipo, nul, key, *_ in por_tabla[t]:
+            base = tipo.split("(")[0].split(" ")[0]
+            marca = "PK" if key == "PRI" else ("FK" if (t, c) in fk_col else ("UK" if key == "UNI" else ""))
+            if key == "PRI" and (t, c) in fk_col:
+                marca = "PK,FK"
+            lineas.append(f"        {base} {c} {marca}".rstrip())
+        lineas.append("    }")
+    vistos = set()
+    for t, c, rt, rc, cname in fks:
+        if (t, cname) in vistos or (t not in tablas and rt not in tablas):
+            continue
+        vistos.add((t, cname))
+        lineas.append(f'    {rt} ||--o{{ {t} : "{c}"')
+    return "\n".join(lineas) + "\n"
+
+
+with open(f"{salida}/der.mmd", "w", encoding="utf-8") as f:
+    f.write(der(set(por_tabla)))
+# Un DER por área (Identidad, Contenido, ...): 32 tablas en un solo dibujo no se leen.
+for grupo, tablas in GRUPOS.items():
+    nombre = grupo.lower().replace("ó", "o").replace("á", "a").replace("í", "i")
+    with open(f"{salida}/der-{nombre}.mmd", "w", encoding="utf-8") as f:
+        f.write(der(set(tablas)))
 
 # ---- Diccionario ----
 md = ["# Diccionario de datos — atlas_db", "",
@@ -88,6 +99,6 @@ for grupo, tablas in GRUPOS.items():
             for n, clause in chk[t]:
                 md.append(f"- `{n}`: `{clause.replace('`', '')}`")
         md.append("")
-with open(f"{salida}/diccionario-datos.md", "w") as f:
+with open(f"{salida}/diccionario-datos.md", "w", encoding="utf-8") as f:
     f.write("\n".join(md))
 print(f"tablas={len(por_tabla)} columnas={len(cols)} fks={len({(t, n) for t, _, _, _, n in fks})} checks={len(checks)}")

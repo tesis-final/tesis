@@ -1,0 +1,47 @@
+erDiagram
+    intentos {
+        bigint id PK
+        bigint usuario_id FK
+        bigint actividad_id FK
+        smallint numero_intento
+        enum estado
+        datetime iniciado_en
+        datetime finalizado_en
+        int duracion_seg
+        int duracion_activa_seg
+    }
+    interacciones {
+        bigint id PK
+        bigint intento_id FK
+        int secuencia
+        enum tipo
+        bigint pregunta_id FK
+        bigint opcion_id FK
+        datetime ocurrido_en
+        int duracion_ms
+    }
+    respuestas {
+        bigint id PK
+        bigint intento_id FK
+        bigint pregunta_id FK
+        bigint opcion_id FK
+        int tiempo_seg
+        datetime respondido_en
+    }
+    resultados {
+        bigint id PK
+        bigint intento_id FK
+        smallint correctas
+        smallint total_preguntas
+        decimal puntaje
+        datetime calculado_en
+    }
+    actividades ||--o{ intentos : "actividad_id"
+    usuarios ||--o{ intentos : "usuario_id"
+    intentos ||--o{ interacciones : "intento_id"
+    opciones ||--o{ interacciones : "opcion_id"
+    preguntas ||--o{ interacciones : "pregunta_id"
+    intentos ||--o{ respuestas : "intento_id"
+    opciones ||--o{ respuestas : "opcion_id"
+    preguntas ||--o{ respuestas : "pregunta_id"
+    intentos ||--o{ resultados : "intento_id"

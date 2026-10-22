@@ -1,0 +1,67 @@
+# E-BD-011 — Rechazos demostrados: privilegios, restricciones y triggers (Hito 2)
+# Fecha (UTC): 2026-10-22T18:52:03Z · MySQL 8.0.46 (imagen mysql:8.0, contenedor descartable)
+# Comando: atlas/database/tools/demostrar_rechazos.sh · Entorno: Docker de desarrollo, no es atlas-srv01
+# Instalación con los mismos scripts de producción (init.sql + 02-usuarios.sh, migraciones 001-004).
+# Los usuarios de la aplicación se conectan desde 192.168.250.21, en la misma subred interna que el
+# contenedor de la aplicación. Reglas: docs/fase-05-base-datos/reglas-de-negocio.md
+
+## 1. Privilegios: cada usuario de MySQL solo puede lo suyo (Tabla 21)
+
+| Regla | Usuario | Intento | Respuesta de MySQL | Resultado |
+| --- | --- | --- | --- | --- |
+| Control | atlas_app | `INSERT INTO auditoria (accion, resultado) VALUES ('demo.rechazos', 'OK')` | `(sin salida: se ejecutó)` | se esperaba que funcione → OK |
+| C3 | atlas_app | `DROP TABLE resultados` | `ERROR 1142 (42000) at line 1: DROP command denied to user 'atlas_app'@'192.168.250.21' for table 'resultados'` | se esperaba rechazo → OK |
+| C3 | atlas_app | `ALTER TABLE usuarios ADD COLUMN x INT` | `ERROR 1142 (42000) at line 1: ALTER command denied to user 'atlas_app'@'192.168.250.21' for table 'usuarios'` | se esperaba rechazo → OK |
+| U7 | atlas_app | `DELETE FROM usuarios WHERE id = 2` | `ERROR 1142 (42000) at line 1: DELETE command denied to user 'atlas_app'@'192.168.250.21' for table 'usuarios'` | se esperaba rechazo → OK |
+| P2 | atlas_app | `UPDATE resultados SET puntaje = 0 WHERE intento_id = 2` | `ERROR 1142 (42000) at line 1: UPDATE command denied to user 'atlas_app'@'192.168.250.21' for table 'resultados'` | se esperaba rechazo → OK |
+| P2 | atlas_app | `DELETE FROM resultados WHERE intento_id = 2` | `ERROR 1142 (42000) at line 1: DELETE command denied to user 'atlas_app'@'192.168.250.21' for table 'resultados'` | se esperaba rechazo → OK |
+| C1 | atlas_app | `DELETE FROM auditoria` | `ERROR 1142 (42000) at line 1: DELETE command denied to user 'atlas_app'@'192.168.250.21' for table 'auditoria'` | se esperaba rechazo → OK |
+| A8 | atlas_app | `UPDATE transiciones_actividad SET observaciones = 'cambiada'` | `ERROR 1142 (42000) at line 1: UPDATE command denied to user 'atlas_app'@'192.168.250.21' for table 'transiciones_actividad'` | se esperaba rechazo → OK |
+| N5 | atlas_app | `UPDATE decisiones_recomendacion SET decision = 'CAMBIADA'` | `ERROR 1142 (42000) at line 1: UPDATE command denied to user 'atlas_app'@'192.168.250.21' for table 'decisiones_recomendacion'` | se esperaba rechazo → OK |
+| C3 | atlas_app | `GRANT SELECT ON atlas_db.* TO 'atlas_read'@'%'` | `ERROR 1044 (42000) at line 1: Access denied for user 'atlas_app'@'192.168.250.16/255.255.255.240' to database 'atlas_db'` | se esperaba rechazo → OK |
+| Control | atlas_read | `SELECT COUNT(*) FROM v_resultados_detalle` | `0` | se esperaba que funcione → OK |
+| C4 | atlas_read | `SELECT correo, hash_contrasena FROM usuarios` | `ERROR 1142 (42000) at line 1: SELECT command denied to user 'atlas_read'@'192.168.250.21' for table 'usuarios'` | se esperaba rechazo → OK |
+| C4 | atlas_read | `SELECT * FROM resultados` | `ERROR 1142 (42000) at line 1: SELECT command denied to user 'atlas_read'@'192.168.250.21' for table 'resultados'` | se esperaba rechazo → OK |
+| Control | atlas_analysis | `SELECT COUNT(*) FROM intentos` | `2` | se esperaba que funcione → OK |
+| N7 | atlas_analysis | `SELECT nombre, correo FROM usuarios` | `ERROR 1142 (42000) at line 1: SELECT command denied to user 'atlas_analysis'@'192.168.250.21' for table 'usuarios'` | se esperaba rechazo → OK |
+| N7 | atlas_analysis | `UPDATE intentos SET duracion_seg = 1` | `ERROR 1142 (42000) at line 1: UPDATE command denied to user 'atlas_analysis'@'192.168.250.21' for table 'intentos'` | se esperaba rechazo → OK |
+| Control | atlas_backup | `SELECT COUNT(*) FROM usuarios` | `2` | se esperaba que funcione → OK |
+| C5 | atlas_backup | `UPDATE usuarios SET activo = FALSE` | `ERROR 1142 (42000) at line 1: UPDATE command denied to user 'atlas_backup'@'192.168.250.21' for table 'usuarios'` | se esperaba rechazo → OK |
+| C5 | atlas_backup | `DELETE FROM intentos` | `ERROR 1142 (42000) at line 1: DELETE command denied to user 'atlas_backup'@'192.168.250.21' for table 'intentos'` | se esperaba rechazo → OK |
+| C6 | atlas_admin | `SELECT 1` | `ERROR 1045 (28000): Access denied for user 'atlas_admin'@'192.168.250.21' (using password: YES)` | se esperaba rechazo → OK |
+
+## 2. Auditoría inmutable, incluso para root (RF-15)
+
+| Regla | Usuario | Intento | Respuesta de MySQL | Resultado |
+| --- | --- | --- | --- | --- |
+| C1 | root | `UPDATE auditoria SET accion = 'alterada'` | `ERROR 1644 (45000) at line 1: ATLAS: la auditoría no se puede modificar` | se esperaba rechazo → OK |
+| C1 | root | `DELETE FROM auditoria` | `ERROR 1644 (45000) at line 1: ATLAS: la auditoría no se puede borrar` | se esperaba rechazo → OK |
+
+## 3. Datos que violan reglas de negocio (restricciones y triggers; se intentan como root para
+##    mostrar que los frena la base, no los permisos)
+
+| Regla | Usuario | Intento | Respuesta de MySQL | Resultado |
+| --- | --- | --- | --- | --- |
+| U1 | root | `INSERT INTO usuarios (institucion_id, rol_id, nombre, apellido, correo, hash_contrasena) VALUES (1, 1, 'Otro', 'Docente', 'docente@prueba.local', 'x')` | `ERROR 1062 (23000) at line 1: Duplicate entry 'docente@prueba.local' for key 'usuarios.uq_usuarios_correo'` | se esperaba rechazo → OK |
+| U2 | root | `INSERT INTO usuarios (institucion_id, rol_id, nombre, apellido, correo, hash_contrasena) VALUES (1, 1, '   ', 'Sin nombre', 'vacio@prueba.local', 'x')` | `ERROR 3819 (HY000) at line 1: Check constraint 'ck_usuarios_nombre' is violated.` | se esperaba rechazo → OK |
+| U4 | root | `INSERT INTO usuarios (institucion_id, rol_id, nombre, apellido, correo, hash_contrasena) VALUES (999, 1, 'Sin', 'Institucion', 'fk@prueba.local', 'x')` | `ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails ('atlas_db'.'usuarios', CONSTRAINT 'fk_usuarios_institucion' FOREIGN KEY ('institucion_id') REFERENCES 'instituciones' ('id'))` | se esperaba rechazo → OK |
+| U8 | root | `INSERT INTO grupos_clase (institucion_id, nombre, anio_lectivo) VALUES (1, '3A', 2026)` | `ERROR 1062 (23000) at line 1: Duplicate entry '1-3A-2026' for key 'grupos_clase.uq_grupos'` | se esperaba rechazo → OK |
+| U8 | root | `INSERT INTO grupos_clase (institucion_id, nombre, anio_lectivo) VALUES (1, '4B', 1999)` | `ERROR 3819 (HY000) at line 1: Check constraint 'ck_grupos_anio' is violated.` | se esperaba rechazo → OK |
+| A3 | root | `UPDATE actividades SET estado_id = (SELECT id FROM estados_actividad WHERE codigo='APROBADA') WHERE id = 1` | `ERROR 1644 (45000) at line 1: ATLAS: transición de estado no permitida` | se esperaba rechazo → OK |
+| A7 | root | `UPDATE preguntas SET enunciado = 'cambiada' WHERE id = 1` | `ERROR 1644 (45000) at line 1: ATLAS: solo se editan actividades en borrador` | se esperaba rechazo → OK |
+| A9 | root | `INSERT INTO preguntas (actividad_id, orden, enunciado) VALUES (1, 1, 'Repite el orden')` | `ERROR 1062 (23000) at line 1: Duplicate entry '1-1' for key 'preguntas.uq_preguntas_orden'` | se esperaba rechazo → OK |
+| R3 | root | `UPDATE intentos SET estado = 'EN_CURSO', finalizado_en = NULL, duracion_seg = NULL WHERE id = 2` | `ERROR 1644 (45000) at line 1: ATLAS: un intento cerrado no puede cambiar de estado` | se esperaba rechazo → OK |
+| R4 | root | `INSERT INTO respuestas (intento_id, pregunta_id, opcion_id) VALUES (2, 1, 2)` | `ERROR 1644 (45000) at line 1: ATLAS: respuesta fuera del intento en curso o de su actividad` | se esperaba rechazo → OK |
+| R6 | root | `INSERT INTO respuestas (intento_id, pregunta_id, opcion_id) VALUES (1, 1, 2)` | `ERROR 1062 (23000) at line 1: Duplicate entry '1-1' for key 'respuestas.uq_respuestas_intento_pregunta'` | se esperaba rechazo → OK |
+| R8 | root | `UPDATE respuestas SET tiempo_seg = 90000 WHERE intento_id = 1` | `ERROR 3819 (HY000) at line 1: Check constraint 'ck_respuestas_tiempo' is violated.` | se esperaba rechazo → OK |
+| R9 | root | `UPDATE intentos SET duracion_activa_seg = 61 WHERE id = 2` | `ERROR 3819 (HY000) at line 1: Check constraint 'ck_intentos_duracion_activa' is violated.` | se esperaba rechazo → OK |
+| P1 | root | `INSERT INTO resultados (intento_id, correctas, total_preguntas, puntaje) VALUES (2, 1, 1, 100)` | `ERROR 1062 (23000) at line 1: Duplicate entry '2' for key 'resultados.uq_resultados_intento'` | se esperaba rechazo → OK |
+| P1 | root | `UPDATE resultados SET puntaje = 101 WHERE intento_id = 2` | `ERROR 3819 (HY000) at line 1: Check constraint 'ck_resultados_puntaje' is violated.` | se esperaba rechazo → OK |
+| N2 | root | `INSERT INTO perfiles_aprendizaje (usuario_id, periodo_inicio, periodo_fin) VALUES (2, '2026-10-01', '2026-10-31')` | `ERROR 1062 (23000) at line 1: Duplicate entry '2-2026-10-01' for key 'perfiles_aprendizaje.uq_perfiles_usuario_periodo'` | se esperaba rechazo → OK |
+| N2 | root | `INSERT INTO perfiles_aprendizaje (usuario_id, periodo_inicio, periodo_fin) VALUES (2, '2026-11-30', '2026-11-01')` | `ERROR 3819 (HY000) at line 1: Check constraint 'ck_perfiles_periodo' is violated.` | se esperaba rechazo → OK |
+| C2 | root | `INSERT INTO auditoria (accion, resultado, detalle) VALUES ('demo', 'OK', 'esto no es JSON')` | `ERROR 3140 (22032) at line 1: Invalid JSON text: "Invalid value." at position 0 in value for column 'auditoria.detalle'.` | se esperaba rechazo → OK |
+
+Resumen: 36 rechazos y 4 operaciones permitidas; casos que no dieron lo esperado: 0
+Se espera: 0 casos que no coinciden. El error 1142 es MySQL negando un privilegio; 1045, un usuario que no
+puede entrar desde ese origen; 3819, una restricción CHECK; 1062, una clave única; 1452, una clave foránea;
+1644, un trigger de ATLAS (SIGNAL 45000); 3140, un valor que no es JSON válido en una columna JSON.

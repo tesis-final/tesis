@@ -1,0 +1,91 @@
+erDiagram
+    actividad_grupo {
+        bigint actividad_id PK,FK
+        bigint grupo_id PK,FK
+        bigint publicado_por FK
+        datetime publicado_en
+    }
+    actividades {
+        bigint id PK
+        bigint autor_id FK
+        tinyint nivel_id FK
+        smallint categoria_id FK
+        tinyint estado_id FK
+        varchar titulo
+        text descripcion
+        datetime creado_en
+        datetime actualizado_en
+    }
+    categorias {
+        smallint id PK
+        varchar codigo UK
+        varchar nombre
+    }
+    estados_actividad {
+        tinyint id PK
+        varchar codigo UK
+        varchar nombre
+    }
+    habilidades {
+        smallint id PK
+        varchar codigo UK
+        varchar nombre UK
+        varchar descripcion
+        tinyint activa
+    }
+    niveles_dificultad {
+        tinyint id PK
+        varchar codigo UK
+        varchar nombre
+        tinyint orden UK
+    }
+    opciones {
+        bigint id PK
+        bigint pregunta_id FK
+        tinyint orden
+        varchar texto
+        tinyint es_correcta
+    }
+    pregunta_habilidad {
+        bigint pregunta_id PK,FK
+        smallint habilidad_id PK,FK
+    }
+    preguntas {
+        bigint id PK
+        bigint actividad_id FK
+        smallint orden
+        text enunciado
+    }
+    transiciones_actividad {
+        bigint id PK
+        bigint actividad_id FK
+        tinyint estado_origen_id FK
+        tinyint estado_destino_id FK
+        bigint usuario_id FK
+        text observaciones
+        datetime creado_en
+    }
+    actividades ||--o{ actividad_grupo : "actividad_id"
+    grupos_clase ||--o{ actividad_grupo : "grupo_id"
+    usuarios ||--o{ actividad_grupo : "publicado_por"
+    usuarios ||--o{ actividades : "autor_id"
+    categorias ||--o{ actividades : "categoria_id"
+    estados_actividad ||--o{ actividades : "estado_id"
+    niveles_dificultad ||--o{ actividades : "nivel_id"
+    actividades ||--o{ analisis_grupal : "actividad_id"
+    actividades ||--o{ decisiones_recomendacion : "actividad_id"
+    actividades ||--o{ indicadores : "actividad_id"
+    actividades ||--o{ intentos : "actividad_id"
+    opciones ||--o{ interacciones : "opcion_id"
+    preguntas ||--o{ interacciones : "pregunta_id"
+    preguntas ||--o{ opciones : "pregunta_id"
+    habilidades ||--o{ pregunta_habilidad : "habilidad_id"
+    preguntas ||--o{ pregunta_habilidad : "pregunta_id"
+    actividades ||--o{ preguntas : "actividad_id"
+    actividades ||--o{ recomendaciones : "actividad_sugerida_id"
+    opciones ||--o{ respuestas : "opcion_id"
+    preguntas ||--o{ respuestas : "pregunta_id"
+    actividades ||--o{ transiciones_actividad : "actividad_id"
+    estados_actividad ||--o{ transiciones_actividad : "estado_destino_id"
+    estados_actividad ||--o{ transiciones_actividad : "estado_origen_id"
+    usuarios ||--o{ transiciones_actividad : "usuario_id"

@@ -1,0 +1,67 @@
+erDiagram
+    grupos_clase {
+        bigint id PK
+        bigint institucion_id FK
+        varchar nombre
+        smallint anio_lectivo
+    }
+    instituciones {
+        bigint id PK
+        varchar nombre UK
+        tinyint activa
+        tinyint requiere_aprobacion
+        datetime creado_en
+    }
+    permisos {
+        smallint id PK
+        varchar codigo UK
+        varchar descripcion
+    }
+    rol_permiso {
+        tinyint rol_id PK,FK
+        smallint permiso_id PK,FK
+        tinyint activo
+    }
+    roles {
+        tinyint id PK
+        varchar codigo UK
+        varchar nombre
+    }
+    usuario_grupo {
+        bigint usuario_id PK,FK
+        bigint grupo_id PK,FK
+        tinyint activo
+    }
+    usuarios {
+        bigint id PK
+        bigint institucion_id FK
+        tinyint rol_id FK
+        varchar nombre
+        varchar apellido
+        varchar correo UK
+        varchar hash_contrasena
+        tinyint activo
+        tinyint intentos_fallidos
+        datetime bloqueado_hasta
+        datetime creado_en
+        datetime actualizado_en
+    }
+    grupos_clase ||--o{ actividad_grupo : "grupo_id"
+    usuarios ||--o{ actividad_grupo : "publicado_por"
+    usuarios ||--o{ actividades : "autor_id"
+    grupos_clase ||--o{ agrupamientos : "grupo_id"
+    grupos_clase ||--o{ analisis_grupal : "grupo_id"
+    usuarios ||--o{ auditoria : "usuario_id"
+    usuarios ||--o{ conversaciones : "docente_id"
+    usuarios ||--o{ decisiones_recomendacion : "decidido_por"
+    instituciones ||--o{ grupos_clase : "institucion_id"
+    usuarios ||--o{ intentos : "usuario_id"
+    usuarios ||--o{ perfiles_aprendizaje : "usuario_id"
+    usuarios ||--o{ reglas_analisis : "actualizado_por"
+    permisos ||--o{ rol_permiso : "permiso_id"
+    roles ||--o{ rol_permiso : "rol_id"
+    usuarios ||--o{ transiciones_actividad : "usuario_id"
+    grupos_clase ||--o{ usuario_grupo : "grupo_id"
+    usuarios ||--o{ usuario_grupo : "usuario_id"
+    instituciones ||--o{ usuarios : "institucion_id"
+    roles ||--o{ usuarios : "rol_id"
