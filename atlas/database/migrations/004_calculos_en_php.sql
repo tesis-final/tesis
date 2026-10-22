@@ -35,3 +35,11 @@ DROP TRIGGER IF EXISTS trg_usuarios_auditoria_ins;
 DROP TRIGGER IF EXISTS trg_usuarios_auditoria_upd;
 DROP TRIGGER IF EXISTS trg_rol_permiso_auditoria_ins;
 DROP TRIGGER IF EXISTS trg_rol_permiso_auditoria_upd;
+
+-- -----------------------------------------------------------------------------
+-- Acta D-2 (devolución 4.c): la aprobación es configurable por institución y por
+-- defecto NO se exige (el docente publica directo; la transición queda registrada
+-- en transiciones_actividad y en la auditoría). Solo cambia el valor por defecto:
+-- las instituciones ya cargadas conservan lo que tenían.
+-- -----------------------------------------------------------------------------
+ALTER TABLE instituciones ALTER COLUMN requiere_aprobacion SET DEFAULT FALSE;

@@ -18,6 +18,8 @@ use Atlas\Repositories\OrganizacionRepository;
  *   PENDIENTE → RECHAZADA  (administrador; observaciones obligatorias)
  *   RECHAZADA → BORRADOR   (docente autor, al editar)
  *   APROBADA  → PUBLICADA  (docente autor, eligiendo sus grupos)
+ *   BORRADOR  → PUBLICADA  (docente autor, si su institución no exige aprobación; D-2)
+ * Que la institución exija aprobación es configurable y por defecto no se exige (acta D-2).
  * La base de datos repite el control con un trigger (segunda barrera).
  */
 final class ActividadService
@@ -80,13 +82,12 @@ final class ActividadService
     {
         $actividad = $this->propia($id, $docente);
         $this->exigirEstado($actividad, 'BORRADOR');
-        $errores = $this->erroresDeContenido($this->actividades->preguntas($id, true));
-        if ($errores !== []) {
-            throw HttpException::validacion(
-                $errores,
-                'La actividad no cumple las condiciones para enviarse a aprobación.'
+        if (!$this->organizacion->requiereAprobacion($docente)) {
+            throw HttpException::conflicto(
+                'Su institución no exige aprobación: la actividad se publica directamente en sus grupos.'
             );
         }
+        $this->exigirContenido($id, 'La actividad no cumple las condiciones para enviarse a aprobación.');
         $this->transicion($id, 'BORRADOR', 'PENDIENTE', $docente, null);
 
         return $this->detalle($id, true);
@@ -108,22 +109,34 @@ final class ActividadService
         return $this->detalle($id, true);
     }
 
-    /** @param list<int> $grupos */
+    /**
+     * Publica en los grupos del docente: desde APROBADA, o directo desde BORRADOR si su
+     * institución no exige aprobación (D-2). La transición queda registrada con su autor.
+     *
+     * @param list<int> $grupos
+     */
     public function publicar(int $id, int $docente, array $grupos): array
     {
         $actividad = $this->propia($id, $docente);
-        $this->exigirEstado($actividad, 'APROBADA');
+        $directo = $actividad['estado'] === 'BORRADOR' && !$this->organizacion->requiereAprobacion($docente);
+        if (!$directo) {
+            $this->exigirEstado($actividad, 'APROBADA');
+        }
         $grupos = array_values(array_unique(array_map('intval', $grupos)));
         foreach ($grupos as $g) {
             if (!$this->organizacion->perteneceAGrupo($docente, $g)) {
                 throw HttpException::prohibido("El grupo {$g} no es uno de sus grupos.");
             }
         }
-        $this->db->transaccion(function () use ($id, $docente, $grupos): void {
+        if ($directo) {
+            $this->exigirContenido($id, 'La actividad no cumple las condiciones para publicarse.');
+        }
+        $origen = $directo ? 'BORRADOR' : 'APROBADA';
+        $this->db->transaccion(function () use ($id, $docente, $grupos, $origen): void {
             foreach ($grupos as $g) {
                 $this->actividades->publicarEnGrupo($id, $g, $docente);
             }
-            $this->actividades->cambiarEstado($id, 'APROBADA', 'PUBLICADA', $docente, null);
+            $this->actividades->cambiarEstado($id, $origen, 'PUBLICADA', $docente, null);
         });
 
         return $this->detalle($id, true);
@@ -139,8 +152,18 @@ final class ActividadService
         $actividad['transiciones'] = $transiciones;
         $ultimoRechazo = array_values(array_filter($transiciones, fn ($t) => $t['hacia'] === 'RECHAZADA'));
         $actividad['observaciones_rechazo'] = $ultimoRechazo === [] ? null : end($ultimoRechazo)['observaciones'];
+        // D-2: la interfaz ofrece "Enviar a aprobación" o "Publicar" según la institución del autor.
+        $actividad['requiere_aprobacion'] = $this->organizacion->requiereAprobacion((int) $actividad['autor_id']);
 
         return $actividad;
+    }
+
+    private function exigirContenido(int $id, string $mensaje): void
+    {
+        $errores = $this->erroresDeContenido($this->actividades->preguntas($id, true));
+        if ($errores !== []) {
+            throw HttpException::validacion($errores, $mensaje);
+        }
     }
 
     /** Detalle visible para un usuario según su rol (admin revisa; docente solo las suyas). */

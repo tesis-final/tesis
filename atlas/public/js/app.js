@@ -10,14 +10,14 @@ import * as estudiante from './vistas/estudiante.js';
 export const estado = { usuario: null, permisos: [] };
 
 const MENUS = {
-  ADMIN: [['#/', 'Actividades a revisar'], ['#/usuarios', 'Usuarios'], ['#/grupos', 'Grupos'], ['#/reglas', 'Reglas del motor'], ['#/reportes', 'Reportes'], ['#/auditoria', 'Auditoría']],
+  ADMIN: [['#/', 'Actividades a revisar'], ['#/usuarios', 'Usuarios'], ['#/grupos', 'Grupos'], ['#/instituciones', 'Instituciones'], ['#/reglas', 'Reglas del motor'], ['#/reportes', 'Reportes'], ['#/auditoria', 'Auditoría']],
   DOCENTE: [['#/', 'Dónde intervenir'], ['#/actividades', 'Mis actividades'], ['#/reportes', 'Reportes'], ['#/asistente', 'Asistente']],
   ESTUDIANTE: [['#/', 'Mis actividades']],
 };
 
 const RUTAS = {
   ADMIN: [
-    [/^#\/$/, admin.revisar], [/^#\/usuarios$/, admin.usuarios], [/^#\/grupos$/, admin.grupos],
+    [/^#\/$/, admin.revisar], [/^#\/usuarios$/, admin.usuarios], [/^#\/grupos$/, admin.grupos], [/^#\/instituciones$/, admin.instituciones],
     [/^#\/reglas$/, admin.reglas], [/^#\/auditoria$/, admin.auditoria], [/^#\/reportes$/, docente.reportes],
     [/^#\/actividades\/(\d+)$/, admin.revisarActividad],
   ],

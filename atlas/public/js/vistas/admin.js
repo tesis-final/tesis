@@ -69,6 +69,40 @@ export async function usuarios() {
     ], lista));
 }
 
+// Instituciones (RF-14) y aprobación configurable (acta D-2): por defecto el docente
+// publica directo; si la institución lo exige, las actividades pasan por "Actividades a revisar".
+export async function instituciones() {
+  const lista = await api('GET', '/instituciones');
+  const form = h('form', { clase: 'tarjeta fila', novalidate: true },
+    campo('nombre', 'Nueva institución'),
+    h('label', { clase: 'opcion' }, h('input', { type: 'checkbox', name: 'requiere_aprobacion' }), 'Exige aprobación antes de publicar'),
+    h('div', {}, h('button', { type: 'submit' }, 'Crear')));
+  form.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    try {
+      await api('POST', '/instituciones', { nombre: form.nombre.value, requiere_aprobacion: form.requiere_aprobacion.checked });
+      mensaje('Institución creada.');
+      instituciones();
+    } catch (e) { errorEn(form, e); }
+  });
+  montar(h('h1', {}, 'Instituciones'),
+    h('p', { clase: 'suave' }, 'Si una institución exige aprobación, sus docentes envían cada actividad a revisión antes de publicarla. Todo cambio queda en la auditoría.'),
+    form,
+    tabla([
+      { titulo: 'Institución', valor: (i) => i.nombre },
+      { titulo: 'Estado', valor: (i) => (i.activa ? 'Activa' : 'Inactiva') },
+      { titulo: 'Aprobación previa', valor: (i) => h('label', { clase: 'opcion' },
+        h('input', { type: 'checkbox', checked: i.requiere_aprobacion, onchange: async (ev) => {
+          try {
+            await api('PATCH', `/instituciones/${i.id}`, { nombre: i.nombre, activa: i.activa, requiere_aprobacion: ev.target.checked });
+            mensaje(ev.target.checked ? 'Ahora exige aprobación.' : 'Ya no exige aprobación: los docentes publican directo.');
+            instituciones();
+          } catch (e) { mensaje(e.message, 'error'); }
+        } }),
+        i.requiere_aprobacion ? 'Exige' : 'No exige') },
+    ], lista));
+}
+
 function campo(nombre, etiqueta, tipo = 'text') {
   return h('div', {}, h('label', { for: nombre }, etiqueta), h('input', { id: nombre, name: nombre, type: tipo, autocomplete: 'off' }));
 }

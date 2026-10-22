@@ -181,9 +181,12 @@ export async function editor(id) {
 
   const acciones = h('div', { clase: 'acciones' });
   if (editable) acciones.append(h('button', { type: 'button', onclick: guardar }, 'Guardar borrador'));
-  if (act?.estado === 'BORRADOR') acciones.append(h('button', { type: 'button', onclick: enviar }, 'Enviar a aprobación'));
-  if (act?.estado === 'APROBADA') {
+  // D-2: si la institución no exige aprobación, el borrador se publica directo.
+  const publicaDirecto = act?.estado === 'BORRADOR' && !act.requiere_aprobacion;
+  if (act?.estado === 'BORRADOR' && act.requiere_aprobacion) acciones.append(h('button', { type: 'button', onclick: enviar }, 'Enviar a aprobación'));
+  if (act?.estado === 'APROBADA' || publicaDirecto) {
     acciones.append(h('fieldset', {}, h('legend', {}, 'Publicar en:'),
+      publicaDirecto ? h('p', { clase: 'suave pequeño' }, 'Su institución no exige aprobación previa: al publicar, queda registrado quién y cuándo.') : null,
       grupos.map((g) => h('label', { clase: 'opcion' }, h('input', { type: 'checkbox', name: 'grupo', value: g.id }), g.nombre)),
       h('button', { type: 'button', onclick: publicar }, 'Publicar')));
   }

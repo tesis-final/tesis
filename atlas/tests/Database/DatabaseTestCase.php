@@ -20,6 +20,16 @@ abstract class DatabaseTestCase extends TestCase
     /** @var array<string, PDO> */
     private static array $conexiones = [];
 
+    /**
+     * La institución 1 de las pruebas exige aprobación, para recorrer el ciclo completo
+     * (BORRADOR → PENDIENTE → APROBADA → PUBLICADA). Desde 004 el valor por defecto es
+     * sin aprobación (acta D-2); ese caso se prueba con instituciones nuevas.
+     */
+    public static function setUpBeforeClass(): void
+    {
+        self::ejecutar('UPDATE instituciones SET requiere_aprobacion = TRUE WHERE id = 1');
+    }
+
     protected static function pdo(string $usuario = 'root'): PDO
     {
         if (!isset(self::$conexiones[$usuario])) {

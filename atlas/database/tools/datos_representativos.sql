@@ -33,7 +33,8 @@ SET @hash_sin_acceso := '!sin-acceso-datos-sinteticos';
 SET SESSION cte_max_recursion_depth = 10000;
 
 -- Institución propia: no se mezcla con datos reales.
-INSERT INTO instituciones (nombre) VALUES ('Liceo de prueba (datos sintéticos)');
+-- Exige aprobación (D-2 la hace configurable) para recorrer el ciclo completo.
+INSERT INTO instituciones (nombre, requiere_aprobacion) VALUES ('Liceo de prueba (datos sintéticos)', TRUE);
 SET @inst := LAST_INSERT_ID();
 
 -- Docentes

@@ -19,6 +19,7 @@ abstract class ApiTestCase extends DatabaseTestCase
 
     public static function setUpBeforeClass(): void
     {
+        parent::setUpBeforeClass();
         self::$analisis = new AnalisisClientFalso();
         self::$logAuditoria = sys_get_temp_dir() . '/atlas-auditoria-test.log';
     }
@@ -47,22 +48,31 @@ abstract class ApiTestCase extends DatabaseTestCase
     }
 
     /** Crea un usuario con contraseña conocida y devuelve [id, correo]. @return array{0:int,1:string} */
-    protected static function usuario(string $rol, string $nombre = 'Nombre', string $apellido = 'Sintético'): array
-    {
+    protected static function usuario(
+        string $rol,
+        string $nombre = 'Nombre',
+        string $apellido = 'Sintético',
+        int $institucion = 1
+    ): array {
         $correo = strtolower($rol) . '.' . bin2hex(random_bytes(5)) . '@prueba.atlas.local';
         $id = self::ejecutar(
             'INSERT INTO usuarios (institucion_id, rol_id, nombre, apellido, correo, hash_contrasena)
-             VALUES (1, ?, ?, ?, ?, ?)',
-            [self::id('roles', $rol), $nombre, $apellido, $correo, password_hash(self::CLAVE, PASSWORD_ARGON2ID)]
+             VALUES (?, ?, ?, ?, ?, ?)',
+            [$institucion, self::id('roles', $rol), $nombre, $apellido, $correo,
+             password_hash(self::CLAVE, PASSWORD_ARGON2ID)]
         );
 
         return [$id, $correo];
     }
 
     /** Cliente ya autenticado. @return array{0: Cliente, 1: int} */
-    protected function entrar(string $rol, string $nombre = 'Nombre', string $apellido = 'Sintético'): array
-    {
-        [$id, $correo] = self::usuario($rol, $nombre, $apellido);
+    protected function entrar(
+        string $rol,
+        string $nombre = 'Nombre',
+        string $apellido = 'Sintético',
+        int $institucion = 1
+    ): array {
+        [$id, $correo] = self::usuario($rol, $nombre, $apellido, $institucion);
         $c = $this->cliente();
         $c->login($correo, self::CLAVE);
         $this->assertSame(200, $c->ultimoEstado);

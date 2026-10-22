@@ -79,21 +79,27 @@ final class AdminController extends Controller
 
     public function crearInstitucion(Request $p): Response
     {
-        $id = $this->app->organizacion()->crearInstitucion($p->validados()['nombre']);
+        $d = $p->validados();
+        $id = $this->app->organizacion()->crearInstitucion($d['nombre'], $d['requiere_aprobacion'] ?? null);
 
-        return Response::creado(['id' => $id] + $p->validados());
+        return Response::creado($this->app->organizacion()->institucion($id));
     }
 
+    /** D-2: la coordinación decide si su institución exige aprobar antes de publicar. */
     public function modificarInstitucion(Request $p): Response
     {
         $d = $p->validados();
         $id = $p->parametroEntero('id');
-        if (!$this->app->organizacion()->existeInstitucion($id)) {
-            throw HttpException::noEncontrado('Institución no encontrada.');
-        }
-        $this->app->organizacion()->actualizarInstitucion($id, $d['nombre'], $d['activa'] ?? true);
+        $actual = $this->app->organizacion()->institucion($id)
+            ?? throw HttpException::noEncontrado('Institución no encontrada.');
+        $requiere = $d['requiere_aprobacion'] ?? $actual['requiere_aprobacion'];
+        $this->app->organizacion()->actualizarInstitucion($id, $d['nombre'], $d['activa'] ?? true, $requiere);
+        $p->con('auditoria', ['detalle' => [
+            'requiere_aprobacion' => [$actual['requiere_aprobacion'], $requiere],
+            'activa' => [$actual['activa'], $d['activa'] ?? true],
+        ]]);
 
-        return Response::json(['id' => $id] + $d);
+        return Response::json($this->app->organizacion()->institucion($id));
     }
 
     public function grupos(Request $p): Response

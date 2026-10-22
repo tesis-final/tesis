@@ -111,6 +111,76 @@ final class CicloAprobacionApiTest extends ApiTestCase
         $this->assertSame(409, $docente->ultimoEstado);
     }
 
+    // ------------------------------------------------ aprobación configurable (acta D-2)
+
+    /** Docente de una institución nueva con el valor por defecto (sin aprobación). @return array{0: Cliente, 1: int, 2: int} */
+    private function docenteSinAprobacion(): array
+    {
+        [$admin] = $this->entrar('ADMIN');
+        $inst = $admin->pedir('POST', '/instituciones', ['nombre' => 'Sin aprobación ' . bin2hex(random_bytes(3))]);
+        $this->assertSame(201, $admin->ultimoEstado);
+        $this->assertFalse($inst['requiere_aprobacion'], 'D-2: por defecto no se exige aprobación');
+        [$docente, $idDoc] = $this->entrar('DOCENTE', 'Nombre', 'Sintético', $inst['id']);
+        $grupo = self::crearGrupo();
+        self::asignar($idDoc, $grupo);
+
+        return [$docente, $idDoc, $grupo];
+    }
+
+    public function testSinAprobacionElDocentePublicaDirectoYQuedaRegistrado(): void
+    {
+        [$docente, $idDoc, $grupo] = $this->docenteSinAprobacion();
+        $a = $this->crearActividadApi($docente);
+        $this->assertFalse($docente->pedir('GET', "/actividades/{$a['id']}")['requiere_aprobacion']);
+
+        $docente->pedir('POST', "/actividades/{$a['id']}/enviar");
+        $this->assertSame(409, $docente->ultimoEstado, 'no hay a quién enviarla');
+
+        $r = $docente->pedir('POST', "/actividades/{$a['id']}/publicar", ['grupos' => [$grupo]]);
+        $this->assertSame(200, $docente->ultimoEstado, json_encode($r));
+        $this->assertSame('PUBLICADA', $r['estado']);
+        $ultima = end($r['transiciones']);
+        $this->assertSame(['BORRADOR', 'PUBLICADA'], [$ultima['desde'], $ultima['hacia']], 'transición registrada');
+        $this->assertSame(1, (int) self::valor(
+            "SELECT COUNT(*) FROM auditoria
+              WHERE accion = 'actividades.publicar' AND usuario_id = ? AND recurso_id = ?",
+            [$idDoc, (string) $a['id']]
+        ), 'queda auditado quién publicó');
+    }
+
+    public function testPublicarDirectoTambienExigeContenidoValido(): void
+    {
+        [$docente, , $grupo] = $this->docenteSinAprobacion();
+        $a = $docente->pedir('POST', '/actividades', ['titulo' => 'Vacía', 'nivel' => 'BASICO',
+            'categoria' => 'RESOLUCION_PROBLEMAS', 'preguntas' => []]);
+        $docente->pedir('POST', "/actividades/{$a['id']}/publicar", ['grupos' => [$grupo]]);
+        $this->assertSame(422, $docente->ultimoEstado);
+    }
+
+    public function testLaCoordinacionPuedeVolverAExigirAprobacion(): void
+    {
+        [$admin] = $this->entrar('ADMIN');
+        $inst = $admin->pedir('POST', '/instituciones', ['nombre' => 'Configurable ' . bin2hex(random_bytes(3))]);
+        $r = $admin->pedir('PATCH', "/instituciones/{$inst['id']}", [
+            'nombre' => $inst['nombre'], 'requiere_aprobacion' => true,
+        ]);
+        $this->assertSame(200, $admin->ultimoEstado);
+        $this->assertTrue($r['requiere_aprobacion']);
+        $detalle = json_decode((string) self::valor(
+            "SELECT detalle FROM auditoria WHERE accion = 'instituciones.modificar' AND recurso_id = ?
+              ORDER BY id DESC LIMIT 1",
+            [(string) $inst['id']]
+        ), true);
+        $this->assertSame([false, true], $detalle['requiere_aprobacion']);
+
+        [$docente, $idDoc] = $this->entrar('DOCENTE', 'Nombre', 'Sintético', $inst['id']);
+        $grupo = self::crearGrupo();
+        self::asignar($idDoc, $grupo);
+        $a = $this->crearActividadApi($docente);
+        $docente->pedir('POST', "/actividades/{$a['id']}/publicar", ['grupos' => [$grupo]]);
+        $this->assertSame(409, $docente->ultimoEstado, 'ahora tiene que pasar por la aprobación');
+    }
+
     public function testEstudianteVeSoloPublicadasDeSusGruposConNivel(): void
     {
         [$admin] = $this->entrar('ADMIN');

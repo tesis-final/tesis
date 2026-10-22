@@ -58,7 +58,7 @@ return [
         $api . '/instituciones',
         [Adm::class, 'crearInstitucion'],
         permiso: 'instituciones.gestionar',
-        reglas: ['nombre' => 'requerido|texto|max:150'],
+        reglas: ['nombre' => 'requerido|texto|max:150', 'requiere_aprobacion' => 'opcional|booleano'],
         accionAuditoria: 'instituciones.crear'
     ),
     new R(
@@ -66,7 +66,10 @@ return [
         $api . '/instituciones/{id}',
         [Adm::class, 'modificarInstitucion'],
         permiso: 'instituciones.gestionar',
-        reglas: ['nombre' => 'requerido|texto|max:150', 'activa' => 'opcional|booleano'],
+        reglas: [
+            'nombre' => 'requerido|texto|max:150', 'activa' => 'opcional|booleano',
+            'requiere_aprobacion' => 'opcional|booleano', // D-2
+        ],
         accionAuditoria: 'instituciones.modificar'
     ),
     new R('GET', $api . '/roles', [Adm::class, 'roles'], permiso: 'permisos.gestionar'),
