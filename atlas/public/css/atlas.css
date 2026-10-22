@@ -5,6 +5,9 @@
  * dependen solo del color: siempre llevan texto y símbolo.
  */
 
+/* Lo oculto con el atributo hidden queda oculto aunque su clase defina display (.fila). */
+[hidden] { display: none !important; }
+
 :root {
   --primario: #1f4e79;
   --primario-oscuro: #163a5a;

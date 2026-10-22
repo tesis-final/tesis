@@ -20,4 +20,12 @@ return [
     'http_only' => true,
     'same_site' => 'strict',
     'partitioned' => false,
+
+    // Las peticiones de una misma sesión se atienden de a una, como las sesiones nativas
+    // de PHP. Sin esto, una petición que empezó antes del logout podía volver a guardar
+    // la sesión al terminar y dejar al usuario adentro (verificado en la prueba de interfaz).
+    'block' => true,
+    'block_store' => 'file',
+    'block_lock_seconds' => 10,
+    'block_wait_seconds' => 10,
 ];
