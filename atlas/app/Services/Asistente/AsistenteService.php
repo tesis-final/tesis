@@ -160,7 +160,7 @@ final class AsistenteService
         $errores = array_map(fn ($q) => [
             'pregunta' => 'Pregunta ' . $q['orden'],
             'proporcion_error' => (float) $q['proporcion_error'],
-        ], $this->reportes->preguntasConMasError($c->grupoId, null, 3));
+        ], $this->reportes->preguntasConMasError($c->grupoId, null, $p->desde, $p->hasta, 3));
         $promedio = $puntajes === [] ? null : round(array_sum($puntajes) / count($puntajes), 1);
         $g = $anon->grupo($c->grupoId, $this->nombreGrupo($grupos, $c->grupoId));
         $anonimos = [

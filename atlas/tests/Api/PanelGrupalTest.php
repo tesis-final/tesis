@@ -107,6 +107,29 @@ final class PanelGrupalTest extends ApiTestCase
         $this->assertSame([1, '100.00'], [(int) $guardado['n_estudiantes'], $guardado['promedio']]);
     }
 
+    public function testLaConsultaGuiadaRespetaElPeriodo(): void
+    {
+        // D-5: grupo + período + qué ver. Fuera del período no aparece nada de hoy.
+        [$docente, $grupo] = $this->grupoConResultados();
+        $hoy = gmdate('Y-m-d');
+        $r = $docente->pedir('GET', "/docente/grupos/{$grupo}/analisis", [], ['desde' => $hoy, 'hasta' => $hoy]);
+        $this->assertNotEmpty($r['preguntas_con_mas_error']);
+        $this->assertNotEmpty($r['habilidades']);
+
+        $vacio = $docente->pedir(
+            'GET',
+            "/docente/grupos/{$grupo}/analisis",
+            [],
+            ['desde' => '2000-01-01', 'hasta' => '2000-01-31']
+        );
+        $this->assertSame(200, $docente->ultimoEstado);
+        $this->assertSame(
+            [[], [], [], 0],
+            [$vacio['prioritarios'], $vacio['preguntas_con_mas_error'], $vacio['habilidades'],
+             $vacio['agregados']['n_estudiantes']]
+        );
+    }
+
     public function testSinServicioDeAnalisisElPanelSigueFuncionando(): void
     {
         [$docente, $grupo] = $this->grupoConResultados();

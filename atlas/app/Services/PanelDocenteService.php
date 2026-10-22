@@ -89,7 +89,12 @@ final class PanelDocenteService
             'periodo' => ['desde' => $periodo->desde, 'hasta' => $periodo->hasta],
             'estudiantes' => count($estudiantes),
             'prioritarios' => $prioritarios,
-            'preguntas_con_mas_error' => $this->reportes->preguntasConMasError($grupo, $actividad),
+            'preguntas_con_mas_error' => $this->reportes->preguntasConMasError(
+                $grupo,
+                $actividad,
+                $periodo->desde,
+                $periodo->hasta
+            ),
             'agregados' => [
                 'n_estudiantes' => (int) ($agregados['n_estudiantes'] ?? 0),
                 'promedio' => isset($agregados['promedio']) ? (float) $agregados['promedio'] : null,

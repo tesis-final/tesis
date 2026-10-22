@@ -163,6 +163,103 @@ async function verFundamento(id, destino) {
   destino.scrollIntoView({ behavior: 'smooth' });
 }
 
+// ---------- Consultas guiadas (acta D-5): grupo + período + qué ver ----------
+// Es la forma principal de consultar: elige entre preguntas fijas, responde con datos
+// ya calculados por ATLAS y explica cómo se obtuvo cada número. El asistente con
+// lenguaje natural queda como opción.
+const QUE_VER = [
+  ['atencion', '¿Quiénes requieren atención?'],
+  ['preguntas', '¿Qué preguntas costaron más?'],
+  ['habilidades', '¿Cómo va el grupo en cada habilidad?'],
+  ['actividades', '¿Cómo les fue en cada actividad y cuánto tardaron?'],
+];
+
+function iso(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function rangoDe(periodo, desde, hasta) {
+  const hoy = new Date();
+  if (periodo === 'semana') return [iso(new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - 6)), iso(hoy)];
+  if (periodo === 'mes') return [iso(new Date(hoy.getFullYear(), hoy.getMonth(), 1)), iso(new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0))];
+  if (periodo === 'anterior') return [iso(new Date(hoy.getFullYear(), hoy.getMonth() - 1, 1)), iso(new Date(hoy.getFullYear(), hoy.getMonth(), 0))];
+  return [desde, hasta];
+}
+
+export async function consultas() {
+  const grupos = await api('GET', '/grupos');
+  if (!grupos.length) {
+    montar(h('h1', {}, 'Consultas'), h('p', { clase: 'vacio' }, 'Todavía no tiene grupos asignados.'));
+    return;
+  }
+  const resultado = h('div', { 'aria-live': 'polite' });
+  const personalizado = h('div', { clase: 'fila', hidden: true },
+    h('div', {}, h('label', { for: 'c-desde' }, 'Desde'), h('input', { id: 'c-desde', name: 'desde', type: 'date' })),
+    h('div', {}, h('label', { for: 'c-hasta' }, 'Hasta'), h('input', { id: 'c-hasta', name: 'hasta', type: 'date' })));
+  const form = h('form', { clase: 'tarjeta', novalidate: true },
+    h('div', { clase: 'fila' },
+      h('div', {}, h('label', { for: 'c-grupo' }, '1. Grupo'),
+        h('select', { id: 'c-grupo', name: 'grupo' }, grupos.map((g) => h('option', { value: g.id }, g.nombre)))),
+      h('div', {}, h('label', { for: 'c-periodo' }, '2. Período'),
+        h('select', { id: 'c-periodo', name: 'periodo', onchange: (ev) => { personalizado.hidden = ev.target.value !== 'otro'; } },
+          h('option', { value: 'semana' }, 'Últimos 7 días'), h('option', { value: 'mes', selected: true }, 'Este mes'),
+          h('option', { value: 'anterior' }, 'Mes anterior'), h('option', { value: 'otro' }, 'Otro rango…')))),
+    personalizado,
+    h('fieldset', {}, h('legend', {}, '3. ¿Qué quiere ver?'),
+      QUE_VER.map(([valor, texto], i) => h('label', { clase: 'opcion' },
+        h('input', { type: 'radio', name: 'que', value: valor, checked: i === 0 }), texto))),
+    h('div', { clase: 'acciones' }, h('button', { type: 'submit' }, 'Consultar')));
+
+  form.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const que = form.querySelector('input[name=que]:checked').value;
+    const [desde, hasta] = rangoDe(form.periodo.value, form.desde.value, form.hasta.value);
+    if (!desde || !hasta) { mensaje('Indique las dos fechas del rango.', 'error'); return; }
+    const grupoNombre = form.grupo.selectedOptions[0].textContent;
+    try {
+      resultado.replaceChildren(await respuestaGuiada(que, form.grupo.value, grupoNombre, desde, hasta));
+    } catch (e) { errorEn(form, e); }
+  });
+
+  montar(h('h1', {}, 'Consultas'),
+    h('p', { clase: 'suave' }, 'Elija el grupo, el período y qué quiere saber. Las respuestas salen de los datos registrados y dicen cómo se calcularon.'),
+    form, resultado);
+  form.requestSubmit();
+}
+
+async function respuestaGuiada(que, grupo, grupoNombre, desde, hasta) {
+  const titulo = `${QUE_VER.find(([v]) => v === que)[1]} — Grupo ${grupoNombre}, ${desde} a ${hasta}`;
+  if (que === 'actividades') {
+    const r = await api('GET', '/reportes', null, { grupo, desde, hasta });
+    return h('section', { clase: 'tarjeta' }, h('h2', {}, titulo),
+      tabla([{ titulo: 'Actividad', valor: (x) => x.actividad_titulo }, { titulo: 'Estudiantes', valor: (x) => x.estudiantes },
+        { titulo: 'Intentos', valor: (x) => x.intentos }, { titulo: 'Puntaje promedio', valor: (x) => numero(x.promedio) },
+        { titulo: 'Tiempo medio (total)', valor: (x) => segundos(x.duracion_media_seg) },
+        { titulo: 'Tiempo medio activo', valor: (x) => segundos(x.duracion_activa_media_seg) }],
+      r.resumen, 'No hay intentos finalizados en el período.'),
+      h('p', { clase: 'suave pequeño' }, 'Promedio de todos los intentos finalizados. Tiempo activo = total menos pausas de más de 60 s sin actividad.'));
+  }
+  const a = await api('GET', `/docente/grupos/${grupo}/analisis`, null, { desde, hasta });
+  if (que === 'atencion') {
+    return h('section', { clase: 'tarjeta' }, h('h2', {}, titulo),
+      tabla([
+        { titulo: 'Estudiante', valor: (p) => h('a', { href: `#/estudiante/${p.estudiante_id}` }, p.nombre) },
+        { titulo: 'Motivo (reglas)', valor: (p) => p.motivo },
+        { titulo: 'Última señal', valor: (p) => fecha(p.ultima) },
+      ], a.prioritarios, 'Nadie disparó reglas de riesgo en el período.'),
+      h('p', { clase: 'suave pequeño' }, 'Aparece quien disparó al menos una regla de riesgo (por ejemplo, R01: puntaje menor a 50). En el perfil, el botón "¿Por qué?" muestra la regla y los datos exactos.'));
+  }
+  if (que === 'preguntas') {
+    return h('section', { clase: 'tarjeta' }, h('h2', {}, titulo),
+      tabla([
+        { titulo: 'Pregunta', valor: (q) => q.enunciado },
+        { titulo: 'Error', valor: (q) => `${Math.round(q.proporcion_error * 100)} % (${q.errores} de ${q.respuestas} respuestas)` },
+      ], a.preguntas_con_mas_error, 'Sin errores registrados en el período.'),
+      h('p', { clase: 'suave pequeño' }, 'Proporción de respuestas incorrectas en los intentos finalizados del período.'));
+  }
+  return seccionHabilidades(a.habilidades, true);
+}
+
 // ---------- Actividades (RF-16, RF-17) ----------
 export async function actividades() {
   const lista = await api('GET', '/actividades');

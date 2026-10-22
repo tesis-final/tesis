@@ -28,19 +28,56 @@ final class ReporteRepository extends Repository
         );
     }
 
-    /** @return list<array<string, mixed>> */
-    public function preguntasConMasError(int $grupo, ?int $actividad, int $limite = 5): array
-    {
-        $limite = max(1, min($limite, 50));
-
-        return $this->todos(
-            "SELECT v.actividad_id, v.pregunta_id, v.orden, v.enunciado, v.respuestas, v.errores, v.proporcion_error
-               FROM v_preguntas_error v
-              WHERE v.grupo_id = ? AND (? IS NULL OR v.actividad_id = ?) AND v.errores > 0
-              ORDER BY v.proporcion_error DESC, v.respuestas DESC LIMIT {$limite}",
-            [$grupo, $actividad, $actividad],
-            $this->lectura()
+    /**
+     * Preguntas con mayor proporción de error del grupo en el período (RF-18, H26).
+     * Arranca por el grupo en vez de materializar v_preguntas_error entera (E-BD-006:
+     * ~41 ms contra ~490 ms) y respeta el período de la consulta guiada (D-5). La base
+     * cuenta; la proporción y el orden los calcula PHP (D-4).
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function preguntasConMasError(
+        int $grupo,
+        ?int $actividad,
+        string $desde,
+        string $hasta,
+        int $limite = 5
+    ): array {
+        $filas = $this->todos(
+            "SELECT p.actividad_id, p.id AS pregunta_id, p.orden, p.enunciado,
+                    COUNT(*) AS respuestas, SUM(o.es_correcta = FALSE) AS errores
+               FROM actividad_grupo ag
+               JOIN intentos i       ON i.actividad_id = ag.actividad_id AND i.estado = 'FINALIZADO'
+               JOIN usuario_grupo ug ON ug.usuario_id = i.usuario_id AND ug.grupo_id = ag.grupo_id AND ug.activo
+               JOIN respuestas res   ON res.intento_id = i.id
+               JOIN preguntas p      ON p.id = res.pregunta_id
+               JOIN opciones o       ON o.id = res.opcion_id
+              WHERE ag.grupo_id = ? AND (? IS NULL OR ag.actividad_id = ?)
+                AND DATE(i.finalizado_en) BETWEEN ? AND ?
+              GROUP BY p.actividad_id, p.id, p.orden, p.enunciado",
+            [$grupo, $actividad, $actividad, $desde, $hasta]
         );
+        $salida = [];
+        foreach ($filas as $f) {
+            if ((int) $f['errores'] === 0) {
+                continue;
+            }
+            $salida[] = [
+                'actividad_id' => (int) $f['actividad_id'],
+                'pregunta_id' => (int) $f['pregunta_id'],
+                'orden' => (int) $f['orden'],
+                'enunciado' => $f['enunciado'],
+                'respuestas' => (int) $f['respuestas'],
+                'errores' => (int) $f['errores'],
+                'proporcion_error' => round((int) $f['errores'] / (int) $f['respuestas'], 4),
+            ];
+        }
+        usort(
+            $salida,
+            fn ($a, $b) => [$b['proporcion_error'], $b['respuestas']] <=> [$a['proporcion_error'], $a['respuestas']]
+        );
+
+        return array_slice($salida, 0, max(1, min($limite, 50)));
     }
 
     /** @param list<int> $estudiantes @return list<array<string, mixed>> */

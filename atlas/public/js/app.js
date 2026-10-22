@@ -11,7 +11,8 @@ export const estado = { usuario: null, permisos: [] };
 
 const MENUS = {
   ADMIN: [['#/', 'Actividades a revisar'], ['#/usuarios', 'Usuarios'], ['#/grupos', 'Grupos'], ['#/instituciones', 'Instituciones'], ['#/reglas', 'Reglas del motor'], ['#/reportes', 'Reportes'], ['#/auditoria', 'Auditoría']],
-  DOCENTE: [['#/', 'Dónde intervenir'], ['#/actividades', 'Mis actividades'], ['#/reportes', 'Reportes'], ['#/asistente', 'Asistente']],
+  // D-5: las consultas guiadas son la forma principal; el asistente es opcional.
+  DOCENTE: [['#/', 'Dónde intervenir'], ['#/consultas', 'Consultas'], ['#/actividades', 'Mis actividades'], ['#/reportes', 'Reportes'], ['#/asistente', 'Asistente (opcional)']],
   ESTUDIANTE: [['#/', 'Mis actividades']],
 };
 
@@ -22,7 +23,7 @@ const RUTAS = {
     [/^#\/actividades\/(\d+)$/, admin.revisarActividad],
   ],
   DOCENTE: [
-    [/^#\/$/, docente.inicio], [/^#\/grupo\/(\d+)$/, docente.grupo], [/^#\/estudiante\/(\d+)$/, docente.estudiante],
+    [/^#\/$/, docente.inicio], [/^#\/consultas$/, docente.consultas], [/^#\/grupo\/(\d+)$/, docente.grupo], [/^#\/estudiante\/(\d+)$/, docente.estudiante],
     [/^#\/actividades$/, docente.actividades], [/^#\/actividades\/nueva$/, docente.editor],
     [/^#\/actividades\/(\d+)$/, docente.editor], [/^#\/reportes$/, docente.reportes], [/^#\/asistente$/, docente.asistente],
   ],
