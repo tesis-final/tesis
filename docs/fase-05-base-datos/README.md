@@ -6,6 +6,17 @@
 | Estado | **Implementada y verificada** en MySQL 8.0.46 real (contenedor efímero en el entorno de desarrollo). Falta desplegarla en atlas-srv01 (Fase 13) |
 | Diseño | [fase-02/03-modelo-datos](../fase-02-arquitectura/03-modelo-datos.md) |
 
+## Devolución del Hito 2: dónde está cada entregable
+
+| Lo que pidió el profesor de Base de Datos | Entregable | Evidencia |
+| --- | --- | --- |
+| DER completo y diccionario, en correspondencia con las tablas y las **reglas de negocio** | DER generado desde la base real: completo ([SVG](img/der.svg), [PNG](img/der.png), [Mermaid](der.mmd)) y **por área** ([Identidad](img/der-identidad.svg), [Contenido](img/der-contenido.svg), [Interacción](img/der-interaccion.svg), [Análisis](img/der-analisis.svg), [Control](img/der-control.svg)) · [diccionario](diccionario-datos.md) · **[reglas de negocio → restricción → prueba](reglas-de-negocio.md)** (47 reglas) | Regenerados el 22/10 desde una instalación limpia: idénticos a los del repositorio |
+| Script SQL reproducible con claves, relaciones, restricciones e índices | `database/migrations/001`–`004` + `seeds/` + `docker/mysql/init.sql` | E-BD-008 §1: instalación desde cero → 32 tablas, 48 FK, 38 CHECK, 92 índices, 13 triggers |
+| Usuarios y privilegios, **demostrando que lo no autorizado se rechaza** | 5 usuarios con privilegio mínimo (`02-usuarios.sh`) · `tools/demostrar_rechazos.sh` | **E-BD-011**: 36 rechazos con el error real de MySQL + 4 controles permitidos, 0 que no coinciden · E-BD-010 (SHOW GRANTS) · `PrivilegiosTest` (E-BD-007) |
+| Datos representativos y consultas de prueba con rendimiento | `tools/datos_representativos.sql` (300 estudiantes, 9.000 intentos) · `tools/pruebas_hito2.sh` | E-BD-006 / E-BD-008 (tiempos y `EXPLAIN ANALYZE`) |
+| Restauración real con tiempos e integridad | Completo (`mysqldump`) + incremental (binlog) | E-BD-005 / E-BD-009: RPO 0, CHECKSUM sin diferencias, 0 huérfanos |
+| *Recomendación:* alta disponibilidad con replicación y conmutación, qué resuelve y por qué no reemplaza al respaldo | **[alta-disponibilidad.md](alta-disponibilidad.md)** · `tools/demostrar_replicacion.sh` | **E-BD-012**: réplica idéntica, solo lectura, un borrado por error se replica en 0,7 s, conmutación con RPO 0 y RTO < 1 s (Docker de desarrollo) |
+
 ## Archivos
 
 | Archivo | Qué es |

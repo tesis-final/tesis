@@ -1,0 +1,36 @@
+erDiagram
+    auditoria {
+        bigint id PK
+        bigint usuario_id FK
+        varchar accion
+        varchar recurso
+        varchar recurso_id
+        enum resultado
+        varchar ip
+        json detalle
+        datetime creado_en
+    }
+    conversaciones {
+        bigint id PK
+        bigint docente_id FK
+        varchar pregunta
+        enum tipo_consulta
+        json contexto_enviado
+        text respuesta
+        enum estado
+        datetime creado_en
+    }
+    registro_respaldos {
+        bigint id PK
+        enum tipo
+        enum destino
+        datetime iniciado_en
+        datetime finalizado_en
+        enum resultado
+        varchar archivo
+        char sha256
+        bigint tamano_bytes
+        tinyint verificado
+    }
+    usuarios ||--o{ auditoria : "usuario_id"
+    usuarios ||--o{ conversaciones : "docente_id"

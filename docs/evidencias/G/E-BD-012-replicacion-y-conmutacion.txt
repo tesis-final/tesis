@@ -1,0 +1,60 @@
+# E-BD-012 — Alta disponibilidad: replicación y conmutación ante fallos (demostración)
+# Fecha (UTC): 2026-10-22T19:00:37Z · MySQL 8.0.46 (imagen mysql:8.0)
+# Comando: atlas/database/tools/demostrar_replicacion.sh · Entorno: Docker de desarrollo (2 contenedores
+# en la misma PC), NO es una instalación de producción. Explicación: docs/fase-05-base-datos/alta-disponibilidad.md
+
+## 1. Primario + réplica (replicación asíncrona por GTID)
+
+Instalación de ATLAS + datos representativos en el primario: 13049 ms; la réplica terminó de aplicarlos a los 14136 ms.
+
+Primario:
++----------+------------+---------------+------------+----------+
+| intentos | respuestas | interacciones | resultados | triggers |
++----------+------------+---------------+------------+----------+
+|     9000 |      88745 |         88745 |       8749 |       13 |
++----------+------------+---------------+------------+----------+
+Réplica:
++----------+------------+---------------+------------+----------+
+| intentos | respuestas | interacciones | resultados | triggers |
++----------+------------+---------------+------------+----------+
+|     9000 |      88745 |         88745 |       8749 |       13 |
++----------+------------+---------------+------------+----------+
+Huella de CHECKSUM TABLE (7 tablas principales): primario a684fb4865542a70 · réplica a684fb4865542a70 → IGUALES
+
+Estado de la réplica:
+  Replica_IO_Running: Yes
+  Replica_SQL_Running: Yes
+  Last_Error: 
+  Seconds_Behind_Source: 0
+
+## 2. La réplica es de solo lectura (super_read_only)
+
+DELETE en la réplica → ERROR 1290 (HY000) at line 1: The MySQL server is running with the --super-read-only option so it cannot execute this statement
+
+## 3. Un error humano se replica: la réplica NO reemplaza al respaldo
+
+Alguien borra por error las interacciones de 1.000 intentos en el PRIMARIO.
+Interacciones en la RÉPLICA: antes 88745 · después 78850 (borradas: 9895). El borrado llegó a la réplica en 675 ms.
+Conclusión: la réplica copia todo, también los errores. Para volver atrás hace falta el RESPALDO
+(completo + binlog hasta antes del error, E-BD-005 / E-BD-009).
+
+## 4. Caída del primario y conmutación a la réplica
+
+La aplicación insertó intentos de forma continua durante 3 s; el primario se mató con docker kill.
+Intentos confirmados por el primario antes de caer: 16 · presentes en la réplica: 16
+**RPO medido: 0 intentos perdidos** (replicación asíncrona: puede perderse lo último que el
+primario confirmó y no llegó a enviar; con replicación semisincrónica ese número es 0).
+**RTO medido: 967 ms** desde la caída hasta la primera escritura aceptada en la réplica promovida
+(promoción hecha por el script; con una persona siguiendo el procedimiento son minutos, no milisegundos).
+
+Réplica promovida (ahora es el primario):
++-----------+-----------------+----------+----------+
+| read_only | super_read_only | intentos | triggers |
++-----------+-----------------+----------+----------+
+|         0 |               0 |     9016 |       13 |
++-----------+-----------------+----------+----------+
+
+Resumen
+- Copia fiel y continua: huellas iguales, réplica al día en segundos.
+- Ante la caída del servidor, el servicio vuelve en lo que tarda promover la réplica (RTO), sin restaurar nada.
+- Ante un error humano, la réplica no ayuda: el borrado se replicó en 675 ms. Sigue haciendo falta el respaldo.

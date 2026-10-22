@@ -69,7 +69,7 @@ El acta cambia partes del documento a propósito. Esta lista dice qué sección 
 | H.2.4 Restricción tecnológica | "PHP sin depender de un único framework" | "PHP con Laravel para la capa HTTP y la lógica en clases propias; análisis en un servicio Python separado; MySQL; despliegue en contenedores" |
 | H.3.2 RF-17 | Criterio: estados del ciclo | Agregar al criterio: "Si la institución no exige aprobación, el docente publica directo; la transición queda registrada con su autor." |
 | H.3.2 (nuevos) | — | Proponer **RF-21 Habilidades** ("cada pregunta mide una o más habilidades; el sistema informa el acierto por habilidad por estudiante y por grupo") y **RF-22 Decisión del docente** ("el docente confirma o cambia la actividad que sugiere el sistema; queda registrado"). Criterios: los de las pruebas citadas en §2 |
-| Anexos B y G | "HITO 2" | Evidencias: B → E-APP-007 a 012 y capturas; G → E-BD-007 a 010; C → E-LNX-004 |
+| Anexos B y G | "HITO 2" | Evidencias: B → E-APP-007 a 012 y capturas; G → E-BD-007 a 012 (y el DER en imagen, `docs/fase-05-base-datos/img`); C → E-LNX-004 |
 
 ## 5. Evidencias del Hito 2
 
@@ -85,6 +85,8 @@ El acta cambia partes del documento a propósito. Esta lista dice qué sección 
 | [E-BD-008](../evidencias/G/E-BD-008-datos-y-consultas-004.txt) | Datos representativos, consultas y 3FN con 004 | 0 inconsistencias |
 | [E-BD-009](../evidencias/G/E-BD-009-restauracion-004.txt) | Restauración real con 004 | RPO 0, 0 diferencias, 0 huérfanos |
 | [E-BD-010](../evidencias/G/E-BD-010-show-grants-004.txt) | Privilegios con 004 | según Tabla 21 + 004 |
+| [E-BD-011](../evidencias/G/E-BD-011-rechazos.txt) | Rechazos demostrados con el error real de MySQL (privilegios, restricciones, triggers) | 36 rechazos + 4 controles, 0 que no coinciden |
+| [E-BD-012](../evidencias/G/E-BD-012-replicacion-y-conmutacion.txt) | Alta disponibilidad: réplica, error humano replicado, conmutación | copia idéntica · borrado replicado en 0,7 s · RPO 0, RTO < 1 s |
 | [E-LNX-004](../evidencias/C/E-LNX-004-despliegue-laravel.txt) | Despliegue con Laravel (Linux de prueba) | vendor sin dev; Laravel responde |
 
 ## 6. Lo que falta (no se hizo en este hito)

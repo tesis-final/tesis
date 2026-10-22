@@ -1,0 +1,93 @@
+erDiagram
+    agrupamientos {
+        bigint id PK
+        bigint grupo_id FK
+        date periodo_inicio
+        date periodo_fin
+        tinyint k
+        decimal silueta
+        int n_muestras
+        varchar modelo_version
+        datetime generado_en
+    }
+    analisis_grupal {
+        bigint id PK
+        bigint grupo_id FK
+        bigint actividad_id FK
+        date periodo_inicio
+        date periodo_fin
+        int n_estudiantes
+        decimal promedio
+        decimal mediana
+        decimal minimo
+        decimal maximo
+        datetime generado_en
+    }
+    decisiones_recomendacion {
+        bigint id PK
+        bigint recomendacion_id FK
+        bigint actividad_id FK
+        enum decision
+        bigint decidido_por FK
+        datetime decidido_en
+    }
+    indicadores {
+        bigint id PK
+        bigint perfil_id FK
+        bigint actividad_id FK
+        bigint agrupamiento_id FK
+        enum tipo
+        decimal valor
+        enum origen
+        datetime calculado_en
+    }
+    perfiles_aprendizaje {
+        bigint id PK
+        bigint usuario_id FK
+        date periodo_inicio
+        date periodo_fin
+        datetime actualizado_en
+    }
+    recomendacion_regla {
+        bigint recomendacion_id PK,FK
+        smallint regla_id PK,FK
+        smallint version_regla
+        json valores_entrada
+    }
+    recomendaciones {
+        bigint id PK
+        bigint perfil_id FK
+        bigint actividad_sugerida_id FK
+        varchar texto
+        datetime generado_en
+    }
+    reglas_analisis {
+        smallint id PK
+        varchar codigo UK
+        varchar nombre
+        varchar descripcion
+        enum tipo
+        json condicion
+        json sugerencia
+        varchar recomendacion_plantilla
+        tinyint prioridad
+        tinyint activa
+        smallint version
+        bigint actualizado_por FK
+        datetime actualizado_en
+    }
+    grupos_clase ||--o{ agrupamientos : "grupo_id"
+    actividades ||--o{ analisis_grupal : "actividad_id"
+    grupos_clase ||--o{ analisis_grupal : "grupo_id"
+    actividades ||--o{ decisiones_recomendacion : "actividad_id"
+    usuarios ||--o{ decisiones_recomendacion : "decidido_por"
+    recomendaciones ||--o{ decisiones_recomendacion : "recomendacion_id"
+    actividades ||--o{ indicadores : "actividad_id"
+    agrupamientos ||--o{ indicadores : "agrupamiento_id"
+    perfiles_aprendizaje ||--o{ indicadores : "perfil_id"
+    usuarios ||--o{ perfiles_aprendizaje : "usuario_id"
+    recomendaciones ||--o{ recomendacion_regla : "recomendacion_id"
+    reglas_analisis ||--o{ recomendacion_regla : "regla_id"
+    actividades ||--o{ recomendaciones : "actividad_sugerida_id"
+    perfiles_aprendizaje ||--o{ recomendaciones : "perfil_id"
+    usuarios ||--o{ reglas_analisis : "actualizado_por"
