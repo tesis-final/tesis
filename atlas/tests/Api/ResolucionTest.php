@@ -48,6 +48,24 @@ final class ResolucionTest extends ApiTestCase
         );
     }
 
+    public function testPreguntaSinResponderCuentaComoIncorrecta(): void
+    {
+        // RF-07 con el cálculo en PHP (D-4): 1 correcta de 4, las otras 3 sin responder.
+        [$est, $a] = $this->escenario(4);
+        $inicio = $est->pedir('POST', '/intentos', ['actividad_id' => $a['id']]);
+        $id = $inicio['intento']['id'];
+        $p = $a['preguntas'][0];
+        $correcta = array_values(array_filter($p['opciones'], fn ($o) => $o['correcta']))[0]['id'];
+        $est->pedir('PUT', "/intentos/{$id}/respuestas/{$p['id']}", ['opcion_id' => $correcta, 'tiempo_seg' => 5]);
+        $this->assertSame(204, $est->ultimoEstado);
+
+        $r = $est->pedir('POST', "/intentos/{$id}/finalizar");
+        $this->assertSame(200, $est->ultimoEstado);
+        $this->assertSame([1, 4], [$r['correctas'], $r['total_preguntas']]);
+        $this->assertEqualsWithDelta(25.0, $r['puntaje'], 0.001);
+        $this->assertSame('25.00', self::valor('SELECT puntaje FROM resultados WHERE intento_id = ?', [$id]));
+    }
+
     public function testReenviarUnLoteNoDuplicaEventos(): void
     {
         [$est, $a] = $this->escenario(1);

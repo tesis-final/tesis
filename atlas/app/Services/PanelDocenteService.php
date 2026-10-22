@@ -10,6 +10,7 @@ use Atlas\Repositories\AnalisisRepository;
 use Atlas\Repositories\OrganizacionRepository;
 use Atlas\Repositories\ReporteRepository;
 use Atlas\Services\Analysis\Periodo;
+use Atlas\Services\Analysis\ResumenGrupal;
 
 /**
  * Panel docente (RF-11, RF-12, RF-13, RF-18; §20.4; H.2.3).
@@ -73,7 +74,14 @@ final class PanelDocenteService
             fn ($a, $b) => [$b['cantidad_reglas'], $b['ultima']] <=> [$a['cantidad_reglas'], $a['ultima']]
         );
 
-        $agregados = $this->reportes->analisisGrupal($grupo, $actividad, $periodo->desde, $periodo->hasta);
+        // RF-18 (D-4): los agregados se calculan en PHP y la base solo guarda el historial.
+        if ($periodo->hasta < $periodo->desde) {
+            throw HttpException::conflicto('período inválido');
+        }
+        $agregados = ResumenGrupal::calcular(
+            $this->reportes->ultimosPuntajes($grupo, $actividad, $periodo->desde, $periodo->hasta)
+        );
+        $this->reportes->guardarAnalisisGrupal($grupo, $actividad, $periodo->desde, $periodo->hasta, $agregados);
 
         return [
             'grupo' => $this->organizacion->grupo($grupo),

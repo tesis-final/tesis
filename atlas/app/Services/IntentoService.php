@@ -10,6 +10,7 @@ use Atlas\Core\HttpException;
 use Atlas\Repositories\ActividadRepository;
 use Atlas\Repositories\IntentoRepository;
 use Atlas\Services\Analysis\AnalisisService;
+use Atlas\Services\Analysis\Indicadores;
 use DateTimeImmutable;
 use DateTimeZone;
 
@@ -19,7 +20,7 @@ use DateTimeZone;
  * - los eventos (cambio de opción, pausa, navegación…) se guardan con marca temporal
  *   y número de secuencia para reconstruir el proceso;
  * - el tiempo se registra en segundos, total y por pregunta;
- * - al finalizar, en una sola transacción: cierre + resultado (trigger) + Nivel 1.
+ * - al finalizar, en una sola transacción: cierre + resultado (calculado en PHP, D-4) + Nivel 1.
  */
 final class IntentoService
 {
@@ -133,6 +134,14 @@ final class IntentoService
                 'FINALIZADO',
                 $this->formato($ahora),
                 $this->segundosDesde($intento['iniciado_en'], $ahora)
+            );
+            // RF-07: el resultado lo calcula la aplicación (D-4); la base solo lo guarda.
+            $conteo = $this->intentos->conteoParaResultado((int) $intento['id']);
+            $this->intentos->guardarResultado(
+                (int) $intento['id'],
+                $conteo['correctas'],
+                $conteo['total'],
+                Indicadores::puntaje($conteo['correctas'], $conteo['total'])
             );
             // Nivel 1 en la misma transacción (Tabla 20: la resolución se guarda como una sola operación).
             $this->analisis->procesarIntento((int) $intento['id']);

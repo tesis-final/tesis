@@ -125,15 +125,59 @@ final class ReporteRepository extends Repository
         return ['filas' => $filas, 'resumen' => $resumen];
     }
 
-    /** Llama a sp_analisis_grupal con atlas_app (EXECUTE). @return array<string, mixed> */
-    public function analisisGrupal(int $grupo, ?int $actividad, string $desde, string $hasta): array
+    /**
+     * Puntaje del último intento finalizado de cada estudiante del grupo en cada
+     * actividad del período (p_actividad null = todas). Solo lee: los agregados los
+     * calcula ResumenGrupal en PHP (D-4).
+     *
+     * @return list<array{usuario_id: int, puntaje: float}>
+     */
+    public function ultimosPuntajes(int $grupo, ?int $actividad, string $desde, string $hasta): array
     {
-        $st = $this->pdo()->prepare('CALL sp_analisis_grupal(?, ?, ?, ?)');
-        $st->execute([$grupo, $actividad, $desde, $hasta]);
-        $fila = $st->fetch() ?: [];
-        $st->closeCursor();
+        $filas = $this->todos(
+            "SELECT usuario_id, puntaje FROM (
+                SELECT i.usuario_id, r.puntaje,
+                       ROW_NUMBER() OVER (PARTITION BY i.usuario_id, i.actividad_id
+                                          ORDER BY i.finalizado_en DESC, i.id DESC) AS rn
+                  FROM intentos i
+                  JOIN resultados r       ON r.intento_id = i.id
+                  JOIN usuarios u         ON u.id = i.usuario_id
+                  JOIN roles ro           ON ro.id = u.rol_id AND ro.codigo = 'ESTUDIANTE'
+                  JOIN usuario_grupo ug   ON ug.usuario_id = i.usuario_id AND ug.grupo_id = ? AND ug.activo
+                  JOIN actividad_grupo ag ON ag.actividad_id = i.actividad_id AND ag.grupo_id = ?
+                 WHERE i.estado = 'FINALIZADO'
+                   AND DATE(i.finalizado_en) BETWEEN ? AND ?
+                   AND (? IS NULL OR i.actividad_id = ?)
+             ) x WHERE rn = 1",
+            [$grupo, $grupo, $desde, $hasta, $actividad, $actividad]
+        );
 
-        return $fila;
+        return array_map(
+            fn ($f) => ['usuario_id' => (int) $f['usuario_id'], 'puntaje' => (float) $f['puntaje']],
+            $filas
+        );
+    }
+
+    /**
+     * Guarda el análisis grupal calculado (historial en `analisis_grupal`).
+     *
+     * @param array{n_estudiantes: int, promedio: float|null, mediana: float|null,
+     *              minimo: float|null, maximo: float|null} $resumen
+     */
+    public function guardarAnalisisGrupal(
+        int $grupo,
+        ?int $actividad,
+        string $desde,
+        string $hasta,
+        array $resumen
+    ): void {
+        $this->ejecutar(
+            'INSERT INTO analisis_grupal
+               (grupo_id, actividad_id, periodo_inicio, periodo_fin, n_estudiantes, promedio, mediana, minimo, maximo)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [$grupo, $actividad, $desde, $hasta, $resumen['n_estudiantes'], $resumen['promedio'],
+             $resumen['mediana'], $resumen['minimo'], $resumen['maximo']]
+        );
     }
 
     /** @return array<string, mixed>|null último agrupamiento del Nivel 2 para el grupo y período */

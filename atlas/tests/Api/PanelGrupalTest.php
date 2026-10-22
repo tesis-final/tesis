@@ -60,6 +60,33 @@ final class PanelGrupalTest extends ApiTestCase
         $this->assertFalse($r['aprendizaje_automatico']['suficiencia']['suficiente']);
     }
 
+    public function testCuentaElUltimoIntentoYGuardaElHistorial(): void
+    {
+        // RF-18 (D-4): un estudiante que hace 0 y después 100 cuenta con 100; el resumen
+        // calculado en PHP queda guardado en analisis_grupal.
+        [$admin] = $this->entrar('ADMIN');
+        [$docente, $idDoc] = $this->entrar('DOCENTE');
+        $grupo = self::crearGrupo();
+        self::asignar($idDoc, $grupo);
+        $a = $this->crearActividadApi($docente, 2);
+        $this->publicarApi($docente, $admin, $a['id'], $grupo);
+        [$est, $idEst] = $this->entrar('ESTUDIANTE');
+        self::asignar($idEst, $grupo);
+        $this->resolver($est, $a, 0);
+        $this->resolver($est, $a, 2);
+
+        $r = $docente->pedir('GET', "/docente/grupos/{$grupo}/analisis", [], ['actividad' => (string) $a['id']]);
+        $this->assertSame(200, $docente->ultimoEstado);
+        $this->assertSame(1, $r['agregados']['n_estudiantes']);
+        $this->assertEqualsWithDelta(100.0, $r['agregados']['promedio'], 0.001);
+        $this->assertEqualsWithDelta(100.0, $r['agregados']['minimo'], 0.001);
+
+        $guardado = self::pdo()->query(
+            "SELECT n_estudiantes, promedio FROM analisis_grupal WHERE grupo_id = {$grupo} ORDER BY id DESC LIMIT 1"
+        )->fetch();
+        $this->assertSame([1, '100.00'], [(int) $guardado['n_estudiantes'], $guardado['promedio']]);
+    }
+
     public function testSinServicioDeAnalisisElPanelSigueFuncionando(): void
     {
         [$docente, $grupo] = $this->grupoConResultados();

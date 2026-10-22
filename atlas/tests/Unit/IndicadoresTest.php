@@ -30,6 +30,16 @@ final class IndicadoresTest extends TestCase
         $this->assertNull($r['eficiencia'], 'sin media de grupo no se inventa eficiencia');
     }
 
+    public function testPuntajeDeUnIntento(): void
+    {
+        // RF-07 (D-4): correctas / total × 100, calculado en PHP.
+        $this->assertSame(75.0, Indicadores::puntaje(3, 4));
+        $this->assertSame(66.67, Indicadores::puntaje(2, 3));
+        $this->assertSame(0.0, Indicadores::puntaje(0, 5));
+        $this->assertSame(100.0, Indicadores::puntaje(5, 5));
+        $this->assertSame(0.0, Indicadores::puntaje(0, 0), 'actividad sin preguntas: sin división por cero');
+    }
+
     public function testSinIntentosFinalizadosNoHayIndicadores(): void
     {
         $this->assertNull(Indicadores::calcular([self::i(1, 'ABANDONADO', null)], 60.0, 10));

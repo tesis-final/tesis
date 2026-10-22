@@ -85,9 +85,9 @@ final class EsquemaTest extends DatabaseTestCase
             'v_recomendaciones_riesgo', 'v_resultados_detalle',
         ], $vistas);
 
-        $this->assertSame(1, (int) self::valor(
-            "SELECT COUNT(*) FROM information_schema.routines
-              WHERE routine_schema = 'atlas_db' AND routine_name = 'sp_analisis_grupal'"
+        // Acta D-4 (004): la base no calcula; no quedan procedimientos almacenados.
+        $this->assertSame(0, (int) self::valor(
+            "SELECT COUNT(*) FROM information_schema.routines WHERE routine_schema = 'atlas_db'"
         ));
         $this->assertGreaterThanOrEqual(15, (int) self::valor(
             "SELECT COUNT(*) FROM information_schema.triggers WHERE trigger_schema = 'atlas_db'"
