@@ -14,6 +14,19 @@ final class Indicadores
     public const EFICIENCIA_MAXIMA = 5.0;
 
     /**
+     * Puntaje de un intento: correctas / total × 100, con 2 decimales (§25.4; RF-07).
+     * Lo calcula la aplicación al finalizar (D-4); la base solo lo guarda.
+     */
+    public static function puntaje(int $correctas, int $total): float
+    {
+        if ($total <= 0) {
+            return 0.0;
+        }
+
+        return round(max(0, min($correctas, $total)) * 100 / $total, 2);
+    }
+
+    /**
      * @param list<array{numero: int, estado: string, puntaje: float|null, duracion_seg: int|null}> $intentos
      *        todos los intentos del estudiante en la actividad
      * @param float|null $duracionMediaGrupo media de duración (s) de los intentos finalizados del grupo
@@ -34,7 +47,7 @@ final class Indicadores
         $primero = $finalizados[0];
         $ultimo = $finalizados[count($finalizados) - 1];
 
-        // Puntaje: correctas / total × 100 del último intento (ya calculado por el trigger).
+        // Puntaje: correctas / total × 100 del último intento (guardado al finalizar, ver puntaje()).
         $puntaje = (float) $ultimo['puntaje'];
         // Mejora: último − primero.
         $mejora = round($puntaje - (float) $primero['puntaje'], 2);

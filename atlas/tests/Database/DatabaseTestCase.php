@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atlas\Tests\Database;
 
+use Atlas\Services\Analysis\Indicadores;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
@@ -18,6 +19,16 @@ abstract class DatabaseTestCase extends TestCase
 {
     /** @var array<string, PDO> */
     private static array $conexiones = [];
+
+    /**
+     * La institución 1 de las pruebas exige aprobación, para recorrer el ciclo completo
+     * (BORRADOR → PENDIENTE → APROBADA → PUBLICADA). Desde 004 el valor por defecto es
+     * sin aprobación (acta D-2); ese caso se prueba con instituciones nuevas.
+     */
+    public static function setUpBeforeClass(): void
+    {
+        self::ejecutar('UPDATE instituciones SET requiere_aprobacion = TRUE WHERE id = 1');
+    }
 
     protected static function pdo(string $usuario = 'root'): PDO
     {
@@ -188,12 +199,29 @@ abstract class DatabaseTestCase extends TestCase
         );
     }
 
+    /**
+     * Cierra el intento y guarda su resultado como lo hace la aplicación
+     * (IntentoService::finalizar): desde 004 la base no lo calcula (acta D-4).
+     */
     protected static function finalizar(int $intento, ?string $cuando = null): void
     {
         self::ejecutar(
             "UPDATE intentos SET estado = 'FINALIZADO', finalizado_en = COALESCE(?, CURRENT_TIMESTAMP(3)),
                     duracion_seg = 60 WHERE id = ?",
             [$cuando, $intento]
+        );
+        $total = (int) self::valor(
+            'SELECT COUNT(*) FROM preguntas p JOIN intentos i ON i.actividad_id = p.actividad_id WHERE i.id = ?',
+            [$intento]
+        );
+        $correctas = (int) self::valor(
+            'SELECT COUNT(*) FROM respuestas r JOIN opciones o ON o.id = r.opcion_id
+              WHERE r.intento_id = ? AND o.es_correcta = TRUE',
+            [$intento]
+        );
+        self::ejecutar(
+            'INSERT INTO resultados (intento_id, correctas, total_preguntas, puntaje) VALUES (?, ?, ?, ?)',
+            [$intento, $correctas, $total, Indicadores::puntaje($correctas, $total)]
         );
     }
 }

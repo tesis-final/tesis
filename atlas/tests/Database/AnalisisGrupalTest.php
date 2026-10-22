@@ -5,63 +5,49 @@ declare(strict_types=1);
 namespace Atlas\Tests\Database;
 
 /**
- * Análisis grupal: RF-18 (sp_analisis_grupal y vistas del panel), DEC-11.
+ * Análisis grupal: RF-18 y vistas del panel. Desde 004 (acta D-4) los agregados
+ * los calcula PHP (tests/Unit/ResumenGrupalTest, tests/Api/PanelGrupalTest);
+ * la base guarda el historial en `analisis_grupal` y protege su integridad.
  */
 final class AnalisisGrupalTest extends DatabaseTestCase
 {
-    public function testAgregadosDelGrupoConDatosConocidos(): void
+    public function testLaBaseNoTieneProcedimientosDeCalculo(): void
     {
-        $docente = self::crearUsuario('docente');
-        $grupo = self::crearGrupo();
-        self::asignar($docente, $grupo);
-        [$actividad, $mapa] = self::crearActividad($docente, 4);
-        self::publicar($actividad, $grupo, $docente);
-        $preguntas = array_keys($mapa);
-
-        // Cuatro estudiantes con 1, 2, 3 y 4 correctas → 25, 50, 75, 100.
-        foreach ([1, 2, 3, 4] as $correctas) {
-            $e = self::crearUsuario('estudiante');
-            self::asignar($e, $grupo);
-            if ($correctas === 4) {
-                // Intento previo con 0 correctas: no debe contar (se toma el último intento).
-                $previo = self::iniciarIntento($e, $actividad);
-                foreach ($preguntas as $p) {
-                    self::responder($previo, $p, $mapa[$p][1]);
-                }
-                self::finalizar($previo, '2026-09-10 10:00:00');
-            }
-            $intento = self::iniciarIntento($e, $actividad);
-            foreach ($preguntas as $i => $p) {
-                self::responder($intento, $p, $i < $correctas ? $mapa[$p][0] : $mapa[$p][1]);
-            }
-            self::finalizar($intento, '2026-09-15 10:00:00');
-        }
-        $st = self::pdo()->prepare('CALL sp_analisis_grupal(?, ?, ?, ?)');
-        $st->execute([$grupo, $actividad, '2026-09-01', '2026-09-30']);
-        $fila = $st->fetch();
-        $st->closeCursor();
-
-        $this->assertSame(4, (int) $fila['n_estudiantes']);
-        $this->assertSame('62.50', $fila['promedio']);
-        $this->assertSame('62.50', $fila['mediana']);
-        $this->assertSame('25.00', $fila['minimo']);
-        $this->assertSame('100.00', $fila['maximo']);
+        $this->assertSame(0, (int) self::valor(
+            "SELECT COUNT(*) FROM information_schema.routines WHERE routine_schema = 'atlas_db'"
+        ));
     }
 
-    public function testElDocenteNoCuentaComoEstudianteEnElGrupo(): void
+    public function testAppAgregaAnalisisGrupalPeroNoLoAltera(): void
     {
-        $docente = self::crearUsuario('docente');
         $grupo = self::crearGrupo();
-        self::asignar($docente, $grupo);
-        [$actividad] = self::crearActividad($docente, 1);
-        self::publicar($actividad, $grupo, $docente);
-
-        $st = self::pdo('atlas_app')->prepare('CALL sp_analisis_grupal(?, ?, ?, ?)');
-        $st->execute([$grupo, $actividad, '2026-09-01', '2026-09-30']);
-        $fila = $st->fetch();
-        $st->closeCursor();
-        $this->assertSame(0, (int) $fila['n_estudiantes']);
-        $this->assertNull($fila['promedio']);
+        $id = self::ejecutar(
+            "INSERT INTO analisis_grupal (grupo_id, periodo_inicio, periodo_fin, n_estudiantes, promedio, mediana,
+                                          minimo, maximo)
+             VALUES (?, '2026-09-01', '2026-09-30', 4, 62.5, 62.5, 25, 100)",
+            [$grupo],
+            'atlas_app'
+        );
+        $this->assertGreaterThan(0, $id);
+        $this->assertFalla(
+            'UPDATE analisis_grupal SET promedio = 100 WHERE id = ?',
+            [$id],
+            usuario: 'atlas_app',
+            contiene: 'command denied'
+        );
+        $this->assertFalla(
+            'DELETE FROM analisis_grupal WHERE id = ?',
+            [$id],
+            usuario: 'atlas_app',
+            contiene: 'command denied'
+        );
+        $this->assertFalla(
+            "INSERT INTO analisis_grupal (grupo_id, periodo_inicio, periodo_fin, n_estudiantes, promedio)
+             VALUES (?, '2026-09-30', '2026-09-01', 1, 50)",
+            [$grupo],
+            usuario: 'atlas_app',
+            contiene: 'ck_analisis_grupal_periodo'
+        );
     }
 
     public function testPreguntasConMayorProporcionDeError(): void

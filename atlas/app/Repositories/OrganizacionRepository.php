@@ -12,19 +12,47 @@ final class OrganizacionRepository extends Repository
     /** @return list<array<string, mixed>> */
     public function instituciones(): array
     {
-        return $this->todos('SELECT id, nombre, activa, creado_en FROM instituciones ORDER BY nombre');
+        return array_map(fn ($i) => ['activa' => (bool) $i['activa'],
+            'requiere_aprobacion' => (bool) $i['requiere_aprobacion']] + $i, $this->todos(
+                'SELECT id, nombre, activa, requiere_aprobacion, creado_en FROM instituciones ORDER BY nombre'
+            ));
     }
 
-    public function crearInstitucion(string $nombre): int
+    /** @return array<string, mixed>|null */
+    public function institucion(int $id): ?array
     {
-        return $this->ejecutar('INSERT INTO instituciones (nombre) VALUES (?)', [$nombre]);
+        $i = $this->uno('SELECT id, nombre, activa, requiere_aprobacion FROM instituciones WHERE id = ?', [$id]);
+
+        return $i === null ? null
+            : ['activa' => (bool) $i['activa'], 'requiere_aprobacion' => (bool) $i['requiere_aprobacion']] + $i;
     }
 
-    public function actualizarInstitucion(int $id, string $nombre, bool $activa): int
+    /** Sin requiere_aprobacion se usa el valor por defecto de la base: sin aprobación (D-2). */
+    public function crearInstitucion(string $nombre, ?bool $requiereAprobacion = null): int
+    {
+        return $requiereAprobacion === null
+            ? $this->ejecutar('INSERT INTO instituciones (nombre) VALUES (?)', [$nombre])
+            : $this->ejecutar(
+                'INSERT INTO instituciones (nombre, requiere_aprobacion) VALUES (?, ?)',
+                [$nombre, (int) $requiereAprobacion]
+            );
+    }
+
+    public function actualizarInstitucion(int $id, string $nombre, bool $activa, bool $requiereAprobacion): int
     {
         return $this->afectadas(
-            'UPDATE instituciones SET nombre = ?, activa = ? WHERE id = ?',
-            [$nombre, (int) $activa, $id]
+            'UPDATE instituciones SET nombre = ?, activa = ?, requiere_aprobacion = ? WHERE id = ?',
+            [$nombre, (int) $activa, (int) $requiereAprobacion, $id]
+        );
+    }
+
+    /** ¿La institución del docente exige aprobar las actividades antes de publicarlas? (D-2) */
+    public function requiereAprobacion(int $usuario): bool
+    {
+        return (bool) $this->valor(
+            'SELECT i.requiere_aprobacion FROM usuarios u JOIN instituciones i ON i.id = u.institucion_id
+              WHERE u.id = ?',
+            [$usuario]
         );
     }
 

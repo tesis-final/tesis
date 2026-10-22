@@ -59,6 +59,26 @@ final class UsuarioService
         return $this->usuarios->porId($id);
     }
 
+    /**
+     * Detalle de auditoría de un cambio de usuario (RF-14, RF-15): valores anterior
+     * y nuevo de lo administrativo; del correo y la contraseña solo si cambiaron
+     * (nunca el hash). Antes lo armaba un trigger; desde 004 lo arma la app (D-4).
+     *
+     * @param array<string, mixed> $antes   usuario antes del cambio (porId)
+     * @param array<string, mixed> $despues usuario después del cambio (porId)
+     * @return array<string, mixed>
+     */
+    public static function cambiosAuditables(array $antes, array $despues, bool $contrasenaCambiada): array
+    {
+        return [
+            'rol_id' => [$antes['rol_id'], $despues['rol_id']],
+            'institucion_id' => [$antes['institucion_id'], $despues['institucion_id']],
+            'activo' => [$antes['activo'], $despues['activo']],
+            'correo_cambiado' => $antes['correo'] !== $despues['correo'],
+            'contrasena_cambiada' => $contrasenaCambiada,
+        ];
+    }
+
     private function validarContrasena(string $contrasena): void
     {
         if (mb_strlen($contrasena) < self::LONGITUD_MINIMA_CONTRASENA) {

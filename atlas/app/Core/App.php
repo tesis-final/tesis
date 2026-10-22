@@ -24,7 +24,9 @@ use Atlas\Services\PanelDocenteService;
 use Atlas\Services\UsuarioService;
 
 /**
- * Composición de dependencias (sin framework). Cada objeto se crea una sola vez
+ * Composición de dependencias de la lógica propia (servicios, motor de análisis,
+ * repositorios), independiente de Laravel: Laravel la crea una vez por petición
+ * (AtlasServiceProvider) y también la usa la consola (bin/atlas). Cada objeto se crea una sola vez
  * por petición. Los tests pueden reemplazar la sesión, el reloj y el cliente
  * del servicio de análisis.
  */
@@ -59,7 +61,8 @@ final class App
 
     public function sesion(): Session
     {
-        return $this->una(Session::class, fn () => $this->sesionInyectada ?? new PhpSession($this->config));
+        // En la web la inyecta AtlasServiceProvider (sesión de Laravel); en la consola, en memoria.
+        return $this->una(Session::class, fn () => $this->sesionInyectada ?? new ArraySession());
     }
 
     public function reloj(): Clock
@@ -169,7 +172,8 @@ final class App
             $this->analisisRepo(),
             $this->reportesRepo(),
             $this->clienteAnalisis(),
-            $this->reloj()
+            $this->reloj(),
+            $this->actividadesRepo()
         ));
     }
 

@@ -68,6 +68,7 @@ export async function grupo(id) {
         { titulo: 'Pregunta', valor: (q) => q.enunciado },
         { titulo: 'Error', valor: (q) => `${Math.round(q.proporcion_error * 100)} % (${q.errores} de ${q.respuestas})` },
       ], a.preguntas_con_mas_error, 'Sin errores registrados.')),
+    seccionHabilidades(a.habilidades, true),
     h('section', { clase: 'tarjeta' }, h('h2', {}, 'Patrones de resolución (aprendizaje automático)'),
       !ml.servicio_disponible
         ? h('p', { clase: 'aviso' }, 'El servicio de análisis no está disponible. El resto del panel funciona normalmente.')
@@ -77,6 +78,19 @@ export async function grupo(id) {
           : h('p', { clase: 'aviso info' }, suficiencia(ml.suficiencia)),
       h('p', { clase: 'suave pequeño' }, ml.aviso)),
   );
+}
+
+// D-3: acierto por habilidad, de la más débil a la más fuerte. El estado se dice con
+// texto ("A reforzar"), no solo con color (RNF-12).
+function seccionHabilidades(habilidades, grupal) {
+  return h('section', { clase: 'tarjeta' }, h('h2', {}, 'Acierto por habilidad'),
+    tabla([
+      { titulo: 'Habilidad', valor: (x) => x.nombre },
+      { titulo: 'Acierto', valor: (x) => `${numero(x.porcentaje)} % (${x.correctas} de ${x.preguntas} preguntas)` },
+      grupal ? { titulo: 'Estudiantes por debajo del 50 %', valor: (x) => `${x.estudiantes_bajo_umbral} de ${x.estudiantes}` } : null,
+      { titulo: 'Estado', valor: (x) => (x.a_reforzar ? h('strong', {}, 'A reforzar') : 'Adecuado') },
+    ].filter(Boolean), habilidades || [], 'Todavía no hay preguntas resueltas vinculadas a habilidades en el período.'),
+    h('p', { clase: 'suave pequeño' }, 'Porcentaje de preguntas acertadas en el último intento de cada actividad. Describe aciertos; no mide capacidades.'));
 }
 
 // El ancho se fija por CSSOM (no con atributo style) para cumplir la política CSP.
@@ -92,13 +106,19 @@ function suficiencia(s) {
     + 'Mostrar agrupamientos con menos datos sería engañoso.';
 }
 
+// D-8: un tiempo que no se registró (intentos anteriores a la medición) se muestra como "—".
+function segundos(valor) {
+  return valor === null || valor === undefined ? '—' : `${valor} s`;
+}
+
 function cifra(valor, texto) {
   return h('div', { clase: 'cifra' }, h('strong', {}, String(valor ?? '—')), texto);
 }
 
 // ---------- Perfil individual + "¿por qué?" (RF-10, RF-12) ----------
 export async function estudiante(id) {
-  const p = await api('GET', `/docente/estudiantes/${id}/perfil`);
+  const [p, misActividades] = await Promise.all([api('GET', `/docente/estudiantes/${id}/perfil`), api('GET', '/actividades')]);
+  const publicadas = misActividades.filter((a) => a.estado === 'PUBLICADA');
   const porActividad = new Map();
   for (const i of p.indicadores) {
     if (!porActividad.has(i.actividad_id)) porActividad.set(i.actividad_id, { actividad: i.actividad, categoria: i.categoria });
@@ -114,10 +134,12 @@ export async function estudiante(id) {
         { titulo: 'Puntaje', valor: (f) => numero(f.PUNTAJE) }, { titulo: 'Eficiencia', valor: (f) => numero(f.EFICIENCIA, 2) },
         { titulo: 'Mejora', valor: (f) => numero(f.MEJORA) }, { titulo: 'Persistencia', valor: (f) => numero(f.PERSISTENCIA, 0) },
       ], [...porActividad.values()], 'Sin actividades finalizadas en el período.')),
+    seccionHabilidades(p.habilidades, false),
     h('section', { clase: 'tarjeta' }, h('h2', {}, 'Recomendaciones'),
       p.recomendaciones.length
         ? h('ul', {}, p.recomendaciones.map((r) => h('li', {},
             h('p', {}, r.reglas.map((x) => etiquetaTipo(x.tipo)), ' ', r.texto),
+            decisionDocente(r, publicadas, () => estudiante(id)),
             h('button', { type: 'button', clase: 'secundario', onclick: () => verFundamento(r.id, fundamento) }, '¿Por qué?'))))
         : h('p', { clase: 'vacio' }, 'Sin recomendaciones en el período.'),
       fundamento),
@@ -127,6 +149,28 @@ export async function estudiante(id) {
         { titulo: 'Intento', valor: (e) => e.numero_intento }, { titulo: 'Puntaje', valor: (e) => numero(e.puntaje) },
       ], p.evolucion, 'Sin intentos finalizados.')),
   );
+}
+
+// D-6: el sistema recomienda y el docente decide (confirma la sugerencia o la cambia).
+function decisionDocente(r, publicadas, recargar) {
+  if (r.decision) {
+    return h('p', { clase: 'pequeño' }, h('strong', {}, r.decision === 'CONFIRMADA' ? 'Confirmada por usted: ' : 'Cambiada por usted a: '),
+      `«${r.actividad_asignada}» (el estudiante la ve como recomendada).`);
+  }
+  const otras = publicadas.filter((a) => Number(a.id) !== Number(r.actividad_sugerida_id));
+  const selector = h('select', { 'aria-label': 'Otra actividad para asignar' },
+    h('option', { value: '' }, 'Elegir otra actividad…'), otras.map((a) => h('option', { value: a.id }, a.titulo)));
+  async function decidir(actividad) {
+    try {
+      await api('POST', `/recomendaciones/${r.id}/decision`, actividad ? { actividad_id: Number(actividad) } : {});
+      mensaje('Decisión guardada: el estudiante verá la actividad como recomendada.');
+      recargar();
+    } catch (e) { mensaje(e.message, 'error'); }
+  }
+  return h('div', { clase: 'acciones' },
+    r.actividad_sugerida_id ? h('button', { type: 'button', onclick: () => decidir(null) }, `Confirmar «${r.actividad_sugerida}»`) : null,
+    otras.length ? h('span', { clase: 'fila' }, selector,
+      h('button', { type: 'button', clase: 'secundario', onclick: () => { if (selector.value) decidir(selector.value); else mensaje('Elija una actividad.', 'error'); } }, 'Asignar esta')) : null);
 }
 
 async function verFundamento(id, destino) {
@@ -141,6 +185,103 @@ async function verFundamento(id, destino) {
         .filter(([k]) => k !== 'sin_dato').map(([k, v]) => `${k} = ${numero(v, 2)}`).join(' · ')))),
     h('p', { clase: 'suave pequeño' }, 'La regla y sus umbrales están guardados en ATLAS y los puede revisar la coordinación.')));
   destino.scrollIntoView({ behavior: 'smooth' });
+}
+
+// ---------- Consultas guiadas (acta D-5): grupo + período + qué ver ----------
+// Es la forma principal de consultar: elige entre preguntas fijas, responde con datos
+// ya calculados por ATLAS y explica cómo se obtuvo cada número. El asistente con
+// lenguaje natural queda como opción.
+const QUE_VER = [
+  ['atencion', '¿Quiénes requieren atención?'],
+  ['preguntas', '¿Qué preguntas costaron más?'],
+  ['habilidades', '¿Cómo va el grupo en cada habilidad?'],
+  ['actividades', '¿Cómo les fue en cada actividad y cuánto tardaron?'],
+];
+
+function iso(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function rangoDe(periodo, desde, hasta) {
+  const hoy = new Date();
+  if (periodo === 'semana') return [iso(new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - 6)), iso(hoy)];
+  if (periodo === 'mes') return [iso(new Date(hoy.getFullYear(), hoy.getMonth(), 1)), iso(new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0))];
+  if (periodo === 'anterior') return [iso(new Date(hoy.getFullYear(), hoy.getMonth() - 1, 1)), iso(new Date(hoy.getFullYear(), hoy.getMonth(), 0))];
+  return [desde, hasta];
+}
+
+export async function consultas() {
+  const grupos = await api('GET', '/grupos');
+  if (!grupos.length) {
+    montar(h('h1', {}, 'Consultas'), h('p', { clase: 'vacio' }, 'Todavía no tiene grupos asignados.'));
+    return;
+  }
+  const resultado = h('div', { 'aria-live': 'polite' });
+  const personalizado = h('div', { clase: 'fila', hidden: true },
+    h('div', {}, h('label', { for: 'c-desde' }, 'Desde'), h('input', { id: 'c-desde', name: 'desde', type: 'date' })),
+    h('div', {}, h('label', { for: 'c-hasta' }, 'Hasta'), h('input', { id: 'c-hasta', name: 'hasta', type: 'date' })));
+  const form = h('form', { clase: 'tarjeta', novalidate: true },
+    h('div', { clase: 'fila' },
+      h('div', {}, h('label', { for: 'c-grupo' }, '1. Grupo'),
+        h('select', { id: 'c-grupo', name: 'grupo' }, grupos.map((g) => h('option', { value: g.id }, g.nombre)))),
+      h('div', {}, h('label', { for: 'c-periodo' }, '2. Período'),
+        h('select', { id: 'c-periodo', name: 'periodo', onchange: (ev) => { personalizado.hidden = ev.target.value !== 'otro'; } },
+          h('option', { value: 'semana' }, 'Últimos 7 días'), h('option', { value: 'mes', selected: true }, 'Este mes'),
+          h('option', { value: 'anterior' }, 'Mes anterior'), h('option', { value: 'otro' }, 'Otro rango…')))),
+    personalizado,
+    h('fieldset', {}, h('legend', {}, '3. ¿Qué quiere ver?'),
+      QUE_VER.map(([valor, texto], i) => h('label', { clase: 'opcion' },
+        h('input', { type: 'radio', name: 'que', value: valor, checked: i === 0 }), texto))),
+    h('div', { clase: 'acciones' }, h('button', { type: 'submit' }, 'Consultar')));
+
+  form.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const que = form.querySelector('input[name=que]:checked').value;
+    const [desde, hasta] = rangoDe(form.periodo.value, form.desde.value, form.hasta.value);
+    if (!desde || !hasta) { mensaje('Indique las dos fechas del rango.', 'error'); return; }
+    const grupoNombre = form.grupo.selectedOptions[0].textContent;
+    try {
+      resultado.replaceChildren(await respuestaGuiada(que, form.grupo.value, grupoNombre, desde, hasta));
+    } catch (e) { errorEn(form, e); }
+  });
+
+  montar(h('h1', {}, 'Consultas'),
+    h('p', { clase: 'suave' }, 'Elija el grupo, el período y qué quiere saber. Las respuestas salen de los datos registrados y dicen cómo se calcularon.'),
+    form, resultado);
+  form.requestSubmit();
+}
+
+async function respuestaGuiada(que, grupo, grupoNombre, desde, hasta) {
+  const titulo = `${QUE_VER.find(([v]) => v === que)[1]} — Grupo ${grupoNombre}, ${desde} a ${hasta}`;
+  if (que === 'actividades') {
+    const r = await api('GET', '/reportes', null, { grupo, desde, hasta });
+    return h('section', { clase: 'tarjeta' }, h('h2', {}, titulo),
+      tabla([{ titulo: 'Actividad', valor: (x) => x.actividad_titulo }, { titulo: 'Estudiantes', valor: (x) => x.estudiantes },
+        { titulo: 'Intentos', valor: (x) => x.intentos }, { titulo: 'Puntaje promedio', valor: (x) => numero(x.promedio) },
+        { titulo: 'Tiempo medio (total)', valor: (x) => segundos(x.duracion_media_seg) },
+        { titulo: 'Tiempo medio activo', valor: (x) => segundos(x.duracion_activa_media_seg) }],
+      r.resumen, 'No hay intentos finalizados en el período.'),
+      h('p', { clase: 'suave pequeño' }, 'Promedio de todos los intentos finalizados. Tiempo activo = total menos pausas de más de 60 s sin actividad.'));
+  }
+  const a = await api('GET', `/docente/grupos/${grupo}/analisis`, null, { desde, hasta });
+  if (que === 'atencion') {
+    return h('section', { clase: 'tarjeta' }, h('h2', {}, titulo),
+      tabla([
+        { titulo: 'Estudiante', valor: (p) => h('a', { href: `#/estudiante/${p.estudiante_id}` }, p.nombre) },
+        { titulo: 'Motivo (reglas)', valor: (p) => p.motivo },
+        { titulo: 'Última señal', valor: (p) => fecha(p.ultima) },
+      ], a.prioritarios, 'Nadie disparó reglas de riesgo en el período.'),
+      h('p', { clase: 'suave pequeño' }, 'Aparece quien disparó al menos una regla de riesgo (por ejemplo, R01: puntaje menor a 50). En el perfil, el botón "¿Por qué?" muestra la regla y los datos exactos.'));
+  }
+  if (que === 'preguntas') {
+    return h('section', { clase: 'tarjeta' }, h('h2', {}, titulo),
+      tabla([
+        { titulo: 'Pregunta', valor: (q) => q.enunciado },
+        { titulo: 'Error', valor: (q) => `${Math.round(q.proporcion_error * 100)} % (${q.errores} de ${q.respuestas} respuestas)` },
+      ], a.preguntas_con_mas_error, 'Sin errores registrados en el período.'),
+      h('p', { clase: 'suave pequeño' }, 'Proporción de respuestas incorrectas en los intentos finalizados del período.'));
+  }
+  return seccionHabilidades(a.habilidades, true);
 }
 
 // ---------- Actividades (RF-16, RF-17) ----------
@@ -174,16 +315,19 @@ export async function editor(id) {
       h('div', {}, h('label', { for: 'categoria' }, 'Categoría'),
         h('select', { id: 'categoria', name: 'categoria', disabled: !editable }, cat.categorias.map((c) => h('option', { value: c.codigo, selected: act?.categoria === c.codigo }, c.nombre))))),
     h('h2', {}, 'Preguntas'), preguntas,
-    editable ? h('button', { type: 'button', clase: 'secundario', onclick: () => agregarPregunta(preguntas, null, true) }, '+ Agregar pregunta') : null,
+    editable ? h('button', { type: 'button', clase: 'secundario', onclick: () => agregarPregunta(preguntas, null, true, cat.habilidades) }, '+ Agregar pregunta') : null,
   );
-  (act?.preguntas || []).forEach((p) => agregarPregunta(preguntas, p, editable));
-  if (!act) agregarPregunta(preguntas, null, true);
+  (act?.preguntas || []).forEach((p) => agregarPregunta(preguntas, p, editable, cat.habilidades));
+  if (!act) agregarPregunta(preguntas, null, true, cat.habilidades);
 
   const acciones = h('div', { clase: 'acciones' });
   if (editable) acciones.append(h('button', { type: 'button', onclick: guardar }, 'Guardar borrador'));
-  if (act?.estado === 'BORRADOR') acciones.append(h('button', { type: 'button', onclick: enviar }, 'Enviar a aprobación'));
-  if (act?.estado === 'APROBADA') {
+  // D-2: si la institución no exige aprobación, el borrador se publica directo.
+  const publicaDirecto = act?.estado === 'BORRADOR' && !act.requiere_aprobacion;
+  if (act?.estado === 'BORRADOR' && act.requiere_aprobacion) acciones.append(h('button', { type: 'button', onclick: enviar }, 'Enviar a aprobación'));
+  if (act?.estado === 'APROBADA' || publicaDirecto) {
     acciones.append(h('fieldset', {}, h('legend', {}, 'Publicar en:'),
+      publicaDirecto ? h('p', { clase: 'suave pequeño' }, 'Su institución no exige aprobación previa: al publicar, queda registrado quién y cuándo.') : null,
       grupos.map((g) => h('label', { clase: 'opcion' }, h('input', { type: 'checkbox', name: 'grupo', value: g.id }), g.nombre)),
       h('button', { type: 'button', onclick: publicar }, 'Publicar')));
   }
@@ -216,10 +360,16 @@ export async function editor(id) {
   );
 }
 
-function agregarPregunta(contenedor, p, editable) {
+function agregarPregunta(contenedor, p, editable, habilidades = []) {
   const opciones = h('div', {});
+  // D-3: cada pregunta mide una o más habilidades.
+  const marcadas = new Set(p?.habilidades || []);
+  const habilidadesPregunta = h('fieldset', { clase: 'habilidades' }, h('legend', {}, 'Habilidades que mide (al menos una)'),
+    habilidades.map((x) => h('label', { clase: 'opcion', title: x.descripcion || '' },
+      h('input', { type: 'checkbox', value: x.codigo, checked: marcadas.has(x.codigo), disabled: !editable }), x.nombre)));
   const bloque = h('div', { clase: 'tarjeta pregunta' },
     h('label', {}, 'Enunciado'), h('textarea', { clase: 'enunciado', disabled: !editable }, p?.enunciado || ''),
+    habilidadesPregunta,
     h('p', { clase: 'suave pequeño' }, 'Marque la única opción correcta.'), opciones,
     editable ? h('div', { clase: 'acciones' },
       h('button', { type: 'button', clase: 'secundario', onclick: () => agregarOpcion(opciones, null, editable) }, '+ Opción'),
@@ -241,6 +391,7 @@ function leerPreguntas(contenedor) {
     enunciado: b.querySelector('.enunciado').value,
     opciones: [...b.querySelectorAll('.fila')].map((f) => ({ texto: f.querySelector('.texto-opcion').value, correcta: f.querySelector('input[type=radio]').checked }))
       .filter((o) => o.texto.trim() !== ''),
+    habilidades: [...b.querySelectorAll('.habilidades input:checked')].map((i) => i.value),
   }));
 }
 
@@ -261,10 +412,14 @@ export async function reportes() {
         h('section', { clase: 'tarjeta' }, h('h2', {}, 'Resumen por actividad'),
           tabla([{ titulo: 'Actividad', valor: (x) => x.actividad_titulo }, { titulo: 'Nivel', valor: (x) => x.nivel }, { titulo: 'Categoría', valor: (x) => x.categoria },
             { titulo: 'Estudiantes', valor: (x) => x.estudiantes }, { titulo: 'Intentos', valor: (x) => x.intentos }, { titulo: 'Promedio', valor: (x) => numero(x.promedio) },
-            { titulo: 'Tiempo medio', valor: (x) => `${x.duracion_media_seg} s` }], r.resumen)),
+            { titulo: 'Tiempo medio (total)', valor: (x) => segundos(x.duracion_media_seg) },
+            { titulo: 'Tiempo medio activo', valor: (x) => segundos(x.duracion_activa_media_seg) }], r.resumen),
+          h('p', { clase: 'suave pequeño' }, 'Tiempo activo = total menos las pausas de más de 60 s sin actividad.')),
         h('section', { clase: 'tarjeta' }, h('h2', {}, `Intentos finalizados (${r.filas.length})`),
           tabla([{ titulo: 'Fecha', valor: (x) => fecha(x.finalizado_en) }, { titulo: 'Estudiante', valor: (x) => `${x.estudiante_nombre} ${x.estudiante_apellido}` },
-            { titulo: 'Actividad', valor: (x) => x.actividad_titulo }, { titulo: 'Puntaje', valor: (x) => numero(x.puntaje) }], r.filas.slice(0, 200))));
+            { titulo: 'Actividad', valor: (x) => x.actividad_titulo }, { titulo: 'Puntaje', valor: (x) => numero(x.puntaje) },
+            { titulo: 'Tiempo total', valor: (x) => segundos(x.duracion_seg) }, { titulo: 'Tiempo activo', valor: (x) => segundos(x.duracion_activa_seg) }],
+          r.filas.slice(0, 200))));
     } catch (e) { errorEn(form, e); }
   });
   montar(h('h1', {}, 'Estadísticas y reportes'), form, resultado);

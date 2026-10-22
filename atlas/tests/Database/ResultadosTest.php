@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Atlas\Tests\Database;
 
 /**
- * Intentos y resultados: RF-07, RF-08, RF-09, §27.3 (trigger de resultados).
+ * Intentos y resultados: RF-07, RF-08, RF-09. Desde 004 (acta D-4) el puntaje lo
+ * calcula la aplicación (ver tests/Unit/IndicadoresTest y tests/Api/ResolucionTest);
+ * la base guarda el resultado y protege su integridad.
  */
 final class ResultadosTest extends DatabaseTestCase
 {
@@ -22,7 +24,26 @@ final class ResultadosTest extends DatabaseTestCase
         return [$estudiante, $actividad, $mapa];
     }
 
-    public function testFinalizarGeneraResultadoConPuntajeCorrecto(): void
+    public function testLaBaseNoCalculaElResultado(): void
+    {
+        // D-4: cerrar el intento en la base ya no genera el resultado (no hay trigger que calcule).
+        [$estudiante, $actividad, $mapa] = $this->escenario(2);
+        $intento = self::iniciarIntento($estudiante, $actividad);
+        $pregunta = array_key_first($mapa);
+        self::responder($intento, $pregunta, $mapa[$pregunta][0]);
+        self::ejecutar(
+            "UPDATE intentos SET estado = 'FINALIZADO', finalizado_en = NOW(3), duracion_seg = 30 WHERE id = ?",
+            [$intento]
+        );
+
+        $this->assertSame(0, (int) self::valor('SELECT COUNT(*) FROM resultados WHERE intento_id = ?', [$intento]));
+        $this->assertSame(0, (int) self::valor(
+            "SELECT COUNT(*) FROM information_schema.triggers
+              WHERE trigger_schema = 'atlas_db' AND trigger_name = 'trg_intentos_finalizar'"
+        ));
+    }
+
+    public function testUnSoloResultadoPorIntentoYCoherente(): void
     {
         [$estudiante, $actividad, $mapa] = $this->escenario(4);
         $intento = self::iniciarIntento($estudiante, $actividad);
@@ -31,26 +52,21 @@ final class ResultadosTest extends DatabaseTestCase
             self::responder($intento, $pregunta, $i++ < 3 ? $ok : $mal); // 3 de 4 correctas
         }
         self::finalizar($intento);
+        $this->assertSame('75.00', self::valor('SELECT puntaje FROM resultados WHERE intento_id = ?', [$intento]));
 
-        $r = self::pdo()
-            ->query("SELECT correctas, total_preguntas, puntaje FROM resultados WHERE intento_id = {$intento}")
-            ->fetch();
-        $this->assertSame(['correctas' => 3, 'total_preguntas' => 4, 'puntaje' => '75.00'], [
-            'correctas' => (int) $r['correctas'],
-            'total_preguntas' => (int) $r['total_preguntas'],
-            'puntaje' => $r['puntaje'],
-        ]);
-    }
-
-    public function testPreguntaSinResponderCuentaComoIncorrecta(): void
-    {
-        [$estudiante, $actividad, $mapa] = $this->escenario(4);
-        $intento = self::iniciarIntento($estudiante, $actividad);
-        $pregunta = array_key_first($mapa);
-        self::responder($intento, $pregunta, $mapa[$pregunta][0]);
-        self::finalizar($intento);
-
-        $this->assertSame('25.00', self::valor('SELECT puntaje FROM resultados WHERE intento_id = ?', [$intento]));
+        // Integridad que sigue en la base: un resultado por intento y correctas ≤ total.
+        $this->assertFalla(
+            'INSERT INTO resultados (intento_id, correctas, total_preguntas, puntaje) VALUES (?, 4, 4, 100)',
+            [$intento],
+            contiene: 'uq_resultados_intento'
+        );
+        [, $otraActividad] = $this->escenario(1);
+        $otro = self::iniciarIntento($estudiante, $otraActividad);
+        $this->assertFalla(
+            'INSERT INTO resultados (intento_id, correctas, total_preguntas, puntaje) VALUES (?, 5, 4, 100)',
+            [$otro],
+            contiene: 'ck_resultados_correctas'
+        );
     }
 
     public function testIntentoAbandonadoNoGeneraResultado(): void
@@ -67,6 +83,19 @@ final class ResultadosTest extends DatabaseTestCase
             42,
             (int) self::valor('SELECT duracion_seg FROM intentos WHERE id = ?', [$intento]),
             'RF-09: el intento interrumpido registra el tiempo hasta la interrupción'
+        );
+    }
+
+    public function testTiempoActivoNoSuperaAlTotal(): void
+    {
+        // D-8 (004): el tiempo activo lo calcula la app; la base garantiza que sea coherente.
+        [$estudiante, $actividad] = $this->escenario();
+        $intento = self::iniciarIntento($estudiante, $actividad);
+        $this->assertFalla(
+            "UPDATE intentos SET estado = 'ABANDONADO', finalizado_en = NOW(3), duracion_seg = 60,
+                    duracion_activa_seg = 61 WHERE id = ?",
+            [$intento],
+            contiene: 'ck_intentos_duracion_activa'
         );
     }
 

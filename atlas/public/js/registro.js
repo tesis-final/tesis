@@ -19,7 +19,8 @@ export class Registro {
     this.alCambiarVisibilidad = () => (document.hidden ? this.pausa() : this.reanuda());
     document.addEventListener('visibilitychange', this.alCambiarVisibilidad);
     this.reloj = setInterval(() => {
-      if (!this.pausado && Date.now() - this.ultimaActividad >= PAUSA_INACTIVIDAD_MS) this.pausa();
+      // D-8: la pausa por inactividad empieza en la última actividad, no al detectarla.
+      if (!this.pausado && Date.now() - this.ultimaActividad >= PAUSA_INACTIVIDAD_MS) this.pausa(this.ultimaActividad);
       this.enviar();
     }, 5000);
   }
@@ -48,11 +49,11 @@ export class Registro {
     if (this.cola.length >= 10) this.enviar();
   }
 
-  pausa() {
+  pausa(desde = Date.now()) {
     if (this.pausado) return;
     this.pausado = true;
-    this.inicioPausa = Date.now();
-    this.evento('PAUSA');
+    this.inicioPausa = desde;
+    this.evento('PAUSA', { ocurrido_en: new Date(desde).toISOString() });
   }
 
   reanuda() {

@@ -1,0 +1,39 @@
+# E-BD-009 — Repetición de E-BD-005 (restauración real) con la migración 004
+# Comando: atlas/database/tools/pruebas_hito2.sh, ejecutado en Linux dentro de docker:27-dind (Docker anidado).
+# Los tiempos NO son comparables con E-BD-005: el Docker anidado es mucho más lento en disco (RTO 21 s acá, 4 s en E-BD-005).
+# E-BD-005 (20/10, antes de 004) se conserva como registro de lo evaluado.
+
+ATLAS — Evidencia E-BD-005: ejercicio de restauración real (RPO y RTO)
+Fecha (UTC): 2026-10-22T03:43:34Z
+Motor: MySQL 8.0.46 · Entorno: Docker de desarrollo (no es atlas-srv01)
+Objetivos documentados (Hito 1): RPO 24 h · RTO 4 h
+Estrategia probada: respaldo completo con mysqldump (usuario atlas_backup, solo lectura)
++ incremental con el registro binario (binlog) de MySQL.
+
+== Paso a paso y tiempos
+| Paso | Resultado |
+| --- | --- |
+| Respaldo completo (mysqldump, atlas_backup) | 364 ms · 11720150 bytes · sha256 363066dd6bbeb666… |
+| Inicio del incremental (binlog) | atlas-bin.000004 |
+| Intentos en el respaldo completo | 9000 |
+| Trabajo posterior al respaldo | 50 intentos nuevos con respuestas y resultados |
+| Intentos justo antes del desastre | 9050 |
+| Desastre simulado | DROP DATABASE atlas_db |
+| Restauración del completo | 5186 ms → 9000 intentos (faltan 50) |
+| Aplicación del incremental (atlas-bin.000004 ) | 16035 ms → 9050 intentos |
+| **RTO medido** (del desastre a la base completa) | **21436 ms** (objetivo: 4 h) |
+| **RPO medido** (datos perdidos) | **0 intentos perdidos** con completo + incremental; con solo el completo se habrían perdido 50 (todo lo posterior al respaldo) |
+
+== Integridad de los datos recuperados
+| Control | Resultado | Esperado |
+| --- | --- | --- |
+| CHECKSUM TABLE de las 32 tablas, antes contra después | 0 diferencias | 0 |
+| Triggers, rutinas y vistas | antes: 13 triggers, 0 rutinas, 5 vistas · después: 13 triggers, 0 rutinas, 5 vistas | iguales |
+| Filas huérfanas (respuestas, resultados, interacciones, vínculos de habilidad) | 0 | 0 |
+| Privilegios después de restaurar (atlas_backup lee habilidades) | 4 filas | 4 |
+
+Notas honestas:
+- Es una base de prueba de 11720150 bytes en Docker, no la de producción en atlas-srv01.
+  El procedimiento es el mismo; en el servidor los tiempos pueden ser mayores y hay que repetirlo ahí.
+- El RPO real depende de cada cuánto se copian los binlog fuera del servidor (Tabla 29): si el
+  servidor se pierde entero, se pierde lo que no se haya copiado todavía.

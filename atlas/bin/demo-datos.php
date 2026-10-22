@@ -74,14 +74,16 @@ foreach (
                 'texto' => 'Opción correcta',
                 'correcta' => true
             ], ['texto' => 'Distractor A', 'correcta' => false], ['texto' => 'Distractor B', 'correcta' => false],
-        ]];
+        ], 'habilidades' => $p % 2 === 1 ? ['CALCULO'] : ['COMPRENSION', 'LOGICA']]; // D-3
     }
     $a = $app->actividades()->crear(
         $docente,
         ['titulo' => $titulo, 'nivel' => $nivel, 'categoria' => 'RESOLUCION_PROBLEMAS', 'preguntas' => $preguntas]
     );
-    $app->actividades()->enviar($a['id'], $docente);
-    $app->actividades()->aprobar($a['id'], $admin);
+    if ($app->organizacion()->requiereAprobacion($docente)) { // D-2: por defecto se publica directo
+        $app->actividades()->enviar($a['id'], $docente);
+        $app->actividades()->aprobar($a['id'], $admin);
+    }
     $app->actividades()->publicar($a['id'], $docente, [$grupo]);
     $actividades[] = $app->actividades()->detalle($a['id'], true);
 }

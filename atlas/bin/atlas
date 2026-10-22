@@ -16,7 +16,7 @@ declare(strict_types=1);
  */
 
 $raiz = dirname(__DIR__);
-require is_file($raiz . '/vendor/autoload.php') ? $raiz . '/vendor/autoload.php' : $raiz . '/app/autoload.php';
+require $raiz . '/vendor/autoload.php';
 
 use Atlas\Core\App;
 use Atlas\Core\ArraySession;

@@ -63,18 +63,49 @@ final class GestionAdministrativaTest extends ApiTestCase
         $this->assertSame(200, $admin->ultimoEstado);
 
         $filas = self::pdo()->query(
-            "SELECT accion, usuario_id, creado_en FROM auditoria
+            "SELECT accion, usuario_id, detalle, creado_en FROM auditoria
               WHERE recurso_id = '{$idDoc}' AND accion IN ('usuarios.modificar', 'usuarios.desactivar') ORDER BY id"
         )->fetchAll();
-        $this->assertGreaterThanOrEqual(3, count($filas), 'trigger de la BD + middleware');
+        $this->assertSame(
+            ['usuarios.modificar', 'usuarios.desactivar'],
+            array_column($filas, 'accion'),
+            'un registro por acción (D-4: sin duplicados de triggers)'
+        );
         foreach ($filas as $f) {
             $this->assertSame($idAdmin, (int) $f['usuario_id'], 'autor');
             $this->assertNotEmpty($f['creado_en'], 'marca temporal');
         }
+        $this->assertSame([true, false], json_decode($filas[1]['detalle'], true)['activo'], 'antes y después');
 
         $c = $this->cliente();
         $c->login($correo, self::CLAVE);
         $this->assertSame(401, $c->ultimoEstado, 'un usuario desactivado ya no entra');
+    }
+
+    public function testAltaYCambioDeContrasenaAuditadosSinCopiarElHash(): void
+    {
+        [$admin] = $this->entrar('ADMIN');
+        $u = $admin->pedir('POST', '/usuarios', [
+            'nombre' => 'Alta', 'apellido' => 'Auditada',
+            'correo' => 'alta.' . bin2hex(random_bytes(3)) . '@prueba.atlas.local',
+            'contrasena' => 'Una-clave-larga', 'rol' => 'DOCENTE', 'institucion_id' => 1,
+        ]);
+        $this->assertSame(201, $admin->ultimoEstado);
+        $alta = json_decode((string) self::valor(
+            "SELECT detalle FROM auditoria WHERE accion = 'usuarios.crear' AND recurso_id = ?",
+            [(string) $u['id']]
+        ), true);
+        $this->assertSame([1, true], [$alta['institucion_id'], $alta['activo']]);
+
+        $admin->pedir('PATCH', "/usuarios/{$u['id']}", ['contrasena' => 'Otra-clave-larga']);
+        $this->assertSame(200, $admin->ultimoEstado);
+        $detalle = (string) self::valor(
+            "SELECT detalle FROM auditoria WHERE accion = 'usuarios.modificar' AND recurso_id = ?
+              ORDER BY id DESC LIMIT 1",
+            [(string) $u['id']]
+        );
+        $this->assertStringNotContainsString('argon2id', $detalle);
+        $this->assertTrue(json_decode($detalle, true)['contrasena_cambiada']);
     }
 
     public function testAdministradorNoPuedeDesactivarseASiMismo(): void

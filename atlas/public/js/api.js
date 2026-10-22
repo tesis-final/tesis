@@ -2,9 +2,17 @@
 // petición que modifica datos y traduce los errores a mensajes legibles.
 
 let csrf = null;
+let navegacion = 0;
 
 export function definirCsrf(token) {
   csrf = token;
+}
+
+// Cada cambio de pantalla abre una "navegación" nueva (app.js). Una lectura que vuelve
+// cuando el usuario ya está en otra pantalla se descarta (no resuelve nunca): así una
+// pantalla lenta no pisa a la que el usuario abrió después. Las escrituras no se tocan.
+export function nuevaNavegacion() {
+  navegacion++;
 }
 
 export class ErrorApi extends Error {
@@ -24,6 +32,7 @@ export async function api(metodo, ruta, cuerpo = null, consulta = null) {
   const cabeceras = { Accept: 'application/json' };
   if (cuerpo !== null) cabeceras['Content-Type'] = 'application/json';
   if (metodo !== 'GET' && csrf) cabeceras['X-CSRF-Token'] = csrf;
+  const desde = navegacion;
   const respuesta = await fetch(url, {
     method: metodo,
     headers: cabeceras,
@@ -31,6 +40,7 @@ export async function api(metodo, ruta, cuerpo = null, consulta = null) {
     credentials: 'same-origin',
   });
   const texto = await respuesta.text();
+  if (metodo === 'GET' && desde !== navegacion) return new Promise(() => {});
   const datos = texto ? JSON.parse(texto) : null;
   if (!respuesta.ok) {
     if (respuesta.status === 401 && !ruta.startsWith('/auth/')) {

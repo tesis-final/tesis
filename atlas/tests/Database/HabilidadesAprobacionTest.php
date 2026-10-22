@@ -159,10 +159,11 @@ final class HabilidadesAprobacionTest extends DatabaseTestCase
 
     // ---------------------------------------------------- aprobación flexible
 
-    public function testPorDefectoLaInstitucionExigeAprobacion(): void
+    public function testPorDefectoLaInstitucionNoExigeAprobacion(): void
     {
+        // Acta D-2 (migración 004): por defecto el docente publica directo.
         $id = self::ejecutar('INSERT INTO instituciones (nombre) VALUES (?)', ['Inst-' . bin2hex(random_bytes(4))]);
-        $this->assertSame(1, (int) self::valor('SELECT requiere_aprobacion FROM instituciones WHERE id = ?', [$id]));
+        $this->assertSame(0, (int) self::valor('SELECT requiere_aprobacion FROM instituciones WHERE id = ?', [$id]));
     }
 
     public function testConAprobacionNoSePublicaDirecto(): void

@@ -1,0 +1,14 @@
+# E-LNX-004 — desplegar-app.sh con Laravel (acta D-1): vendor/ de producción
+# Fecha: 2026-10-22T03:36:55Z  Entorno: contenedor docker:27-dind (Linux, con su propio Docker), NO es atlas-srv01
+# Comando: ATLAS_ROOT=/srv/prueba SIN_CHOWN=1 infra/linux/desplegar-app.sh /repo
+rc del despliegue=0
+→ Preparando el código (Laravel + dependencias de producción, sin herramientas de desarrollo)
+→ Copiando a /srv/prueba/web
+Listo. Siguiente: docker compose --env-file /srv/prueba/config/atlas.conf -f /srv/prueba/config/docker-compose.yml up -d --build
+web/app: app artisan bin bootstrap composer.json composer.lock config database docker docker-compose.yml lang phpunit.xml routes vendor 
+web/public: app.html assets css index.php js 
+vendor/autoload.php: presente
+PHPUnit en vendor: no (--no-dev)
+tests/: no se copia
+tamaño de vendor/: 39.6M
+Laravel desde la estructura desplegada: GET /api/v1/auth/me -> 401 {"error":"Se requiere iniciar sesión."}

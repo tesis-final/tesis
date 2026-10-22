@@ -13,8 +13,8 @@
 --
 -- Pasa por las mismas reglas que la aplicación: las actividades recorren el
 -- ciclo BORRADOR -> PENDIENTE -> APROBADA -> PUBLICADA (trigger del ciclo), las
--- respuestas se validan (trigger) y los resultados los genera el trigger de
--- finalización. Ninguna regla se desactiva.
+-- respuestas se validan (trigger) y los resultados se guardan con el mismo
+-- cálculo que hace la aplicación (acta D-4). Ninguna regla se desactiva.
 --
 -- Uso (solo en una base de PRUEBA, como root):
 --   mysql -uroot -p atlas_db < datos_representativos.sql
@@ -33,7 +33,8 @@ SET @hash_sin_acceso := '!sin-acceso-datos-sinteticos';
 SET SESSION cte_max_recursion_depth = 10000;
 
 -- Institución propia: no se mezcla con datos reales.
-INSERT INTO instituciones (nombre) VALUES ('Liceo de prueba (datos sintéticos)');
+-- Exige aprobación (D-2 la hace configurable) para recorrer el ciclo completo.
+INSERT INTO instituciones (nombre, requiere_aprobacion) VALUES ('Liceo de prueba (datos sintéticos)', TRUE);
 SET @inst := LAST_INSERT_ID();
 
 -- Docentes
@@ -159,11 +160,23 @@ SELECT r.intento_id, p.orden + 1, 'SELECCION', r.pregunta_id, r.opcion_id, r.res
   FROM respuestas r JOIN preguntas p ON p.id = r.pregunta_id
   JOIN tmp_int x ON x.id = r.intento_id;
 
--- Cierre: el trigger de finalización calcula el resultado de cada intento.
+-- Cierre de los intentos.
 UPDATE intentos i JOIN tmp_int x ON x.id = i.id
    SET i.estado = IF(x.abandona, 'ABANDONADO', 'FINALIZADO'),
        i.finalizado_en = x.iniciado_en + INTERVAL (@preguntas * 60 + 30) SECOND,
-       i.duracion_seg = @preguntas * 60 + 30;
+       i.duracion_seg = @preguntas * 60 + 30,
+       i.duracion_activa_seg = @preguntas * 60 + 30;   -- sin pausas en los datos sintéticos (D-8)
+
+-- Resultado de cada intento finalizado. Desde 004 (acta D-4) la base no lo calcula:
+-- en la plataforma lo hace IntentoService::finalizar; este script de carga de
+-- prueba guarda lo mismo (correctas / total × 100) para tener datos completos.
+INSERT INTO resultados (intento_id, correctas, total_preguntas, puntaje)
+SELECT i.id, COALESCE(c.correctas, 0), t.total, ROUND(COALESCE(c.correctas, 0) * 100 / t.total, 2)
+  FROM intentos i JOIN tmp_int x ON x.id = i.id
+  JOIN (SELECT actividad_id, COUNT(*) AS total FROM preguntas GROUP BY actividad_id) t ON t.actividad_id = i.actividad_id
+  LEFT JOIN (SELECT r.intento_id, SUM(o.es_correcta) AS correctas
+          FROM respuestas r JOIN opciones o ON o.id = r.opcion_id GROUP BY r.intento_id) c ON c.intento_id = i.id
+ WHERE i.estado = 'FINALIZADO';
 
 DROP TEMPORARY TABLE IF EXISTS tmp_int;
 DROP TEMPORARY TABLE IF EXISTS tmp_act;

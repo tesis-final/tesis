@@ -53,6 +53,9 @@ services:
       ATLAS_DB_HOST: atlas-db
       ATLAS_ANALYSIS_URL: http://atlas-analysis:8000
       ATLAS_AUDIT_LOG: /srv/atlas/logs/auditoria.log
+      # Laravel (D-1): el código es de solo lectura; sesiones y cachés de arranque van
+      # a una carpeta temporal del contenedor (como las sesiones nativas de PHP antes).
+      ATLAS_STORAGE: /tmp/atlas
     volumes:
       - ${ATLAS_WEB:-/srv/atlas/web}/public:/srv/atlas/web/public:ro
       - ${ATLAS_WEB:-/srv/atlas/web}/app:/srv/atlas/web/app:ro

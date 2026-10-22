@@ -1,0 +1,38 @@
+# E-APP-012 — Servicio de análisis Python (Hito 2; sin cambios de código, regresión)
+# Fecha: 2026-10-22T03:36:08Z  Entorno: python:3.11-slim
+# Comando: python -m pytest -v
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-8.3.4, pluggy-1.7.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /app
+plugins: anyio-4.15.1
+collecting ... collected 23 items
+tests/test_features.py::test_seis_variables_exactas_del_pdf PASSED       [  4%]
+tests/test_features.py::test_valores_calculados_a_mano PASSED            [  8%]
+tests/test_features.py::test_suficiencia_explicita PASSED                [ 13%]
+tests/test_features.py::test_veinte_registros_no_alcanzan PASSED         [ 17%]
+tests/test_features.py::test_ejemplos_de_riesgo_rotulados PASSED         [ 21%]
+tests/test_features.py::test_duraciones_en_cero_no_excluyen_estudiantes PASSED [ 26%]
+tests/test_llm_y_api.py::test_envia_a_groq_formato_openai_y_solo_seudonimos PASSED [ 30%]
+tests/test_llm_y_api.py::test_no_envia_si_hay_un_correo PASSED           [ 34%]
+tests/test_llm_y_api.py::test_no_envia_si_hay_una_cedula[4.567.890-1] PASSED [ 39%]
+tests/test_llm_y_api.py::test_no_envia_si_hay_una_cedula[45678901] PASSED [ 43%]
+tests/test_llm_y_api.py::test_no_envia_si_hay_una_cedula[1.234.567-8] PASSED [ 47%]
+tests/test_llm_y_api.py::test_fechas_y_valores_no_se_confunden_con_cedulas PASSED [ 52%]
+tests/test_llm_y_api.py::test_sin_clave_o_con_error_es_no_disponible PASSED [ 56%]
+tests/test_llm_y_api.py::test_api_estado_y_recalculo_con_datos_insuficientes PASSED [ 60%]
+tests/test_llm_y_api.py::test_api_recalculo_con_datos_suficientes PASSED [ 65%]
+tests/test_llm_y_api.py::test_api_redactar_503_si_no_hay_modelo PASSED   [ 69%]
+tests/test_llm_y_api.py::test_api_rechaza_tipos_desconocidos PASSED      [ 73%]
+tests/test_modelos.py::test_kmeans_encuentra_la_estructura_y_es_reproducible PASSED [ 78%]
+tests/test_modelos.py::test_kmeans_no_presenta_con_pocas_muestras PASSED [ 82%]
+tests/test_modelos.py::test_kmeans_no_presenta_sin_estructura PASSED     [ 86%]
+tests/test_modelos.py::test_regresion_logistica_requiere_ejemplos_y_balance PASSED [ 91%]
+tests/test_modelos.py::test_regresion_logistica_entrena_y_estima_probabilidades PASSED [ 95%]
+tests/test_modelos.py::test_regresion_logistica_camino_de_entrenamiento_con_datos_balanceados PASSED [100%]
+=============================== warnings summary ===============================
+../usr/local/lib/python3.11/site-packages/starlette/testclient.py:40
+  /usr/local/lib/python3.11/site-packages/starlette/testclient.py:40: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = typing.Callable[[], typing.ContextManager[anyio.abc.BlockingPortal]]
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 23 passed, 1 warning in 1.62s =========================

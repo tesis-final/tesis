@@ -8,7 +8,7 @@ Proyecto de **TC4 — Grupo Error404** (ITI-CETP/UTU). La especificación que ma
 Solo hace falta **Docker** ([Docker Desktop](https://www.docker.com/products/docker-desktop/) en Windows o Mac; Docker Engine en Linux).
 
 ```bash
-git clone https://github.com/SVinas73/tesis
+git clone https://github.com/tesis-final/tesis
 cd tesis
 ./probar-local.sh
 ```
@@ -35,9 +35,9 @@ Los datos son **sintéticos** (un grupo 3A con 12 estudiantes y 3 actividades), 
 
 Qué probar, por perfil:
 
-- **Estudiante**: resolver una actividad y ver el resultado.
-- **Docente**: el panel "¿Dónde intervenir hoy?", el análisis del grupo 3A, el botón "¿Por qué?" de una recomendación, el asistente ("¿quiénes tuvieron dificultades esta semana?").
-- **Administrador**: usuarios, grupos, aprobar actividades, editar las reglas del motor, auditoría.
+- **Estudiante**: resolver una actividad (una pregunta por vez) y ver el resultado con el tiempo total y el tiempo activo; ver primero la actividad que le recomendó su docente.
+- **Docente**: el panel "¿Dónde intervenir hoy?"; **Consultas** (grupo + período + qué ver); el análisis del grupo 3A con el acierto por habilidad; en el perfil de un estudiante, el botón "¿Por qué?" y **confirmar o cambiar** la actividad sugerida; crear una actividad marcando qué habilidades mide cada pregunta y publicarla (por defecto sin aprobación previa); el asistente (opcional).
+- **Administrador**: usuarios, grupos, **instituciones** (exigir o no aprobación antes de publicar), aprobar actividades si la institución lo exige, editar las reglas del motor, auditoría.
 
 El asistente funciona sin Internet con los datos verificados. Para que redacte con Groq, poner la clave en `atlas/local/atlas.conf` (`LLM_API_KEY=…`) y volver a correr `./probar-local.sh`. El aprendizaje automático (Nivel 2) va a decir "datos insuficientes": necesita 20 estudiantes con 5 intentos y la demo tiene 12. Es el comportamiento correcto.
 
@@ -47,17 +47,20 @@ Todo lo que genera el script queda en `atlas/local/` (ignorado por Git). No toca
 
 | Carpeta | Contenido |
 | --- | --- |
-| `atlas/` | Aplicación PHP (API, interfaz, motor de reglas), base de datos y contenedores |
+| `atlas/` | Aplicación en **Laravel 12** (API `/api/v1`, middleware, validación) con la lógica propia en PHP (servicios, motor de reglas, indicadores), interfaz web, base de datos y contenedores |
 | `atlas-analysis/` | Servicio Python: aprendizaje automático y conexión con el modelo de lenguaje |
 | `infra/linux/` | Scripts de atlas-srv01 (Fase 6) |
 | `infra/windows/` | Scripts de atlas-dc01 (Fase 7) |
 | `infra/red/` | Configuraciones de switch, router y firewall (Fase 8) |
-| `docs/` | Auditoría, decisiones, manuales de cada fase, evidencias y el [reporte del Hito 1](docs/reporte-hito-1/README.md) |
+| `docs/` | Auditoría, decisiones, manuales de cada fase, evidencias, el [reporte del Hito 1](docs/reporte-hito-1/README.md) y lo hecho en el [Hito 2](docs/hito-2/README.md) |
 
 ## Pruebas automáticas (para desarrollo)
 
 ```bash
-cd atlas && composer install && vendor/bin/phpunit --testsuite unit     # PHP
-ATLAS_TEST_SUITES=api tests/Database/run.sh                             # API contra MySQL real
+cd atlas && composer install && vendor/bin/phpunit --testsuite unit     # PHP: unitarias y rutas
+ATLAS_TEST_SUITES=api tests/Database/run.sh                             # API (a través de Laravel) contra MySQL real
+tests/Database/run.sh                                                   # base de datos contra MySQL real
 cd ../atlas-analysis && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest
 ```
+
+`run.sh` usa la misma subred que la app levantada: antes de correrlo, `./probar-local.sh detener`. Si no tenés PHP instalado, los comandos de PHP se pueden correr dentro del contenedor (ver [fase-04 §7](docs/fase-04-aplicacion/README.md#7-cómo-reproducir)). La prueba de la interfaz en un navegador real está en `atlas/tests/e2e/interfaz.py`.

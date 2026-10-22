@@ -1,5 +1,7 @@
 # 03 — Modelo de datos final
 
+> **Actualización Hito 2 (22/10/2026).** Este es el diseño aprobado en la Fase 2 y se conserva como registro. Por el acta del Hito 2 (D-4), la migración `004_calculos_en_php.sql` cambió tres puntos: el puntaje lo calcula la aplicación en vez de `trg_intentos_finalizar`, el análisis grupal lo calcula la aplicación en vez de `sp_analisis_grupal`, y la versión de las reglas y la auditoría de cambios las escribe la aplicación en vez de triggers. También agregó `decisiones_recomendacion` (D-6) e `intentos.duracion_activa_seg` (D-8), y la aprobación pasó a no exigirse por defecto (D-2). El estado actual está en [fase-05-base-datos](../fase-05-base-datos/README.md) y en el [diccionario regenerado](../fase-05-base-datos/diccionario-datos.md).
+
 Base `atlas_db` en MySQL 8.0, motor InnoDB, `utf8mb4`. Todas las relaciones tienen clave foránea (Tabla 20). Las 29 tablas son la unión de §27.1 y la Tabla 19 (24), más las 4 de DEC-15 y la de DEC-16.
 
 Convenciones: `id` BIGINT UNSIGNED AUTO_INCREMENT como PK salvo en tablas de unión (PK compuesta); fechas `DATETIME(3)` en UTC.

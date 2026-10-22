@@ -1,0 +1,64 @@
+# E-APP-007 — Pruebas unitarias PHP (Hito 2, Laravel 12)
+# Fecha: 2026-10-22T03:30:06Z  Entorno: contenedor atlas/php (php:8.3-fpm), entorno de desarrollo
+# Comando: vendor/bin/phpunit --testsuite unit --testdox
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.3.36
+Configuration: /app/phpunit.xml
+
+.....................................                             37 / 37 (100%)
+
+Time: 00:04.863, Memory: 24.00 MB
+
+Asistente (Atlas\Tests\Unit\Asistente)
+ ✔ Las tres consultas de ejemplo del pdf
+ ✔ Nombre ambiguo requiere apellido
+ ✔ Pregunta fuera de alcance no se reconoce
+ ✔ Anonimizacion y reidentificacion
+ ✔ E 10 no se confunde con e 1
+
+Indicadores (Atlas\Tests\Unit\Indicadores)
+ ✔ Puntaje mejora y persistencia
+ ✔ Puntaje de un intento
+ ✔ Sin intentos finalizados no hay indicadores
+ ✔ Eficiencia
+ ✔ Determinismo
+
+Indicadores Habilidad (Atlas\Tests\Unit\IndicadoresHabilidad)
+ ✔ Porcentaje por habilidad de la mas debil a la mas fuerte
+ ✔ Cuenta estudiantes por debajo del umbral
+ ✔ Sin datos no inventa indicadores
+
+Motor Reglas (Atlas\Tests\Unit\MotorReglas)
+ ✔ Se cargan las ocho reglas y son validas
+ ✔ R 01 y r07 puntaje bajo en primer intento
+ ✔ R 02 listo para avanzar
+ ✔ R 03 domina con lentitud
+ ✔ R 04 aprende con la practica
+ ✔ R 05 estancamiento
+ ✔ R 06 persistencia con logro
+ ✔ R 08 dificultad sostenida en la categoria
+ ✔ Sin dato no dispara y queda registrado
+ ✔ Valores usados quedan para el por que
+ ✔ Validacion de condiciones editadas por el administrador
+
+Resumen Grupal (Atlas\Tests\Unit\ResumenGrupal)
+ ✔ Agregados con datos conocidos
+ ✔ Mediana con cantidad impar
+ ✔ Grupo sin resultados
+ ✔ Cuenta estudiantes distintos con varias actividades
+
+Rutas (Atlas\Tests\Unit\Rutas)
+ ✔ Las 44 rutas de la api v 1
+ ✔ Todas exigen sesion menos salud y login
+ ✔ Permisos y auditoria por ruta
+ ✔ Ruta inexistente 404 y metodo incorrecto 405
+ ✔ Sin sesion 401
+
+Tiempo Activo (Atlas\Tests\Unit\TiempoActivo)
+ ✔ Descuenta las pausas reanudadas
+ ✔ Pausa sin reanudar llega hasta el cierre
+ ✔ Sin pausas el activo es el total
+ ✔ Marcas fuera del intento se acotan
+
+OK (37 tests, 146 assertions)

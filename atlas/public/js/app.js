@@ -1,6 +1,6 @@
 // ATLAS — aplicación de una página: sesión, menú por rol y ruteo por hash.
 
-import { api, definirCsrf } from './api.js';
+import { api, definirCsrf, nuevaNavegacion } from './api.js';
 import { h, mensaje } from './ui.js';
 import { vistaLogin } from './vistas/login.js';
 import * as admin from './vistas/admin.js';
@@ -10,19 +10,20 @@ import * as estudiante from './vistas/estudiante.js';
 export const estado = { usuario: null, permisos: [] };
 
 const MENUS = {
-  ADMIN: [['#/', 'Actividades a revisar'], ['#/usuarios', 'Usuarios'], ['#/grupos', 'Grupos'], ['#/reglas', 'Reglas del motor'], ['#/reportes', 'Reportes'], ['#/auditoria', 'Auditoría']],
-  DOCENTE: [['#/', 'Dónde intervenir'], ['#/actividades', 'Mis actividades'], ['#/reportes', 'Reportes'], ['#/asistente', 'Asistente']],
+  ADMIN: [['#/', 'Actividades a revisar'], ['#/usuarios', 'Usuarios'], ['#/grupos', 'Grupos'], ['#/instituciones', 'Instituciones'], ['#/reglas', 'Reglas del motor'], ['#/reportes', 'Reportes'], ['#/auditoria', 'Auditoría']],
+  // D-5: las consultas guiadas son la forma principal; el asistente es opcional.
+  DOCENTE: [['#/', 'Dónde intervenir'], ['#/consultas', 'Consultas'], ['#/actividades', 'Mis actividades'], ['#/reportes', 'Reportes'], ['#/asistente', 'Asistente (opcional)']],
   ESTUDIANTE: [['#/', 'Mis actividades']],
 };
 
 const RUTAS = {
   ADMIN: [
-    [/^#\/$/, admin.revisar], [/^#\/usuarios$/, admin.usuarios], [/^#\/grupos$/, admin.grupos],
+    [/^#\/$/, admin.revisar], [/^#\/usuarios$/, admin.usuarios], [/^#\/grupos$/, admin.grupos], [/^#\/instituciones$/, admin.instituciones],
     [/^#\/reglas$/, admin.reglas], [/^#\/auditoria$/, admin.auditoria], [/^#\/reportes$/, docente.reportes],
     [/^#\/actividades\/(\d+)$/, admin.revisarActividad],
   ],
   DOCENTE: [
-    [/^#\/$/, docente.inicio], [/^#\/grupo\/(\d+)$/, docente.grupo], [/^#\/estudiante\/(\d+)$/, docente.estudiante],
+    [/^#\/$/, docente.inicio], [/^#\/consultas$/, docente.consultas], [/^#\/grupo\/(\d+)$/, docente.grupo], [/^#\/estudiante\/(\d+)$/, docente.estudiante],
     [/^#\/actividades$/, docente.actividades], [/^#\/actividades\/nueva$/, docente.editor],
     [/^#\/actividades\/(\d+)$/, docente.editor], [/^#\/reportes$/, docente.reportes], [/^#\/asistente$/, docente.asistente],
   ],
@@ -31,14 +32,12 @@ const RUTAS = {
   ],
 };
 
-export function iniciarSesion(datos) {
-  estado.usuario = datos.usuario;
-  estado.permisos = datos.permisos;
-  definirCsrf(datos.csrf);
-  document.getElementById('mensajes').replaceChildren(); // los avisos del intento anterior ya no aplican
-  pintarBarra();
-  location.hash = '#/';
-  navegar();
+// Al cambiar de usuario se recarga la página: así ninguna pantalla del usuario anterior
+// que todavía estuviera cargando puede mostrarse con la sesión nueva (equipos compartidos).
+// Después de recargar, /auth/me trae el usuario y el token CSRF de la sesión nueva.
+export function iniciarSesion() {
+  location.replace('/#/');
+  location.reload();
 }
 
 function pintarBarra() {
@@ -58,14 +57,12 @@ function pintarBarra() {
 
 async function salir() {
   try { await api('POST', '/auth/logout'); } catch { /* ya vencida */ }
-  estado.usuario = null;
-  definirCsrf(null);
-  pintarBarra();
-  location.hash = '#/login';
-  navegar();
+  location.replace('/#/login');
+  location.reload();
 }
 
 async function navegar() {
+  nuevaNavegacion();
   const hash = location.hash || '#/';
   if (!estado.usuario) {
     vistaLogin();

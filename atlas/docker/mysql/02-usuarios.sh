@@ -24,6 +24,13 @@ ANA=$(sql_escape "$ATLAS_DB_ANALYSIS_PASSWORD")
 BKP=$(sql_escape "$ATLAS_DB_BACKUP_PASSWORD")
 ADM=$(sql_escape "$ATLAS_DB_ADMIN_PASSWORD")
 
+# En Windows (Docker Desktop) el bind mount deja el archivo como ejecutable y el
+# entrypoint lo *ejecuta* en vez de incluirlo: docker_process_sql no existe.
+# Mismo efecto contra el servidor temporal de inicialización (socket local).
+if ! declare -F docker_process_sql >/dev/null; then
+  docker_process_sql() { MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql --protocol=socket -uroot "$@"; }
+fi
+
 docker_process_sql --database=mysql <<SQL
 -- atlas_app: SELECT/INSERT/UPDATE en tablas operativas (Tabla 21).
 CREATE USER 'atlas_app'@'${HOST}' IDENTIFIED BY '${APP}';
@@ -48,19 +55,20 @@ GRANT SELECT, INSERT, UPDATE ON atlas_db.indicadores          TO 'atlas_app'@'${
 GRANT SELECT, INSERT, UPDATE ON atlas_db.reglas_analisis      TO 'atlas_app'@'${HOST}';
 GRANT SELECT, INSERT, UPDATE ON atlas_db.recomendaciones      TO 'atlas_app'@'${HOST}';
 GRANT SELECT, INSERT, UPDATE ON atlas_db.recomendacion_regla  TO 'atlas_app'@'${HOST}';
--- Solo lectura: catálogos fijos y datos que escriben otros (trigger, SP, ML, respaldos).
+-- Solo lectura: catálogos fijos y datos que escriben otros (ML, respaldos).
 GRANT SELECT ON atlas_db.roles              TO 'atlas_app'@'${HOST}';
 GRANT SELECT ON atlas_db.permisos           TO 'atlas_app'@'${HOST}';
 GRANT SELECT ON atlas_db.estados_actividad  TO 'atlas_app'@'${HOST}';
-GRANT SELECT ON atlas_db.resultados         TO 'atlas_app'@'${HOST}';
 GRANT SELECT ON atlas_db.agrupamientos      TO 'atlas_app'@'${HOST}';
-GRANT SELECT ON atlas_db.analisis_grupal    TO 'atlas_app'@'${HOST}';
 GRANT SELECT ON atlas_db.registro_respaldos TO 'atlas_app'@'${HOST}';
--- Solo agregar: registros que no se modifican (RF-15, RF-17, RF-20).
+-- Solo agregar: registros que no se modifican (RF-15, RF-17, RF-20). Desde 004 (D-4)
+-- la app calcula resultados y análisis grupal: los agrega, pero no puede alterarlos.
 GRANT SELECT, INSERT ON atlas_db.auditoria              TO 'atlas_app'@'${HOST}';
 GRANT SELECT, INSERT ON atlas_db.transiciones_actividad TO 'atlas_app'@'${HOST}';
 GRANT SELECT, INSERT ON atlas_db.conversaciones         TO 'atlas_app'@'${HOST}';
-GRANT EXECUTE ON PROCEDURE atlas_db.sp_analisis_grupal  TO 'atlas_app'@'${HOST}';
+GRANT SELECT, INSERT ON atlas_db.resultados             TO 'atlas_app'@'${HOST}';
+GRANT SELECT, INSERT ON atlas_db.analisis_grupal        TO 'atlas_app'@'${HOST}';
+GRANT SELECT, INSERT ON atlas_db.decisiones_recomendacion TO 'atlas_app'@'${HOST}';  -- D-6
 
 -- atlas_read: SELECT sobre vistas de reporte (Tabla 21).
 CREATE USER 'atlas_read'@'${HOST}' IDENTIFIED BY '${READ}';

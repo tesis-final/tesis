@@ -6,10 +6,13 @@ namespace Atlas\Services;
 
 use Atlas\Core\Clock;
 use Atlas\Core\HttpException;
+use Atlas\Repositories\ActividadRepository;
 use Atlas\Repositories\AnalisisRepository;
 use Atlas\Repositories\OrganizacionRepository;
 use Atlas\Repositories\ReporteRepository;
+use Atlas\Services\Analysis\IndicadoresHabilidad;
 use Atlas\Services\Analysis\Periodo;
+use Atlas\Services\Analysis\ResumenGrupal;
 
 /**
  * Panel docente (RF-11, RF-12, RF-13, RF-18; §20.4; H.2.3).
@@ -26,7 +29,8 @@ final class PanelDocenteService
         private readonly AnalisisRepository $analisis,
         private readonly ReporteRepository $reportes,
         private readonly AnalisisClient $cliente,
-        private readonly Clock $reloj
+        private readonly Clock $reloj,
+        private readonly ActividadRepository $actividades
     ) {
     }
 
@@ -73,14 +77,26 @@ final class PanelDocenteService
             fn ($a, $b) => [$b['cantidad_reglas'], $b['ultima']] <=> [$a['cantidad_reglas'], $a['ultima']]
         );
 
-        $agregados = $this->reportes->analisisGrupal($grupo, $actividad, $periodo->desde, $periodo->hasta);
+        // RF-18 (D-4): los agregados se calculan en PHP y la base solo guarda el historial.
+        if ($periodo->hasta < $periodo->desde) {
+            throw HttpException::conflicto('período inválido');
+        }
+        $agregados = ResumenGrupal::calcular(
+            $this->reportes->ultimosPuntajes($grupo, $actividad, $periodo->desde, $periodo->hasta)
+        );
+        $this->reportes->guardarAnalisisGrupal($grupo, $actividad, $periodo->desde, $periodo->hasta, $agregados);
 
         return [
             'grupo' => $this->organizacion->grupo($grupo),
             'periodo' => ['desde' => $periodo->desde, 'hasta' => $periodo->hasta],
             'estudiantes' => count($estudiantes),
             'prioritarios' => $prioritarios,
-            'preguntas_con_mas_error' => $this->reportes->preguntasConMasError($grupo, $actividad),
+            'preguntas_con_mas_error' => $this->reportes->preguntasConMasError(
+                $grupo,
+                $actividad,
+                $periodo->desde,
+                $periodo->hasta
+            ),
             'agregados' => [
                 'n_estudiantes' => (int) ($agregados['n_estudiantes'] ?? 0),
                 'promedio' => isset($agregados['promedio']) ? (float) $agregados['promedio'] : null,
@@ -89,6 +105,13 @@ final class PanelDocenteService
                 'maximo' => isset($agregados['maximo']) ? (float) $agregados['maximo'] : null,
             ],
             'distribucion' => $this->reportes->distribucion($grupo, $actividad),
+            // D-3: acierto por habilidad del grupo, de la más débil a la más fuerte.
+            'habilidades' => IndicadoresHabilidad::calcular($this->reportes->aciertosPorHabilidad(
+                array_keys($nombres),
+                $periodo->desde,
+                $periodo->hasta,
+                $grupo
+            )),
             'aprendizaje_automatico' => $this->estadoNivel2($grupo, $periodo, $nombres),
         ];
     }
@@ -114,6 +137,9 @@ final class PanelDocenteService
             'estudiante_id' => $estudiante,
             'periodo' => ['desde' => $periodo->desde, 'hasta' => $periodo->hasta],
             'indicadores' => $perfil ? $this->analisis->indicadoresDelPerfil((int) $perfil['id']) : [],
+            'habilidades' => IndicadoresHabilidad::calcular(
+                $this->reportes->aciertosPorHabilidad([$estudiante], $periodo->desde, $periodo->hasta)
+            ),
             'nivel2' => $perfil ? $this->analisis->indicadoresNivel2((int) $perfil['id']) : [],
             'recomendaciones' => $perfil ? $this->analisis->recomendacionesDelPerfil((int) $perfil['id']) : [],
             'evolucion' => $grupos === [] ? [] : $this->reportes->evolucion($estudiante, $grupos[0]),
@@ -131,6 +157,41 @@ final class PanelDocenteService
         $rec['reglas'] = $this->analisis->fundamento($recomendacion);
 
         return $rec;
+    }
+
+    /**
+     * D-6: el sistema recomienda y el docente decide. Sin actividad (o con la misma que
+     * se sugirió) confirma la sugerencia; con otra, la cambia. La actividad tiene que
+     * estar publicada en un grupo del estudiante. Una sola decisión por recomendación.
+     *
+     * @return array<string, mixed> la recomendación con la decisión
+     */
+    public function decidir(array $usuario, int $recomendacion, ?int $actividad): array
+    {
+        $rec = $this->analisis->recomendacion($recomendacion)
+            ?? throw HttpException::noEncontrado('Recomendación no encontrada.');
+        $this->exigirEstudiante($usuario, (int) $rec['estudiante_id']);
+        if ($this->analisis->decisionTomada($recomendacion)) {
+            throw HttpException::conflicto('Ya se decidió sobre esta recomendación.');
+        }
+        $sugerida = $rec['actividad_sugerida_id'] !== null ? (int) $rec['actividad_sugerida_id'] : null;
+        $elegida = $actividad ?? $sugerida
+            ?? throw HttpException::validacion([
+                'actividad_id' => 'La recomendación no sugiere una actividad: elija cuál asignar.',
+            ]);
+        if (!$this->actividades->visibleParaEstudiante($elegida, (int) $rec['estudiante_id'])) {
+            throw HttpException::validacion([
+                'actividad_id' => 'La actividad no está publicada en un grupo del estudiante.',
+            ]);
+        }
+        $this->analisis->guardarDecision(
+            $recomendacion,
+            $elegida,
+            $elegida === $sugerida ? 'CONFIRMADA' : 'CAMBIADA',
+            (int) $usuario['id']
+        );
+
+        return $this->fundamento($usuario, $recomendacion);
     }
 
     /** @return array<string, mixed> */

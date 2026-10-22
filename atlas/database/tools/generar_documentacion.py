@@ -23,7 +23,7 @@ GRUPOS = {
                   "transiciones_actividad", "actividad_grupo", "habilidades", "pregunta_habilidad"],
     "Interacción": ["intentos", "respuestas", "interacciones", "resultados"],
     "Análisis": ["perfiles_aprendizaje", "indicadores", "reglas_analisis", "recomendaciones",
-                 "recomendacion_regla", "analisis_grupal", "agrupamientos"],
+                 "recomendacion_regla", "decisiones_recomendacion", "analisis_grupal", "agrupamientos"],
     "Control": ["auditoria", "conversaciones", "registro_respaldos"],
 }
 

@@ -11,7 +11,7 @@ Generado automáticamente desde `information_schema` de la base en ejecución (`
 | `id` | bigint unsigned | NO | PRI | auto_increment |  |
 | `nombre` | varchar(150) | NO | UNI |  |  |
 | `activa` | tinyint(1) | NO |  | 1 |  |
-| `requiere_aprobacion` | tinyint(1) | NO |  | 1 |  |
+| `requiere_aprobacion` | tinyint(1) | NO |  | 0 |  |
 | `creado_en` | datetime(3) | NO |  | CURRENT_TIMESTAMP(3) DEFAULT_GENERATED |  |
 
 ### `roles`
@@ -211,11 +211,13 @@ Restricciones CHECK:
 | `iniciado_en` | datetime(3) | NO |  | CURRENT_TIMESTAMP(3) DEFAULT_GENERATED |  |
 | `finalizado_en` | datetime(3) | YES |  |  |  |
 | `duracion_seg` | int unsigned | YES |  |  |  |
+| `duracion_activa_seg` | int unsigned | YES |  |  |  |
 
 Restricciones CHECK:
 
 - `ck_intentos_cierre`: `(((estado = _utf8mb4\\'EN_CURSO\\') and (finalizado_en is null)) or ((estado in (_utf8mb4\\'FINALIZADO\\',_utf8mb4\\'ABANDONADO\\')) and (finalizado_en is not null) and (duracion_seg is not null)))`
 - `ck_intentos_duracion`: `((duracion_seg is null) or (duracion_seg <= 86400))`
+- `ck_intentos_duracion_activa`: `((duracion_activa_seg is null) or ((duracion_seg is not null) and (duracion_activa_seg <= duracion_seg)))`
 - `ck_intentos_numero`: `(numero_intento >= 1)`
 
 ### `respuestas`
@@ -352,6 +354,17 @@ Restricciones CHECK:
 Restricciones CHECK:
 
 - `ck_recomendacion_regla_valores`: `json_valid(valores_entrada)`
+
+### `decisiones_recomendacion`
+
+| Columna | Tipo | Nulo | Clave | Por defecto | Referencia |
+| --- | --- | --- | --- | --- | --- |
+| `id` | bigint unsigned | NO | PRI | auto_increment |  |
+| `recomendacion_id` | bigint unsigned | NO | UNI |  | → `recomendaciones.id` |
+| `actividad_id` | bigint unsigned | NO | MUL |  | → `actividades.id` |
+| `decision` | enum('CONFIRMADA','CAMBIADA') | NO |  |  |  |
+| `decidido_por` | bigint unsigned | NO | MUL |  | → `usuarios.id` |
+| `decidido_en` | datetime(3) | NO |  | CURRENT_TIMESTAMP(3) DEFAULT_GENERATED |  |
 
 ### `analisis_grupal`
 

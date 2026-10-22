@@ -55,9 +55,79 @@ final class PanelGrupalTest extends ApiTestCase
             array_map('intval', array_column($r['distribucion'], 'cantidad', 'rango'))
         );
 
+        // 3b) Acierto por habilidad (D-3). Preguntas 1 y 3 miden LOGICA; 2 y 4, CALCULO y LOGICA.
+        //     LOGICA: 8 de 16 = 50 %; CALCULO: 3 de 8 = 37,5 % → la más débil, a reforzar.
+        $this->assertSame(['CALCULO', 'LOGICA'], array_column($r['habilidades'], 'codigo'));
+        $this->assertSame([3, 8, 37.5, true, 2], [
+            $r['habilidades'][0]['correctas'], $r['habilidades'][0]['preguntas'], $r['habilidades'][0]['porcentaje'],
+            $r['habilidades'][0]['a_reforzar'], $r['habilidades'][0]['estudiantes_bajo_umbral'],
+        ]);
+        $this->assertSame([8, 16, 50.0, false], [
+            $r['habilidades'][1]['correctas'], $r['habilidades'][1]['preguntas'], $r['habilidades'][1]['porcentaje'],
+            $r['habilidades'][1]['a_reforzar'],
+        ]);
+
+        // 3c) Por estudiante (perfil): el de 3 aciertos tiene LOGICA 3/4 y CALCULO 1/2.
+        $perfil = $docente->pedir('GET', "/docente/estudiantes/{$est[3]}/perfil");
+        $this->assertSame(200, $docente->ultimoEstado);
+        $this->assertSame(
+            ['CALCULO' => 50.0, 'LOGICA' => 75.0],
+            array_column($perfil['habilidades'], 'porcentaje', 'codigo')
+        );
+
         // 4) Nivel 2 honesto: el servicio informa que los datos no alcanzan.
         $this->assertTrue($r['aprendizaje_automatico']['servicio_disponible']);
         $this->assertFalse($r['aprendizaje_automatico']['suficiencia']['suficiente']);
+    }
+
+    public function testCuentaElUltimoIntentoYGuardaElHistorial(): void
+    {
+        // RF-18 (D-4): un estudiante que hace 0 y después 100 cuenta con 100; el resumen
+        // calculado en PHP queda guardado en analisis_grupal.
+        [$admin] = $this->entrar('ADMIN');
+        [$docente, $idDoc] = $this->entrar('DOCENTE');
+        $grupo = self::crearGrupo();
+        self::asignar($idDoc, $grupo);
+        $a = $this->crearActividadApi($docente, 2);
+        $this->publicarApi($docente, $admin, $a['id'], $grupo);
+        [$est, $idEst] = $this->entrar('ESTUDIANTE');
+        self::asignar($idEst, $grupo);
+        $this->resolver($est, $a, 0);
+        $this->resolver($est, $a, 2);
+
+        $r = $docente->pedir('GET', "/docente/grupos/{$grupo}/analisis", [], ['actividad' => (string) $a['id']]);
+        $this->assertSame(200, $docente->ultimoEstado);
+        $this->assertSame(1, $r['agregados']['n_estudiantes']);
+        $this->assertEqualsWithDelta(100.0, $r['agregados']['promedio'], 0.001);
+        $this->assertEqualsWithDelta(100.0, $r['agregados']['minimo'], 0.001);
+
+        $guardado = self::pdo()->query(
+            "SELECT n_estudiantes, promedio FROM analisis_grupal WHERE grupo_id = {$grupo} ORDER BY id DESC LIMIT 1"
+        )->fetch();
+        $this->assertSame([1, '100.00'], [(int) $guardado['n_estudiantes'], $guardado['promedio']]);
+    }
+
+    public function testLaConsultaGuiadaRespetaElPeriodo(): void
+    {
+        // D-5: grupo + período + qué ver. Fuera del período no aparece nada de hoy.
+        [$docente, $grupo] = $this->grupoConResultados();
+        $hoy = gmdate('Y-m-d');
+        $r = $docente->pedir('GET', "/docente/grupos/{$grupo}/analisis", [], ['desde' => $hoy, 'hasta' => $hoy]);
+        $this->assertNotEmpty($r['preguntas_con_mas_error']);
+        $this->assertNotEmpty($r['habilidades']);
+
+        $vacio = $docente->pedir(
+            'GET',
+            "/docente/grupos/{$grupo}/analisis",
+            [],
+            ['desde' => '2000-01-01', 'hasta' => '2000-01-31']
+        );
+        $this->assertSame(200, $docente->ultimoEstado);
+        $this->assertSame(
+            [[], [], [], 0],
+            [$vacio['prioritarios'], $vacio['preguntas_con_mas_error'], $vacio['habilidades'],
+             $vacio['agregados']['n_estudiantes']]
+        );
     }
 
     public function testSinServicioDeAnalisisElPanelSigueFuncionando(): void

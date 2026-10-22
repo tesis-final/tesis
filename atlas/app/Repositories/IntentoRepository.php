@@ -14,7 +14,7 @@ final class IntentoRepository extends Repository
     {
         return $this->uno(
             'SELECT i.id, i.usuario_id, i.actividad_id, i.numero_intento, i.estado, i.iniciado_en,
-                    i.finalizado_en, i.duracion_seg,
+                    i.finalizado_en, i.duracion_seg, i.duracion_activa_seg,
                     (SELECT MAX(secuencia) FROM interacciones x WHERE x.intento_id = i.id) AS ultima_secuencia,
                     (SELECT MAX(ocurrido_en) FROM interacciones x WHERE x.intento_id = i.id) AS ultimo_evento
                FROM intentos i WHERE i.id = ?',
@@ -92,11 +92,40 @@ final class IntentoRepository extends Repository
         );
     }
 
-    public function cerrar(int $intento, string $estado, string $finalizadoEn, int $duracionSeg): void
+    public function cerrar(int $intento, string $estado, string $finalizadoEn, int $duracionSeg, int $activaSeg): void
     {
         $this->afectadas(
-            "UPDATE intentos SET estado = ?, finalizado_en = ?, duracion_seg = ? WHERE id = ? AND estado = 'EN_CURSO'",
-            [$estado, $finalizadoEn, $duracionSeg, $intento]
+            "UPDATE intentos SET estado = ?, finalizado_en = ?, duracion_seg = ?, duracion_activa_seg = ?
+              WHERE id = ? AND estado = 'EN_CURSO'",
+            [$estado, $finalizadoEn, $duracionSeg, $activaSeg, $intento]
+        );
+    }
+
+    /**
+     * Datos para el resultado: preguntas de la actividad y respuestas correctas del intento.
+     * Una pregunta sin responder cuenta como incorrecta.
+     *
+     * @return array{correctas: int, total: int}
+     */
+    public function conteoParaResultado(int $intento): array
+    {
+        $fila = $this->uno(
+            'SELECT (SELECT COUNT(*) FROM preguntas p WHERE p.actividad_id = i.actividad_id) AS total,
+                    (SELECT COUNT(*) FROM respuestas r JOIN opciones o ON o.id = r.opcion_id
+                      WHERE r.intento_id = i.id AND o.es_correcta = TRUE) AS correctas
+               FROM intentos i WHERE i.id = ?',
+            [$intento]
+        );
+
+        return ['correctas' => (int) ($fila['correctas'] ?? 0), 'total' => (int) ($fila['total'] ?? 0)];
+    }
+
+    /** atlas_app puede agregar resultados pero no modificarlos (02-usuarios.sh). */
+    public function guardarResultado(int $intento, int $correctas, int $total, float $puntaje): void
+    {
+        $this->ejecutar(
+            'INSERT INTO resultados (intento_id, correctas, total_preguntas, puntaje) VALUES (?, ?, ?, ?)',
+            [$intento, $correctas, $total, $puntaje]
         );
     }
 

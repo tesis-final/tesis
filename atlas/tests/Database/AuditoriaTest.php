@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Atlas\Tests\Database;
 
 /**
- * Auditoría: RF-15 (no modificable), RF-14 (autor y fecha), §27.3 (reglas versionadas).
+ * Auditoría: RF-15 (no modificable). El autor, la fecha y el detalle de cada cambio
+ * (RF-14) y el versionado de reglas (§27.3) los registra la aplicación (acta D-4).
  */
 final class AuditoriaTest extends DatabaseTestCase
 {
@@ -22,54 +23,25 @@ final class AuditoriaTest extends DatabaseTestCase
         $this->assertFalla('DELETE FROM auditoria WHERE id = ?', [$id], contiene: 'no se puede borrar');
     }
 
-    public function testCambioDeUsuarioQuedaAuditadoConAutor(): void
+    public function testLaBaseNoCalculaNiEscribeAuditoriaPorSuCuenta(): void
     {
-        $admin = self::crearUsuario('admin');
+        // Acta D-4 (004): los registros de auditoría con su detalle y la versión de las
+        // reglas los escribe la aplicación (ver tests/Api/GestionAdministrativaTest y
+        // MotorAnalisisApiTest). La base solo protege la auditoría (test anterior).
+        $this->assertSame([], self::pdo()->query(
+            "SELECT trigger_name FROM information_schema.triggers
+              WHERE trigger_schema = 'atlas_db'
+                AND (trigger_name LIKE '%auditoria_ins' OR trigger_name LIKE '%auditoria_upd'
+                     OR trigger_name IN ('trg_reglas_version', 'trg_reglas_auditoria'))"
+        )->fetchAll(\PDO::FETCH_COLUMN));
+
         $docente = self::crearUsuario('docente');
-        self::pdo()->exec("SET @atlas_usuario_id = {$admin}");
+        $antes = (int) self::valor('SELECT COUNT(*) FROM auditoria');
         self::ejecutar('UPDATE usuarios SET activo = FALSE WHERE id = ?', [$docente]);
-        self::pdo()->exec('SET @atlas_usuario_id = NULL');
+        $this->assertSame($antes, (int) self::valor('SELECT COUNT(*) FROM auditoria'));
 
-        $fila = self::pdo()->query(
-            "SELECT usuario_id, accion, detalle, creado_en FROM auditoria
-              WHERE recurso = 'usuarios' AND recurso_id = '{$docente}' AND accion = 'usuarios.modificar'"
-        )->fetch();
-        $this->assertSame($admin, (int) $fila['usuario_id']);
-        $this->assertSame([1, 0], json_decode($fila['detalle'], true)['activo']);
-        $this->assertNotEmpty($fila['creado_en']);
-    }
-
-    public function testContrasenaNoSeCopiaALaAuditoria(): void
-    {
-        $docente = self::crearUsuario('docente');
-        self::ejecutar('UPDATE usuarios SET hash_contrasena = ? WHERE id = ?', ['$argon2id$nuevo', $docente]);
-        $detalle = (string) self::valor(
-            "SELECT detalle FROM auditoria
-              WHERE recurso = 'usuarios' AND recurso_id = ? AND accion = 'usuarios.modificar'
-              ORDER BY id DESC LIMIT 1",
-            [(string) $docente]
-        );
-        $this->assertStringNotContainsString('argon2id', $detalle);
-        $this->assertTrue(json_decode($detalle, true)['contrasena_cambiada']);
-    }
-
-    public function testEditarUnaReglaIncrementaVersionYSeAudita(): void
-    {
-        $antes = (int) self::valor("SELECT version FROM reglas_analisis WHERE codigo = 'R03'");
-        self::ejecutar(
-            "UPDATE reglas_analisis
-                SET condicion = JSON_SET(condicion, '$.todas[1].valor', 0.65)
-              WHERE codigo = 'R03'"
-        );
-        $this->assertSame($antes + 1, (int) self::valor("SELECT version FROM reglas_analisis WHERE codigo = 'R03'"));
-        $this->assertSame(1, (int) self::valor(
-            "SELECT COUNT(*) FROM auditoria WHERE accion = 'reglas.modificar' AND recurso_id = 'R03'
-               AND CAST(JSON_EXTRACT(detalle, '$.version[1]') AS UNSIGNED) = ?",
-            [$antes + 1]
-        ));
-        // Restablecer el valor aprobado (DEC-23).
-        self::ejecutar(
-            "UPDATE reglas_analisis SET condicion = JSON_SET(condicion, '$.todas[1].valor', 0.7) WHERE codigo = 'R03'"
-        );
+        $version = (int) self::valor("SELECT version FROM reglas_analisis WHERE codigo = 'R03'");
+        self::ejecutar("UPDATE reglas_analisis SET activa = activa WHERE codigo = 'R03'");
+        $this->assertSame($version, (int) self::valor("SELECT version FROM reglas_analisis WHERE codigo = 'R03'"));
     }
 }

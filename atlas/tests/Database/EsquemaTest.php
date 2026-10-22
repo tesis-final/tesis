@@ -19,9 +19,11 @@ final class EsquemaTest extends DatabaseTestCase
         'auditoria', 'conversaciones', 'registro_respaldos',
         // Hito 2 (migración 003)
         'habilidades', 'pregunta_habilidad',
+        // Hito 2 (migración 004, acta D-6)
+        'decisiones_recomendacion',
     ];
 
-    public function testExistenLas31TablasDelModeloYAlMenos15(): void
+    public function testExistenLas32TablasDelModeloYAlMenos15(): void
     {
         $tablas = self::pdo()->query(
             "SELECT table_name FROM information_schema.tables
@@ -85,13 +87,22 @@ final class EsquemaTest extends DatabaseTestCase
             'v_recomendaciones_riesgo', 'v_resultados_detalle',
         ], $vistas);
 
-        $this->assertSame(1, (int) self::valor(
-            "SELECT COUNT(*) FROM information_schema.routines
-              WHERE routine_schema = 'atlas_db' AND routine_name = 'sp_analisis_grupal'"
+        // Acta D-4 (004): la base no calcula; no quedan procedimientos almacenados.
+        $this->assertSame(0, (int) self::valor(
+            "SELECT COUNT(*) FROM information_schema.routines WHERE routine_schema = 'atlas_db'"
         ));
-        $this->assertGreaterThanOrEqual(15, (int) self::valor(
-            "SELECT COUNT(*) FROM information_schema.triggers WHERE trigger_schema = 'atlas_db'"
-        ));
+        // Solo quedan triggers que protegen integridad (ninguno calcula ni escribe datos).
+        $triggers = self::pdo()->query(
+            "SELECT trigger_name FROM information_schema.triggers WHERE trigger_schema = 'atlas_db'"
+        )->fetchAll(\PDO::FETCH_COLUMN);
+        sort($triggers);
+        $this->assertSame([
+            'trg_actividades_ciclo', 'trg_auditoria_sin_delete', 'trg_auditoria_sin_update',
+            'trg_intentos_inmutable_cerrado', 'trg_opciones_borrar_solo_borrador', 'trg_opciones_editar_solo_borrador',
+            'trg_pregunta_habilidad_del', 'trg_pregunta_habilidad_ins', 'trg_pregunta_habilidad_upd',
+            'trg_preguntas_borrar_solo_borrador', 'trg_preguntas_editar_solo_borrador', 'trg_respuestas_validar',
+            'trg_respuestas_validar_upd',
+        ], $triggers);
     }
 
     public function testCatalogosSemilla(): void

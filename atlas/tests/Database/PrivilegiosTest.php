@@ -38,12 +38,20 @@ final class PrivilegiosTest extends DatabaseTestCase
 
     public function testAppNoPuedeFalsearResultados(): void
     {
+        // Desde 004 (D-4) la app agrega el resultado que calcula, pero nunca lo modifica ni lo borra.
         $this->assertFalla('UPDATE resultados SET puntaje = 100', usuario: 'atlas_app', contiene: 'command denied');
+        $this->assertFalla('DELETE FROM resultados', usuario: 'atlas_app', contiene: 'command denied');
+    }
+
+    public function testAppNoModificaLasDecisionesDelDocente(): void
+    {
+        // D-6 (004): queda el rastro de qué sugirió el sistema y qué decidió el docente.
         $this->assertFalla(
-            'INSERT INTO resultados (intento_id, correctas, total_preguntas, puntaje) VALUES (1, 1, 1, 100)',
+            'UPDATE decisiones_recomendacion SET decision = \'CAMBIADA\'',
             usuario: 'atlas_app',
             contiene: 'command denied'
         );
+        $this->assertFalla('DELETE FROM decisiones_recomendacion', usuario: 'atlas_app', contiene: 'command denied');
     }
 
     public function testAppNoModificaTransicionesNiConversaciones(): void
