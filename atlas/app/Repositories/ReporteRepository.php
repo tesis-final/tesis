@@ -107,7 +107,7 @@ final class ReporteRepository extends Repository
         $filas = $this->todos(
             "SELECT intento_id, estudiante_id, estudiante_nombre, estudiante_apellido, grupo_id, actividad_id,
                     actividad_titulo, nivel, categoria, numero_intento, finalizado_en, duracion_seg,
-                    correctas, total_preguntas, puntaje
+                    duracion_activa_seg, correctas, total_preguntas, puntaje
                FROM v_resultados_detalle WHERE {$where} ORDER BY finalizado_en DESC LIMIT 2000",
             $params,
             $this->lectura()
@@ -115,7 +115,8 @@ final class ReporteRepository extends Repository
         $resumen = $this->todos(
             "SELECT actividad_id, actividad_titulo, nivel, categoria, COUNT(*) AS intentos,
                     COUNT(DISTINCT estudiante_id) AS estudiantes, ROUND(AVG(puntaje), 2) AS promedio,
-                    ROUND(AVG(duracion_seg), 0) AS duracion_media_seg
+                    ROUND(AVG(duracion_seg), 0) AS duracion_media_seg,
+                    ROUND(AVG(duracion_activa_seg), 0) AS duracion_activa_media_seg
                FROM v_resultados_detalle WHERE {$where}
               GROUP BY actividad_id, actividad_titulo, nivel, categoria ORDER BY actividad_titulo",
             $params,

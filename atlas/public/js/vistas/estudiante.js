@@ -99,7 +99,11 @@ export async function resultado(intentoId) {
     h('div', { clase: 'cifras' },
       h('div', { clase: 'cifra' }, h('strong', {}, `${numero(r.puntaje)} / 100`), 'Puntaje'),
       h('div', { clase: 'cifra' }, h('strong', {}, `${r.correctas} de ${r.total_preguntas}`), 'Respuestas correctas'),
-      h('div', { clase: 'cifra' }, h('strong', {}, `${r.intento.duracion_seg} s`), 'Tiempo'),
+      h('div', { clase: 'cifra' }, h('strong', {}, `${r.intento.duracion_seg} s`), 'Tiempo total'),
+      // D-8: el tiempo activo descuenta las pausas (más de 60 s sin actividad o pestaña oculta).
+      r.intento.duracion_activa_seg !== null
+        ? h('div', { clase: 'cifra' }, h('strong', {}, `${r.intento.duracion_activa_seg} s`), 'Tiempo activo')
+        : null,
     ),
     h('section', { clase: 'tarjeta' }, h('h2', {}, 'Detalle'),
       h('ol', {}, r.detalle.map((d) => h('li', { clase: d.acerto ? 'acierto' : 'error' },

@@ -86,6 +86,19 @@ final class ResultadosTest extends DatabaseTestCase
         );
     }
 
+    public function testTiempoActivoNoSuperaAlTotal(): void
+    {
+        // D-8 (004): el tiempo activo lo calcula la app; la base garantiza que sea coherente.
+        [$estudiante, $actividad] = $this->escenario();
+        $intento = self::iniciarIntento($estudiante, $actividad);
+        $this->assertFalla(
+            "UPDATE intentos SET estado = 'ABANDONADO', finalizado_en = NOW(3), duracion_seg = 60,
+                    duracion_activa_seg = 61 WHERE id = ?",
+            [$intento],
+            contiene: 'ck_intentos_duracion_activa'
+        );
+    }
+
     public function testCadaInicioEsUnIntentoDistinguible(): void
     {
         [$estudiante, $actividad] = $this->escenario();

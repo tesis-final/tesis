@@ -164,7 +164,8 @@ SELECT r.intento_id, p.orden + 1, 'SELECCION', r.pregunta_id, r.opcion_id, r.res
 UPDATE intentos i JOIN tmp_int x ON x.id = i.id
    SET i.estado = IF(x.abandona, 'ABANDONADO', 'FINALIZADO'),
        i.finalizado_en = x.iniciado_en + INTERVAL (@preguntas * 60 + 30) SECOND,
-       i.duracion_seg = @preguntas * 60 + 30;
+       i.duracion_seg = @preguntas * 60 + 30,
+       i.duracion_activa_seg = @preguntas * 60 + 30;   -- sin pausas en los datos sintéticos (D-8)
 
 -- Resultado de cada intento finalizado. Desde 004 (acta D-4) la base no lo calcula:
 -- en la plataforma lo hace IntentoService::finalizar; este script de carga de

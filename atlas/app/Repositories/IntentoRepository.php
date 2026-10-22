@@ -14,7 +14,7 @@ final class IntentoRepository extends Repository
     {
         return $this->uno(
             'SELECT i.id, i.usuario_id, i.actividad_id, i.numero_intento, i.estado, i.iniciado_en,
-                    i.finalizado_en, i.duracion_seg,
+                    i.finalizado_en, i.duracion_seg, i.duracion_activa_seg,
                     (SELECT MAX(secuencia) FROM interacciones x WHERE x.intento_id = i.id) AS ultima_secuencia,
                     (SELECT MAX(ocurrido_en) FROM interacciones x WHERE x.intento_id = i.id) AS ultimo_evento
                FROM intentos i WHERE i.id = ?',
@@ -92,11 +92,12 @@ final class IntentoRepository extends Repository
         );
     }
 
-    public function cerrar(int $intento, string $estado, string $finalizadoEn, int $duracionSeg): void
+    public function cerrar(int $intento, string $estado, string $finalizadoEn, int $duracionSeg, int $activaSeg): void
     {
         $this->afectadas(
-            "UPDATE intentos SET estado = ?, finalizado_en = ?, duracion_seg = ? WHERE id = ? AND estado = 'EN_CURSO'",
-            [$estado, $finalizadoEn, $duracionSeg, $intento]
+            "UPDATE intentos SET estado = ?, finalizado_en = ?, duracion_seg = ?, duracion_activa_seg = ?
+              WHERE id = ? AND estado = 'EN_CURSO'",
+            [$estado, $finalizadoEn, $duracionSeg, $activaSeg, $intento]
         );
     }
 

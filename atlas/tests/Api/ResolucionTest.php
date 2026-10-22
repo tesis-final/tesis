@@ -66,6 +66,48 @@ final class ResolucionTest extends ApiTestCase
         $this->assertSame('25.00', self::valor('SELECT puntaje FROM resultados WHERE intento_id = ?', [$id]));
     }
 
+    /** Intento iniciado hace 10 minutos, para que las pausas tengan duración real. @return array{0:int,1:int} */
+    private function intentoDeDiezMinutos(Cliente $est, array $a): array
+    {
+        $inicio = $est->pedir('POST', '/intentos', ['actividad_id' => $a['id']]);
+        $id = $inicio['intento']['id'];
+        self::ejecutar('UPDATE intentos SET iniciado_en = UTC_TIMESTAMP(3) - INTERVAL 600 SECOND WHERE id = ?', [$id]);
+        $t0 = strtotime((string) self::valor('SELECT iniciado_en FROM intentos WHERE id = ?', [$id]) . ' UTC');
+
+        return [$id, $t0];
+    }
+
+    public function testTiempoActivoDescuentaLasPausas(): void
+    {
+        // D-8: pausa de 300 s (de t0+60 a t0+360) → activo = total − 300.
+        [$est, $a] = $this->escenario(1);
+        [$id, $t0] = $this->intentoDeDiezMinutos($est, $a);
+        $est->pedir('POST', "/intentos/{$id}/eventos", ['eventos' => [
+            ['secuencia' => 2, 'tipo' => 'PAUSA', 'ocurrido_en' => gmdate('c', $t0 + 60)],
+            ['secuencia' => 3, 'tipo' => 'REANUDA', 'ocurrido_en' => gmdate('c', $t0 + 360), 'duracion_ms' => 300000],
+        ]]);
+        $this->assertSame(200, $est->ultimoEstado);
+
+        $r = $est->pedir('POST', "/intentos/{$id}/finalizar");
+        $this->assertSame(200, $est->ultimoEstado);
+        $total = $r['intento']['duracion_seg'];
+        $this->assertGreaterThanOrEqual(600, $total);
+        $this->assertSame($total - 300, $r['intento']['duracion_activa_seg']);
+    }
+
+    public function testPausaSinReanudarAlAbandonarCuentaHastaElCierre(): void
+    {
+        [$est, $a] = $this->escenario(1);
+        [$id, $t0] = $this->intentoDeDiezMinutos($est, $a);
+        $est->pedir('POST', "/intentos/{$id}/eventos", ['eventos' => [
+            ['secuencia' => 2, 'tipo' => 'PAUSA', 'ocurrido_en' => gmdate('c', $t0 + 100)],
+        ]]);
+        $r = $est->pedir('POST', "/intentos/{$id}/abandonar");
+        $this->assertSame(200, $est->ultimoEstado);
+        // ±1 s: el inicio tiene milisegundos y el total se cuenta en segundos enteros.
+        $this->assertEqualsWithDelta(100, $r['duracion_activa_seg'], 1, 'activo hasta la pausa; el resto es pausa');
+    }
+
     public function testReenviarUnLoteNoDuplicaEventos(): void
     {
         [$est, $a] = $this->escenario(1);

@@ -106,6 +106,11 @@ function suficiencia(s) {
     + 'Mostrar agrupamientos con menos datos sería engañoso.';
 }
 
+// D-8: un tiempo que no se registró (intentos anteriores a la medición) se muestra como "—".
+function segundos(valor) {
+  return valor === null || valor === undefined ? '—' : `${valor} s`;
+}
+
 function cifra(valor, texto) {
   return h('div', { clase: 'cifra' }, h('strong', {}, String(valor ?? '—')), texto);
 }
@@ -286,10 +291,14 @@ export async function reportes() {
         h('section', { clase: 'tarjeta' }, h('h2', {}, 'Resumen por actividad'),
           tabla([{ titulo: 'Actividad', valor: (x) => x.actividad_titulo }, { titulo: 'Nivel', valor: (x) => x.nivel }, { titulo: 'Categoría', valor: (x) => x.categoria },
             { titulo: 'Estudiantes', valor: (x) => x.estudiantes }, { titulo: 'Intentos', valor: (x) => x.intentos }, { titulo: 'Promedio', valor: (x) => numero(x.promedio) },
-            { titulo: 'Tiempo medio', valor: (x) => `${x.duracion_media_seg} s` }], r.resumen)),
+            { titulo: 'Tiempo medio (total)', valor: (x) => segundos(x.duracion_media_seg) },
+            { titulo: 'Tiempo medio activo', valor: (x) => segundos(x.duracion_activa_media_seg) }], r.resumen),
+          h('p', { clase: 'suave pequeño' }, 'Tiempo activo = total menos las pausas de más de 60 s sin actividad.')),
         h('section', { clase: 'tarjeta' }, h('h2', {}, `Intentos finalizados (${r.filas.length})`),
           tabla([{ titulo: 'Fecha', valor: (x) => fecha(x.finalizado_en) }, { titulo: 'Estudiante', valor: (x) => `${x.estudiante_nombre} ${x.estudiante_apellido}` },
-            { titulo: 'Actividad', valor: (x) => x.actividad_titulo }, { titulo: 'Puntaje', valor: (x) => numero(x.puntaje) }], r.filas.slice(0, 200))));
+            { titulo: 'Actividad', valor: (x) => x.actividad_titulo }, { titulo: 'Puntaje', valor: (x) => numero(x.puntaje) },
+            { titulo: 'Tiempo total', valor: (x) => segundos(x.duracion_seg) }, { titulo: 'Tiempo activo', valor: (x) => segundos(x.duracion_activa_seg) }],
+          r.filas.slice(0, 200))));
     } catch (e) { errorEn(form, e); }
   });
   montar(h('h1', {}, 'Estadísticas y reportes'), form, resultado);

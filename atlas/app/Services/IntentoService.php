@@ -11,6 +11,7 @@ use Atlas\Repositories\ActividadRepository;
 use Atlas\Repositories\IntentoRepository;
 use Atlas\Services\Analysis\AnalisisService;
 use Atlas\Services\Analysis\Indicadores;
+use Atlas\Services\Analysis\TiempoActivo;
 use DateTimeImmutable;
 use DateTimeZone;
 
@@ -129,12 +130,7 @@ final class IntentoService
                 $this->formato($ahora),
                 null
             );
-            $this->intentos->cerrar(
-                (int) $intento['id'],
-                'FINALIZADO',
-                $this->formato($ahora),
-                $this->segundosDesde($intento['iniciado_en'], $ahora)
-            );
+            $this->cerrarConTiempos((int) $intento['id'], $intento['iniciado_en'], 'FINALIZADO', $ahora);
             // RF-07: el resultado lo calcula la aplicación (D-4); la base solo lo guarda.
             $conteo = $this->intentos->conteoParaResultado((int) $intento['id']);
             $this->intentos->guardarResultado(
@@ -165,12 +161,7 @@ final class IntentoService
                 $this->formato($ahora),
                 null
             );
-            $this->intentos->cerrar(
-                (int) $intento['id'],
-                'ABANDONADO',
-                $this->formato($ahora),
-                $this->segundosDesde($intento['iniciado_en'], $ahora)
-            );
+            $this->cerrarConTiempos((int) $intento['id'], $intento['iniciado_en'], 'ABANDONADO', $ahora);
         });
 
         return $this->publico($this->intentos->obtener($intentoId));
@@ -196,12 +187,7 @@ final class IntentoService
                     $this->formato($ultimo),
                     null
                 );
-                $this->intentos->cerrar(
-                    (int) $fila['id'],
-                    'ABANDONADO',
-                    $this->formato($ultimo),
-                    $this->segundosDesde($fila['iniciado_en'], $ultimo)
-                );
+                $this->cerrarConTiempos((int) $fila['id'], $fila['iniciado_en'], 'ABANDONADO', $ultimo);
             });
             $cerrados++;
         }
@@ -318,8 +304,22 @@ final class IntentoService
             'iniciado_en' => $i['iniciado_en'],
             'finalizado_en' => $i['finalizado_en'],
             'duracion_seg' => $i['duracion_seg'] !== null ? (int) $i['duracion_seg'] : null,
+            // D-8: tiempo activo (total menos pausas), aparte del total.
+            'duracion_activa_seg' => $i['duracion_activa_seg'] !== null ? (int) $i['duracion_activa_seg'] : null,
             'proxima_secuencia' => (int) ($i['ultima_secuencia'] ?? 1) + 1,
         ];
+    }
+
+    /**
+     * Cierra el intento con su tiempo total (RF-09) y su tiempo activo, total menos
+     * pausas (D-8). Va después de registrar el evento FIN o ABANDONO.
+     */
+    private function cerrarConTiempos(int $id, string $iniciadoEn, string $estado, DateTimeImmutable $fin): void
+    {
+        $total = $this->segundosDesde($iniciadoEn, $fin);
+        $eventos = $this->intentos->interacciones($id);
+        $tiempos = TiempoActivo::calcular($eventos, $iniciadoEn, $this->formato($fin), $total);
+        $this->intentos->cerrar($id, $estado, $this->formato($fin), $total, $tiempos['activo_seg']);
     }
 
     private function segundosDesde(string $inicio, DateTimeImmutable $fin): int
