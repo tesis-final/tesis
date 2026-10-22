@@ -2,11 +2,13 @@
 # =============================================================================
 # ATLAS — Proxmox, paso 3: crear las 4 VM del laboratorio
 #
-#   110 router-lab   Ubuntu 24.04  1 GB  10 GB  VLAN 20, 40, 50 + Internet (vmbr0)
+#   110 router-lab   Ubuntu 24.04  1 GB  10 GB  troncal en vmbr1 (VLAN 10,20,30,40,50)
+#                                               + WAN en vmbr0 (Internet, con NAT)
 #   120 atlas-dc01   Win Srv 2022  4 GB  50 GB  VLAN 40
 #   130 atlas-srv01  Ubuntu 24.04  4 GB  30 GB  Internet (vmbr0) para instalar;
 #                                               después se pasa a VLAN 40
-#   140 cliente-doc  Windows 10    2 GB  40 GB  VLAN 20
+#   140 cliente-doc  Windows 10    2 GB  40 GB  VLAN 20 (cambiando la etiqueta a 30
+#                                               pasa a ser una PC de Estudiantes)
 #
 # Las VM Windows usan disco SATA y placa de red Intel E1000: Windows las
 # reconoce sin drivers extra. Las Linux usan VirtIO (lo más rápido).
@@ -22,7 +24,7 @@ set -euo pipefail
 
 ISO_UBUNTU=${ISO_UBUNTU:-ubuntu-24.04.3-live-server-amd64.iso}
 ISO_WINSRV=${ISO_WINSRV:-windows-server-2022.iso}
-ISO_WINCLI=${ISO_WINCLI:-windows-10-enterprise.iso}
+ISO_WINCLI=${ISO_WINCLI:-windows-10.iso}       # Windows 10 Pro (Home no se une a un dominio)
 ISO_VIRTIO=${ISO_VIRTIO:-virtio-win.iso}
 ISO_REPO=atlas-repo.iso
 DISCO=${DISCO:-local-lvm}           # en una instalación con ZFS es local-zfs
@@ -44,8 +46,7 @@ crear() { local id=$1; shift
 crear 110 --name router-lab --memory "$RAM_ROUTER" --cores 1 --ostype l26 \
   --scsihw virtio-scsi-single --scsi0 "$DISCO:10" \
   --ide2 "local:iso/$ISO_UBUNTU,media=cdrom" --boot "order=scsi0;ide2" \
-  --net0 virtio,bridge=vmbr1,tag=20 --net1 virtio,bridge=vmbr1,tag=40 \
-  --net2 virtio,bridge=vmbr1,tag=50 --net3 virtio,bridge=vmbr0 --agent 1
+  --net0 "virtio,bridge=vmbr1,trunks=10;20;30;40;50" --net1 virtio,bridge=vmbr0 --agent 1
 
 crear 120 --name atlas-dc01 --memory "$RAM_DC" --cores 2 --ostype win11 \
   --sata0 "$DISCO:50" --ide2 "local:iso/$ISO_WINSRV,media=cdrom" \
