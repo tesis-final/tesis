@@ -35,6 +35,7 @@ export async function revisarActividad(id) {
     a.descripcion ? h('p', {}, a.descripcion) : null,
     h('section', { clase: 'tarjeta' }, h('h2', {}, 'Contenido'),
       h('ol', {}, a.preguntas.map((p) => h('li', {}, p.enunciado,
+        p.habilidades?.length ? h('span', { clase: 'suave pequeño' }, ` — mide: ${p.habilidades.join(', ')}`) : null,
         h('ul', {}, p.opciones.map((o) => h('li', { clase: o.correcta ? 'acierto' : '' }, o.texto + (o.correcta ? ' (correcta)' : '')))))))),
     a.estado === 'PENDIENTE' ? form : null,
     h('section', { clase: 'tarjeta' }, h('h2', {}, 'Historial'),

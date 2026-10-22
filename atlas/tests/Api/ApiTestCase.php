@@ -93,7 +93,7 @@ abstract class ApiTestCase extends DatabaseTestCase
                 ['texto' => 'Correcta', 'correcta' => true],
                 ['texto' => 'Incorrecta A', 'correcta' => false],
                 ['texto' => 'Incorrecta B', 'correcta' => false],
-            ]];
+            ], 'habilidades' => $i % 2 === 1 ? ['LOGICA'] : ['CALCULO', 'LOGICA']]; // D-3
         }
         $a = $docente->pedir('POST', '/actividades', ['titulo' => 'Actividad ' . bin2hex(random_bytes(3)),
             'nivel' => $nivel, 'categoria' => $categoria, 'preguntas' => $lista]);

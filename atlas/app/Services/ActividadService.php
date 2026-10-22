@@ -194,6 +194,9 @@ final class ActividadService
                 $errores["preguntas.{$i}"] = 'Cada pregunta necesita al menos 2 opciones.';
             } elseif ($correctas !== 1) {
                 $errores["preguntas.{$i}"] = 'Cada pregunta necesita exactamente 1 opción correcta.';
+            } elseif (($p['habilidades'] ?? []) === []) {
+                // D-3: cada pregunta mide una o más habilidades.
+                $errores["preguntas.{$i}"] = 'Cada pregunta tiene que medir al menos una habilidad.';
             }
         }
 
@@ -235,13 +238,15 @@ final class ActividadService
     /**
      * Valida la forma de las preguntas del borrador (el contenido completo se exige al enviar).
      *
-     * @return list<array{enunciado: string, opciones: list<array{texto: string, correcta: bool}>}>
+     * @return list<array{enunciado: string, opciones: list<array{texto: string, correcta: bool}>,
+     *                    habilidades: list<int>}>
      */
     private function normalizarPreguntas(mixed $preguntas): array
     {
         if (!is_array($preguntas) || !array_is_list($preguntas) || count($preguntas) > 100) {
             throw HttpException::validacion(['preguntas' => 'Debe ser una lista de hasta 100 preguntas.']);
         }
+        $activas = $this->actividades->habilidadesActivas();
         $salida = [];
         $errores = [];
         foreach ($preguntas as $i => $p) {
@@ -262,7 +267,21 @@ final class ActividadService
             if (count($opciones) > 10) {
                 $errores["preguntas.{$i}.opciones"] = 'Máximo 10 opciones por pregunta.';
             }
-            $salida[] = ['enunciado' => $enunciado, 'opciones' => $opciones];
+            // D-3: códigos de habilidades activas (p. ej. ["LOGICA", "CALCULO"]).
+            $codigos = $p['habilidades'] ?? [];
+            if (!is_array($codigos) || !array_is_list($codigos)) {
+                $errores["preguntas.{$i}.habilidades"] = 'Debe ser una lista de códigos de habilidad.';
+                $codigos = [];
+            }
+            $habilidades = [];
+            foreach (array_unique(array_map('strval', $codigos)) as $codigo) {
+                if (!isset($activas[$codigo])) {
+                    $errores["preguntas.{$i}.habilidades"] = "La habilidad {$codigo} no existe o está desactivada.";
+                    continue;
+                }
+                $habilidades[] = $activas[$codigo];
+            }
+            $salida[] = ['enunciado' => $enunciado, 'opciones' => $opciones, 'habilidades' => $habilidades];
         }
         if ($errores !== []) {
             throw HttpException::validacion($errores);

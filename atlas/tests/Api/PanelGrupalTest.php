@@ -55,6 +55,26 @@ final class PanelGrupalTest extends ApiTestCase
             array_map('intval', array_column($r['distribucion'], 'cantidad', 'rango'))
         );
 
+        // 3b) Acierto por habilidad (D-3). Preguntas 1 y 3 miden LOGICA; 2 y 4, CALCULO y LOGICA.
+        //     LOGICA: 8 de 16 = 50 %; CALCULO: 3 de 8 = 37,5 % → la más débil, a reforzar.
+        $this->assertSame(['CALCULO', 'LOGICA'], array_column($r['habilidades'], 'codigo'));
+        $this->assertSame([3, 8, 37.5, true, 2], [
+            $r['habilidades'][0]['correctas'], $r['habilidades'][0]['preguntas'], $r['habilidades'][0]['porcentaje'],
+            $r['habilidades'][0]['a_reforzar'], $r['habilidades'][0]['estudiantes_bajo_umbral'],
+        ]);
+        $this->assertSame([8, 16, 50.0, false], [
+            $r['habilidades'][1]['correctas'], $r['habilidades'][1]['preguntas'], $r['habilidades'][1]['porcentaje'],
+            $r['habilidades'][1]['a_reforzar'],
+        ]);
+
+        // 3c) Por estudiante (perfil): el de 3 aciertos tiene LOGICA 3/4 y CALCULO 1/2.
+        $perfil = $docente->pedir('GET', "/docente/estudiantes/{$est[3]}/perfil");
+        $this->assertSame(200, $docente->ultimoEstado);
+        $this->assertSame(
+            ['CALCULO' => 50.0, 'LOGICA' => 75.0],
+            array_column($perfil['habilidades'], 'porcentaje', 'codigo')
+        );
+
         // 4) Nivel 2 honesto: el servicio informa que los datos no alcanzan.
         $this->assertTrue($r['aprendizaje_automatico']['servicio_disponible']);
         $this->assertFalse($r['aprendizaje_automatico']['suficiencia']['suficiente']);

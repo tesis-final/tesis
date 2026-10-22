@@ -29,7 +29,8 @@ final class CicloAprobacionApiTest extends ApiTestCase
         $datos = ['titulo' => 'Fracciones', 'nivel' => 'BASICO', 'categoria' => 'RESOLUCION_PROBLEMAS',
                   'preguntas' => [[
                       'enunciado' => '¿1/2 + 1/2?',
-                      'opciones' => [['texto' => '1', 'correcta' => true], ['texto' => 'uno', 'correcta' => true]]
+                      'opciones' => [['texto' => '1', 'correcta' => true], ['texto' => 'uno', 'correcta' => true]],
+                      'habilidades' => ['CALCULO'],
                   ]]];
         $docente->pedir('PATCH', "/actividades/{$a['id']}", $datos);
         $docente->pedir('POST', "/actividades/{$a['id']}/enviar");
@@ -56,7 +57,8 @@ final class CicloAprobacionApiTest extends ApiTestCase
         // Vuelve al docente: al editar pasa a borrador.
         $datos['preguntas'][] = [
             'enunciado' => '¿1/4 + 1/4?',
-            'opciones' => [['texto' => '1/2', 'correcta' => true], ['texto' => '2/8', 'correcta' => false]]
+            'opciones' => [['texto' => '1/2', 'correcta' => true], ['texto' => '2/8', 'correcta' => false]],
+            'habilidades' => ['CALCULO'],
         ];
         $e = $docente->pedir('PATCH', "/actividades/{$a['id']}", $datos);
         $this->assertSame('BORRADOR', $e['estado']);
@@ -109,6 +111,42 @@ final class CicloAprobacionApiTest extends ApiTestCase
         $a = $this->crearActividadApi($docente);
         $docente->pedir('POST', "/actividades/{$a['id']}/publicar", ['grupos' => [$grupo]]);
         $this->assertSame(409, $docente->ultimoEstado);
+    }
+
+    // ------------------------------------------------------ habilidades (acta D-3)
+
+    public function testCadaPreguntaGuardaLasHabilidadesQueMide(): void
+    {
+        [$docente] = $this->entrar('DOCENTE');
+        $cat = $docente->pedir('GET', '/catalogos');
+        $this->assertContains('LOGICA', array_column($cat['habilidades'], 'codigo'));
+
+        $a = $this->crearActividadApi($docente, 2);
+        $this->assertSame([['LOGICA'], ['CALCULO', 'LOGICA']], array_column($a['preguntas'], 'habilidades'));
+    }
+
+    public function testHabilidadInexistenteSeRechaza(): void
+    {
+        [$docente] = $this->entrar('DOCENTE');
+        $r = $docente->pedir('POST', '/actividades', ['titulo' => 'Con habilidad falsa', 'nivel' => 'BASICO',
+            'categoria' => 'RESOLUCION_PROBLEMAS', 'preguntas' => [['enunciado' => '¿?', 'opciones' => [
+                ['texto' => 'Sí', 'correcta' => true], ['texto' => 'No', 'correcta' => false],
+            ], 'habilidades' => ['TELEPATIA']]]]);
+        $this->assertSame(422, $docente->ultimoEstado);
+        $this->assertArrayHasKey('preguntas.0.habilidades', $r['errores']);
+    }
+
+    public function testSinHabilidadesNoSeEnviaNiSePublica(): void
+    {
+        [$docente] = $this->entrar('DOCENTE');
+        $a = $docente->pedir('POST', '/actividades', ['titulo' => 'Sin habilidades', 'nivel' => 'BASICO',
+            'categoria' => 'RESOLUCION_PROBLEMAS', 'preguntas' => [['enunciado' => '¿?', 'opciones' => [
+                ['texto' => 'Sí', 'correcta' => true], ['texto' => 'No', 'correcta' => false],
+            ]]]]);
+        $this->assertSame(201, $docente->ultimoEstado, 'el borrador se puede guardar incompleto');
+        $r = $docente->pedir('POST', "/actividades/{$a['id']}/enviar");
+        $this->assertSame(422, $docente->ultimoEstado);
+        $this->assertStringContainsString('habilidad', $r['errores']['preguntas.0']);
     }
 
     // ------------------------------------------------ aprobación configurable (acta D-2)

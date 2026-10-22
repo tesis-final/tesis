@@ -31,6 +31,7 @@ final class ActividadController extends Controller
         return Response::json([
             'niveles' => $this->app->actividadesRepo()->catalogo('niveles'),
             'categorias' => $this->app->actividadesRepo()->catalogo('categorias'),
+            'habilidades' => $this->app->actividadesRepo()->catalogo('habilidades'),
         ]);
     }
 

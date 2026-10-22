@@ -159,6 +159,49 @@ final class ReporteRepository extends Repository
     }
 
     /**
+     * Una fila por (pregunta, habilidad que mide) del último intento finalizado de cada
+     * estudiante en cada actividad del período, con si la acertó (sin responder = no).
+     * Solo lee: IndicadoresHabilidad calcula los porcentajes (D-3, D-4).
+     *
+     * @param list<int> $estudiantes
+     * @param int|null  $grupo si se indica, solo actividades publicadas en ese grupo
+     * @return list<array{usuario_id: int, codigo: string, nombre: string, acerto: bool}>
+     */
+    public function aciertosPorHabilidad(array $estudiantes, string $desde, string $hasta, ?int $grupo = null): array
+    {
+        if ($estudiantes === []) {
+            return [];
+        }
+        $marcas = implode(',', array_fill(0, count($estudiantes), '?'));
+        $filtroGrupo = $grupo === null
+            ? ''
+            : 'JOIN actividad_grupo ag ON ag.actividad_id = i.actividad_id AND ag.grupo_id = ?';
+        $filas = $this->todos(
+            "SELECT u.usuario_id, h.codigo, h.nombre, COALESCE(o.es_correcta, FALSE) AS acerto
+               FROM (SELECT i.id, i.usuario_id, i.actividad_id,
+                            ROW_NUMBER() OVER (PARTITION BY i.usuario_id, i.actividad_id
+                                               ORDER BY i.finalizado_en DESC, i.id DESC) AS rn
+                       FROM intentos i {$filtroGrupo}
+                      WHERE i.estado = 'FINALIZADO' AND i.usuario_id IN ({$marcas})
+                        AND DATE(i.finalizado_en) BETWEEN ? AND ?) u
+               JOIN preguntas p           ON p.actividad_id = u.actividad_id
+               JOIN pregunta_habilidad ph ON ph.pregunta_id = p.id
+               JOIN habilidades h         ON h.id = ph.habilidad_id
+               LEFT JOIN respuestas r     ON r.intento_id = u.id AND r.pregunta_id = p.id
+               LEFT JOIN opciones o       ON o.id = r.opcion_id
+              WHERE u.rn = 1",
+            [...($grupo === null ? [] : [$grupo]), ...$estudiantes, $desde, $hasta]
+        );
+
+        return array_map(fn ($f) => [
+            'usuario_id' => (int) $f['usuario_id'],
+            'codigo' => $f['codigo'],
+            'nombre' => $f['nombre'],
+            'acerto' => (bool) $f['acerto'],
+        ], $filas);
+    }
+
+    /**
      * Guarda el análisis grupal calculado (historial en `analisis_grupal`).
      *
      * @param array{n_estudiantes: int, promedio: float|null, mediana: float|null,

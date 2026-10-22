@@ -73,13 +73,36 @@ final class ActividadRepository extends Repository
             }
             $porPregunta[(int) $o['pregunta_id']][] = $opcion;
         }
+        $habilidades = [];
+        foreach (
+            $this->todos(
+                'SELECT ph.pregunta_id, h.codigo
+                   FROM pregunta_habilidad ph JOIN preguntas p ON p.id = ph.pregunta_id
+                   JOIN habilidades h ON h.id = ph.habilidad_id
+                  WHERE p.actividad_id = ? ORDER BY h.codigo',
+                [$actividad]
+            ) as $f
+        ) {
+            $habilidades[(int) $f['pregunta_id']][] = $f['codigo'];
+        }
         foreach ($preguntas as &$p) {
             $p['id'] = (int) $p['id'];
             $p['orden'] = (int) $p['orden'];
             $p['opciones'] = $porPregunta[$p['id']] ?? [];
+            $p['habilidades'] = $habilidades[$p['id']] ?? []; // D-3
         }
 
         return $preguntas;
+    }
+
+    /** @return array<string, int> código → id de las habilidades activas (D-3) */
+    public function habilidadesActivas(): array
+    {
+        return array_map('intval', array_column(
+            $this->todos('SELECT id, codigo FROM habilidades WHERE activa'),
+            'id',
+            'codigo'
+        ));
     }
 
     public function crear(int $autor, string $titulo, ?string $descripcion, string $nivel, string $categoria): int
@@ -123,6 +146,13 @@ final class ActividadRepository extends Repository
                 $this->ejecutar(
                     'INSERT INTO opciones (pregunta_id, orden, texto, es_correcta) VALUES (?, ?, ?, ?)',
                     [$preguntaId, $j + 1, $o['texto'], (int) $o['correcta']]
+                );
+            }
+            // D-3: qué habilidades mide la pregunta (los vínculos viejos se borran en cascada).
+            foreach ($p['habilidades'] ?? [] as $habilidad) {
+                $this->ejecutar(
+                    'INSERT INTO pregunta_habilidad (pregunta_id, habilidad_id) VALUES (?, ?)',
+                    [$preguntaId, $habilidad]
                 );
             }
         }
@@ -220,6 +250,10 @@ final class ActividadRepository extends Repository
         return match ($tabla) {
             'niveles' => $this->todos('SELECT codigo, nombre, orden FROM niveles_dificultad ORDER BY orden'),
             'categorias' => $this->todos('SELECT codigo, nombre FROM categorias ORDER BY nombre'),
+            // D-3: solo las activas se pueden asignar (las desactivadas siguen en preguntas viejas).
+            'habilidades' => $this->todos(
+                'SELECT codigo, nombre, descripcion FROM habilidades WHERE activa ORDER BY nombre'
+            ),
             default => throw new \LogicException('Catálogo desconocido'),
         };
     }

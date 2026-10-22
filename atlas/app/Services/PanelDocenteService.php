@@ -9,6 +9,7 @@ use Atlas\Core\HttpException;
 use Atlas\Repositories\AnalisisRepository;
 use Atlas\Repositories\OrganizacionRepository;
 use Atlas\Repositories\ReporteRepository;
+use Atlas\Services\Analysis\IndicadoresHabilidad;
 use Atlas\Services\Analysis\Periodo;
 use Atlas\Services\Analysis\ResumenGrupal;
 
@@ -97,6 +98,13 @@ final class PanelDocenteService
                 'maximo' => isset($agregados['maximo']) ? (float) $agregados['maximo'] : null,
             ],
             'distribucion' => $this->reportes->distribucion($grupo, $actividad),
+            // D-3: acierto por habilidad del grupo, de la más débil a la más fuerte.
+            'habilidades' => IndicadoresHabilidad::calcular($this->reportes->aciertosPorHabilidad(
+                array_keys($nombres),
+                $periodo->desde,
+                $periodo->hasta,
+                $grupo
+            )),
             'aprendizaje_automatico' => $this->estadoNivel2($grupo, $periodo, $nombres),
         ];
     }
@@ -122,6 +130,9 @@ final class PanelDocenteService
             'estudiante_id' => $estudiante,
             'periodo' => ['desde' => $periodo->desde, 'hasta' => $periodo->hasta],
             'indicadores' => $perfil ? $this->analisis->indicadoresDelPerfil((int) $perfil['id']) : [],
+            'habilidades' => IndicadoresHabilidad::calcular(
+                $this->reportes->aciertosPorHabilidad([$estudiante], $periodo->desde, $periodo->hasta)
+            ),
             'nivel2' => $perfil ? $this->analisis->indicadoresNivel2((int) $perfil['id']) : [],
             'recomendaciones' => $perfil ? $this->analisis->recomendacionesDelPerfil((int) $perfil['id']) : [],
             'evolucion' => $grupos === [] ? [] : $this->reportes->evolucion($estudiante, $grupos[0]),

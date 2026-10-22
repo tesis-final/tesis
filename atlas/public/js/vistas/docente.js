@@ -68,6 +68,7 @@ export async function grupo(id) {
         { titulo: 'Pregunta', valor: (q) => q.enunciado },
         { titulo: 'Error', valor: (q) => `${Math.round(q.proporcion_error * 100)} % (${q.errores} de ${q.respuestas})` },
       ], a.preguntas_con_mas_error, 'Sin errores registrados.')),
+    seccionHabilidades(a.habilidades, true),
     h('section', { clase: 'tarjeta' }, h('h2', {}, 'Patrones de resolución (aprendizaje automático)'),
       !ml.servicio_disponible
         ? h('p', { clase: 'aviso' }, 'El servicio de análisis no está disponible. El resto del panel funciona normalmente.')
@@ -77,6 +78,19 @@ export async function grupo(id) {
           : h('p', { clase: 'aviso info' }, suficiencia(ml.suficiencia)),
       h('p', { clase: 'suave pequeño' }, ml.aviso)),
   );
+}
+
+// D-3: acierto por habilidad, de la más débil a la más fuerte. El estado se dice con
+// texto ("A reforzar"), no solo con color (RNF-12).
+function seccionHabilidades(habilidades, grupal) {
+  return h('section', { clase: 'tarjeta' }, h('h2', {}, 'Acierto por habilidad'),
+    tabla([
+      { titulo: 'Habilidad', valor: (x) => x.nombre },
+      { titulo: 'Acierto', valor: (x) => `${numero(x.porcentaje)} % (${x.correctas} de ${x.preguntas} preguntas)` },
+      grupal ? { titulo: 'Estudiantes por debajo del 50 %', valor: (x) => `${x.estudiantes_bajo_umbral} de ${x.estudiantes}` } : null,
+      { titulo: 'Estado', valor: (x) => (x.a_reforzar ? h('strong', {}, 'A reforzar') : 'Adecuado') },
+    ].filter(Boolean), habilidades || [], 'Todavía no hay preguntas resueltas vinculadas a habilidades en el período.'),
+    h('p', { clase: 'suave pequeño' }, 'Porcentaje de preguntas acertadas en el último intento de cada actividad. Describe aciertos; no mide capacidades.'));
 }
 
 // El ancho se fija por CSSOM (no con atributo style) para cumplir la política CSP.
@@ -114,6 +128,7 @@ export async function estudiante(id) {
         { titulo: 'Puntaje', valor: (f) => numero(f.PUNTAJE) }, { titulo: 'Eficiencia', valor: (f) => numero(f.EFICIENCIA, 2) },
         { titulo: 'Mejora', valor: (f) => numero(f.MEJORA) }, { titulo: 'Persistencia', valor: (f) => numero(f.PERSISTENCIA, 0) },
       ], [...porActividad.values()], 'Sin actividades finalizadas en el período.')),
+    seccionHabilidades(p.habilidades, false),
     h('section', { clase: 'tarjeta' }, h('h2', {}, 'Recomendaciones'),
       p.recomendaciones.length
         ? h('ul', {}, p.recomendaciones.map((r) => h('li', {},
@@ -174,10 +189,10 @@ export async function editor(id) {
       h('div', {}, h('label', { for: 'categoria' }, 'Categoría'),
         h('select', { id: 'categoria', name: 'categoria', disabled: !editable }, cat.categorias.map((c) => h('option', { value: c.codigo, selected: act?.categoria === c.codigo }, c.nombre))))),
     h('h2', {}, 'Preguntas'), preguntas,
-    editable ? h('button', { type: 'button', clase: 'secundario', onclick: () => agregarPregunta(preguntas, null, true) }, '+ Agregar pregunta') : null,
+    editable ? h('button', { type: 'button', clase: 'secundario', onclick: () => agregarPregunta(preguntas, null, true, cat.habilidades) }, '+ Agregar pregunta') : null,
   );
-  (act?.preguntas || []).forEach((p) => agregarPregunta(preguntas, p, editable));
-  if (!act) agregarPregunta(preguntas, null, true);
+  (act?.preguntas || []).forEach((p) => agregarPregunta(preguntas, p, editable, cat.habilidades));
+  if (!act) agregarPregunta(preguntas, null, true, cat.habilidades);
 
   const acciones = h('div', { clase: 'acciones' });
   if (editable) acciones.append(h('button', { type: 'button', onclick: guardar }, 'Guardar borrador'));
@@ -219,10 +234,16 @@ export async function editor(id) {
   );
 }
 
-function agregarPregunta(contenedor, p, editable) {
+function agregarPregunta(contenedor, p, editable, habilidades = []) {
   const opciones = h('div', {});
+  // D-3: cada pregunta mide una o más habilidades.
+  const marcadas = new Set(p?.habilidades || []);
+  const habilidadesPregunta = h('fieldset', { clase: 'habilidades' }, h('legend', {}, 'Habilidades que mide (al menos una)'),
+    habilidades.map((x) => h('label', { clase: 'opcion', title: x.descripcion || '' },
+      h('input', { type: 'checkbox', value: x.codigo, checked: marcadas.has(x.codigo), disabled: !editable }), x.nombre)));
   const bloque = h('div', { clase: 'tarjeta pregunta' },
     h('label', {}, 'Enunciado'), h('textarea', { clase: 'enunciado', disabled: !editable }, p?.enunciado || ''),
+    habilidadesPregunta,
     h('p', { clase: 'suave pequeño' }, 'Marque la única opción correcta.'), opciones,
     editable ? h('div', { clase: 'acciones' },
       h('button', { type: 'button', clase: 'secundario', onclick: () => agregarOpcion(opciones, null, editable) }, '+ Opción'),
@@ -244,6 +265,7 @@ function leerPreguntas(contenedor) {
     enunciado: b.querySelector('.enunciado').value,
     opciones: [...b.querySelectorAll('.fila')].map((f) => ({ texto: f.querySelector('.texto-opcion').value, correcta: f.querySelector('input[type=radio]').checked }))
       .filter((o) => o.texto.trim() !== ''),
+    habilidades: [...b.querySelectorAll('.habilidades input:checked')].map((i) => i.value),
   }));
 }
 

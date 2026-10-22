@@ -74,7 +74,7 @@ foreach (
                 'texto' => 'Opción correcta',
                 'correcta' => true
             ], ['texto' => 'Distractor A', 'correcta' => false], ['texto' => 'Distractor B', 'correcta' => false],
-        ]];
+        ], 'habilidades' => $p % 2 === 1 ? ['CALCULO'] : ['COMPRENSION', 'LOGICA']]; // D-3
     }
     $a = $app->actividades()->crear(
         $docente,
