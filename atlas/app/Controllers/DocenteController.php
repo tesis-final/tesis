@@ -35,6 +35,16 @@ final class DocenteController extends Controller
         return Response::json($this->app->panel()->fundamento($this->usuario($p), $p->parametroEntero('id')));
     }
 
+    /** D-6: el docente confirma o cambia la actividad sugerida. */
+    public function decidir(Request $p): Response
+    {
+        return Response::json($this->app->panel()->decidir(
+            $this->usuario($p),
+            $p->parametroEntero('id'),
+            $p->validados()['actividad_id'] ?? null
+        ));
+    }
+
     public function reportes(Request $p): Response
     {
         return Response::json($this->app->panel()->reporte(

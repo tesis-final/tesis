@@ -11,6 +11,8 @@ export async function inicio() {
     h('h1', {}, 'Mis actividades'),
     actividades.length
       ? h('div', { clase: 'rejilla dos' }, actividades.map((a) => h('article', { clase: 'tarjeta' },
+          // D-6: la siguiente actividad la sugiere el sistema y la decide el docente.
+          a.recomendada ? h('p', { clase: 'etiqueta' }, 'Recomendada por tu docente') : null,
           h('h2', {}, a.titulo),
           h('p', { clase: 'suave' }, `${a.categoria_nombre} · Nivel ${a.nivel_nombre} · ${a.total_preguntas} preguntas`),
           a.descripcion ? h('p', {}, a.descripcion) : null,

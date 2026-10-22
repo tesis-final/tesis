@@ -19,9 +19,11 @@ final class EsquemaTest extends DatabaseTestCase
         'auditoria', 'conversaciones', 'registro_respaldos',
         // Hito 2 (migración 003)
         'habilidades', 'pregunta_habilidad',
+        // Hito 2 (migración 004, acta D-6)
+        'decisiones_recomendacion',
     ];
 
-    public function testExistenLas31TablasDelModeloYAlMenos15(): void
+    public function testExistenLas32TablasDelModeloYAlMenos15(): void
     {
         $tablas = self::pdo()->query(
             "SELECT table_name FROM information_schema.tables

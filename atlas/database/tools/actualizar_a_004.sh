@@ -16,11 +16,13 @@ CONT=${1:-atlas-db}
 sql() { docker exec -i "$CONT" sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot --default-character-set=utf8mb4 atlas_db'; }
 
 sql < migrations/004_calculos_en_php.sql
+sql < seeds/003_permisos_hito2.sql
 docker exec -i "$CONT" sh -c '
   H="${ATLAS_DB_ALLOWED_HOST:-192.168.250.16/255.255.255.240}"
   MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot -e "
-    GRANT SELECT, INSERT ON atlas_db.resultados      TO '"'"'atlas_app'"'"'@'"'"'$H'"'"';
-    GRANT SELECT, INSERT ON atlas_db.analisis_grupal TO '"'"'atlas_app'"'"'@'"'"'$H'"'"';"'
+    GRANT SELECT, INSERT ON atlas_db.resultados               TO '"'"'atlas_app'"'"'@'"'"'$H'"'"';
+    GRANT SELECT, INSERT ON atlas_db.analisis_grupal          TO '"'"'atlas_app'"'"'@'"'"'$H'"'"';
+    GRANT SELECT, INSERT ON atlas_db.decisiones_recomendacion TO '"'"'atlas_app'"'"'@'"'"'$H'"'"';"'
 echo "Migración 004 aplicada:"
 docker exec "$CONT" sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot -t -e "
   SELECT COUNT(*) AS trigger_resultados FROM information_schema.triggers

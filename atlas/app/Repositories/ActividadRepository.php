@@ -213,22 +213,38 @@ final class ActividadRepository extends Repository
         );
     }
 
-    /** Actividades PUBLICADAS en los grupos activos del estudiante (RF-04). @return list<array<string, mixed>> */
+    /**
+     * Actividades PUBLICADAS en los grupos activos del estudiante (RF-04). `recomendada`
+     * marca las que su docente le asignó (D-6) y todavía no finalizó después de esa
+     * decisión; van primero.
+     *
+     * @return list<array<string, mixed>>
+     */
     public function publicadasParaEstudiante(int $estudiante): array
     {
-        return $this->todos(
+        $filas = $this->todos(
             'SELECT DISTINCT ' . self::CAMPOS . ',
                     (SELECT COUNT(*) FROM intentos i WHERE i.actividad_id = a.id AND i.usuario_id = ?) AS intentos,
                     (SELECT r.puntaje FROM intentos i JOIN resultados r ON r.intento_id = i.id
                       WHERE i.actividad_id = a.id AND i.usuario_id = ?
-                      ORDER BY i.finalizado_en DESC LIMIT 1) AS ultimo_puntaje
+                      ORDER BY i.finalizado_en DESC LIMIT 1) AS ultimo_puntaje,
+                    EXISTS (SELECT 1 FROM decisiones_recomendacion d
+                              JOIN recomendaciones rc ON rc.id = d.recomendacion_id
+                              JOIN perfiles_aprendizaje pa ON pa.id = rc.perfil_id AND pa.usuario_id = ?
+                             WHERE d.actividad_id = a.id
+                               AND NOT EXISTS (SELECT 1 FROM intentos i2
+                                                WHERE i2.actividad_id = a.id AND i2.usuario_id = ?
+                                                  AND i2.estado = \'FINALIZADO\'
+                                                  AND i2.finalizado_en > d.decidido_en)) AS recomendada
                ' . self::DESDE . '
                JOIN actividad_grupo ag ON ag.actividad_id = a.id
                JOIN usuario_grupo ug ON ug.grupo_id = ag.grupo_id AND ug.usuario_id = ? AND ug.activo
               WHERE e.codigo = \'PUBLICADA\'
-              ORDER BY n.orden, a.titulo',
-            [$estudiante, $estudiante, $estudiante]
+              ORDER BY recomendada DESC, n.orden, a.titulo',
+            [$estudiante, $estudiante, $estudiante, $estudiante, $estudiante]
         );
+
+        return array_map(fn ($f) => ['recomendada' => (bool) $f['recomendada']] + $f, $filas);
     }
 
     public function visibleParaEstudiante(int $actividad, int $estudiante, ?PDO $pdo = null): bool

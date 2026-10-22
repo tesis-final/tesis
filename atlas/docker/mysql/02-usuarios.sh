@@ -68,6 +68,7 @@ GRANT SELECT, INSERT ON atlas_db.transiciones_actividad TO 'atlas_app'@'${HOST}'
 GRANT SELECT, INSERT ON atlas_db.conversaciones         TO 'atlas_app'@'${HOST}';
 GRANT SELECT, INSERT ON atlas_db.resultados             TO 'atlas_app'@'${HOST}';
 GRANT SELECT, INSERT ON atlas_db.analisis_grupal        TO 'atlas_app'@'${HOST}';
+GRANT SELECT, INSERT ON atlas_db.decisiones_recomendacion TO 'atlas_app'@'${HOST}';  -- D-6
 
 -- atlas_read: SELECT sobre vistas de reporte (Tabla 21).
 CREATE USER 'atlas_read'@'${HOST}' IDENTIFIED BY '${READ}';

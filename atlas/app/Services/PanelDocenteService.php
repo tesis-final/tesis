@@ -6,6 +6,7 @@ namespace Atlas\Services;
 
 use Atlas\Core\Clock;
 use Atlas\Core\HttpException;
+use Atlas\Repositories\ActividadRepository;
 use Atlas\Repositories\AnalisisRepository;
 use Atlas\Repositories\OrganizacionRepository;
 use Atlas\Repositories\ReporteRepository;
@@ -28,7 +29,8 @@ final class PanelDocenteService
         private readonly AnalisisRepository $analisis,
         private readonly ReporteRepository $reportes,
         private readonly AnalisisClient $cliente,
-        private readonly Clock $reloj
+        private readonly Clock $reloj,
+        private readonly ActividadRepository $actividades
     ) {
     }
 
@@ -155,6 +157,41 @@ final class PanelDocenteService
         $rec['reglas'] = $this->analisis->fundamento($recomendacion);
 
         return $rec;
+    }
+
+    /**
+     * D-6: el sistema recomienda y el docente decide. Sin actividad (o con la misma que
+     * se sugirió) confirma la sugerencia; con otra, la cambia. La actividad tiene que
+     * estar publicada en un grupo del estudiante. Una sola decisión por recomendación.
+     *
+     * @return array<string, mixed> la recomendación con la decisión
+     */
+    public function decidir(array $usuario, int $recomendacion, ?int $actividad): array
+    {
+        $rec = $this->analisis->recomendacion($recomendacion)
+            ?? throw HttpException::noEncontrado('Recomendación no encontrada.');
+        $this->exigirEstudiante($usuario, (int) $rec['estudiante_id']);
+        if ($this->analisis->decisionTomada($recomendacion)) {
+            throw HttpException::conflicto('Ya se decidió sobre esta recomendación.');
+        }
+        $sugerida = $rec['actividad_sugerida_id'] !== null ? (int) $rec['actividad_sugerida_id'] : null;
+        $elegida = $actividad ?? $sugerida
+            ?? throw HttpException::validacion([
+                'actividad_id' => 'La recomendación no sugiere una actividad: elija cuál asignar.',
+            ]);
+        if (!$this->actividades->visibleParaEstudiante($elegida, (int) $rec['estudiante_id'])) {
+            throw HttpException::validacion([
+                'actividad_id' => 'La actividad no está publicada en un grupo del estudiante.',
+            ]);
+        }
+        $this->analisis->guardarDecision(
+            $recomendacion,
+            $elegida,
+            $elegida === $sugerida ? 'CONFIRMADA' : 'CAMBIADA',
+            (int) $usuario['id']
+        );
+
+        return $this->fundamento($usuario, $recomendacion);
     }
 
     /** @return array<string, mixed> */

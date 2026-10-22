@@ -169,7 +169,8 @@ final class App
             $this->analisisRepo(),
             $this->reportesRepo(),
             $this->clienteAnalisis(),
-            $this->reloj()
+            $this->reloj(),
+            $this->actividadesRepo()
         ));
     }
 

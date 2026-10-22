@@ -43,6 +43,17 @@ final class PrivilegiosTest extends DatabaseTestCase
         $this->assertFalla('DELETE FROM resultados', usuario: 'atlas_app', contiene: 'command denied');
     }
 
+    public function testAppNoModificaLasDecisionesDelDocente(): void
+    {
+        // D-6 (004): queda el rastro de qué sugirió el sistema y qué decidió el docente.
+        $this->assertFalla(
+            'UPDATE decisiones_recomendacion SET decision = \'CAMBIADA\'',
+            usuario: 'atlas_app',
+            contiene: 'command denied'
+        );
+        $this->assertFalla('DELETE FROM decisiones_recomendacion', usuario: 'atlas_app', contiene: 'command denied');
+    }
+
     public function testAppNoModificaTransicionesNiConversaciones(): void
     {
         $this->assertFalla(

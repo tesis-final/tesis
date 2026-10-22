@@ -117,7 +117,8 @@ function cifra(valor, texto) {
 
 // ---------- Perfil individual + "¿por qué?" (RF-10, RF-12) ----------
 export async function estudiante(id) {
-  const p = await api('GET', `/docente/estudiantes/${id}/perfil`);
+  const [p, misActividades] = await Promise.all([api('GET', `/docente/estudiantes/${id}/perfil`), api('GET', '/actividades')]);
+  const publicadas = misActividades.filter((a) => a.estado === 'PUBLICADA');
   const porActividad = new Map();
   for (const i of p.indicadores) {
     if (!porActividad.has(i.actividad_id)) porActividad.set(i.actividad_id, { actividad: i.actividad, categoria: i.categoria });
@@ -138,6 +139,7 @@ export async function estudiante(id) {
       p.recomendaciones.length
         ? h('ul', {}, p.recomendaciones.map((r) => h('li', {},
             h('p', {}, r.reglas.map((x) => etiquetaTipo(x.tipo)), ' ', r.texto),
+            decisionDocente(r, publicadas, () => estudiante(id)),
             h('button', { type: 'button', clase: 'secundario', onclick: () => verFundamento(r.id, fundamento) }, '¿Por qué?'))))
         : h('p', { clase: 'vacio' }, 'Sin recomendaciones en el período.'),
       fundamento),
@@ -147,6 +149,28 @@ export async function estudiante(id) {
         { titulo: 'Intento', valor: (e) => e.numero_intento }, { titulo: 'Puntaje', valor: (e) => numero(e.puntaje) },
       ], p.evolucion, 'Sin intentos finalizados.')),
   );
+}
+
+// D-6: el sistema recomienda y el docente decide (confirma la sugerencia o la cambia).
+function decisionDocente(r, publicadas, recargar) {
+  if (r.decision) {
+    return h('p', { clase: 'pequeño' }, h('strong', {}, r.decision === 'CONFIRMADA' ? 'Confirmada por usted: ' : 'Cambiada por usted a: '),
+      `«${r.actividad_asignada}» (el estudiante la ve como recomendada).`);
+  }
+  const otras = publicadas.filter((a) => Number(a.id) !== Number(r.actividad_sugerida_id));
+  const selector = h('select', { 'aria-label': 'Otra actividad para asignar' },
+    h('option', { value: '' }, 'Elegir otra actividad…'), otras.map((a) => h('option', { value: a.id }, a.titulo)));
+  async function decidir(actividad) {
+    try {
+      await api('POST', `/recomendaciones/${r.id}/decision`, actividad ? { actividad_id: Number(actividad) } : {});
+      mensaje('Decisión guardada: el estudiante verá la actividad como recomendada.');
+      recargar();
+    } catch (e) { mensaje(e.message, 'error'); }
+  }
+  return h('div', { clase: 'acciones' },
+    r.actividad_sugerida_id ? h('button', { type: 'button', onclick: () => decidir(null) }, `Confirmar «${r.actividad_sugerida}»`) : null,
+    otras.length ? h('span', { clase: 'fila' }, selector,
+      h('button', { type: 'button', clase: 'secundario', onclick: () => { if (selector.value) decidir(selector.value); else mensaje('Elija una actividad.', 'error'); } }, 'Asignar esta')) : null);
 }
 
 async function verFundamento(id, destino) {

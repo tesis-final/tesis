@@ -246,8 +246,12 @@ final class AnalisisRepository extends Repository
     public function recomendacionesDelPerfil(int $perfil): array
     {
         $recs = $this->todos(
-            'SELECT r.id, r.texto, r.generado_en, r.actividad_sugerida_id, a.titulo AS actividad_sugerida
+            'SELECT r.id, r.texto, r.generado_en, r.actividad_sugerida_id, a.titulo AS actividad_sugerida,
+                    d.decision, d.actividad_id AS actividad_asignada_id, ad.titulo AS actividad_asignada,
+                    d.decidido_en
                FROM recomendaciones r LEFT JOIN actividades a ON a.id = r.actividad_sugerida_id
+               LEFT JOIN decisiones_recomendacion d ON d.recomendacion_id = r.id
+               LEFT JOIN actividades ad ON ad.id = d.actividad_id
               WHERE r.perfil_id = ? ORDER BY r.generado_en DESC, r.id DESC LIMIT 20',
             [$perfil]
         );
@@ -262,14 +266,38 @@ final class AnalisisRepository extends Repository
         return $recs;
     }
 
+    /** D-6: ¿el docente ya decidió sobre esta recomendación? */
+    public function decisionTomada(int $recomendacion): bool
+    {
+        return (bool) $this->valor(
+            'SELECT COUNT(*) FROM decisiones_recomendacion WHERE recomendacion_id = ?',
+            [$recomendacion]
+        );
+    }
+
+    /** D-6: decisión del docente sobre la actividad sugerida (no se modifica después). */
+    public function guardarDecision(int $recomendacion, int $actividad, string $decision, int $docente): void
+    {
+        $this->ejecutar(
+            'INSERT INTO decisiones_recomendacion (recomendacion_id, actividad_id, decision, decidido_por)
+             VALUES (?, ?, ?, ?)',
+            [$recomendacion, $actividad, $decision, $docente]
+        );
+    }
+
     /** @return array<string, mixed>|null recomendación con estudiante (para verificar alcance) */
     public function recomendacion(int $id): ?array
     {
         return $this->uno(
             'SELECT r.id, r.texto, r.generado_en, r.actividad_sugerida_id, a.titulo AS actividad_sugerida,
-                    p.usuario_id AS estudiante_id, p.periodo_inicio, p.periodo_fin
+                    p.usuario_id AS estudiante_id, p.periodo_inicio, p.periodo_fin,
+                    d.decision, d.actividad_id AS actividad_asignada_id, ad.titulo AS actividad_asignada,
+                    d.decidido_por, d.decidido_en
                FROM recomendaciones r JOIN perfiles_aprendizaje p ON p.id = r.perfil_id
-               LEFT JOIN actividades a ON a.id = r.actividad_sugerida_id WHERE r.id = ?',
+               LEFT JOIN actividades a ON a.id = r.actividad_sugerida_id
+               LEFT JOIN decisiones_recomendacion d ON d.recomendacion_id = r.id
+               LEFT JOIN actividades ad ON ad.id = d.actividad_id
+              WHERE r.id = ?',
             [$id]
         );
     }

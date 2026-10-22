@@ -62,6 +62,31 @@ SET @sql := IF(@existe = 0,
   'DO 0');
 PREPARE st FROM @sql; EXECUTE st; DEALLOCATE PREPARE st;
 
+-- -----------------------------------------------------------------------------
+-- Acta D-6 (devolución 4.h): "adaptativo" = el sistema recomienda la siguiente
+-- actividad y el docente decide. La recomendación del motor queda intacta (con su
+-- regla y sus datos); la decisión del docente se guarda aparte: confirma la
+-- actividad sugerida o la cambia por otra. Una decisión por recomendación y no se
+-- modifica (queda el rastro de qué sugirió el sistema y qué decidió el docente).
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS decisiones_recomendacion (
+  id                BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  recomendacion_id  BIGINT UNSIGNED NOT NULL,
+  actividad_id      BIGINT UNSIGNED NOT NULL,
+  decision          ENUM('CONFIRMADA', 'CAMBIADA') NOT NULL,
+  decidido_por      BIGINT UNSIGNED NOT NULL,
+  decidido_en       DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_decisiones_recomendacion (recomendacion_id),
+  KEY ix_decisiones_actividad (actividad_id),
+  KEY ix_decisiones_docente (decidido_por, decidido_en),
+  CONSTRAINT fk_decisiones_recomendacion FOREIGN KEY (recomendacion_id) REFERENCES recomendaciones (id),
+  CONSTRAINT fk_decisiones_actividad     FOREIGN KEY (actividad_id)     REFERENCES actividades (id),
+  CONSTRAINT fk_decisiones_docente       FOREIGN KEY (decidido_por)     REFERENCES usuarios (id)
+) ENGINE=InnoDB;
+-- El permiso recomendaciones.decidir lo carga seeds/003_permisos_hito2.sql
+-- (después de los catálogos, así funciona en una instalación nueva y en una existente).
+
 -- La vista de reportes expone también el tiempo activo (mismas columnas + una).
 CREATE OR REPLACE SQL SECURITY DEFINER VIEW v_resultados_detalle AS
 SELECT i.id               AS intento_id,

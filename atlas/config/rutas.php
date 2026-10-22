@@ -195,6 +195,14 @@ return [
     new R('GET', $api . '/docente/grupos/{id}/analisis', [Doc::class, 'analisisGrupal'], permiso: 'panel.docente'),
     new R('GET', $api . '/docente/estudiantes/{id}/perfil', [Doc::class, 'perfil'], permiso: 'perfiles.ver'),
     new R('GET', $api . '/recomendaciones/{id}/fundamento', [Doc::class, 'fundamento'], permiso: 'recomendaciones.ver'),
+    new R(
+        'POST',
+        $api . '/recomendaciones/{id}/decision',
+        [Doc::class, 'decidir'],
+        permiso: 'recomendaciones.decidir',
+        reglas: ['actividad_id' => 'opcional|entero|positivo'],
+        accionAuditoria: 'recomendaciones.decidir'
+    ), // D-6: el sistema recomienda, el docente decide
     new R('GET', $api . '/reportes', [Doc::class, 'reportes'], permiso: 'reportes.ver'),
     new R(
         'POST',
