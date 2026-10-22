@@ -3,7 +3,8 @@
 # ATLAS — copia la aplicación a la estructura de §28.3 (fase-02/02-arquitectura §3).
 #
 #   /srv/atlas/web/public   ← atlas/public          (atlasweb:atlas-web 755)
-#   /srv/atlas/web/app      ← atlas/{app,config,database,docker,bin,vendor}  (750)
+#   /srv/atlas/web/app      ← atlas/{app,bootstrap,config,database,docker,lang,routes,bin,vendor}  (750)
+#                             (vendor/ se instala acá con Composer, sin dependencias de desarrollo)
 #   /srv/atlas/web/analysis ← carpeta atlas-analysis del mismo repositorio
 #
 # Uso: sudo ATLAS_ROOT=/srv/atlas ./desplegar-app.sh <ruta_repo_tesis> [ruta_atlas_analysis]
@@ -15,11 +16,19 @@ REPO="${1:?ruta del repositorio tesis}"
 ANALISIS="${2:-$REPO/atlas-analysis}"
 ROOT="${ATLAS_ROOT:-/srv/atlas}"
 
-echo "→ Preparando el código (sin herramientas de desarrollo; la app usa su propio autoload, app/autoload.php)"
+echo "→ Preparando el código (Laravel + dependencias de producción, sin herramientas de desarrollo)"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 cp -a "$REPO/atlas/." "$TMP/"
-rm -rf "$TMP/vendor" "$TMP/tests" "$TMP/.phpunit.cache" "$TMP/.env" "$TMP/local" "$TMP/docker-compose.local.yml"
+rm -rf "$TMP/vendor" "$TMP/tests" "$TMP/.phpunit.cache" "$TMP/.env" "$TMP/local" "$TMP/docker-compose.local.yml" \
+       "$TMP/storage" "$TMP/bootstrap/cache"
+# Acta D-1: la aplicación es Laravel y necesita vendor/. Se instala con la imagen oficial
+# de Composer (Docker ya está instalado, 06-docker.sh): el servidor no necesita PHP ni
+# Composer propios. Versiones exactas de composer.lock; sin PHPUnit ni el linter (--no-dev).
+# pdo_mysql no está en la imagen de Composer pero sí en atlas-php, que es donde corre.
+docker run --rm -v "$TMP:/app" -w /app composer:2 install --no-dev --no-interaction --no-progress \
+  --optimize-autoloader --ignore-platform-req=ext-pdo_mysql
+[ -f "$TMP/vendor/autoload.php" ] || { echo "No se pudo instalar vendor/ (¿salida a Internet?)" >&2; exit 1; }
 
 echo "→ Copiando a $ROOT/web"
 mkdir -p "$ROOT/web/public" "$ROOT/web/app" "$ROOT/web/analysis" "$ROOT/logs" "$ROOT/datos" "$ROOT/config/tls"
