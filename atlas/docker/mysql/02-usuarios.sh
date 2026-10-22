@@ -24,6 +24,13 @@ ANA=$(sql_escape "$ATLAS_DB_ANALYSIS_PASSWORD")
 BKP=$(sql_escape "$ATLAS_DB_BACKUP_PASSWORD")
 ADM=$(sql_escape "$ATLAS_DB_ADMIN_PASSWORD")
 
+# En Windows (Docker Desktop) el bind mount deja el archivo como ejecutable y el
+# entrypoint lo *ejecuta* en vez de incluirlo: docker_process_sql no existe.
+# Mismo efecto contra el servidor temporal de inicialización (socket local).
+if ! declare -F docker_process_sql >/dev/null; then
+  docker_process_sql() { MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql --protocol=socket -uroot "$@"; }
+fi
+
 docker_process_sql --database=mysql <<SQL
 -- atlas_app: SELECT/INSERT/UPDATE en tablas operativas (Tabla 21).
 CREATE USER 'atlas_app'@'${HOST}' IDENTIFIED BY '${APP}';
