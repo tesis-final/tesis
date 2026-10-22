@@ -11,13 +11,16 @@ final class AutenticacionTest extends ApiTestCase
     {
         [, $correo] = self::usuario('DOCENTE');
         $c = $this->cliente();
+        $c->pedir('GET', '/health');
+        $antes = $c->cookieSesion;
         $r = $c->login($correo, self::CLAVE);
 
         $this->assertSame(200, $c->ultimoEstado);
         $this->assertSame('DOCENTE', $r['usuario']['rol']);
         $this->assertContains('panel.docente', $r['permisos']);
         $this->assertSame(64, strlen($r['csrf']));
-        $this->assertSame(1, $c->sesion->regeneraciones, 'se regenera la sesión al entrar (fijación de sesión)');
+        $this->assertNotNull($antes);
+        $this->assertNotSame($antes, $c->cookieSesion, 'se regenera la sesión al entrar (fijación de sesión)');
         $this->assertArrayNotHasKey('hash_contrasena', $r['usuario']);
     }
 

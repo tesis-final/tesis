@@ -136,7 +136,12 @@ final class MotorAnalisisApiTest extends ApiTestCase
         sort($todas);
         // Intento 1: R01 + R07 · intento 2: R01 · intento 3 (50, mejora 25): ninguna ·
         // intento 4 (100, mejora 75, persistencia 4): R04 + R06.
-        $this->assertSame(['R01', 'R01', 'R04', 'R06', 'R07'], $todas);
+        // R02 se deja afuera: depende de la eficiencia, que usa la duración real de cada
+        // intento (0 o 1 s según la velocidad de la máquina), no de los puntajes.
+        $this->assertSame(
+            ['R01', 'R01', 'R04', 'R06', 'R07'],
+            array_values(array_filter($todas, fn ($c) => $c !== 'R02'))
+        );
         $this->assertNotContains('R05', $todas, 'con mejora positiva no hay estancamiento');
     }
 

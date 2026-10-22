@@ -62,6 +62,12 @@ fi
 # Los contenedores corren con usuarios propios (5002 web, 5003 base), como en el servidor.
 docker run --rm -v "$PWD/$L:/l" alpine sh -c "chown -R 5003:5003 /l/datos && chown -R 5002:5002 /l/logs && chmod 644 /l/tls/*"
 
+if [ ! -f vendor/autoload.php ]; then
+  echo "→ Instalando las dependencias de PHP (Laravel) con Composer"
+  docker run --rm -v "$PWD:/app" -w /app composer:2 install --no-interaction --no-progress \
+    --ignore-platform-req=ext-pdo_mysql >/dev/null   # pdo_mysql está en la imagen atlas-php
+fi
+
 echo "→ Construyendo y levantando los contenedores (la primera vez tarda unos minutos)"
 "${COMPOSE[@]}" up -d --build
 

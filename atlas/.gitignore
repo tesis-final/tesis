@@ -4,3 +4,5 @@
 *.local
 .phpunit.result.cache
 /local/
+/storage/
+/bootstrap/cache/
