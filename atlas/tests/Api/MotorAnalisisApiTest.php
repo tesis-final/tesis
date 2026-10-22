@@ -114,6 +114,12 @@ final class MotorAnalisisApiTest extends ApiTestCase
         $e = $admin->pedir('PATCH', '/reglas/R01', ['condicion' => $nueva]);
         $this->assertSame(200, $admin->ultimoEstado);
         $this->assertSame($r01['version'] + 1, $e['version']);
+        $auditado = json_decode((string) self::valor(
+            "SELECT detalle FROM auditoria WHERE accion = 'reglas.modificar' AND recurso_id = 'R01'
+              ORDER BY id DESC LIMIT 1"
+        ), true);
+        $this->assertSame([$r01['version'], $r01['version'] + 1], $auditado['version'], '§27.3: versión auditada');
+        $this->assertEquals($nueva, $auditado['condicion_nueva'], 'JSON de MySQL: mismo contenido, otro orden');
         $admin->pedir(
             'PATCH',
             '/reglas/R01',

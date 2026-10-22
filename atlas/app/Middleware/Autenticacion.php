@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Atlas\Middleware;
 
-use Atlas\Core\Database;
 use Atlas\Core\HttpException;
 use Atlas\Core\Request;
 use Atlas\Core\Response;
@@ -22,7 +21,6 @@ final class Autenticacion implements Middleware
     public function __construct(
         private readonly Session $sesion,
         private readonly UsuarioRepository $usuarios,
-        private readonly Database $db,
         private readonly AuditoriaService $auditoria
     ) {
     }
@@ -53,7 +51,6 @@ final class Autenticacion implements Middleware
                 throw HttpException::prohibido('Token de seguridad inválido. Vuelva a iniciar sesión.');
             }
         }
-        $this->db->identificarUsuario((int) $usuario['id']);
         $peticion->con('usuario', $usuario);
 
         return $siguiente($peticion);

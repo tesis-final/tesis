@@ -35,12 +35,7 @@ final class Kernel
             $peticion->con('parametros', $parametros);
             /** @var list<Middleware> $cadena */
             $cadena = [
-                new Autenticacion(
-                    $this->app->sesion(),
-                    $this->app->usuarios(),
-                    $this->app->db(),
-                    $this->app->auditoria()
-                ),
+                new Autenticacion($this->app->sesion(), $this->app->usuarios(), $this->app->auditoria()),
                 new Permisos($this->app->usuarios(), $this->app->auditoria()),
                 new Validacion(),
                 new Auditoria($this->app->auditoria()),

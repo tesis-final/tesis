@@ -8,6 +8,7 @@ use Atlas\Core\HttpException;
 use Atlas\Core\Request;
 use Atlas\Core\Response;
 use Atlas\Services\Analysis\MotorReglas;
+use Atlas\Services\UsuarioService;
 
 /**
  * Gestión administrativa (RF-01, RF-14, RF-15; ANA-05). El administrador de ATLAS
@@ -33,7 +34,12 @@ final class AdminController extends Controller
             throw HttpException::validacion(['institucion_id' => 'La institución no existe.']);
         }
 
-        return Response::creado($this->app->usuariosService()->crear($d));
+        $creado = $this->app->usuariosService()->crear($d);
+        $p->con('auditoria', ['recurso_id' => (string) $creado['id'], 'detalle' => [
+            'rol_id' => $creado['rol_id'], 'institucion_id' => $creado['institucion_id'], 'activo' => $creado['activo'],
+        ]]);
+
+        return Response::creado($creado);
     }
 
     public function modificarUsuario(Request $p): Response
@@ -43,20 +49,27 @@ final class AdminController extends Controller
             throw HttpException::validacion(['institucion_id' => 'La institución no existe.']);
         }
 
-        return Response::json($this->app->usuariosService()->modificar(
-            $p->parametroEntero('id'),
-            $d,
-            $this->usuario($p)['id']
-        ));
+        return Response::json($this->modificarAuditado($p, $d));
     }
 
     public function desactivarUsuario(Request $p): Response
     {
-        return Response::json($this->app->usuariosService()->modificar(
-            $p->parametroEntero('id'),
-            ['activo' => false],
-            $this->usuario($p)['id']
-        ));
+        return Response::json($this->modificarAuditado($p, ['activo' => false]));
+    }
+
+    /** @param array<string, mixed> $datos @return array<string, mixed> */
+    private function modificarAuditado(Request $p, array $datos): array
+    {
+        $id = $p->parametroEntero('id');
+        $antes = $this->app->usuarios()->porId($id);
+        $despues = $this->app->usuariosService()->modificar($id, $datos, $this->usuario($p)['id']);
+        $p->con('auditoria', ['detalle' => UsuarioService::cambiosAuditables(
+            $antes,
+            $despues,
+            isset($datos['contrasena'])
+        )]);
+
+        return $despues;
     }
 
     public function instituciones(Request $p): Response
@@ -157,7 +170,13 @@ final class AdminController extends Controller
         if ($roles[$rol] === 'ADMIN' && !in_array('permisos.gestionar', $codigos, true)) {
             throw HttpException::conflicto('El rol administrador debe conservar la gestión de permisos.');
         }
+        $antes = $this->app->usuarios()->permisosDeRol($rol);
         $this->app->organizacion()->definirPermisosDeRol($rol, $codigos);
+        $despues = $this->app->usuarios()->permisosDeRol($rol);
+        $p->con('auditoria', ['detalle' => [
+            'agregados' => array_values(array_diff($despues, $antes)),
+            'quitados' => array_values(array_diff($antes, $despues)),
+        ]]);
 
         return Response::json($this->app->organizacion()->roles());
     }
@@ -179,7 +198,16 @@ final class AdminController extends Controller
             throw HttpException::validacion(['condicion' => implode(' ', $errores)]);
         }
         $activa = array_key_exists('activa', $d) ? (bool) $d['activa'] : $regla['activa'];
-        $this->app->analisisRepo()->actualizarRegla($codigo, $condicion, $activa, $this->usuario($p)['id']);
+        // §27.3: toda edición real de una regla sube su versión (antes lo hacía un trigger; D-4).
+        $cambio = $condicion != $regla['condicion'] || $activa !== (bool) $regla['activa'];
+        $version = $cambio ? (int) $regla['version'] + 1 : (int) $regla['version'];
+        $this->app->analisisRepo()->actualizarRegla($codigo, $condicion, $activa, $version, $this->usuario($p)['id']);
+        $p->con('auditoria', ['recurso_id' => $codigo, 'detalle' => [
+            'version' => [(int) $regla['version'], $version],
+            'condicion_anterior' => $regla['condicion'],
+            'condicion_nueva' => $condicion,
+            'activa' => [(bool) $regla['activa'], $activa],
+        ]]);
 
         return Response::json($this->app->analisisRepo()->regla($codigo));
     }

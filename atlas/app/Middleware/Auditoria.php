@@ -12,6 +12,9 @@ use Atlas\Services\AuditoriaService;
 /**
  * [4] Se registra la acción (RF-15). Toda operación que modifica datos queda
  * auditada con su autor, sin que cada controlador tenga que acordarse.
+ * Si el controlador dejó en la petición el atributo `auditoria`
+ * (['recurso_id' => ..., 'detalle' => [...]]), se agrega al registro: así queda
+ * el antes y el después de un cambio sin triggers en la base (acta D-4).
  */
 final class Auditoria implements Middleware
 {
@@ -32,13 +35,15 @@ final class Auditoria implements Middleware
         $usuario = $peticion->atributo('usuario');
         if ($accion !== null && $usuario !== null) {
             $parametros = $peticion->atributo('parametros', []);
+            $extra = $peticion->atributo('auditoria', []);
+            $recursoId = $extra['recurso_id'] ?? (isset($parametros['id']) ? (string) $parametros['id'] : null);
             $this->auditoria->registrar(
                 (int) $usuario['id'],
                 $accion,
                 $ruta->ruta,
-                isset($parametros['id']) ? (string) $parametros['id'] : null,
+                $recursoId,
                 'OK',
-                ['estado_http' => $respuesta->estado],
+                ['estado_http' => $respuesta->estado] + ($extra['detalle'] ?? []),
                 $peticion->ip
             );
         }

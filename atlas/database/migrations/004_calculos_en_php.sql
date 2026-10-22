@@ -9,6 +9,13 @@
 --   - sp_analisis_grupal      → los agregados los calcula ResumenGrupal y
 --                               PanelDocenteService los guarda en `analisis_grupal`.
 --
+--   - trg_reglas_version      → la versión de la regla la sube AdminController.
+--   - trg_reglas_auditoria, trg_usuarios_auditoria_ins/upd,
+--     trg_rol_permiso_auditoria_ins/upd
+--                             → el middleware de Auditoría registra cada cambio
+--                               con su detalle (antes/después); con los triggers
+--                               quedaba registrado dos veces.
+--
 -- Se mantienen los triggers que solo protegen integridad (ciclo de estados,
 -- intento cerrado inmutable, respuestas válidas, auditoría no modificable,
 -- contenido editable solo en borrador). atlas_app pasa a poder agregar filas
@@ -22,3 +29,9 @@ USE atlas_db;
 
 DROP TRIGGER IF EXISTS trg_intentos_finalizar;
 DROP PROCEDURE IF EXISTS sp_analisis_grupal;
+DROP TRIGGER IF EXISTS trg_reglas_version;
+DROP TRIGGER IF EXISTS trg_reglas_auditoria;
+DROP TRIGGER IF EXISTS trg_usuarios_auditoria_ins;
+DROP TRIGGER IF EXISTS trg_usuarios_auditoria_upd;
+DROP TRIGGER IF EXISTS trg_rol_permiso_auditoria_ins;
+DROP TRIGGER IF EXISTS trg_rol_permiso_auditoria_upd;

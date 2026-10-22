@@ -30,13 +30,6 @@ final class Database
         return $this->lectura ??= $this->conectar('ATLAS_DB_READ_USER', 'atlas_read', 'ATLAS_DB_READ_PASSWORD');
     }
 
-    /** Usuario de la petición para los triggers de auditoría automática. */
-    public function identificarUsuario(?int $usuarioId): void
-    {
-        $st = $this->app()->prepare('SET @atlas_usuario_id = ?');
-        $st->execute([$usuarioId]);
-    }
-
     /**
      * @template T
      * @param callable(PDO): T $trabajo

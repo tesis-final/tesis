@@ -142,12 +142,12 @@ final class AnalisisRepository extends Repository
         return $fila === null ? null : $this->decodificarRegla($fila);
     }
 
-    /** @param array<string, mixed> $condicion */
-    public function actualizarRegla(string $codigo, array $condicion, bool $activa, int $usuario): void
+    /** @param array<string, mixed> $condicion la versión la decide la app (D-4) */
+    public function actualizarRegla(string $codigo, array $condicion, bool $activa, int $version, int $usuario): void
     {
         $this->afectadas(
-            'UPDATE reglas_analisis SET condicion = ?, activa = ?, actualizado_por = ? WHERE codigo = ?',
-            [json_encode($condicion), (int) $activa, $usuario, $codigo]
+            'UPDATE reglas_analisis SET condicion = ?, activa = ?, version = ?, actualizado_por = ? WHERE codigo = ?',
+            [json_encode($condicion), (int) $activa, $version, $usuario, $codigo]
         );
     }
 
