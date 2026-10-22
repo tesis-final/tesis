@@ -13,6 +13,9 @@
 # es normal en una prueba local). No toca nada fuera de la carpeta atlas/local/.
 # =============================================================================
 set -euo pipefail
+# Git Bash (Windows) convierte las rutas que empiezan con / (p. ej. /tls dentro del
+# contenedor) en rutas de Windows y rompe los docker run. En Linux/Mac no hace nada.
+export MSYS_NO_PATHCONV=1
 cd "$(dirname "$0")/atlas"
 L=local
 COMPOSE=(docker compose --env-file "$L/atlas.conf" -f docker-compose.yml -f docker-compose.local.yml)
