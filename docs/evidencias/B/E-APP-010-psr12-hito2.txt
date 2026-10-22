@@ -1,0 +1,5 @@
+# E-APP-010 — Estándar de código PSR-12 (RNF-13), Hito 2
+# Fecha: 2026-10-22T03:30:15Z  Herramienta: PHP_CodeSniffer version 3.13.6 (stable) by Squiz and PHPCSStandards
+# Comando: vendor/bin/phpcs --standard=PSR12 --exclude=Generic.Files.LineEndings app bootstrap config routes lang public/index.php bin tests
+# (se excluye el fin de línea: en la copia de trabajo de Windows Git usa CRLF; en el repositorio es LF)
+rc=0 (0 = sin errores ni advertencias)

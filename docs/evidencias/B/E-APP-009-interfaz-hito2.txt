@@ -1,0 +1,32 @@
+# E-APP-009 — Prueba de interfaz en navegador real, Hito 2 (Chromium headless, Playwright 1.48)
+# Fecha: 2026-10-22T03:18:31Z  Entorno: stack Docker Compose local con Laravel (NO es el laboratorio), demo recién cargada
+# Comando: docker run --network atlas_front mcr.microsoft.com/playwright/python:v1.48.0-jammy python atlas/tests/e2e/interfaz.py https://atlas-web <capturas> $ATLAS_DEMO_CONTRASENA
+# Capturas: docs/evidencias/B/capturas/hito2/
+PASS RF-02 mensaje genérico en la interfaz
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 375px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 480px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 768px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 1024px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 1366px
+PASS RF-18 análisis grupal visible
+PASS RNF-12 tablas como tarjetas en celular (sin desplazamiento horizontal)
+PASS RF-12 '¿por qué?' muestra regla, versión y datos
+PASS D-3 el perfil muestra el acierto por habilidad
+PASS D-6 el docente confirma la actividad sugerida
+PASS D-5 consulta guiada por habilidad responde
+PASS RNF-12 consultas en celular sin desplazamiento horizontal
+PASS D-2 sin aprobación el borrador ofrece Publicar (no 'Enviar a aprobación')
+PASS D-2/D-3 actividad con habilidades publicada desde la interfaz
+PASS D-8 los reportes muestran tiempo total y activo
+PASS RF-20 / RNF-15 el asistente responde con datos verificados sin LLM
+PASS D-6 el estudiante ve la actividad recomendada por su docente
+PASS RNF-12 resolución en celular sin desplazamiento horizontal
+PASS RF-07 el estudiante ve su resultado
+PASS D-8 el resultado muestra tiempo total y activo
+PASS DEC-00b el estudiante no ve menú docente
+PASS ANA-05 reglas editables visibles para la coordinación
+PASS RF-15 auditoría consultable
+PASS D-2 la coordinación ve y configura la aprobación por institución
+PASS Sin violaciones de CSP
+PASS Sin errores de JavaScript
+27/27 PASS

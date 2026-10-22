@@ -1,0 +1,11 @@
+# E-APP-011 — Logout con peticiones concurrentes de la misma sesión (Laravel, session.block)
+# Fecha: 2026-10-22T03:26:50Z  Entorno: stack Docker Compose local (NO es el laboratorio)
+# Método: login como docente; se lanza GET /docente/grupos/1/analisis en paralelo con POST /auth/logout
+#   (espera entre ambos de 0,02 s y 0,05 s) y después GET /auth/me con la cookie que devolvió la petición
+#   paralela. 200 = la sesión sobrevivió al logout (falla); 401 = correcto. 8 intentos por fila.
+# Para la fila SIN bloqueo se puso session.block=false solo durante la medición y se restauró.
+SIN bloqueo (espera 0.02 s): /auth/me con la cookie de la lenta → 200 200 200 401 401 401 401 401
+SIN bloqueo (espera 0.05 s): /auth/me con la cookie de la lenta → 200 200 401 401 401 401 401 401
+CON bloqueo (espera 0.02 s): /auth/me con la cookie de la lenta → 401 401 401 401 401 401 401 401
+CON bloqueo (espera 0.05 s): /auth/me con la cookie de la lenta → 401 401 401 401 401 401 401 401
+# Configuración final:  'block' => true,

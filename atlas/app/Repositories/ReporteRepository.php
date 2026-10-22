@@ -30,8 +30,9 @@ final class ReporteRepository extends Repository
 
     /**
      * Preguntas con mayor proporción de error del grupo en el período (RF-18, H26).
-     * Arranca por el grupo en vez de materializar v_preguntas_error entera (E-BD-006:
-     * ~41 ms contra ~490 ms) y respeta el período de la consulta guiada (D-5). La base
+     * Arranca por el grupo en vez de materializar v_preguntas_error entera (mismo enfoque
+     * que la Q5b de E-BD-006: ~41 ms contra ~490 ms) y respeta el período de la consulta
+     * guiada (D-5). La base
      * cuenta; la proporción y el orden los calcula PHP (D-4).
      *
      * @return list<array<string, mixed>>
