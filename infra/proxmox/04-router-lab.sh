@@ -64,6 +64,12 @@ echo "→ 1/5 Subinterfaces de VLAN y salida a Internet (netplan)"
 mkdir -p /etc/cloud/cloud.cfg.d
 echo 'network: {config: disabled}' > /etc/cloud/cloud.cfg.d/99-atlas-sin-red.cfg
 rm -f /etc/netplan/50-cloud-init.yaml
+# Cualquier otro netplan (por ejemplo uno armado a mano para la WAN) definiría la
+# misma placa dos veces: se guarda aparte y queda solo el de este script. En el
+# laboratorio hubo que borrar a mano un 60-wan.yaml (Hito 2 de Redes, 6.4).
+for f in /etc/netplan/*.yaml; do
+  [ -e "$f" ] && [ "$f" != /etc/netplan/60-atlas-router.yaml ] && mv "$f" "$f.antes-de-atlas"
+done
 cat > /etc/netplan/60-atlas-router.yaml <<EOF
 network:
   version: 2
