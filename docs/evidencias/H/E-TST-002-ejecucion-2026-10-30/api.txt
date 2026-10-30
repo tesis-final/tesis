@@ -1,8 +1,8 @@
 # ATLAS · prueba 'api' · ./probar-todo.sh api
-# Fecha: 2026-10-30T15:06:26Z · Equipo: Linux 6.18.44-fc-v185 · Commit: 4758a33
+# Fecha: 2026-10-30T17:28:01Z · Equipo: Linux 6.18.44-fc-v185 · Commit: 26ab90c
 
 Esperando a MySQL...
-# Ejecución: 2026-10-30T15:06:42Z
+# Ejecución: 2026-10-30T17:28:17Z
 # Servidor: 8.0.46
 # Imagen: mysql:8.0
 PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
@@ -13,7 +13,7 @@ Configuration: /home/user/tesis/atlas/phpunit.xml
 ................................................................. 65 / 71 ( 91%)
 ......                                                            71 / 71 (100%)
 
-Time: 02:52.939, Memory: 36.00 MB
+Time: 03:03.189, Memory: 36.00 MB
 
 Asistente Api (Atlas\Tests\Api\AsistenteApi)
  ✔ Explicar recomendacion para un estudiante

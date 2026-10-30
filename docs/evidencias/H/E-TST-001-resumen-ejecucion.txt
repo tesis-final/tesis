@@ -1,21 +1,20 @@
 # E-TST-001 — Ejecución completa de las pruebas automáticas (Hito 2 de Testing)
-# Fecha: 2026-10-30, 15:05 a 15:16 UTC · Comando: sudo CA_EXTRA=<certificado del proxy> ./probar-todo.sh
-# Entorno: contenedor Linux de pruebas (kernel 6.18.44-fc-v185), Docker 29.9.2, PHP 8.3.6, MySQL 8.0.46 descartable. NO es el laboratorio Proxmox.
-# Código: rama claude/intelligent-cannon-iecvmy = main (4758a33) + los cambios de este hito, todavía sin commitear al correr.
-# Imágenes de Docker Hub bajadas de su réplica mirror.gcr.io (Docker Hub devolvió 429 en este entorno: INC-T1).
+# Fecha: 2026-10-30, de 17:27 a 17:36 UTC · Comando: sudo CA_EXTRA=<certificado del proxy del entorno> ./probar-todo.sh
+# Entorno: contenedor Linux de pruebas (kernel 6.18.44-fc-v185), Docker 29.9.2, PHP 8.3.6, MySQL 8.0.46 descartable, Python 3.11, PowerShell 7.4. NO es el laboratorio Proxmox.
+# Código: commit 26ab90c de la rama claude/intelligent-cannon-iecvmy. Lo que figura como 'cambios sin commitear' eran capturas y documentos de este informe, no código.
+# Las imágenes oficiales de Docker Hub se bajaron de su réplica mirror.gcr.io (Docker Hub devolvió 429 en este entorno: INC-T1).
 # Salida completa de cada conjunto: E-TST-002-ejecucion-2026-10-30/<conjunto>.txt
-# Nota sobre 'linux': 67 PASS y 1 FAIL esperado en sus 5 verificaciones (+17 pruebas de conexión, 84 PASS en total).
-#   El FAIL es 'smbd activo': no puede andar en un contenedor sin systemd (documentado desde E-LNX-001).
+# 'linux': 67 PASS y 1 FAIL esperado en sus 5 verificaciones, más 17 pruebas de conexión (84 PASS en total).
+#   El FAIL es 'smbd activo': Samba no puede quedar corriendo en un contenedor sin systemd (documentado desde E-LNX-001).
 
-# Resumen · 2026-10-30 15:16 · commit 4758a33
+# Resumen · 2026-10-30 17:36 · commit 26ab90c + cambios sin commitear
 Conjunto   Estado        Detalle
 unit       Aprobada      OK (37 tests, 146 assertions)
 psr12      Aprobada      PSR-12: sin errores ni advertencias
 bd         Aprobada      OK (58 tests, 189 assertions)
 api        Aprobada      OK (71 tests, 1369 assertions)
-analisis   Aprobada      23 passed, 1 warning in 2.99s 
+analisis   Aprobada      23 passed, 1 warning in 2.83s 
 firewall   Aprobada      Resultado: 36 PASS, 0 FAIL
 windows    Aprobada      Resultado: 25 PASS · 0 FAIL
-linux      Aprobada      Resultado: 4 PASS · 1 FAIL
-gemelo     Aprobada      Resultado: 27 PASS · 0 FAIL
-cisco      Aprobada      Resultado: 81 PASS · 0 FAIL
+linux      Aprobada      Resultado: 67 PASS · 1 FAIL (5 secciones)
+laboratorio Aprobada      Resultado: 18 PASS · 0 FAIL

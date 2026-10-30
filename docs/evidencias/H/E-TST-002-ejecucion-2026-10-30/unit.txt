@@ -1,5 +1,5 @@
 # ATLAS · prueba 'unit' · ./probar-todo.sh unit
-# Fecha: 2026-10-30T15:05:51Z · Equipo: Linux 6.18.44-fc-v185 · Commit: 4758a33
+# Fecha: 2026-10-30T17:26:58Z · Equipo: Linux 6.18.44-fc-v185 · Commit: 26ab90c
 
 PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
 
@@ -8,7 +8,7 @@ Configuration: /home/user/tesis/atlas/phpunit.xml
 
 .....................................                             37 / 37 (100%)
 
-Time: 00:00.144, Memory: 24.00 MB
+Time: 00:06.515, Memory: 24.00 MB
 
 Asistente (Atlas\Tests\Unit\Asistente)
  ✔ Las tres consultas de ejemplo del pdf

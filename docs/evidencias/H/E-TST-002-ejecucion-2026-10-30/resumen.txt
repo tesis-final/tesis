@@ -1,12 +1,11 @@
-# Resumen · 2026-10-30 15:16 · commit 4758a33
+# Resumen · 2026-10-30 17:36 · commit 26ab90c + cambios sin commitear
 Conjunto   Estado        Detalle
 unit       Aprobada      OK (37 tests, 146 assertions)
 psr12      Aprobada      PSR-12: sin errores ni advertencias
 bd         Aprobada      OK (58 tests, 189 assertions)
 api        Aprobada      OK (71 tests, 1369 assertions)
-analisis   Aprobada      23 passed, 1 warning in 2.99s 
+analisis   Aprobada      23 passed, 1 warning in 2.83s 
 firewall   Aprobada      Resultado: 36 PASS, 0 FAIL
 windows    Aprobada      Resultado: 25 PASS · 0 FAIL
-linux      Aprobada      Resultado: 4 PASS · 1 FAIL
-gemelo     Aprobada      Resultado: 27 PASS · 0 FAIL
-cisco      Aprobada      Resultado: 81 PASS · 0 FAIL
+linux      Aprobada      Resultado: 67 PASS · 1 FAIL (5 secciones)
+laboratorio Aprobada      Resultado: 18 PASS · 0 FAIL

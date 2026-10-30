@@ -1,8 +1,8 @@
 # ATLAS · prueba 'bd' · ./probar-todo.sh bd
-# Fecha: 2026-10-30T15:05:53Z · Equipo: Linux 6.18.44-fc-v185 · Commit: 4758a33
+# Fecha: 2026-10-30T17:27:13Z · Equipo: Linux 6.18.44-fc-v185 · Commit: 26ab90c
 
 Esperando a MySQL...
-# Ejecución: 2026-10-30T15:06:09Z
+# Ejecución: 2026-10-30T17:27:40Z
 # Servidor: 8.0.46
 # Imagen: mysql:8.0
 PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
@@ -12,7 +12,7 @@ Configuration: /home/user/tesis/atlas/phpunit.xml
 
 ..........................................................        58 / 58 (100%)
 
-Time: 00:16.263, Memory: 10.00 MB
+Time: 00:19.874, Memory: 10.00 MB
 
 Analisis Grupal (Atlas\Tests\Database\AnalisisGrupal)
  ✔ La base no tiene procedimientos de calculo

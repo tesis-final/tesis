@@ -1,5 +1,5 @@
 # ATLAS · prueba 'windows' · ./probar-todo.sh windows
-# Fecha: 2026-10-30T15:12:53Z · Equipo: Linux 6.18.44-fc-v185 · Commit: 4758a33
+# Fecha: 2026-10-30T17:33:29Z · Equipo: Linux 6.18.44-fc-v185 · Commit: 26ab90c + cambios sin commitear
 
 [parámetros]
   PASS  parametros.psd1: IP 172.16.40.20 (Tabla 40)

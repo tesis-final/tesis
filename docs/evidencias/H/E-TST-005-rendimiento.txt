@@ -1,4 +1,4 @@
-# E-TST-006 — Tiempo de respuesta de las consultas más frecuentes (RNF-03)
+# E-TST-005 — Tiempo de respuesta de las consultas más frecuentes (RNF-03)
 # Fecha: 2026-10-30T15:18:08Z · Entorno: pila Docker local (nginx + Laravel + MySQL 8.0 + análisis) con datos de DEMOSTRACIÓN (grupo de 12 estudiantes). NO es el laboratorio.
 # Comando: python3 atlas/tests/rendimiento/medir.py https://localhost $ATLAS_DEMO_CONTRASENA 30
 # 30 repeticiones por consulta · límite RNF-03: 3000 ms (percentil 95)

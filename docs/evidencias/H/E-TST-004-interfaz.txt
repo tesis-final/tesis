@@ -1,8 +1,9 @@
-# E-TST-005 — Prueba de interfaz en navegador real (Hito 2 de Testing)
+# E-TST-004 — Prueba de interfaz en navegador real (Hito 2 de Testing)
 # Fecha: 2026-10-30T15:00:05Z · Chromium headless (imagen mcr.microsoft.com/playwright/python:v1.48.0-jammy, playwright 1.48.0)
 # Entorno: pila Docker local con Laravel y datos de DEMOSTRACIÓN recién cargados (sintéticos). NO es el laboratorio Proxmox.
 # Comando: python atlas/tests/e2e/interfaz.py https://localhost <capturas> $ATLAS_DEMO_CONTRASENA
 # Nuevo en este hito: el caso 'Docente sin grupo' (incidencia del Hito 2 de Redes, 9.11).
+# Capturas: capturas/E-TST-004a (editor con habilidades), 004b (estudiante en celular), 004c (dónde intervenir en celular), 004d (docente sin grupo).
 PASS RF-02 mensaje genérico en la interfaz
 PASS RNF-12 sin desplazamiento horizontal · docente inicio · 375px
 PASS RNF-12 sin desplazamiento horizontal · docente inicio · 480px

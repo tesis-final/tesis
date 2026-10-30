@@ -1,5 +1,5 @@
 # ATLAS · prueba 'linux' · ./probar-todo.sh linux
-# Fecha: 2026-10-30T15:12:55Z · Equipo: Linux 6.18.44-fc-v185 · Commit: 4758a33
+# Fecha: 2026-10-30T17:33:45Z · Equipo: Linux 6.18.44-fc-v185 · Commit: 26ab90c + cambios sin commitear
 
 
 ══════ Entorno ══════
@@ -31,7 +31,7 @@ useradd warning: atlasbkp's uid 5004 is greater than SYS_UID_MAX 999
 segunda ejecución sin errores
 
 ══════ Verificación: usuarios, permisos (Tabla 27), atributos ══════
-ATLAS — verificación de atlas-srv01 · 2026-10-30T15:12:57+00:00
+ATLAS — verificación de atlas-srv01 · 2026-10-30T17:33:47+00:00
 
 [usuarios] Grupos y usuarios (Tabla 25, Tabla 26)
   PASS  grupo atlas-admin GID 5001
@@ -102,7 +102,7 @@ allowtcpforwarding no
 allowusers atlasadmin@172.16.50.*
 allowgroups atlas-admin
 ==> Listo. Siguiente: 05-firewall.sh
-ATLAS — verificación de atlas-srv01 · 2026-10-30T15:12:58+00:00
+ATLAS — verificación de atlas-srv01 · 2026-10-30T17:33:48+00:00
 
 [ssh] SSH y TCP Wrappers (§28.4, DEC-07)
   PASS  sshd -t (configuración válida)
@@ -135,8 +135,8 @@ Resultado: 11 PASS · 0 FAIL
   PASS  root desde VLAN 50 NO entra (PermitRootLogin no)
         root@172.16.40.10: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
   Registro de sshd de esas conexiones:
-        Accepted publickey for atlasadmin from 172.16.50.10 port 53196 ssh2: ED25519 SHA256:ZNOdZzry1873SqoO9t01Ruh2XVBPaKHZ95930twB0ww
-        Accepted publickey for soporte1 from 172.16.50.10 port 52640 ssh2: ED25519 SHA256:ZNOdZzry1873SqoO9t01Ruh2XVBPaKHZ95930twB0ww
+        Accepted publickey for atlasadmin from 172.16.50.10 port 46186 ssh2: ED25519 SHA256:kOxwcRkRnPh31C4Oe0y0EUy4k9BDoV0YboOmWBkVi90
+        Accepted publickey for soporte1 from 172.16.50.10 port 48728 ssh2: ED25519 SHA256:kOxwcRkRnPh31C4Oe0y0EUy4k9BDoV0YboOmWBkVi90
         User intruso from 172.16.50.10 not allowed because none of user's groups are listed in AllowGroups
         User root from 172.16.50.10 not allowed because none of user's groups are listed in AllowGroups
 
@@ -171,7 +171,7 @@ To                         Action      From
 -A DOCKER-USER -i br-lan -m limit --limit 5/min --limit-burst 10 -j LOG --log-prefix "[ATLAS DOCKER-USER DROP] "
 -A DOCKER-USER -i br-lan -j DROP
 ==> Listo. Siguiente: 06-docker.sh
-ATLAS — verificación de atlas-srv01 · 2026-10-30T15:14:43+00:00
+ATLAS — verificación de atlas-srv01 · 2026-10-30T17:35:37+00:00
 
 [firewall] UFW alineado con la Tabla 44 + DOCKER-USER (DEC-05, CT-04)
   PASS  UFW activo
@@ -226,7 +226,7 @@ Resultado: 14 PASS · 0 FAIL
 User atlasadmin may run the following commands on atlas-srv01:
     (root) /usr/local/sbin/atlas-ctl, /usr/bin/apt-get update, /usr/bin/apt-get -y upgrade, NOEXEC: /usr/sbin/ufw status, /usr/sbin/ufw status verbose, /usr/sbin/ufw status numbered, /usr/bin/journalctl, /usr/bin/systemctl status *, /usr/sbin/ausearch, /usr/sbin/aureport, /usr/bin/chronyc tracking, /usr/bin/chronyc sources, /usr/sbin/realm list, /usr/bin/lsattr, /usr/local/sbin/atlas-verificar
 ==> Listo. Verificar todo con: sudo atlas-verificar
-ATLAS — verificación de atlas-srv01 · 2026-10-30T15:15:45+00:00
+ATLAS — verificación de atlas-srv01 · 2026-10-30T17:36:40+00:00
 
 [sudo] sudo acotado (DEC-21)
   PASS  sudoers válido
@@ -251,7 +251,7 @@ AVISO: Sin systemd: se omite 'systemctl restart smbd'
 	path = /srv/samba/docentes
 	valid users = @gg_docentes @gg_soporteti
 ==> Listo. Siguiente: 11-registros.sh
-ATLAS — verificación de atlas-srv01 · 2026-10-30T15:15:45+00:00
+ATLAS — verificación de atlas-srv01 · 2026-10-30T17:36:42+00:00
 
 [samba] Samba (Tabla 35, CT-10)
   PASS  testparm sin errores
