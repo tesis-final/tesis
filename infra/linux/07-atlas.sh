@@ -79,6 +79,15 @@ if ! ip -4 -o addr show | grep -q " $ATLAS_IP/"; then
   aviso "$ATLAS_IP no está configurada todavía: se agrega temporalmente en 'lo' para poder probar ATLAS."
   ip addr add "$ATLAS_IP/32" dev lo
 fi
+# Las imágenes se descargan y se construyen ACÁ, con Internet. El servicio
+# después arranca sin red (--no-build --pull never): un corte de Internet no
+# deja a ATLAS fuera de servicio (incidencia del Hito 2 de Redes).
+COMPOSE=(docker compose --env-file "$CONF" -f "$ATLAS_ROOT/config/docker-compose.yml")
+"${COMPOSE[@]}" pull --ignore-buildable --quiet
+"${COMPOSE[@]}" build --quiet
+# atlas-ctl va con ATLAS (antes lo instalaba recién el paso 12 y la guía lo
+# usaba después del paso 7: "command not found" en el laboratorio).
+instalar_archivo "$DIR_ARCHIVOS/atlas-ctl" /usr/local/sbin/atlas-ctl 755
 instalar_archivo "$DIR_ARCHIVOS/atlas.service" /etc/systemd/system/atlas.service 644
 svc daemon-reload
 svc enable atlas.service >/dev/null
@@ -88,14 +97,21 @@ for _ in $(seq 1 90); do
   if curl -fsk --max-time 3 "https://$ATLAS_IP/api/v1/health" >/dev/null 2>&1; then echo " ✔"; break; fi
   echo -n "."; sleep 5
 done
-curl -sk "https://$ATLAS_IP/api/v1/health"; echo
+curl -fsk --max-time 5 "https://$ATLAS_IP/api/v1/health" \
+  || error "ATLAS no respondió. Revisar 'journalctl -u atlas' y volver a correr este paso: el administrador se crea igual en la próxima corrida."
+echo
 
 # ---------------------------------------------------------------------------
 paso "5/5 Primer administrador de ATLAS"
+# La contraseña inicial queda en atlas.conf hasta que el administrador existe, y
+# recién ahí se borra. Así, si una corrida anterior se cortó antes de este paso,
+# esta lo crea igual (en el laboratorio quedó "ya se había creado antes" con la
+# tabla usuarios vacía: Hito 2 de Redes, incidencia del 23/10 01:52).
+CONTRASENA_ADMIN="$(grep '^ATLAS_ADMIN_CONTRASENA=' "$CONF" | cut -d= -f2-)"
 if [ -n "$CONTRASENA_ADMIN" ]; then
   docker exec atlas-php php bin/atlas usuario:crear-admin
   sed -i "s/^ATLAS_ADMIN_CONTRASENA=.*/ATLAS_ADMIN_CONTRASENA=/" "$CONF"
-  docker compose --env-file "$CONF" -f "$ATLAS_ROOT/config/docker-compose.yml" up -d --force-recreate atlas-php >/dev/null
+  "${COMPOSE[@]}" up -d --no-build --pull never --force-recreate atlas-php >/dev/null
   echo
   echo "   ┌──────────────────────────────────────────────────────────────┐"
   echo "   │ Usuario: $(grep '^ATLAS_ADMIN_CORREO=' "$CONF" | cut -d= -f2)"

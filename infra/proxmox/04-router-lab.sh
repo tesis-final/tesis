@@ -28,6 +28,10 @@
 #
 # Uso:   sudo bash 04-router-lab.sh
 #        Otras placas:  sudo TRONCAL=ens18 WAN=ens19 bash 04-router-lab.sh
+#        WAN fija (cuando nadie da DHCP en la red de afuera, como en el
+#        laboratorio del Hito 2 con vmbr2 10.99.0.0/24):
+#          sudo WAN_IP=10.99.0.2/24 WAN_GW=10.99.0.1 bash 04-router-lab.sh
+#        Sin WAN_IP la WAN pide dirección por DHCP.
 # Ver lo bloqueado:     sudo journalctl -k -f | grep ATLAS-
 # Ver los contadores:   sudo nft list ruleset
 # =============================================================================
@@ -45,17 +49,33 @@ for i in "$TRONCAL" "$WAN"; do
 done
 V10=$TRONCAL.10; V20=$TRONCAL.20; V30=$TRONCAL.30; V40=$TRONCAL.40; V50=$TRONCAL.50
 
+# WAN por DHCP o fija. En el laboratorio nadie daba DHCP afuera y hubo que
+# copiar el script a mano para fijarla (Hito 2 de Redes, incidencia 22/10 22:47).
+WAN_IP=${WAN_IP:-}; WAN_GW=${WAN_GW:-}; WAN_DNS=${WAN_DNS:-1.1.1.1}
+if [ -n "$WAN_IP" ]; then
+  [[ "$WAN_IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}/[0-9]{1,2}$ ]] || { echo "WAN_IP tiene que ser como 10.99.0.2/24"; exit 1; }
+  [[ "$WAN_GW" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "Con WAN_IP hace falta WAN_GW (ej. 10.99.0.1)"; exit 1; }
+  WAN_NETPLAN="{addresses: [$WAN_IP], routes: [{to: default, via: $WAN_GW}], nameservers: {addresses: [$WAN_DNS]}}"
+else
+  WAN_NETPLAN="{dhcp4: true}"
+fi
+
 echo "→ 1/5 Subinterfaces de VLAN y salida a Internet (netplan)"
 mkdir -p /etc/cloud/cloud.cfg.d
 echo 'network: {config: disabled}' > /etc/cloud/cloud.cfg.d/99-atlas-sin-red.cfg
 rm -f /etc/netplan/50-cloud-init.yaml
+# Cualquier otro netplan (por ejemplo uno armado a mano para la WAN) definiría la
+# misma placa dos veces: se guarda aparte y queda solo el de este script. En el
+# laboratorio hubo que borrar a mano un 60-wan.yaml (Hito 2 de Redes, 6.4).
+for f in /etc/netplan/*.yaml; do
+  [ -e "$f" ] && [ "$f" != /etc/netplan/60-atlas-router.yaml ] && mv "$f" "$f.antes-de-atlas"
+done
 cat > /etc/netplan/60-atlas-router.yaml <<EOF
 network:
   version: 2
   ethernets:
     $TRONCAL: {}
-    $WAN:
-      dhcp4: true
+    $WAN: $WAN_NETPLAN
   vlans:
     $V10: {id: 10, link: $TRONCAL, addresses: [172.16.10.1/24]}
     $V20: {id: 20, link: $TRONCAL, addresses: [172.16.20.1/24]}

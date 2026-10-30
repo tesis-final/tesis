@@ -6,6 +6,7 @@
 | Origen | Acta de decisiones [`docs/evidencias/F/acta_tesis`](../evidencias/F/acta_tesis) (D-1 a D-8), tomada sobre la devolución de Programación del Hito 1 |
 | Rama | `beracochea` (pull request a `main`) |
 | Entorno de las pruebas | Docker de desarrollo (no es el laboratorio). Ver las limitaciones en [fase-04 §5](../fase-04-aplicacion/README.md#5-limitaciones-conocidas) |
+| Testing (30/10) | Implementación y ejecución de pruebas, incidencias y ajustes: [testing.md](testing.md) |
 
 ## 1. El circuito completo, funcionando
 

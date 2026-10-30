@@ -1,0 +1,3 @@
+# Salidas de ./probar-todo.sh (las que sirven de evidencia se copian a docs/evidencias/)
+/resultados-pruebas/
+__pycache__/

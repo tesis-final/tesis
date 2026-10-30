@@ -1,0 +1,55 @@
+# ATLAS · prueba 'firewall' · ./probar-todo.sh firewall
+# Fecha: 2026-10-30T17:32:55Z · Equipo: Linux 6.18.44-fc-v185 · Commit: 26ab90c + cambios sin commitear
+
+
+── netplan generado ──
+  PASS  netplan  WAN por DHCP y 5 subinterfaces con su .1
+  PASS  netplan  WAN fija 10.99.0.2/24 por 10.99.0.1 (caso del laboratorio)
+
+── Usuarios hacia los servidores ──
+  PASS  R1  Docentes → ATLAS HTTPS  (pasa)
+  PASS  R1  Administración → ATLAS HTTPS  (pasa)
+  PASS  R1  Estudiantes → ATLAS HTTPS  (pasa)
+  PASS  R10  Docentes → MySQL  (bloqueado)
+  PASS  R10  Gestión → MySQL  (bloqueado)
+  PASS  M2  Docentes → SSH al servidor  (bloqueado)
+  PASS  M2  Estudiantes → SSH al servidor  (bloqueado)
+  PASS  R3  Docentes → carpetas SMB de srv01  (pasa)
+  PASS  R3  Estudiantes → carpetas SMB de srv01  (bloqueado)
+  PASS  R2  Docentes → DNS del DC (UDP)  (pasa)
+  PASS  R2  Estudiantes → Kerberos del DC  (pasa)
+  PASS  R12  Docentes → escritorio remoto del DC  (bloqueado)
+  PASS  R12  Docentes → HTTP sin cifrar a srv01  (bloqueado)
+
+── Entre VLAN de usuarios ──
+  PASS  R11  Estudiantes → PC de Docentes  (bloqueado)
+  PASS  R11  Estudiantes → Administración  (bloqueado)
+  PASS  R11  Estudiantes → Gestión  (bloqueado)
+  PASS  R12  Docentes → Estudiantes  (bloqueado)
+  PASS  R12  Docentes → Administración  (bloqueado)
+
+── Gestión (VLAN 50) ──
+  PASS  R6  Gestión → SSH a srv01  (pasa)
+  PASS  R6  Gestión → escritorio remoto del DC  (pasa)
+  PASS  R6  Gestión → escritorio remoto de una PC  (pasa)
+  PASS  R12  Gestión → ATLAS (administra, no usa la app)  (bloqueado)
+  PASS  p67  Gestión → SSH al router  (pasa)
+  PASS  p67  Docentes → SSH al router  (bloqueado)
+
+── Los servidores no inician hacia los usuarios (P-09) ──
+  PASS  R12  srv01 → PC de Docentes  (bloqueado)
+  PASS  R12  dc01 → Gestión  (bloqueado)
+
+── Internet y NAT ──
+  PASS  R5  Docentes → web de Internet, con NAT (Internet ve 203.0.113.2, no 172.16.20.100)
+  PASS  R5  Estudiantes → web de Internet  (pasa)
+  PASS  R5  Docentes → SSH a Internet  (bloqueado)
+  PASS  R7  srv01 → actualizaciones (443)  (pasa)
+  PASS  R7  srv01 → DNS de Internet (solo el DC)  (bloqueado)
+  PASS  R7  dc01 → DNS de Internet (reenvío)  (pasa)
+  PASS  §30.3  Internet → ATLAS (sin NAT de entrada)  (bloqueado)
+  PASS  §30.3  Internet → PC de Docentes  (bloqueado)
+
+Resultado: 36 PASS, 0 FAIL
+
+rc=0

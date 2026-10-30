@@ -1,0 +1,38 @@
+# E-TST-004 — Prueba de interfaz en navegador real (Hito 2 de Testing)
+# Fecha: 2026-10-30T15:00:05Z · Chromium headless (imagen mcr.microsoft.com/playwright/python:v1.48.0-jammy, playwright 1.48.0)
+# Entorno: pila Docker local con Laravel y datos de DEMOSTRACIÓN recién cargados (sintéticos). NO es el laboratorio Proxmox.
+# Comando: python atlas/tests/e2e/interfaz.py https://localhost <capturas> $ATLAS_DEMO_CONTRASENA
+# Nuevo en este hito: el caso 'Docente sin grupo' (incidencia del Hito 2 de Redes, 9.11).
+# Capturas: capturas/E-TST-004a (editor con habilidades), 004b (estudiante en celular), 004c (dónde intervenir en celular), 004d (docente sin grupo).
+PASS RF-02 mensaje genérico en la interfaz
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 375px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 480px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 768px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 1024px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 1366px
+PASS RF-18 análisis grupal visible
+PASS RNF-12 tablas como tarjetas en celular (sin desplazamiento horizontal)
+PASS RF-12 '¿por qué?' muestra regla, versión y datos
+PASS D-3 el perfil muestra el acierto por habilidad
+PASS D-6 el docente confirma la actividad sugerida
+PASS D-5 consulta guiada por habilidad responde
+PASS RNF-12 consultas en celular sin desplazamiento horizontal
+PASS D-2 sin aprobación el borrador ofrece Publicar (no 'Enviar a aprobación')
+PASS D-2/D-3 actividad con habilidades publicada desde la interfaz
+PASS D-8 los reportes muestran tiempo total y activo
+PASS RF-20 / RNF-15 el asistente responde con datos verificados sin LLM
+PASS D-6 el estudiante ve la actividad recomendada por su docente
+PASS RNF-12 resolución en celular sin desplazamiento horizontal
+PASS RF-07 el estudiante ve su resultado
+PASS D-8 el resultado muestra tiempo total y activo
+PASS DEC-00b el estudiante no ve menú docente
+PASS ANA-05 reglas editables visibles para la coordinación
+PASS RF-15 auditoría consultable
+PASS D-2 la coordinación ve y configura la aprobación por institución
+PASS Docente sin grupo: la pantalla explica que falta el grupo
+PASS Docente sin grupo: el botón Publicar queda deshabilitado
+PASS Sin violaciones de CSP
+PASS Sin errores de JavaScript
+
+29/29 PASS
+rc=0

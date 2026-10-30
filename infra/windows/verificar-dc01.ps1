@@ -53,8 +53,11 @@ Test-Item 'Bloqueo a los 5 intentos' { $pol.LockoutThreshold -eq 5 }
 Test-Item 'Bloqueo de 15 minutos' { $pol.LockoutDuration.TotalMinutes -eq 15 }
 Test-Item "Administrator renombrada a $($p.NombreAdministrador)" { (Get-ADUser "$((Get-ADDomain).DomainSID)-500").SamAccountName -eq $p.NombreAdministrador }
 Test-Item 'Guest deshabilitada' { -not (Get-ADUser "$((Get-ADDomain).DomainSID)-501").Enabled }
-$auditoria = & auditpol.exe /get /category:* /r | ConvertFrom-Csv
-function Test-Auditoria([string]$Guid) { ($auditoria | Where-Object { $_.'Subcategory GUID' -eq $Guid }).'Inclusion Setting' -match 'Success|Failure|Correcto|Error' }
+# auditpol traduce encabezados y valores del CSV: ConvertFrom-AtlasAuditpol los lee por
+# posición. Con los nombres en inglés, en el DC del laboratorio (Windows en español)
+# las cuatro daban FAIL aunque estaban configuradas (Hito 2 de Redes, sección 7.4).
+$auditoria = ConvertFrom-AtlasAuditpol -Lineas (& auditpol.exe /get /category:* /r)
+function Test-Auditoria([string]$Guid) { [bool]$auditoria[$Guid.ToUpper()] }
 Test-Item 'Auditoría de inicios de sesión (Logon)' { Test-Auditoria '{0CCE9215-69AE-11D9-BED3-505054503030}' }
 Test-Item 'Auditoría de cambios en el directorio (DS Changes)' { Test-Auditoria '{0CCE923C-69AE-11D9-BED3-505054503030}' }
 Test-Item 'Auditoría de acceso a recursos (File Share)' { Test-Auditoria '{0CCE9224-69AE-11D9-BED3-505054503030}' }
@@ -103,9 +106,12 @@ Write-Seccion 'Hora, RPC, firewall, CA (DEC-R8, DEC-17, DEC-20)'
 Test-Item 'El DC se anuncia como fuente de hora confiable' { (Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Services\W32Time\Config').AnnounceFlags -eq 5 }
 Test-Item "Rango RPC TCP $($p.RpcInicio) (+$($p.RpcCantidad))" { (& netsh.exe int ipv4 show dynamicport tcp) -match "$($p.RpcInicio)" -and (& netsh.exe int ipv4 show dynamicport tcp) -match "$($p.RpcCantidad)" }
 Test-Item 'Firewall activo en los tres perfiles, entrante bloqueado' { -not (Get-NetFirewallProfile | Where-Object { -not $_.Enabled -or $_.DefaultInboundAction -ne 'Block' }) }
+# Windows devuelve la red como 172.16.50.0/255.255.255.0 aunque se cargó como /24:
+# Test-AtlasSoloDesdeRed acepta las dos formas (antes daba FAIL con las reglas bien
+# puestas, Hito 2 de Redes, sección 7.4).
 Test-Item 'Escritorio remoto solo desde VLAN 50' {
     $r = Get-NetFirewallRule -Direction Inbound -Enabled True | Where-Object { @(($_ | Get-NetFirewallPortFilter).LocalPort) -contains '3389' }
-    $r -and -not ($r | Where-Object { @(($_ | Get-NetFirewallAddressFilter).RemoteAddress) -notcontains $p.RedGestion })
+    $r -and -not ($r | Where-Object { -not (Test-AtlasSoloDesdeRed -Direcciones @(($_ | Get-NetFirewallAddressFilter).RemoteAddress) -Red $p.RedGestion) })
 }
 Test-Item "CA $($p.NombreCA) instalada" { (& certutil.exe -cainfo name) -match $p.NombreCA }
 

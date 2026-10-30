@@ -1,0 +1,18 @@
+# E-TST-003 — Reproducción y corrección: arranque de la pila sin acceso a Internet desde los contenedores
+# Fecha: 2026-10-30T14:52:46Z · Entorno: contenedor de pruebas Linux, Docker 29.9.2, los contenedores NO tienen salida directa a Internet (igual que atlas-srv01 sin el iPhone)
+
+## 1) Como estaba el servicio: docker compose ... up -d --build
+   7 | >>> RUN pip install -r requirements.txt
+target atlas-analysis: failed to solve: process "/bin/sh -c pip install -r requirements.txt" did not complete successfully: exit code: 1
+=> la pila NO arranca (mismo efecto que la incidencia del 23/10 17:31 en el laboratorio)
+
+## 2) Como queda: docker compose ... up -d --no-build --pull never (imágenes ya construidas)
+atlas-web nginx:alpine Up 14 seconds (health: starting)
+atlas-analysis atlas/analysis:1.0 Up 15 seconds (health: starting)
+atlas-php atlas/php:1.0 Up 15 seconds
+atlas-db mysql:8.0 Up 36 seconds (healthy)
+GET /api/v1/health -> {"estado":"ok","base_de_datos":true,"servicio_analisis":true,"ms":175}
+=> la pila arranca sin tocar la red
+
+# Corrección aplicada (INC-01): infra/linux/archivos/atlas.service usa 'up -d --no-build --pull never';
+# las imágenes se descargan y construyen en 07-atlas.sh. Falta repetirlo en atlas-srv01 (laboratorio).

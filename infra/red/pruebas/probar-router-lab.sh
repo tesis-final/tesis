@@ -35,6 +35,30 @@ $(sed -n '/^cat > "\$NFT" <<EOF$/,/^EOF$/p' infra/proxmox/04-router-lab.sh | sed
 EOF" > "$REGLAS"
 grep -q 'chain forward' "$REGLAS" || { echo "No pude extraer las reglas del script."; exit 1; }
 
+# --- El netplan que genera el script, con WAN por DHCP y con WAN fija ---------
+# (la WAN fija se agregó por el laboratorio del Hito 2, donde nadie daba DHCP)
+netplan_de() { # netplan_de <WAN_IP> <WAN_GW> -> imprime el YAML que escribiría el script
+  local WAN_IP=$1 WAN_GW=$2 WAN_DNS=1.1.1.1 WAN_NETPLAN
+  eval "$(sed -n '/^if \[ -n "\$WAN_IP" \]; then$/,/^fi$/p' infra/proxmox/04-router-lab.sh)"
+  eval "cat <<EOF
+$(sed -n '/^cat > \/etc\/netplan\/60-atlas-router.yaml <<EOF$/,/^EOF$/p' infra/proxmox/04-router-lab.sh | sed '1d;$d')
+EOF"
+}
+echo; echo "── netplan generado ──"
+netplan_de "" "" | python3 -c '
+import sys, yaml
+r = yaml.safe_load(sys.stdin)["network"]
+assert r["ethernets"]["ens19"] == {"dhcp4": True}
+assert [r["vlans"][f"ens18.{v}"]["id"] for v in (10, 20, 30, 40, 50)] == [10, 20, 30, 40, 50]
+assert r["vlans"]["ens18.40"]["addresses"] == ["172.16.40.1/24"]' \
+  && ok "netplan  WAN por DHCP y 5 subinterfaces con su .1" || mal "netplan  WAN por DHCP"
+netplan_de 10.99.0.2/24 10.99.0.1 | python3 -c '
+import sys, yaml
+w = yaml.safe_load(sys.stdin)["network"]["ethernets"]["ens19"]
+assert w["addresses"] == ["10.99.0.2/24"] and w["routes"] == [{"to": "default", "via": "10.99.0.1"}]
+assert w["nameservers"]["addresses"] == ["1.1.1.1"] and "dhcp4" not in w' \
+  && ok "netplan  WAN fija 10.99.0.2/24 por 10.99.0.1 (caso del laboratorio)" || mal "netplan  WAN fija"
+
 # --- Topología ---------------------------------------------------------------
 for n in $NS; do ip netns add "$n"; en "$n" ip link set lo up; done
 en rt sysctl -qw net.ipv4.ip_forward=1

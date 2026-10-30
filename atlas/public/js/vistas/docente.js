@@ -328,8 +328,12 @@ export async function editor(id) {
   if (act?.estado === 'APROBADA' || publicaDirecto) {
     acciones.append(h('fieldset', {}, h('legend', {}, 'Publicar en:'),
       publicaDirecto ? h('p', { clase: 'suave pequeño' }, 'Su institución no exige aprobación previa: al publicar, queda registrado quién y cuándo.') : null,
-      grupos.map((g) => h('label', { clase: 'opcion' }, h('input', { type: 'checkbox', name: 'grupo', value: g.id }), g.nombre)),
-      h('button', { type: 'button', onclick: publicar }, 'Publicar')));
+      // Sin grupos, la API responde 422 "grupos: Es obligatorio" y la pantalla solo
+      // decía "Los datos enviados no son válidos" (Hito 2 de Redes, sección 9.11).
+      grupos.length
+        ? grupos.map((g) => h('label', { clase: 'opcion' }, h('input', { type: 'checkbox', name: 'grupo', value: g.id }), g.nombre))
+        : h('p', { clase: 'aviso', role: 'alert' }, 'Todavía no está en ningún grupo, así que no tiene a quién publicarle. Pídale a la coordinación que le asigne un grupo como docente (Grupos → Miembros).'),
+      h('button', { type: 'button', onclick: publicar, disabled: !grupos.length }, 'Publicar')));
   }
 
   async function guardar() {
@@ -346,6 +350,7 @@ export async function editor(id) {
   }
   async function publicar() {
     const ids = [...acciones.querySelectorAll('input[name=grupo]:checked')].map((i) => Number(i.value));
+    if (!ids.length) { mensaje('Elija al menos un grupo para publicar.', 'error'); return; }
     try { await api('POST', `/actividades/${act.id}/publicar`, { grupos: ids }); mensaje('Actividad publicada.'); editor(act.id); } catch (e) { errorEn(form, e); }
   }
 

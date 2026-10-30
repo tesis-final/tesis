@@ -57,5 +57,38 @@ Add-AtlasExtensionGpo -NombreGpo X -Ambito User -Cse '{5794DAFD-BE60-433F-88A2-1
 Add-AtlasExtensionGpo -NombreGpo X -Ambito User -Cse '{00000000-0000-0000-0000-000000000000}' -Herramientas '{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}'
 Assert-Atlas 'unidades de red: {00000000…} primero, como lo guarda la consola GPMC' ($global:atributos['gPCUserExtensionNames'] -eq '[{00000000-0000-0000-0000-000000000000}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}][{5794DAFD-BE60-433F-88A2-1A31939AC01F}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}]')
 
+'[verificador: auditoría en un Windows en español (Hito 2 de Redes, 7.4)]'
+$es = @(
+    '',
+    'Nombre de equipo,Destino de directiva,Subcategoría,GUID de subcategoría,Configuración de inclusión,Configuración de exclusión',
+    'ATLAS-DC01,Sistema,Inicio de sesión,{0CCE9215-69AE-11D9-BED3-505054503030},Aciertos y errores,',
+    'ATLAS-DC01,Sistema,Cambios de servicio de directorio,{0CCE923C-69AE-11D9-BED3-505054503030},Aciertos,',
+    'ATLAS-DC01,Sistema,Recurso compartido de archivos,{0CCE9224-69AE-11D9-BED3-505054503030},Aciertos y errores,',
+    'ATLAS-DC01,Sistema,Administración de cuentas de usuario,{0CCE9235-69AE-11D9-BED3-505054503030},Aciertos y errores,',
+    'ATLAS-DC01,Sistema,Sistema de archivos,{0CCE921D-69AE-11D9-BED3-505054503030},Sin auditoría,'
+)
+$en = @(
+    'Machine Name,Policy Target,Subcategory,Subcategory GUID,Inclusion Setting,Exclusion Setting',
+    'ATLAS-DC01,System,Logon,{0CCE9215-69AE-11D9-BED3-505054503030},Success and Failure,',
+    'ATLAS-DC01,System,File System,{0CCE921D-69AE-11D9-BED3-505054503030},No Auditing,'
+)
+# Lectura anterior (por nombre de columna en inglés): reproduce la falla del laboratorio.
+$anterior = $es | ConvertFrom-Csv
+Assert-Atlas 'la lectura anterior no encuentra nada en el CSV en español (falla reproducida)' (-not ($anterior | Where-Object { $_.'Subcategory GUID' }))
+$t = ConvertFrom-AtlasAuditpol -Lineas $es
+Assert-Atlas 'español: Inicio de sesión auditado' ($t['{0CCE9215-69AE-11D9-BED3-505054503030}'] -eq $true)
+Assert-Atlas 'español: "Aciertos" solo también cuenta como auditado' ($t['{0CCE923C-69AE-11D9-BED3-505054503030}'] -eq $true)
+Assert-Atlas 'español: Recurso compartido y Cuentas de usuario auditados' ($t['{0CCE9224-69AE-11D9-BED3-505054503030}'] -and $t['{0CCE9235-69AE-11D9-BED3-505054503030}'])
+Assert-Atlas 'español: "Sin auditoría" da falso' ($t['{0CCE921D-69AE-11D9-BED3-505054503030}'] -eq $false)
+$t = ConvertFrom-AtlasAuditpol -Lineas $en
+Assert-Atlas 'inglés: Logon auditado y "No Auditing" falso' ($t['{0CCE9215-69AE-11D9-BED3-505054503030}'] -and -not $t['{0CCE921D-69AE-11D9-BED3-505054503030}'])
+
+'[verificador: escritorio remoto solo desde la VLAN 50 (Hito 2 de Redes, 7.4)]'
+Assert-Atlas 'acepta la red como la devuelve Windows (172.16.50.0/255.255.255.0)' (Test-AtlasSoloDesdeRed -Direcciones @('172.16.50.0/255.255.255.0') -Red '172.16.50.0/24')
+Assert-Atlas 'acepta la red escrita como /24' (Test-AtlasSoloDesdeRed -Direcciones @('172.16.50.0/24') -Red '172.16.50.0/24')
+Assert-Atlas 'rechaza una regla abierta a cualquiera (Any)' (-not (Test-AtlasSoloDesdeRed -Direcciones @('Any') -Red '172.16.50.0/24'))
+Assert-Atlas 'rechaza la VLAN 50 más otra red' (-not (Test-AtlasSoloDesdeRed -Direcciones @('172.16.50.0/24', '172.16.20.0/24') -Red '172.16.50.0/24'))
+Assert-Atlas 'rechaza una regla sin direcciones' (-not (Test-AtlasSoloDesdeRed -Direcciones @() -Red '172.16.50.0/24'))
+
 ''; "Resultado: $script:ok PASS · $script:mal FAIL"
 if ($script:mal -gt 0) { exit 1 }

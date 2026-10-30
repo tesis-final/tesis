@@ -198,7 +198,13 @@ sec_atlas() {
   [[ "$p" == *"$ATLAS_IP:443"* ]] && ok "atlas-web publica 443 solo en $ATLAS_IP" || mal "atlas-web publica 443 en $ATLAS_IP" "$p"
   curl -fsk --max-time 5 "https://$ATLAS_IP/api/v1/health" | grep -q '"estado":"ok"' && ok "GET /api/v1/health responde ok" || mal "GET /api/v1/health"
   [ "$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 "http://$ATLAS_IP/")" = 301 ] && ok "HTTP redirige a HTTPS" || mal "HTTP redirige a HTTPS"
-  [ "$(stat -c '%a' "$R/config/atlas.conf")" = 640 ] && ok "atlas.conf modo 640" || mal "atlas.conf modo 640"
+  # Con las ACL de la Tabla 27 (03-directorios-permisos.sh), los bits de grupo que
+  # muestra stat son la máscara de la ACL: el archivo se ve 660 aunque esté bien.
+  # Lo que importa es el dueño y que "otros" no tengan ningún permiso. Antes se
+  # pedía 640 exacto y daba FAIL en el laboratorio (Hito 2 de Redes, 9.5).
+  [[ "$(stat -c '%U:%G %a' "$R/config/atlas.conf")" =~ ^atlasadmin:atlas-admin\ 6[0-7]0$ ]] \
+    && ok "atlas.conf de atlasadmin:atlas-admin y sin permisos para otros" \
+    || mal "atlas.conf de atlasadmin:atlas-admin y sin permisos para otros"
   grep -q '=CAMBIAR' "$R/config/atlas.conf" && mal "atlas.conf sin valores de ejemplo" || ok "atlas.conf sin valores de ejemplo"
 }
 
