@@ -45,7 +45,7 @@ Del laboratorio (informe de Redes): Tabla 8.4 con 14 pruebas aprobadas de 17 (3 
 | Lógica de los scripts del DC | `infra/windows/pruebas/probar-modulo.ps1` | `pwsh -File …` |
 | Configuraciones Cisco | `infra/red/pruebas/revisar_configuraciones.py` | `python3 …` |
 | **Todo junto (nuevo)** | `probar-todo.sh` | `sudo ./probar-todo.sh` → tabla final y salidas en `resultados-pruebas/<fecha>/` |
-| **En cada pull request (nuevo)** | `.github/workflows/pruebas.yml` | Automático en GitHub |
+| **En cada pull request (nuevo)** | `.github/workflows/pruebas.yml` | Automático en GitHub. Configurado; su primera corrida es en el pull request de este hito |
 
 ## 3. Cumplimiento de los criterios del PDF
 
