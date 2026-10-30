@@ -2,6 +2,12 @@
 # ATLAS — /etc/systemd/system/atlas.service (CT-03)
 # systemd levanta la pila de contenedores al arrancar y la baja al apagar.
 #   sudo systemctl status atlas      · journalctl -u atlas
+#
+# El arranque NO usa la red: --no-build y --pull never hacen que Docker use las
+# imágenes que ya están en el servidor (las construye y descarga 07-atlas.sh).
+# Antes estaba --build, y en el laboratorio ATLAS no arrancó cuando faltó
+# Internet (Hito 2 de Redes, incidencia del 23/10 17:31: Docker Hub sin DNS).
+# Si cambia un Dockerfile, se reconstruye con 07-atlas.sh o atlas-ctl reconstruir.
 # =============================================================================
 [Unit]
 Description=ATLAS - pila de contenedores (atlas-web, atlas-php, atlas-db, atlas-analysis)
@@ -14,7 +20,7 @@ Wants=network-online.target
 Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=/srv/atlas/config
-ExecStart=/usr/bin/docker compose --env-file /srv/atlas/config/atlas.conf -f /srv/atlas/config/docker-compose.yml up -d --build --remove-orphans
+ExecStart=/usr/bin/docker compose --env-file /srv/atlas/config/atlas.conf -f /srv/atlas/config/docker-compose.yml up -d --no-build --pull never --remove-orphans
 ExecStop=/usr/bin/docker compose --env-file /srv/atlas/config/atlas.conf -f /srv/atlas/config/docker-compose.yml down
 TimeoutStartSec=900
 

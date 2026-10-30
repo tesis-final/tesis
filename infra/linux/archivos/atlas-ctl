@@ -17,6 +17,7 @@ Uso: sudo atlas-ctl <orden>
   estado                 contenedores, salud y puertos publicados
   logs <contenedor> [n]  últimas n líneas (por defecto 100) de un contenedor
   iniciar | detener | reiniciar
+  reconstruir            vuelve a construir las imágenes (necesita Internet) y reinicia
   reiniciar-uno <contenedor>
   salud                  respuesta de /api/v1/health
   desbloquear-config     saca +i de atlas.conf para editarlo (con tu propio usuario)
@@ -31,6 +32,9 @@ case "${1:-}" in
   iniciar)   systemctl start atlas.service ;;
   detener)   systemctl stop atlas.service ;;
   reiniciar) systemctl restart atlas.service ;;
+  # El servicio arranca sin red (--no-build --pull never): las imágenes se
+  # rehacen solo a pedido, cuando cambia un Dockerfile.
+  reconstruir) "${COMPOSE[@]}" build && systemctl restart atlas.service ;;
   reiniciar-uno) [[ "${2:-}" =~ $SERVICIOS ]] || { echo "Contenedor inválido"; exit 2; }
              "${COMPOSE[@]}" restart "$2" ;;
   salud)     curl -sk --max-time 5 https://172.16.40.10/api/v1/health; echo ;;

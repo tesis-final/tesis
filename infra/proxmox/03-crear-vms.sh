@@ -18,6 +18,12 @@
 # (o pasarlos como variables). Correr 01-redes.sh y 02-iso-repo.sh.
 # Uso (como root):  bash 03-crear-vms.sh
 # Se puede cambiar la memoria con, por ejemplo:  RAM_DC=3072 bash 03-crear-vms.sh
+#
+# CPU: sin --cpu, "qm create" usa kvm64, que no tiene las instrucciones x86-64-v2.
+# La imagen mysql:8.0 las exige: en el laboratorio atlas-db se reiniciaba en bucle
+# con "CPU does not support x86-64-v2" hasta poner --cpu host (Hito 2 de Redes,
+# incidencia del 23/10 01:35). Por defecto x86-64-v2-AES (el modelo que propone
+# Proxmox); en el laboratorio se probó host:  CPU=host bash 03-crear-vms.sh
 # =============================================================================
 set -euo pipefail
 [ "$(id -u)" -eq 0 ] || { echo "Correr como root."; exit 1; }
@@ -30,6 +36,7 @@ ISO_REPO=atlas-repo.iso
 DISCO=${DISCO:-local-lvm}           # en una instalación con ZFS es local-zfs
 RAM_ROUTER=${RAM_ROUTER:-1024}; RAM_DC=${RAM_DC:-4096}
 RAM_SRV=${RAM_SRV:-4096};       RAM_CLI=${RAM_CLI:-2048}
+CPU=${CPU:-x86-64-v2-AES}
 
 D=/var/lib/vz/template/iso
 falta=0
@@ -43,22 +50,22 @@ crear() { local id=$1; shift
   if qm status "$id" >/dev/null 2>&1; then echo "La VM $id ya existe: no se toca."; return; fi
   qm create "$id" "$@"; echo "VM $id creada."; }
 
-crear 110 --name router-lab --memory "$RAM_ROUTER" --cores 1 --ostype l26 \
+crear 110 --name router-lab --memory "$RAM_ROUTER" --cores 1 --cpu "$CPU" --ostype l26 \
   --scsihw virtio-scsi-single --scsi0 "$DISCO:10" \
   --ide2 "local:iso/$ISO_UBUNTU,media=cdrom" --boot "order=scsi0;ide2" \
   --net0 "virtio,bridge=vmbr1,trunks=10;20;30;40;50" --net1 virtio,bridge=vmbr0 --agent 1
 
-crear 120 --name atlas-dc01 --memory "$RAM_DC" --cores 2 --ostype win11 \
+crear 120 --name atlas-dc01 --memory "$RAM_DC" --cores 2 --cpu "$CPU" --ostype win11 \
   --sata0 "$DISCO:50" --ide2 "local:iso/$ISO_WINSRV,media=cdrom" \
   --ide0 "local:iso/$ISO_VIRTIO,media=cdrom" --ide3 "local:iso/$ISO_REPO,media=cdrom" \
   --boot "order=sata0;ide2" --net0 e1000,bridge=vmbr1,tag=40 --agent 1
 
-crear 130 --name atlas-srv01 --memory "$RAM_SRV" --cores 2 --ostype l26 \
+crear 130 --name atlas-srv01 --memory "$RAM_SRV" --cores 2 --cpu "$CPU" --ostype l26 \
   --scsihw virtio-scsi-single --scsi0 "$DISCO:30" \
   --ide2 "local:iso/$ISO_UBUNTU,media=cdrom" --boot "order=scsi0;ide2" \
   --net0 virtio,bridge=vmbr0 --agent 1
 
-crear 140 --name cliente-doc --memory "$RAM_CLI" --cores 2 --ostype win10 \
+crear 140 --name cliente-doc --memory "$RAM_CLI" --cores 2 --cpu "$CPU" --ostype win10 \
   --sata0 "$DISCO:40" --ide2 "local:iso/$ISO_WINCLI,media=cdrom" \
   --ide0 "local:iso/$ISO_VIRTIO,media=cdrom" --ide3 "local:iso/$ISO_REPO,media=cdrom" \
   --boot "order=sata0;ide2" --net0 e1000,bridge=vmbr1,tag=20 --agent 1

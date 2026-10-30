@@ -1,0 +1,93 @@
+# ATLAS · prueba 'bd' · ./probar-todo.sh bd
+# Fecha: 2026-10-30T15:05:53Z · Equipo: Linux 6.18.44-fc-v185 · Commit: 4758a33
+
+Esperando a MySQL...
+# Ejecución: 2026-10-30T15:06:09Z
+# Servidor: 8.0.46
+# Imagen: mysql:8.0
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.3.6
+Configuration: /home/user/tesis/atlas/phpunit.xml
+
+..........................................................        58 / 58 (100%)
+
+Time: 00:16.263, Memory: 10.00 MB
+
+Analisis Grupal (Atlas\Tests\Database\AnalisisGrupal)
+ ✔ La base no tiene procedimientos de calculo
+ ✔ App agrega analisis grupal pero no lo altera
+ ✔ Preguntas con mayor proporcion de error
+
+Auditoria (Atlas\Tests\Database\Auditoria)
+ ✔ Auditoria no se modifica ni borra ni siquiera como root
+ ✔ La base no calcula ni escribe auditoria por su cuenta
+
+Ciclo Actividad (Atlas\Tests\Database\CicloActividad)
+ ✔ Recorrido completo por los cinco estados
+ ✔ Transicion no permitida rechazada
+ ✔ Actividad sin preguntas no se envia a aprobacion
+ ✔ Pregunta con dos correctas no se envia
+ ✔ Contenido inmutable fuera de borrador
+ ✔ Transiciones registran autor y observaciones
+
+Esquema (Atlas\Tests\Database\Esquema)
+ ✔ Existen las 32 tablas del modelo y al menos 15
+ ✔ Todas las tablas son inno db para integridad referencial
+ ✔ Cada columna terminada en id tiene clave foranea
+ ✔ Indice compuesto usuario actividad en intentos
+ ✔ Vistas procedimiento y triggers presentes
+ ✔ Catalogos semilla
+ ✔ Ninguna vista expone correo ni hash
+
+Habilidades Aprobacion (Atlas\Tests\Database\HabilidadesAprobacion)
+ ✔ Catalogo inicial con las cuatro habilidades de la devolucion
+ ✔ Codigo y nombre unicos y con formato
+ ✔ Una pregunta puede medir varias habilidades sin repetir
+ ✔ Claves foraneas rechazan pregunta o habilidad inexistente
+ ✔ Habilidad desactivada no se asigna y habilidad en uso no se borra
+ ✔ Vinculos solo se editan en borrador
+ ✔ Borrar pregunta en borrador borra sus vinculos
+ ✔ Por defecto la institucion no exige aprobacion
+ ✔ Con aprobacion no se publica directo
+ ✔ Sin aprobacion el docente publica directo
+ ✔ Sin aprobacion no se envia a pendiente
+ ✔ Publicar directo tambien valida el contenido
+ ✔ Privilegios de las tablas nuevas
+
+Integridad (Atlas\Tests\Database\Integridad)
+ ✔ Clave foranea rechaza referencia inexistente
+ ✔ Correo duplicado rechazado rf 01
+ ✔ Campos obligatorios vacios rechazados rf 01
+ ✔ Puntaje fuera de rango rechazado
+ ✔ Intento cerrado debe tener fecha y duracion
+ ✔ Opcion debe pertenecer a la pregunta respondida
+ ✔ Secuencia de interacciones unica por intento
+ ✔ Indicador de nivel 1 requiere actividad y rango
+
+Privilegios (Atlas\Tests\Database\Privilegios)
+ ✔ App no puede alterar ni borrar auditoria
+ ✔ App puede insertar auditoria
+ ✔ App no puede cambiar estructura ni borrar usuarios
+ ✔ App no puede falsear resultados
+ ✔ App no modifica las decisiones del docente
+ ✔ App no modifica transiciones ni conversaciones
+ ✔ Read solo ve vistas
+ ✔ Analysis no lee nombres ni correos
+ ✔ Analysis solo inserta en analisis
+ ✔ Backup lee todo pero no escribe datos
+ ✔ Admin solo desde dentro del contenedor
+ ✔ App puede borrar contenido solo en borrador ct 13
+
+Resultados (Atlas\Tests\Database\Resultados)
+ ✔ La base no calcula el resultado
+ ✔ Un solo resultado por intento y coherente
+ ✔ Intento abandonado no genera resultado
+ ✔ Tiempo activo no supera al total
+ ✔ Cada inicio es un intento distinguible
+ ✔ Intento cerrado no se reabre
+ ✔ No se responde un intento cerrado ni otra actividad
+
+OK (58 tests, 189 assertions)
+
+rc=0

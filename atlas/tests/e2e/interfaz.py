@@ -9,6 +9,7 @@ Los datos que se ven son de DEMOSTRACIÓN (sintéticos).
 import json
 import os
 import sys
+import time
 
 from playwright.sync_api import sync_playwright
 
@@ -210,6 +211,42 @@ with sync_playwright() as p:
     page.screenshot(path=f"{CAPTURAS}/admin-instituciones-768.png", full_page=True)
     registrar("D-2 la coordinación ve y configura la aprobación por institución",
               page.locator("td:has-text('No exige')").count() > 0)
+
+    # Hito 2 de Redes (9.11): una docente que no está en ningún grupo apretaba Publicar y
+    # solo veía "Los datos enviados no son válidos" (la API responde 422 grupos obligatorio).
+    # Ahora la pantalla explica qué falta y no deja mandar el pedido.
+    sufijo = str(int(time.time()))
+    page.goto(BASE + "/#/usuarios")
+    page.wait_for_selector("#contrasena")
+    page.fill("#nombre", "Docente")
+    page.fill("#apellido", "Singrupo")
+    page.fill("#correo", f"docente.singrupo.{sufijo}@atlas.local")
+    page.fill("#contrasena", CLAVE)
+    page.select_option("#rol", "DOCENTE")
+    page.click("button:has-text('Crear usuario')")
+    page.wait_for_selector(f"text=docente.singrupo.{sufijo}@atlas.local")
+    # La pantalla de usuarios también tiene un campo #correo: se espera la recarga del logout.
+    with page.expect_navigation():
+        page.click("#sesion button")
+    page.set_viewport_size({"width": 1024, "height": 900})
+    entrar(page, f"docente.singrupo.{sufijo}@atlas.local")
+    page.goto(BASE + "/#/actividades/nueva")
+    page.wait_for_selector("text=Habilidades que mide")
+    page.fill("#titulo", "Actividad de una docente sin grupo")
+    bloque = page.locator(".pregunta").first
+    bloque.locator("textarea.enunciado").fill("¿Cuánto es 2 + 2?")
+    textos = bloque.locator(".texto-opcion")
+    textos.nth(0).fill("4")
+    textos.nth(1).fill("5")
+    bloque.locator("input[type=radio]").first.check()
+    bloque.locator(".habilidades input[value=CALCULO]").check()
+    page.click("button:has-text('Guardar borrador')")
+    page.wait_for_selector("text=Publicar en:")
+    page.screenshot(path=f"{CAPTURAS}/docente-sin-grupo-1024.png", full_page=True)
+    registrar("Docente sin grupo: la pantalla explica que falta el grupo",
+              page.locator("text=Todavía no está en ningún grupo").count() == 1)
+    registrar("Docente sin grupo: el botón Publicar queda deshabilitado",
+              page.locator("button:has-text('Publicar')").is_disabled())
 
     csp = [e for e in errores if "Content Security Policy" in e or "Refused" in e]
     registrar("Sin violaciones de CSP", not csp, "; ".join(csp[:3]))

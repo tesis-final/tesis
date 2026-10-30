@@ -1,0 +1,12 @@
+# E-TST-004 — 01-redes.sh con WAN_INTERNA=si (INC-05), probado en un contenedor ubuntu:24.04
+# Fecha: 2026-10-30 · Se parte de un /etc/network/interfaces como el del laboratorio (vmbr0 sobre el adaptador USB)
+# y se reemplaza ifreload por un comando vacío (no hay Proxmox). Se corre dos veces para ver que no duplica nada.
+# NO es Proxmox: lo que se prueba es el archivo que el script escribe.
+
+segunda corrida:
+vmbr1 ya existe en /etc/network/interfaces: no se toca nada.
+vmbr2 ya existe en /etc/network/interfaces: no se toca.
+vmbr0 intacto: 1
+vmbr1: 1  vmbr1.50: 1  vmbr2: 1
+copia de seguridad: /etc/network/interfaces.antes-de-atlas
+sin WAN_INTERNA no agrega otro vmbr2: 1

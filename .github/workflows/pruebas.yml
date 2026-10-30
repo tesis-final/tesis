@@ -1,0 +1,84 @@
+# =============================================================================
+# ATLAS — pruebas automáticas en cada pull request y en cada push a main.
+# Son las mismas que corre ./probar-todo.sh. Si alguna falla, el PR queda en rojo:
+# la regla del equipo "antes de abrir un PR, las pruebas tienen que pasar" ya no
+# depende de que alguien se acuerde. La prueba de interfaz y los verificadores
+# del laboratorio (dentro de las VM de Proxmox) se corren aparte.
+# =============================================================================
+name: Pruebas
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  aplicacion:
+    name: Aplicación (unitarias, PSR-12, base de datos, API)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: atlas
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_mysql, mbstring, intl, sodium
+          tools: composer:v2
+          coverage: none
+      - run: composer install --no-interaction --no-progress
+      - name: Unitarias
+        run: vendor/bin/phpunit --testsuite unit --colors=never
+      - name: Estándar PSR-12
+        run: vendor/bin/phpcs --standard=PSR12 app bootstrap config routes lang public/index.php bin tests
+      - name: Base de datos (MySQL 8.0 real y descartable)
+        run: tests/Database/run.sh
+      - name: API contra MySQL 8.0 real
+        run: ATLAS_TEST_SUITES=api tests/Database/run.sh
+
+  analisis:
+    name: Servicio de análisis (Python)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: atlas-analysis
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements-dev.txt
+      - run: python -m pytest -v -p no:cacheprovider
+
+  infraestructura:
+    name: Infraestructura (firewall, Windows, scripts)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sintaxis de todos los scripts de bash
+        run: find infra probar-local.sh probar-todo.sh atlas/tests/Database/run.sh -name '*.sh' -print0 | xargs -0 -n1 bash -n
+      - name: Firewall de router-lab con tráfico real (Tabla 44 + NAT)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq nftables iproute2 python3-yaml
+          sudo bash infra/red/pruebas/probar-router-lab.sh
+      - name: Lógica de los scripts del DC (PowerShell)
+        run: pwsh -NoProfile -File infra/windows/pruebas/probar-modulo.ps1
+      - name: Configuraciones Cisco del Hito 1 contra el PDF
+        run: python3 infra/red/pruebas/revisar_configuraciones.py
+
+  contenedores:
+    name: Scripts de Linux en Ubuntu 24.04 y gemelo de red
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -q -t atlas-ubuntu-test:24.04 infra/linux/pruebas
+      - name: Scripts de atlas-srv01 en un Ubuntu real
+        run: infra/linux/pruebas/probar-en-contenedor.sh
+      - name: Gemelo de red
+        run: docker run --rm --privileged -v "$PWD/infra/red:/red:ro" atlas-ubuntu-test:24.04 bash /red/pruebas/gemelo-red.sh

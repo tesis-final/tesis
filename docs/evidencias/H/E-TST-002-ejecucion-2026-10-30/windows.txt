@@ -1,0 +1,37 @@
+# ATLAS · prueba 'windows' · ./probar-todo.sh windows
+# Fecha: 2026-10-30T15:12:53Z · Equipo: Linux 6.18.44-fc-v185 · Commit: 4758a33
+
+[parámetros]
+  PASS  parametros.psd1: IP 172.16.40.20 (Tabla 40)
+  PASS  parametros.psd1: 3 ámbitos DHCP (Tabla 34)
+  PASS  parametros.psd1: VLAN 30 hasta .250
+  PASS  parametros.psd1: sin contraseñas
+  PASS  usuarios-ejemplo.csv: 4 cuentas de prueba, una por perfil
+[contraseñas]
+  PASS  500 contraseñas de 16 caracteres
+  PASS  todas con mayúscula, minúscula, dígito y símbolo (complejidad, Tabla 32)
+  PASS  todas distintas
+  PASS  sin caracteres ambiguos (0, O, 1, l, I)
+  PASS  ConvertTo-AtlasSecureString devuelve SecureString de solo lectura
+[extensiones de GPO]
+  PASS  agrega "Seguridad" sin borrar la extensión del Registro
+  PASS  agrega "Auditoría avanzada" y mantiene el orden por GUID
+  PASS  es idempotente (volver a correr no duplica)
+  PASS  unidades de red: {00000000…} primero, como lo guarda la consola GPMC
+[verificador: auditoría en un Windows en español (Hito 2 de Redes, 7.4)]
+  PASS  la lectura anterior no encuentra nada en el CSV en español (falla reproducida)
+  PASS  español: Inicio de sesión auditado
+  PASS  español: "Aciertos" solo también cuenta como auditado
+  PASS  español: Recurso compartido y Cuentas de usuario auditados
+  PASS  español: "Sin auditoría" da falso
+  PASS  inglés: Logon auditado y "No Auditing" falso
+[verificador: escritorio remoto solo desde la VLAN 50 (Hito 2 de Redes, 7.4)]
+  PASS  acepta la red como la devuelve Windows (172.16.50.0/255.255.255.0)
+  PASS  acepta la red escrita como /24
+  PASS  rechaza una regla abierta a cualquiera (Any)
+  PASS  rechaza la VLAN 50 más otra red
+  PASS  rechaza una regla sin direcciones
+
+Resultado: 25 PASS · 0 FAIL
+
+rc=0

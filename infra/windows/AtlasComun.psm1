@@ -249,4 +249,24 @@ function New-AtlasGpo {
     $gpo
 }
 
+function ConvertFrom-AtlasAuditpol {
+    <# Lee la salida de "auditpol /get /category:* /r" sin depender del idioma de Windows.
+       auditpol traduce los encabezados del CSV y los valores; por eso las columnas se
+       toman por posición. Devuelve Guid -> $true si la subcategoría se audita. #>
+    param([Parameter(Mandatory)][AllowEmptyString()][string[]]$Lineas)
+    $tabla = @{}
+    $Lineas | Where-Object { $_ -match '\{[0-9A-Fa-f-]{36}\}' } |
+        ConvertFrom-Csv -Header 'Equipo', 'Destino', 'Subcategoria', 'Guid', 'Inclusion', 'Exclusion' |
+        ForEach-Object { $tabla[$_.Guid.ToUpper()] = [bool]$_.Inclusion -and $_.Inclusion -notmatch 'No Auditing|Sin auditor' }
+    $tabla
+}
+
+function Test-AtlasSoloDesdeRed {
+    <# $true si todas las direcciones remotas son la red indicada, escrita como /24 o con
+       máscara: Windows guarda 172.16.50.0/24 y lo devuelve como 172.16.50.0/255.255.255.0. #>
+    param([Parameter(Mandatory)][AllowEmptyCollection()][string[]]$Direcciones, [Parameter(Mandatory)][string]$Red)
+    $formas = @($Red, ($Red -replace '/24$', '/255.255.255.0'))
+    $Direcciones.Count -gt 0 -and -not ($Direcciones | Where-Object { $_ -notin $formas })
+}
+
 Export-ModuleMember -Function *-Atlas*
