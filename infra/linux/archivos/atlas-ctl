@@ -23,6 +23,7 @@ Uso: sudo atlas-ctl <orden>
   desbloquear-config     saca +i de atlas.conf para editarlo (con tu propio usuario)
   bloquear-config        vuelve a poner +i y reinicia ATLAS para tomar los cambios
   respaldos              estado de los respaldos automáticos (atlas-respaldo estado)
+  monitoreo              agentes, chequeo de ATLAS, problemas abiertos y SLA (Zabbix)
 TXT
 }
 
@@ -44,5 +45,8 @@ case "${1:-}" in
   desbloquear-config) chattr -i "$CONF"; echo "atlas.conf desbloqueado: editarlo y después 'sudo atlas-ctl bloquear-config'." ;;
   bloquear-config)    chattr +i "$CONF"; systemctl restart atlas.service; lsattr "$CONF" ;;
   respaldos) /usr/local/sbin/atlas-respaldo estado ;;
+  # La contraseña de Admin se lee de monitoreo.conf (root 600) y no se muestra.
+  monitoreo) ZBX_ADMIN_PASSWORD="$(sed -n 's/^ZBX_ADMIN_PASSWORD=//p' /srv/atlas/config/monitoreo.conf)" \
+               python3 /srv/atlas/monitoreo/estado-zabbix.py ;;
   *) uso; exit 2 ;;
 esac

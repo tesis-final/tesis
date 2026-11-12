@@ -269,4 +269,44 @@ function Test-AtlasSoloDesdeRed {
     $Direcciones.Count -gt 0 -and -not ($Direcciones | Where-Object { $_ -notin $formas })
 }
 
+function Get-AtlasRespaldoVencido {
+    <# Decide qué copias de \\atlas-dc01\atlas-backups ya vencieron (§28.5, Tabla 29). Solo
+       decide; borrar lo hace 13-retencion-respaldos.ps1. atlas-srv01 sube los archivos con
+       el nombre atlas-srv01_atlas_<AAAAMMDDTHHMMSSZ>.<parte> (hora UTC del respaldo):
+         · grupo con .sql.gz                → respaldo COMPLETO: se guarda $DiasCompleto días;
+         · grupo sin .sql.gz (binlog, …)    → INCREMENTAL: se guarda $DiasIncremental días;
+         · atlas-srv01_atlas_config_<…>     → CONFIGURACIÓN: se guardan las últimas $VersionesConfig.
+       La fecha sale del nombre, no de la fecha del archivo (copiar un archivo la cambia).
+       Lo que no tiene ese formato no se toca nunca. #>
+    param(
+        [Parameter(Mandatory)][AllowEmptyCollection()][string[]]$Nombres,
+        [datetime]$Ahora = [datetime]::UtcNow,
+        [int]$DiasCompleto = 28, [int]$DiasIncremental = 7, [int]$VersionesConfig = 10
+    )
+    $cultura = [Globalization.CultureInfo]::InvariantCulture
+    $estilo = [Globalization.DateTimeStyles]'AssumeUniversal, AdjustToUniversal'
+    $grupos = @{}; $configs = @()
+    foreach ($n in $Nombres) {
+        if ($n -match '^atlas-srv01_atlas_config_(\d{8}T\d{6}Z)\.tar\.gz$') {
+            $configs += [pscustomobject]@{ Nombre = $n; Fecha = [datetime]::ParseExact($Matches[1], "yyyyMMdd'T'HHmmss'Z'", $cultura, $estilo) }
+        } elseif ($n -match '^atlas-srv01_atlas_(\d{8}T\d{6}Z)\.[a-z.]+$') {
+            if (-not $grupos.ContainsKey($Matches[1])) { $grupos[$Matches[1]] = @() }
+            $grupos[$Matches[1]] += $n
+        }
+    }
+    $vencidos = @()
+    foreach ($sello in $grupos.Keys) {
+        $fecha = [datetime]::ParseExact($sello, "yyyyMMdd'T'HHmmss'Z'", $cultura, $estilo)
+        $completo = [bool]($grupos[$sello] | Where-Object { $_ -like '*.sql.gz' })
+        $dias = if ($completo) { $DiasCompleto } else { $DiasIncremental }
+        if (($Ahora - $fecha).TotalDays -gt $dias) {
+            $tipo = if ($completo) { 'COMPLETO' } else { 'INCREMENTAL' }
+            $vencidos += $grupos[$sello] | ForEach-Object { [pscustomobject]@{ Nombre = $_; Tipo = $tipo; Fecha = $fecha } }
+        }
+    }
+    $vencidos += $configs | Sort-Object Fecha -Descending | Select-Object -Skip $VersionesConfig |
+        ForEach-Object { [pscustomobject]@{ Nombre = $_.Nombre; Tipo = 'CONFIG'; Fecha = $_.Fecha } }
+    $vencidos | Sort-Object Fecha, Nombre
+}
+
 Export-ModuleMember -Function *-Atlas*

@@ -1,0 +1,67 @@
+# E-WIN-003 — Pruebas del módulo AtlasComun y de los scripts de atlas-dc01 sin Windows Server, Hito 3
+# Fecha: 2026-11-12 13:45 UTC
+# Comando: pwsh -NoProfile -File infra/windows/pruebas/probar-modulo.ps1 (PowerShell 7.4 en contenedor Ubuntu)
+# Nuevo en el Hito 3: decisión de retención de atlas-backups (Tabla 29) y lectura sin errores de los 19 scripts.
+# No reemplaza correr 13-retencion-respaldos.ps1, 14-agente-zabbix.ps1 y verificar-dc01.ps1 en el DC (laboratorio, PENDIENTE).
+
+[parámetros]
+  PASS  parametros.psd1: IP 172.16.40.20 (Tabla 40)
+  PASS  parametros.psd1: 3 ámbitos DHCP (Tabla 34)
+  PASS  parametros.psd1: VLAN 30 hasta .250
+  PASS  parametros.psd1: sin contraseñas
+  PASS  usuarios-ejemplo.csv: 4 cuentas de prueba, una por perfil
+[contraseñas]
+  PASS  500 contraseñas de 16 caracteres
+  PASS  todas con mayúscula, minúscula, dígito y símbolo (complejidad, Tabla 32)
+  PASS  todas distintas
+  PASS  sin caracteres ambiguos (0, O, 1, l, I)
+  PASS  ConvertTo-AtlasSecureString devuelve SecureString de solo lectura
+[extensiones de GPO]
+  PASS  agrega "Seguridad" sin borrar la extensión del Registro
+  PASS  agrega "Auditoría avanzada" y mantiene el orden por GUID
+  PASS  es idempotente (volver a correr no duplica)
+  PASS  unidades de red: {00000000…} primero, como lo guarda la consola GPMC
+[verificador: auditoría en un Windows en español (Hito 2 de Redes, 7.4)]
+  PASS  la lectura anterior no encuentra nada en el CSV en español (falla reproducida)
+  PASS  español: Inicio de sesión auditado
+  PASS  español: "Aciertos" solo también cuenta como auditado
+  PASS  español: Recurso compartido y Cuentas de usuario auditados
+  PASS  español: "Sin auditoría" da falso
+  PASS  inglés: Logon auditado y "No Auditing" falso
+[verificador: escritorio remoto solo desde la VLAN 50 (Hito 2 de Redes, 7.4)]
+  PASS  acepta la red como la devuelve Windows (172.16.50.0/255.255.255.0)
+  PASS  acepta la red escrita como /24
+  PASS  rechaza una regla abierta a cualquiera (Any)
+  PASS  rechaza la VLAN 50 más otra red
+  PASS  rechaza una regla sin direcciones
+[retención de atlas-backups en el DC (Tabla 29: 28 días / 7 días / 10 versiones)]
+  PASS  el completo de 35 días vence entero (sus 3 archivos)
+  PASS  el completo de 27 días se guarda
+  PASS  el incremental de 9 días vence (binlog y archivos)
+  PASS  el archivos.tar.gz de un completo no se confunde con uno incremental
+  PASS  configuración: de 12 versiones se borran las 2 más viejas
+  PASS  lo que no es de atlas-srv01 con ese formato no se toca nunca
+  PASS  carpeta vacía: no hay nada que borrar
+[sintaxis de todos los scripts de atlas-dc01]
+  PASS  unir-al-dominio.ps1 se puede leer sin errores de sintaxis
+  PASS  probar-modulo.ps1 se puede leer sin errores de sintaxis
+  PASS  01-red-y-nombre.ps1 se puede leer sin errores de sintaxis
+  PASS  02-promover-dc.ps1 se puede leer sin errores de sintaxis
+  PASS  03-estructura-ad.ps1 se puede leer sin errores de sintaxis
+  PASS  04-politicas-seguridad.ps1 se puede leer sin errores de sintaxis
+  PASS  05-dns.ps1 se puede leer sin errores de sintaxis
+  PASS  06-dhcp.ps1 se puede leer sin errores de sintaxis
+  PASS  07-gpo.ps1 se puede leer sin errores de sintaxis
+  PASS  08-recursos-compartidos.ps1 se puede leer sin errores de sintaxis
+  PASS  09-ca-atlas.ps1 se puede leer sin errores de sintaxis
+  PASS  10-certificado-srv01.ps1 se puede leer sin errores de sintaxis
+  PASS  11-firewall-y-hora.ps1 se puede leer sin errores de sintaxis
+  PASS  12-usuarios.ps1 se puede leer sin errores de sintaxis
+  PASS  13-retencion-respaldos.ps1 se puede leer sin errores de sintaxis
+  PASS  14-agente-zabbix.ps1 se puede leer sin errores de sintaxis
+  PASS  AtlasComun.psm1 se puede leer sin errores de sintaxis
+  PASS  instalar.ps1 se puede leer sin errores de sintaxis
+  PASS  verificar-dc01.ps1 se puede leer sin errores de sintaxis
+  PASS  los .ps1 nuevos tienen BOM (Windows PowerShell 5.1 lee bien los acentos)
+
+Resultado: 52 PASS · 0 FAIL

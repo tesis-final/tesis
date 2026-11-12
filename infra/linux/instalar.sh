@@ -8,9 +8,10 @@
 # =============================================================================
 source "$(dirname "$0")/lib/comun.sh"
 requiere_root
-DESDE="${1:-1}"; HASTA="${2:-13}"
+DESDE="${1:-1}"; HASTA="${2:-14}"
 PASOS=(01-sistema-base 02-usuarios-grupos 03-directorios-permisos 04-acceso-ssh 05-firewall
-       06-docker 07-atlas 08-hora 09-dominio 10-samba 11-registros 12-sudo 13-respaldos)
+       06-docker 07-atlas 08-hora 09-dominio 10-samba 11-registros 12-sudo 13-respaldos
+       14-monitoreo)
 for n in $(seq "$DESDE" "$HASTA"); do
   s="${PASOS[$((n-1))]}"
   echo; echo "████ Paso $n: $s"

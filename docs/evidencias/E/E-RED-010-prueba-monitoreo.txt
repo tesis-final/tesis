@@ -1,0 +1,82 @@
+# E-RED-010 · Prueba automática del monitoreo (Zabbix 7.0 LTS real, contraseñas descartables)
+# Fecha: 2026-11-12 13:52–13:56 UTC · Entorno: equipo de desarrollo (Ubuntu 24.04, Docker 29.9.2)
+# Comando: sudo infra/pruebas/probar-monitoreo.sh
+# Qué simula: un /api/v1/health de prueba publicado en la IP del «servidor» (bridge de zbx_front); atlas-dc01 es una IP sin equipo.
+# Estado: EJECUTADO en desarrollo. No reemplaza la prueba en el laboratorio (agente de dc01 real, tráfico por la VLAN 40).
+
+== Compose del monitoreo
+     Container zabbix-db Started 
+     Container zabbix-agent Started 
+     Container zabbix-db Healthy 
+     Container zabbix-server Started 
+     Container zabbix-web Started 
+
+[aislamiento]
+  PASS  la interfaz web escucha solo en 127.0.0.1:18081
+  PASS  zabbix-db está en una red interna (zbx_back)
+  PASS  zabbix-db no está en ninguna otra red
+  PASS  MySQL del monitoreo no se publica
+
+[configuración por la API]
+  PASS  configurar-zabbix.py terminó bien
+    Zabbix 7.0.32 en http://127.0.0.1:18081/api_jsonrpc.php
+      Contraseña inicial de Admin reemplazada (la de monitoreo.conf)
+      atlas-srv01: creado, agente en 192.168.250.65:10050
+      atlas-dc01: creado, agente en 192.0.2.250:10050
+      Escenario web atlas-salud: http://192.168.250.65:18443/api/v1/health cada minuto
+      Disparador: ATLAS no responde (salud de la plataforma)
+      Disparador: ATLAS tarda más de 3 s en responder (RNF-03)
+      Servicio: ATLAS · plataforma web
+      SLA: 99 %, diario (Servicios → SLA report)
+    Listo. Interfaz: túnel SSH desde la VLAN 50 → http://127.0.0.1:8080 (usuario Admin).
+  PASS  segunda corrida: no crea nada de nuevo (idempotente)
+
+[datos — se espera hasta 5 minutos a que lleguen]
+    Zabbix 7.0.32 · 2026-11-12 13:53:18 +0000
+      PASS  la contraseña inicial de Admin («zabbix») ya no entra
+    
+    [agentes]
+      FAIL  atlas-dc01 (192.0.2.250:10050) responde — Get value from agent failed: Cannot establish TCP connection to [[192.0.2.250]:10050]: [113] Host is unreachable
+      PASS  atlas-srv01 (192.168.250.65:10050) responde
+            CPU          5.6 %  (umbral de alerta 80 %)
+            memoria     14.6 %  (umbral de alerta 80 %)
+            disco /     81.6 %  (umbral de alerta 80 %)
+      PASS  atlas-srv01 y atlas-dc01 están dados de alta
+    
+    [escenario web atlas-salud]
+      PASS  último chequeo de /api/v1/health sin fallas
+            código HTTP 200
+      PASS  tiempo de respuesta 1 ms (meta ≤ 3 s, RNF-03)
+    
+    [problemas abiertos]
+            12/11 13:53  Linux: FS [/hostfs/run/netns]: Space is low (used > 80%, total 252.0GB)
+            12/11 13:53  Linux: FS [/hostfs]: Space is low (used > 80%, total 252.0GB)
+            12/11 13:53  Linux: FS [/hostfs/var/lib/docker]: Space is low (used > 80%, total 252.0GB)
+            12/11 13:53  Linux: FS [/hostfs/opt/claude-code]: Space is critically low (used > 90%, total 0.3GB)
+            12/11 13:52  Linux: Zabbix agent is not available (for 3m)
+            total: 5
+    
+    [SLA]
+      PASS  SLA «ATLAS · disponibilidad (RNF-02)» definido
+            06/11/2026  SLI -1.000 %  (SLO 99 %)
+            07/11/2026  SLI -1.000 %  (SLO 99 %)
+            08/11/2026  SLI -1.000 %  (SLO 99 %)
+            09/11/2026  SLI -1.000 %  (SLO 99 %)
+            10/11/2026  SLI -1.000 %  (SLO 99 %)
+            11/11/2026  SLI -1.000 %  (SLO 99 %)
+            12/11/2026  SLI 100.000 %  (SLO 99 %)
+    
+    Resultado: 1 control(es) en FAIL
+  PASS  la contraseña inicial de Admin ya no entra
+  PASS  el agente de srv01 responde (solo a 192.168.250.64/28)
+  PASS  llegan CPU, memoria y disco del servidor
+  PASS  escenario web: /api/v1/health con 200
+  PASS  escenario web: responde en menos de 3 s
+  PASS  SLA del 99 % definido
+  PASS  atlas-dc01 figura sin respuesta (esperado: acá no hay Windows)
+
+[caída de ATLAS: Zabbix abre el problema]
+  PASS  con ATLAS caído aparece el problema «ATLAS no responde»
+            12/11 13:54  ATLAS no responde (salud de la plataforma)
+
+Resultado: 14 PASS · 0 FAIL

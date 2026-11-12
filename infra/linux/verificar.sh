@@ -5,7 +5,7 @@
 # escribe PASS / FAIL por ítem. La salida sirve como evidencia (E-LNX-nnn).
 #
 # Uso: sudo ./verificar.sh [secciones...]      (sin argumentos: todas)
-#      Secciones: usuarios permisos atributos ssh firewall docker atlas hora dominio samba registros sudo respaldos
+#      Secciones: usuarios permisos atributos ssh firewall docker atlas hora dominio samba registros sudo respaldos monitoreo
 #      sudo ./verificar.sh > /tmp/E-LNX-001-verificacion.txt
 # =============================================================================
 # "A && ok || mal" es intencional: ok() y mal() nunca fallan.
@@ -271,8 +271,25 @@ sec_respaldos() {
   [ -f /etc/atlas/respaldo-smb.cred ] && [ "$(stat -c '%U %a' /etc/atlas/respaldo-smb.cred)" = "root 600" ] && ok "credencial de la copia al DC (root 600)" || mal "credencial de la copia al DC (root 600)" "sudo ./13-respaldos.sh"
 }
 
+sec_monitoreo() {
+  tit monitoreo "Monitoreo centralizado con Zabbix (§30.5, Tablas 46 y 47, DEC-19)"
+  local c m=${RED_MONITOREO:-192.168.250.64/28}
+  for c in zabbix-db zabbix-server zabbix-web zabbix-agent; do
+    [ "$(docker inspect -f '{{.State.Running}}' "$c" 2>/dev/null)" = true ] && ok "contenedor $c corriendo" || mal "contenedor $c corriendo" "sudo ./14-monitoreo.sh"
+  done
+  [ "$(docker inspect -f '{{json .NetworkSettings.Ports}}' zabbix-web 2>/dev/null | grep -o '"HostIp":"[^"]*"' | sort -u)" = '"HostIp":"127.0.0.1"' ] \
+    && ok "la interfaz de Zabbix escucha solo en 127.0.0.1 (se entra por túnel SSH)" || mal "la interfaz de Zabbix escucha solo en 127.0.0.1"
+  [ "$(docker network inspect -f '{{.Internal}}' zbx_back 2>/dev/null)" = true ] && ok "la base del monitoreo está en una red interna (zbx_back)" || mal "zbx_back es interna"
+  [ "$(stat -c '%U %a' "$R/config/monitoreo.conf" 2>/dev/null)" = "root 600" ] && ok "monitoreo.conf de root, modo 600" || mal "monitoreo.conf de root, modo 600"
+  ufw status 2>/dev/null | grep -qE "^10050/tcp +ALLOW +${m//./\\.}" && ok "UFW: 10050 solo desde $m" || mal "UFW: 10050 solo desde $m"
+  [ -x /srv/atlas/monitoreo/estado-zabbix.py ] && ZBX_ADMIN_PASSWORD="$(sed -n 's/^ZBX_ADMIN_PASSWORD=//p' "$R/config/monitoreo.conf")" \
+    python3 /srv/atlas/monitoreo/estado-zabbix.py >/tmp/atlas-monitoreo.$$ 2>&1 && ok "agentes, chequeo de ATLAS y SLA (sudo atlas-ctl monitoreo)" \
+    || mal "agentes, chequeo de ATLAS y SLA" "$(grep -m1 FAIL /tmp/atlas-monitoreo.$$ 2>/dev/null | sed 's/^ *FAIL *//')"
+  rm -f /tmp/atlas-monitoreo.$$
+}
+
 echo "ATLAS — verificación de $(hostname) · $(date -Is)"
-SECCIONES=("$@"); [ ${#SECCIONES[@]} -eq 0 ] && SECCIONES=(usuarios permisos atributos ssh firewall docker atlas hora dominio samba registros sudo respaldos)
+SECCIONES=("$@"); [ ${#SECCIONES[@]} -eq 0 ] && SECCIONES=(usuarios permisos atributos ssh firewall docker atlas hora dominio samba registros sudo respaldos monitoreo)
 for s in "${SECCIONES[@]}"; do "sec_$s"; done
 printf '\nResultado: %d PASS · %d FAIL\n' "$PASS" "$FAIL"
 [ "$FAIL" -eq 0 ]

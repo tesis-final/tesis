@@ -11,7 +11,7 @@
 #   CA_EXTRA=/ruta/ca.crt ./probar-todo.sh   si la red sale por un proxy con
 #                                            certificado propio (pip en contenedores)
 #
-# Conjuntos: unit psr12 bd api analisis firewall windows linux laboratorio respaldos
+# Conjuntos: unit psr12 bd api analisis firewall windows linux laboratorio respaldos monitoreo
 # Cada uno guarda su salida completa en resultados-pruebas/<fecha>/<conjunto>.txt
 # y al final se imprime una tabla. Termina con código 1 si alguno falló.
 # La prueba de interfaz (Playwright) se corre aparte, con la pila levantada
@@ -22,7 +22,7 @@ RAIZ="$(cd "$(dirname "$0")" && pwd)"
 cd "$RAIZ"
 SALIDA="${SALIDA:-$RAIZ/resultados-pruebas/$(date +%Y-%m-%d_%H%M)}"
 mkdir -p "$SALIDA"
-TODOS=(unit psr12 bd api analisis firewall windows linux laboratorio respaldos)
+TODOS=(unit psr12 bd api analisis firewall windows linux laboratorio respaldos monitoreo)
 [ $# -gt 0 ] && PEDIDOS=("$@") || PEDIDOS=("${TODOS[@]}")
 
 declare -A ESTADO DETALLE
@@ -70,6 +70,10 @@ p_linux()  { imagen_ubuntu && infra/linux/pruebas/probar-en-contenedor.sh; }
 p_respaldos() {
   [ "$(id -u)" -eq 0 ] || { echo "NO EJECUTADA: hace falta root (lee los binlog del contenedor)."; return 2; }
   bash infra/pruebas/probar-respaldos.sh
+}
+p_monitoreo() {
+  [ "$(id -u)" -eq 0 ] || { echo "NO EJECUTADA: hace falta root (el agente usa la red del equipo)."; return 2; }
+  bash infra/pruebas/probar-monitoreo.sh
 }
 p_laboratorio() { imagen_ubuntu && docker run --rm --privileged -v "$RAIZ/infra:/infra:ro" atlas-ubuntu-test:24.04 bash /infra/pruebas/probar-ajustes-laboratorio.sh; }
 

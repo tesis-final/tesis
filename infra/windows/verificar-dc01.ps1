@@ -4,9 +4,11 @@
 .DESCRIPTION
     Comprueba §29 (Tabla 31–36) y las decisiones DEC-08, DEC-17, DEC-20, DEC-R8, CT-05, CT-09.
     La salida es evidencia (E-WIN-nnn):  .\verificar-dc01.ps1 | Tee-Object C:\ATLAS\E-WIN-001.txt
+    Incluye la Fase 12 (retención de respaldos y agente de Zabbix, pasos 13 y 14). La Etapa 3
+    de instalar.ps1 todavía no los corrió y por eso usa -SoloFase7.
 #>
 [CmdletBinding()]
-param()
+param([switch]$SoloFase7)
 Import-Module "$PSScriptRoot\AtlasComun.psm1" -Force
 Import-Module ActiveDirectory, GroupPolicy, DnsServer, DhcpServer, SmbShare -ErrorAction SilentlyContinue
 $p = Import-AtlasParametro
@@ -114,5 +116,25 @@ Test-Item 'Escritorio remoto solo desde VLAN 50' {
     $r -and -not ($r | Where-Object { -not (Test-AtlasSoloDesdeRed -Direcciones @(($_ | Get-NetFirewallAddressFilter).RemoteAddress) -Red $p.RedGestion) })
 }
 Test-Item "CA $($p.NombreCA) instalada" { (& certutil.exe -cainfo name) -match $p.NombreCA }
+
+if (-not $SoloFase7) {
+    Write-Seccion 'Retención de respaldos y monitoreo (Fase 12: Tabla 29, §30.5, DEC-19)'
+    Test-Item 'Tarea «ATLAS - Retencion de respaldos» lista, diaria, como SYSTEM' {
+        $t = Get-ScheduledTask -TaskPath '\ATLAS\' -TaskName 'ATLAS - Retencion de respaldos'
+        $t.State -ne 'Disabled' -and $t.Principal.UserId -match 'SYSTEM|S-1-5-18' -and $t.Triggers.Count -ge 1
+    }
+    Test-Item 'C:\ATLAS\scripts solo para Administradores y SYSTEM' {
+        $a = (Get-Acl (Join-Path $p.CarpetaBase 'scripts')).Access
+        $a -and -not ($a | Where-Object { $_.IdentityReference.Translate([Security.Principal.SecurityIdentifier]).Value -notin 'S-1-5-32-544', 'S-1-5-18' })
+    }
+    Test-Item 'Servicio «Zabbix Agent 2» en marcha y automático' { $s = Get-Service 'Zabbix Agent 2'; $s.Status -eq 'Running' -and $s.StartType -eq 'Automatic' }
+    Test-Item 'Agente: Server=172.16.40.10 (solo atlas-srv01 le pide datos)' {
+        (Select-String -Path (Join-Path $env:ProgramFiles 'Zabbix Agent 2\zabbix_agent2.conf') -Pattern '^Server=(.*)$').Matches.Groups[1].Value.Trim() -eq '172.16.40.10'
+    }
+    Test-Item 'Firewall: TCP 10050 solo desde 172.16.40.10' {
+        $r = Get-NetFirewallRule -DisplayName 'ATLAS - Zabbix agente' -ErrorAction Stop
+        $r.Enabled -eq 'True' -and ((@(($r | Get-NetFirewallAddressFilter).RemoteAddress)) -join ',') -eq '172.16.40.10'
+    }
+}
 
 ''; "Resultado: $script:pass PASS · $script:fail FAIL"

@@ -84,6 +84,20 @@ for p in 22 3306 139 80; do
 done
 echo "  Denegaciones registradas por UFW (kernel):"; dmesg 2>/dev/null | grep -c 'UFW BLOCK' | sed 's/^/        líneas UFW BLOCK: /' || true
 
+titulo "Agente de monitoreo (10050): solo zabbix-server, desde su red 192.168.250.64/28 (paso 14)"
+# zabbix-server llega al agente por el bridge de Docker de zbx_front, no por la interfaz física.
+ip netns add zbx
+ip link add vzbx type veth peer name eth0 netns zbx
+ip addr add 192.168.250.65/28 dev vzbx; ip link set vzbx up
+ip -n zbx addr add 192.168.250.66/28 dev eth0; ip -n zbx link set eth0 up; ip -n zbx link set lo up
+ip -n zbx route add default via 192.168.250.65
+nc -lk -p 10050 >/dev/null 2>&1 &
+sleep 1
+ip netns exec zbx nc -z -w 3 172.16.40.10 10050 2>/dev/null && echo "  PASS  zabbix-server (192.168.250.66) llega al agente" || echo "  FAIL  zabbix-server debería llegar al agente"
+for n in estudiante gestion; do
+  ip netns exec "$n" nc -z -w 2 172.16.40.10 10050 2>/dev/null && echo "  FAIL  10050 abierto desde $n" || echo "  PASS  10050 cerrado desde $n"
+done
+
 titulo "DOCKER-USER en acción: se simula lo que hace Docker al publicar 443 de atlas-web"
 # Un "contenedor" (espacio de red) 192.168.250.2 escuchando en 443, y la misma
 # DNAT + aceptación que arma Docker. Sin DOCKER-USER, cualquiera llegaría.
