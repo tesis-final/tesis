@@ -4,7 +4,7 @@
 import { api } from '../api.js';
 import {
   h, montar, mensaje, tabla, etiquetaEstado, etiquetaTipo, etiquetaResultado, fecha, errorEn, formularioDatos,
-  encabezado, seccion, cifra, avatar, icono,
+  encabezado, seccion, cifra, avatar, icono, confirmar, enCurso,
 } from '../ui.js';
 
 export async function revisar() {
@@ -67,7 +67,12 @@ export async function usuarios() {
     ev.preventDefault();
     const d = formularioDatos(form);
     d.institucion_id = Number(d.institucion_id);
-    try { await api('POST', '/usuarios', d); mensaje('Usuario creado.'); usuarios(); } catch (e) { errorEn(form, e); }
+    // La contraseña inicial es para otra persona: se vacía el campo apenas se lee, así el
+    // navegador no ofrece guardarla como si fuera la de la coordinación.
+    form.contrasena.value = '';
+    await enCurso(ev.submitter, async () => {
+      try { await api('POST', '/usuarios', d); mensaje(`Usuario creado: ${d.nombre} ${d.apellido}.`); usuarios(); } catch (e) { form.contrasena.value = d.contrasena; errorEn(form, e); }
+    });
   });
   const cuenta = (rol) => lista.filter((u) => u.rol === rol && u.activo).length;
   montar(
@@ -80,8 +85,8 @@ export async function usuarios() {
       { titulo: 'Rol', valor: (u) => h('span', { clase: 'etiqueta' }, ROL_TEXTO[u.rol] || u.rol) },
       { titulo: 'Estado', valor: (u) => (u.activo ? h('span', { clase: 'etiqueta ok' }, 'Activo') : h('span', { clase: 'etiqueta' }, 'Desactivado')) },
       { titulo: 'Acción', valor: (u) => (u.activo ? h('button', { type: 'button', clase: 'secundario chico', onclick: async () => {
-        if (!confirm(`¿Desactivar a ${u.nombre} ${u.apellido}?`)) return;
-        try { await api('POST', `/usuarios/${u.id}/desactivar`); mensaje('Usuario desactivado.'); usuarios(); } catch (e) { mensaje(e.message, 'error'); }
+        if (!(await confirmar(`${u.nombre} ${u.apellido} no podrá volver a entrar. Su historial y la auditoría se conservan.`, { titulo: '¿Desactivar este usuario?', aceptar: 'Desactivar', peligro: true }))) return;
+        try { await api('POST', `/usuarios/${u.id}/desactivar`); mensaje('Usuario desactivado.'); usuarios(); } catch (e) { mensaje(e, 'error'); }
       } }, 'Desactivar') : '—') },
     ], lista));
 }
@@ -116,14 +121,15 @@ export async function instituciones() {
           await api('PATCH', `/instituciones/${i.id}`, { nombre: i.nombre, activa: i.activa, requiere_aprobacion: ev.target.checked });
           mensaje(ev.target.checked ? 'Ahora exige aprobación.' : 'Ya no exige aprobación: los docentes publican directo.');
           instituciones();
-        } catch (e) { mensaje(e.message, 'error'); }
+        } catch (e) { mensaje(e, 'error'); }
       } }),
       i.requiere_aprobacion ? 'Exige' : 'No exige') },
   ], lista));
 }
 
 function campo(nombre, etiqueta, tipo = 'text') {
-  return h('div', {}, h('label', { for: nombre }, etiqueta), h('input', { id: nombre, name: nombre, type: tipo, autocomplete: 'off' }));
+  return h('div', {}, h('label', { for: nombre }, etiqueta),
+    h('input', { id: nombre, name: nombre, type: tipo, autocomplete: tipo === 'password' ? 'new-password' : 'off', 'data-lpignore': 'true', 'data-1p-ignore': 'true' }));
 }
 
 export async function grupos() {
@@ -150,7 +156,7 @@ export async function grupos() {
       h('div', { clase: 'rejilla dos' }, casillas),
       h('div', { clase: 'acciones' }, h('button', { type: 'button', onclick: async () => {
         const ids = casillas.map((c) => c.querySelector('input')).filter((i) => i.checked).map((i) => Number(i.value));
-        try { await api('PUT', `/grupos/${g.id}/miembros`, { usuarios: ids }); mensaje('Miembros actualizados.'); grupos(); } catch (e) { mensaje(e.message, 'error'); }
+        try { await api('PUT', `/grupos/${g.id}/miembros`, { usuarios: ids }); mensaje('Miembros actualizados.'); grupos(); } catch (e) { mensaje(e, 'error'); }
       } }, icono('check'), 'Guardar miembros'))));
     detalle.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -179,7 +185,7 @@ export async function reglas() {
       h('label', { clase: 'opcion' }, activa, 'Regla activa'),
       h('div', { clase: 'acciones' }, h('button', { type: 'button', onclick: async () => {
         const condicion = { todas: r.condicion.todas.map((c, i) => ({ ...c, valor: Number(entradas[i].querySelector('input').value) })) };
-        try { await api('PATCH', `/reglas/${r.codigo}`, { condicion, activa: activa.checked }); mensaje(`Regla ${r.codigo} actualizada.`); reglas(); } catch (e) { mensaje(e.message, 'error'); }
+        try { await api('PATCH', `/reglas/${r.codigo}`, { condicion, activa: activa.checked }); mensaje(`Regla ${r.codigo} actualizada.`); reglas(); } catch (e) { mensaje(e, 'error'); }
       } }, icono('check'), 'Guardar')));
   })));
 }

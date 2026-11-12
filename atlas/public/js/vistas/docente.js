@@ -4,7 +4,7 @@
 import { api } from '../api.js';
 import {
   h, montar, mensaje, tabla, etiquetaTipo, etiquetaEstado, fecha, fechaCorta, dia, numero, errorEn,
-  encabezado, seccion, vacio, cifra, avatar, chipsReglas, icono, textoCodigo,
+  encabezado, seccion, vacio, cifra, avatar, chipsReglas, icono, textoCodigo, enCurso,
 } from '../ui.js';
 import { anillo, medidor, columnas, linea } from '../graficos.js';
 import { estado } from '../app.js';
@@ -232,7 +232,7 @@ function decisionDocente(r, publicadas, recargar) {
       await api('POST', `/recomendaciones/${r.id}/decision`, actividad ? { actividad_id: Number(actividad) } : {});
       mensaje('Decisión guardada: el estudiante verá la actividad como recomendada.');
       recargar();
-    } catch (e) { mensaje(e.message, 'error'); }
+    } catch (e) { mensaje(e, 'error'); }
   }
   return h('div', { clase: 'fila' },
     r.actividad_sugerida_id ? h('div', { clase: 'encoger' }, h('button', { type: 'button', onclick: () => decidir(null) }, icono('check'), `Confirmar «${r.actividad_sugerida}»`)) : null,
@@ -400,10 +400,10 @@ export async function editor(id) {
   if (!act) agregarPregunta(preguntas, null, true, cat.habilidades);
 
   const acciones = h('div', { clase: 'acciones' });
-  if (editable) acciones.append(h('button', { type: 'button', onclick: guardar }, icono('check'), 'Guardar borrador'));
+  if (editable) acciones.append(h('button', { type: 'button', onclick: (ev) => enCurso(ev.currentTarget, guardar) }, icono('check'), 'Guardar borrador'));
   // D-2: si la institución no exige aprobación, el borrador se publica directo.
   const publicaDirecto = act?.estado === 'BORRADOR' && !act.requiere_aprobacion;
-  if (act?.estado === 'BORRADOR' && act.requiere_aprobacion) acciones.append(h('button', { type: 'button', onclick: enviar }, icono('enviar'), 'Enviar a aprobación'));
+  if (act?.estado === 'BORRADOR' && act.requiere_aprobacion) acciones.append(h('button', { type: 'button', onclick: (ev) => enCurso(ev.currentTarget, enviar) }, icono('enviar'), 'Enviar a aprobación'));
   if (act?.estado === 'APROBADA' || publicaDirecto) {
     acciones.append(h('fieldset', { clase: 'publicar-en' }, h('legend', {}, 'Publicar en:'),
       publicaDirecto ? h('p', { clase: 'suave pequeño' }, 'Su institución no exige aprobación previa: al publicar, queda registrado quién y cuándo.') : null,
@@ -412,7 +412,7 @@ export async function editor(id) {
       grupos.length
         ? grupos.map((g) => h('label', { clase: 'opcion' }, h('input', { type: 'checkbox', name: 'grupo', value: g.id }), g.nombre))
         : h('p', { clase: 'aviso', role: 'alert' }, 'Todavía no está en ningún grupo, así que no tiene a quién publicarle. Pídale a la coordinación que le asigne un grupo como docente (Grupos → Miembros).'),
-      h('div', { clase: 'acciones' }, h('button', { type: 'button', onclick: publicar, disabled: !grupos.length }, icono('enviar'), 'Publicar'))));
+      h('div', { clase: 'acciones' }, h('button', { type: 'button', onclick: (ev) => enCurso(ev.currentTarget, publicar), disabled: !grupos.length }, icono('enviar'), 'Publicar'))));
   }
 
   async function guardar() {

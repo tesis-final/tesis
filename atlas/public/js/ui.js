@@ -40,25 +40,125 @@ export function esqueleto() {
     h('i', { clase: 'b' }), h('i', { clase: 'b' })));
 }
 
-export function mensaje(texto, tipo = 'info') {
+// Nombres legibles de los campos que devuelve la API en «errores» (422).
+const CAMPOS = {
+  titulo: 'Título', descripcion: 'Descripción', nivel: 'Nivel', categoria: 'Categoría', preguntas: 'Preguntas',
+  enunciado: 'Enunciado', opciones: 'Opciones', habilidades: 'Habilidades', grupos: 'Grupos', correo: 'Correo',
+  contrasena: 'Contraseña', nombre: 'Nombre', apellido: 'Apellido', rol: 'Rol', institucion_id: 'Institución',
+  anio_lectivo: 'Año lectivo', condicion: 'Condición', usuarios: 'Miembros', observacion: 'Observación',
+  consulta: 'Consulta', actividad_id: 'Actividad', requiere_aprobacion: 'Aprobación previa',
+};
+const ITEM = { preguntas: 'Pregunta', grupos: 'Grupo', habilidades: 'Habilidad', usuarios: 'Miembro' };
+
+/** «preguntas.0.opciones.2» → «Pregunta 1 · Opción C». */
+export function nombreCampo(clave) {
+  const partes = String(clave).split('.');
+  const salida = [];
+  for (let i = 0; i < partes.length; i++) {
+    const parte = partes[i];
+    if (/^\d+$/.test(parte)) continue;
+    const siguiente = partes[i + 1];
+    const indice = /^\d+$/.test(siguiente || '') ? Number(siguiente) : null;
+    if (indice !== null && parte === 'opciones') salida.push(`Opción ${String.fromCharCode(65 + indice)}`);
+    else if (indice !== null && ITEM[parte]) salida.push(`${ITEM[parte]} ${indice + 1}`);
+    else salida.push(CAMPOS[parte] || (parte.charAt(0).toUpperCase() + parte.slice(1).replace(/_/g, ' ')));
+  }
+  return salida.join(' · ');
+}
+
+/** Motivos detallados de un error de la API, uno por campo. */
+export function motivos(error) {
+  return Object.entries(error?.errores || {}).map(([campo, texto]) => `${nombreCampo(campo)}: ${texto}`);
+}
+
+/** Texto principal de un error: el de la API o, si no hubo respuesta, uno que explique qué pasó. */
+export function textoError(error) {
+  if (!error) return 'Ocurrió un error.';
+  if (error instanceof TypeError) return 'No se pudo conectar con el servidor. Revisá la conexión y probá de nuevo.';
+  return error.message || 'Ocurrió un error.';
+}
+
+/** Aviso de ATLAS (abajo a la derecha). Acepta un texto o un error de la API: en ese caso
+ *  muestra el motivo general y, debajo, el detalle de cada campo que falló. */
+export function mensaje(contenido, tipo = 'info') {
   const zona = document.getElementById('mensajes');
-  const m = h('div', { clase: `mensaje ${tipo}` }, h('span', {}, texto));
+  const esError = contenido instanceof Error;
+  const lista = esError ? motivos(contenido) : [];
+  const m = h('div', { clase: `mensaje ${tipo}`, role: tipo === 'error' ? 'alert' : 'status' },
+    h('div', { clase: 'mensaje-cuerpo' },
+      h('span', { clase: 'mensaje-titulo' }, esError ? textoError(contenido) : contenido),
+      lista.length ? h('ul', { clase: 'mensaje-detalle' }, lista.map((l) => h('li', {}, l))) : null));
   const cerrar = h('button', { type: 'button', 'aria-label': 'Cerrar aviso', onclick: () => m.remove() }, '×');
   m.append(cerrar);
   zona.append(m);
-  setTimeout(() => m.remove(), tipo === 'error' ? 8000 : 5000);
+  // Los errores con detalle quedan más tiempo, y no se cierran mientras el mouse está encima.
+  const espera = tipo === 'error' ? Math.min(8000 + lista.length * 3000, 20000) : 5000;
+  let reloj = setTimeout(() => m.remove(), espera);
+  m.addEventListener('mouseenter', () => clearTimeout(reloj));
+  m.addEventListener('mouseleave', () => { reloj = setTimeout(() => m.remove(), 4000); });
 }
 
 export function errorEn(formulario, error) {
   formulario.querySelectorAll('.campo-error').forEach((e) => e.remove());
+  formulario.querySelectorAll('[aria-invalid]').forEach((e) => e.removeAttribute('aria-invalid'));
+  formulario.querySelectorAll('.con-error').forEach((e) => e.classList.remove('con-error'));
+  let primero = null;
   for (const [campo, texto] of Object.entries(error.errores || {})) {
     const entrada = formulario.querySelector(`[name="${CSS.escape(campo)}"]`);
+    const pregunta = campo.match(/^preguntas\.(\d+)/);
     if (entrada) {
       entrada.setAttribute('aria-invalid', 'true');
       entrada.after(h('div', { clase: 'campo-error', role: 'alert' }, texto));
+      primero = primero || entrada;
+    } else if (pregunta) {
+      // Errores de contenido de una pregunta: se marca su tarjeta con el motivo.
+      const tarjeta = formulario.querySelectorAll('.pregunta')[Number(pregunta[1])];
+      if (tarjeta) {
+        tarjeta.classList.add('con-error');
+        const cabeza = tarjeta.querySelector('.pregunta-cabeza') || tarjeta.firstChild;
+        cabeza.after(h('div', { clase: 'campo-error', role: 'alert' }, texto));
+        primero = primero || tarjeta;
+      }
     }
   }
-  mensaje(error.message, 'error');
+  if (primero) primero.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  mensaje(error, 'error');
+}
+
+/** Confirmación con el diseño de ATLAS (en lugar de confirm() del navegador).
+ *  Devuelve una promesa que se resuelve en true (aceptar) o false (cancelar). */
+export function confirmar(texto, { titulo = '¿Confirmás?', aceptar = 'Aceptar', cancelar = 'Cancelar', peligro = false } = {}) {
+  return new Promise((resolver) => {
+    const bAceptar = h('button', { type: 'button', clase: peligro ? 'peligro' : null }, aceptar);
+    const bCancelar = h('button', { type: 'button', clase: 'secundario' }, cancelar);
+    const d = h('dialog', { clase: 'modal', 'aria-labelledby': 'modal-titulo', 'aria-describedby': 'modal-texto' },
+      h('div', { clase: 'modal-cuerpo' },
+        h('div', { clase: `modal-icono${peligro ? ' peligro' : ''}` }, icono(peligro ? 'alerta' : 'info')),
+        h('div', {}, h('h2', { id: 'modal-titulo' }, titulo), h('p', { id: 'modal-texto' }, texto))),
+      h('div', { clase: 'modal-acciones' }, bCancelar, bAceptar));
+    const cerrar = (valor) => { if (d.open) d.close(); d.remove(); resolver(valor); };
+    bAceptar.addEventListener('click', () => cerrar(true));
+    bCancelar.addEventListener('click', () => cerrar(false));
+    d.addEventListener('cancel', (ev) => { ev.preventDefault(); cerrar(false); });
+    document.body.append(d);
+    d.showModal();
+    (peligro ? bCancelar : bAceptar).focus();
+  });
+}
+
+/** Ejecuta una acción con el botón deshabilitado hasta que termina: un doble clic no
+ *  manda la operación dos veces (por ejemplo, crear dos veces la misma actividad). */
+export async function enCurso(boton, tarea) {
+  if (!boton) return tarea();
+  if (boton.disabled) return undefined;
+  boton.disabled = true;
+  boton.setAttribute('aria-busy', 'true');
+  try {
+    return await tarea();
+  } finally {
+    boton.disabled = false;
+    boton.removeAttribute('aria-busy');
+  }
 }
 
 /** Encabezado de página: antetítulo, título, bajada y acciones. */

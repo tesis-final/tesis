@@ -43,6 +43,8 @@ with sync_playwright() as p:
     errores = []
     page.on("console", lambda m: errores.append(m.text) if m.type == "error" else None)
     page.on("pageerror", lambda e: errores.append(str(e)))
+    nativos = []   # alert/confirm/prompt del navegador: no tiene que aparecer ninguno
+    page.on("dialog", lambda d: (nativos.append(d.message), d.dismiss()))
 
     # RF-02: error genérico
     page.goto(BASE + "/#/login")
@@ -130,6 +132,24 @@ with sync_playwright() as p:
     page.screenshot(path=f"{CAPTURAS}/docente-consultas-atencion-375.png", full_page=True)
     registrar("RNF-12 consultas en celular sin desplazamiento horizontal", sin_scroll_horizontal(page))
     page.set_viewport_size({"width": 1024, "height": 900})
+
+    # Al no poder publicar, el aviso dice el motivo de cada pregunta y la marca en el editor.
+    page.goto(BASE + "/#/actividades/nueva")
+    page.wait_for_selector("text=Habilidades que mide")
+    page.fill("#titulo", "Actividad sin opción correcta (prueba de interfaz)")
+    bloque = page.locator(".pregunta").first
+    bloque.locator("textarea.enunciado").fill("¿Cuánto es 2 + 2?")
+    bloque.locator(".texto-opcion").nth(0).fill("4")
+    bloque.locator(".texto-opcion").nth(1).fill("5")
+    bloque.locator(".habilidades input[value=CALCULO]").check()
+    page.click("button:has-text('Guardar borrador')")
+    page.wait_for_selector("text=Publicar en:")
+    page.locator("input[name=grupo]").first.check()
+    page.click("button:has-text('Publicar')")
+    page.wait_for_selector(".mensaje.error .mensaje-detalle li")
+    registrar("Publicar sin opción correcta: el aviso explica el motivo por pregunta",
+              "Pregunta 1: Cada pregunta necesita exactamente 1 opción correcta" in page.locator(".mensaje.error").last.inner_text())
+    registrar("Publicar sin opción correcta: la pregunta queda marcada en el editor", page.locator(".pregunta.con-error").count() == 1)
 
     # D-3 + D-2: crear una actividad con habilidades y publicarla directo (sin aprobación)
     page.goto(BASE + "/#/actividades/nueva")
@@ -248,6 +268,7 @@ with sync_playwright() as p:
     registrar("Docente sin grupo: el botón Publicar queda deshabilitado",
               page.locator("button:has-text('Publicar')").is_disabled())
 
+    registrar("Sin carteles del navegador (alert/confirm): todos los avisos son de ATLAS", not nativos, "; ".join(nativos[:3]))
     csp = [e for e in errores if "Content Security Policy" in e or "Refused" in e]
     registrar("Sin violaciones de CSP", not csp, "; ".join(csp[:3]))
     otros = [e for e in errores if e not in csp and "401" not in e and "Failed to load resource" not in e]
