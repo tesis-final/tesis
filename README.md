@@ -52,7 +52,7 @@ Todo lo que genera el script queda en `atlas/local/` (ignorado por Git). No toca
 | `infra/linux/` | Scripts de atlas-srv01 (Fase 6) |
 | `infra/windows/` | Scripts de atlas-dc01 (Fase 7) |
 | `infra/red/` | Configuraciones de switch, router y firewall (Fase 8) |
-| `docs/` | Auditoría, decisiones, manuales de cada fase, evidencias, el [reporte del Hito 1](docs/reporte-hito-1/README.md) y lo hecho en el [Hito 2](docs/hito-2/README.md) |
+| `docs/` | Auditoría, decisiones, manuales de cada fase, evidencias, el [reporte del Hito 1](docs/reporte-hito-1/README.md), lo hecho en el [Hito 2](docs/hito-2/README.md) y el [Hito 3](docs/hito-3/README.md) (documento integrador V3.0 y plan de laboratorio) |
 
 ## Pruebas automáticas (para desarrollo)
 
