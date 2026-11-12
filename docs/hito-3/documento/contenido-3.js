@@ -337,7 +337,7 @@ add(Tabla('herrMon', 'Herramientas de monitoreo y verificación', ['Herramienta'
 ], [3.6, 5, 3.4]));
 add(Tabla('metasInfra', 'Metas de infraestructura y medición', ['Indicador', 'Meta', 'Medición disponible al Hito 3'], [
   ['Disponibilidad', 'Al menos 99 %', `Desarrollo: ${R.disponibilidad} (E-TST-009). Laboratorio: SLA de Zabbix desde R-6.`],
-  ['Respuesta de la aplicación', 'Hasta 3 s', `Desarrollo: percentil 95 máximo de ${R.rendimiento.p95max} en ${R.rendimiento.consultas} consultas (E-TST-008); el escenario web midió 26 a 29 ms (E-RED-012).`],
+  ['Respuesta de la aplicación', 'Hasta 3 s', `Desarrollo: percentil 95 máximo de ${R.rendimiento.p95max} en ${R.rendimiento.consultas} consultas (E-TST-008); el escenario web de Zabbix midió 29 ms (E-RED-012).`],
   ['Denegaciones', 'Revisión semanal', 'Registro ATLAS-* en router-lab y accesos denegados en auditoría (M8).'],
   ['CPU, RAM y disco', 'Alerta al 80 %', 'Desarrollo: la alerta de disco se disparó con el disco del equipo al 81,6 % (E-RED-012).'],
 ], [3, 2.2, 6.8]));

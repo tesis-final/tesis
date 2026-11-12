@@ -1,0 +1,7 @@
+E-TST-010 — Corrida completa de probar-todo.sh, 12/11/2026 17:27–17:53 UTC, commit 38c4cbd (sin cambios sin commitear).
+Comando: NO_PROXY=localhost,127.0.0.1 no_proxy=localhost,127.0.0.1 CA_EXTRA=<certificado del proxy> SALIDA=<esta carpeta> sudo ./probar-todo.sh
+Las dos variables de entorno solo hacen falta en el equipo de desarrollo, que sale a Internet por un proxy con certificado
+propio: sin ellas, pip dentro del contenedor del conjunto «analisis» no puede bajar dependencias. No cambian ninguna prueba.
+La pila local de ATLAS se apagó antes de correr «bd» y «api», porque su base descartable usa la misma red 192.168.250.16/28.
+Resultado: 11 de 11 conjuntos aprobados (resumen.txt). El único FAIL dentro de «linux» es «smbd activo»: el contenedor de
+prueba no tiene systemd.

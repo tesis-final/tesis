@@ -16,7 +16,7 @@ module.exports = {
       ['analisis', 'Servicio Python (pytest)', 'Aprobada', '23 pruebas'],
       ['firewall', 'Firewall de router-lab con tráfico real, con VPN', 'Aprobada', '46 PASS, 0 FAIL'],
       ['windows', 'Módulo y scripts de atlas-dc01 (PowerShell 7)', 'Aprobada', '52 PASS, 0 FAIL'],
-      ['linux', 'Scripts de atlas-srv01 en Ubuntu 24.04 real', 'Aprobada', '87 PASS, 1 FAIL esperado (smbd sin systemd)'],
+      ['linux', 'Scripts de atlas-srv01 en Ubuntu 24.04 real', 'Aprobada', '67 PASS, 1 FAIL esperado (smbd sin systemd)'],
       ['laboratorio', 'Ajustes del laboratorio y script de VPN', 'Aprobada', '29 PASS, 0 FAIL'],
       ['respaldos', 'atlas-respaldo contra MySQL 8.0 real', 'Aprobada', '17 PASS, 0 FAIL'],
       ['monitoreo', 'Zabbix 7.0 LTS real (agente, salud, SLA, alerta)', 'Aprobada', '14 PASS, 0 FAIL'],
@@ -30,5 +30,5 @@ module.exports = {
   restauracion: '13 de 13 comparaciones iguales, en 1 s (E-BD-018)',
   comparacion: { medianaA: '5,61 ms', medianaB: '49,35 ms', p95A: '7,28 ms', p95B: '54,21 ms' },
   rendimiento: { p95max: '58 ms', consultas: 7 },
-  disponibilidad: '100 % (120 de 120 respuestas en 10 minutos)',
+  disponibilidad: '100 % (119 de 119 respuestas en 10 minutos)',
 };
