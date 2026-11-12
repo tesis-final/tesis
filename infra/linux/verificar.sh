@@ -5,7 +5,7 @@
 # escribe PASS / FAIL por ítem. La salida sirve como evidencia (E-LNX-nnn).
 #
 # Uso: sudo ./verificar.sh [secciones...]      (sin argumentos: todas)
-#      Secciones: usuarios permisos atributos ssh firewall docker atlas hora dominio samba registros sudo
+#      Secciones: usuarios permisos atributos ssh firewall docker atlas hora dominio samba registros sudo respaldos
 #      sudo ./verificar.sh > /tmp/E-LNX-001-verificacion.txt
 # =============================================================================
 # "A && ok || mal" es intencional: ok() y mal() nunca fallan.
@@ -256,8 +256,23 @@ sec_sudo() {
   [ "$(stat -c '%U %a' /usr/local/sbin/atlas-ctl 2>/dev/null)" = "root 755" ] && ok "atlas-ctl es de root y no editable por otros" || mal "atlas-ctl es de root"
 }
 
+# --- respaldos: §28.5, Tabla 29 (paso 13) --------------------------------------
+sec_respaldos() {
+  tit respaldos "Respaldos automáticos (§28.5, Tabla 29, RNF-04)"
+  [ "$(stat -c '%U %a' /usr/local/sbin/atlas-respaldo 2>/dev/null)" = "root 750" ] && ok "atlas-respaldo es de root y no editable por otros" || mal "atlas-respaldo instalado (root 750)"
+  local t
+  for t in completo incremental verificar prueba; do
+    systemctl is-enabled "atlas-respaldo-$t.timer" >/dev/null 2>&1 && ok "temporizador atlas-respaldo-$t activo" || mal "temporizador atlas-respaldo-$t activo"
+  done
+  systemctl is-enabled atlas-respaldo-config.path >/dev/null 2>&1 && ok "respaldo de la configuración cuando cambia (path)" || mal "respaldo de la configuración cuando cambia (path)"
+  [ "$(stat -c '%U:%G %a' "$R/backups" 2>/dev/null)" = "atlasbkp:atlas-backup 700" ] && ok "$R/backups de atlasbkp:atlas-backup 700" || mal "$R/backups de atlasbkp:atlas-backup 700"
+  ls "$R"/backups/completo/atlas_*.sql.gz >/dev/null 2>&1 && ok "hay al menos un respaldo completo de la base" || mal "hay al menos un respaldo completo de la base"
+  /usr/local/sbin/atlas-respaldo verificar >/dev/null 2>&1 && ok "atlas-respaldo verificar: huellas y frecuencia OK" || mal "atlas-respaldo verificar: huellas y frecuencia OK"
+  [ -f /etc/atlas/respaldo-smb.cred ] && [ "$(stat -c '%U %a' /etc/atlas/respaldo-smb.cred)" = "root 600" ] && ok "credencial de la copia al DC (root 600)" || mal "credencial de la copia al DC (root 600)" "sudo ./13-respaldos.sh"
+}
+
 echo "ATLAS — verificación de $(hostname) · $(date -Is)"
-SECCIONES=("$@"); [ ${#SECCIONES[@]} -eq 0 ] && SECCIONES=(usuarios permisos atributos ssh firewall docker atlas hora dominio samba registros sudo)
+SECCIONES=("$@"); [ ${#SECCIONES[@]} -eq 0 ] && SECCIONES=(usuarios permisos atributos ssh firewall docker atlas hora dominio samba registros sudo respaldos)
 for s in "${SECCIONES[@]}"; do "sec_$s"; done
 printf '\nResultado: %d PASS · %d FAIL\n' "$PASS" "$FAIL"
 [ "$FAIL" -eq 0 ]

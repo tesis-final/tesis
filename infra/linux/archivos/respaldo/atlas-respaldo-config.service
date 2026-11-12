@@ -1,0 +1,11 @@
+# ATLAS — respaldo de la configuración cuando cambia (§28.5, Tabla 29). Lo arranca atlas-respaldo-config.path.
+[Unit]
+Description=ATLAS · respaldo de la configuración cuando cambia
+After=docker.service atlas.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/atlas-respaldo config
+Nice=10
+IOSchedulingClass=idle

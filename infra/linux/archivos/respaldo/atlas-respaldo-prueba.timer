@@ -1,0 +1,10 @@
+# ATLAS — prueba de restauración: el día 1 de cada mes, 04:00 (§28.5, Tabla 29). Persistent: si el servidor estaba apagado, corre al prender.
+[Unit]
+Description=ATLAS · prueba de restauración: el día 1 de cada mes, 04:00
+
+[Timer]
+OnCalendar=*-*-01 04:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
