@@ -173,7 +173,7 @@ async function navegar() {
       try {
         await vista(...m.slice(1));
       } catch (e) {
-        mensaje(e.message || 'Ocurrió un error.', 'error');
+        mensaje(e, 'error');
       }
       window.scrollTo({ top: 0 });
       return;

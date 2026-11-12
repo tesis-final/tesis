@@ -491,6 +491,26 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--superfic
 .mensaje.error::before { content: "!"; background: #fff; color: var(--riesgo); }
 .mensaje button { min-height: 0; width: 1.6rem; height: 1.6rem; padding: 0; border-radius: 8px; background: transparent; color: inherit; box-shadow: none; opacity: .75; font-size: 1rem; }
 .mensaje button:hover { opacity: 1; background: rgba(255, 255, 255, .12); }
+.mensaje-cuerpo { display: grid; gap: .35rem; min-width: 0; }
+.mensaje-titulo { font-weight: 650; }
+.mensaje-detalle { margin: 0; padding-left: 1.05rem; display: grid; gap: .2rem; font-weight: 480; opacity: .95; }
+.mensaje-detalle li { overflow-wrap: anywhere; }
+
+/* ---------- Confirmaciones de ATLAS (reemplazan confirm() del navegador) ---------- */
+dialog.modal { width: min(92vw, 460px); padding: 0; border: 1px solid var(--borde); border-radius: var(--radio-l); background: var(--superficie); color: var(--texto); box-shadow: var(--sombra-3); animation: tostada var(--t-media) var(--curva) both; }
+dialog.modal::backdrop { background: rgba(8, 12, 28, .5); backdrop-filter: blur(3px); }
+.modal-cuerpo { display: grid; grid-template-columns: auto 1fr; gap: .9rem; padding: 1.3rem 1.3rem .6rem; }
+.modal-cuerpo h2 { margin: 0 0 .35rem; font-size: var(--texto-l); }
+.modal-cuerpo p { margin: 0; color: var(--texto-2); }
+.modal-icono { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--primario-suave); color: var(--primario); }
+.modal-icono.peligro { background: var(--riesgo-fondo); color: var(--riesgo); }
+.modal-icono svg { width: 20px; height: 20px; }
+.modal-acciones { display: flex; justify-content: flex-end; gap: .6rem; padding: 1rem 1.3rem 1.2rem; flex-wrap: wrap; }
+
+/* Pregunta del editor con un problema de contenido (lo marca errorEn con el motivo) */
+.pregunta.con-error { border-color: var(--riesgo-borde); box-shadow: 0 0 0 3px var(--riesgo-fondo); }
+button[aria-busy="true"] { cursor: progress; opacity: .7; }
+
 @keyframes tostada { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
 
 /* ---------- Esqueleto de carga ---------- */

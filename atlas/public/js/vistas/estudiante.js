@@ -2,7 +2,7 @@
 // resultado; no accede a indicadores ni recomendaciones (H4, DEC-00b).
 
 import { api } from '../api.js';
-import { h, montar, mensaje, numero, encabezado, vacio, cifra, icono } from '../ui.js';
+import { h, montar, mensaje, numero, encabezado, vacio, cifra, icono, confirmar, textoError } from '../ui.js';
 import { anillo } from '../graficos.js';
 import { Registro } from '../registro.js';
 import { estado } from '../app.js';
@@ -105,7 +105,7 @@ export async function resolver(actividadId) {
     try {
       await api('PUT', `/intentos/${intento.id}/respuestas/${p.id}`, { opcion_id: opcionId, tiempo_seg: segundos });
     } catch (e) {
-      mensaje(`No se pudo guardar la respuesta: ${e.message}`, 'error');
+      mensaje(`No se pudo guardar la respuesta: ${textoError(e)}`, 'error');
     }
   }
 
@@ -127,7 +127,7 @@ export async function resolver(actividadId) {
 
   async function finalizar() {
     const faltan = preguntas.length - elegidas.size;
-    if (faltan > 0 && !confirm(`Te faltan ${faltan} pregunta(s). ¿Querés finalizar igual?`)) return;
+    if (faltan > 0 && !(await confirmar(`Te ${faltan === 1 ? 'falta 1 pregunta' : `faltan ${faltan} preguntas`} por responder. Las que no respondas cuentan como incorrectas.`, { titulo: '¿Finalizar igual?', aceptar: 'Finalizar', cancelar: 'Seguir respondiendo' }))) return;
     document.removeEventListener('keydown', alTeclear);
     await registro.cerrar();
     const r = await api('POST', `/intentos/${intento.id}/finalizar`);
