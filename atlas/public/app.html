@@ -2,23 +2,43 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f5f8fc" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#06101f" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="ATLAS registra el proceso de resolución de los estudiantes y le muestra al docente dónde intervenir.">
   <title>ATLAS — Plataforma de aprendizaje</title>
+  <link rel="preload" href="/fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/atlas.css">
-  <link rel="icon" href="/assets/atlas.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="/assets/favicon-64.png" sizes="64x64" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <script src="/js/tema.js"></script>
 </head>
-<body>
+<body class="sin-sesion">
   <a class="saltar" href="#principal">Saltar al contenido</a>
-  <header class="barra">
-    <a class="marca" href="#/"><img src="/assets/atlas.svg" alt="" width="28" height="28"><span>ATLAS</span></a>
-    <nav id="menu" class="menu" aria-label="Menú principal"></nav>
-    <div id="sesion" class="sesion"></div>
-  </header>
-  <main id="principal" tabindex="-1">
-    <noscript><p class="aviso">ATLAS necesita JavaScript habilitado.</p></noscript>
-    <div id="app" aria-live="polite"></div>
-  </main>
+  <div class="marco">
+    <aside class="lateral" id="lateral" aria-label="Navegación principal">
+      <a class="marca" href="#/"><img class="isotipo" src="/assets/isotipo.png" alt="" width="40" height="40"><span class="marca-texto"><strong>ATLAS</strong><small>Aprendizaje adaptativo</small></span></a>
+      <nav id="menu" class="menu" aria-label="Menú principal"></nav>
+      <div class="lateral-pie" id="lateral-pie"></div>
+    </aside>
+    <div class="velo" id="velo"></div>
+    <div class="contenido">
+      <header class="barra">
+        <button type="button" id="abrir-menu" class="boton-icono" aria-controls="lateral" aria-expanded="false" aria-label="Abrir el menú"></button>
+        <a class="marca marca-movil" href="#/"><img class="isotipo" src="/assets/isotipo.png" alt="" width="40" height="40"><span class="marca-texto"><strong>ATLAS</strong><small>Aprendizaje adaptativo</small></span></a>
+        <div class="barra-espacio"></div>
+        <button type="button" id="buscar" class="buscador" aria-label="Ir a una pantalla (Ctrl + K)"></button>
+        <button type="button" id="tema" class="boton-icono" aria-label="Cambiar entre tema claro y oscuro"></button>
+        <div id="sesion" class="sesion"></div>
+      </header>
+      <main id="principal" tabindex="-1">
+        <noscript><p class="aviso">ATLAS necesita JavaScript habilitado.</p></noscript>
+        <div id="app" aria-live="polite"></div>
+      </main>
+    </div>
+  </div>
   <div id="mensajes" class="mensajes" role="status" aria-live="polite"></div>
   <script type="module" src="/js/app.js"></script>
 </body>

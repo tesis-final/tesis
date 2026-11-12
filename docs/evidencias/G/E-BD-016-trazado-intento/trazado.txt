@@ -1,0 +1,68 @@
+# Seguimiento de un intento de punta a punta · 2026-11-12T14:05:51Z
+# ATLAS en https://localhost · estudiante ana.demo@atlas.local · actividad «Problemas con porcentajes»
+
+== 1. Plan y puntaje esperado (antes de empezar)
+Pregunta 1: «Distractor A» → «Opción correcta» (correcta)
+Pregunta 2: «Opción correcta» (correcta)
+Pregunta 3: «Distractor A»
+Pregunta 4: «Opción correcta» (correcta)
+Puntaje esperado: 3 correctas de 4 = 75.0
+
+== 2. Pantalla del estudiante
+Intento número 67 finalizado. Puntaje en pantalla: 75.0
+
+== 3. El intento 67 en MySQL
+-- intentos (lo pone el servidor: inicio, fin y estado)
++----+------------+--------------+----------------+------------+-------------------------+-------------------------+--------------+
+| id | usuario_id | actividad_id | numero_intento | estado     | iniciado_en             | finalizado_en           | duracion_seg |
++----+------------+--------------+----------------+------------+-------------------------+-------------------------+--------------+
+| 67 |          3 |            3 |              3 | FINALIZADO | 2026-11-12 14:05:54.992 | 2026-11-12 14:05:57.267 |            3 |
++----+------------+--------------+----------------+------------+-------------------------+-------------------------+--------------+
+-- respuestas: la opción FINAL de cada pregunta
++----------+------------------+-------------+------------+-------------------------+
+| pregunta | opcion_final     | es_correcta | tiempo_seg | respondido_en           |
++----------+------------------+-------------+------------+-------------------------+
+|        1 | Opción correcta  |           1 |          1 | 2026-11-12 14:05:55.748 |
+|        2 | Opción correcta  |           1 |          0 | 2026-11-12 14:05:56.187 |
+|        3 | Distractor A     |           0 |          0 | 2026-11-12 14:05:56.555 |
+|        4 | Opción correcta  |           1 |          0 | 2026-11-12 14:05:56.921 |
++----------+------------------+-------------+------------+-------------------------+
+-- interacciones: el proceso, en orden (acá queda el cambio de respuesta)
++-----------+---------------+----------+------------------+-------------------------+
+| secuencia | tipo          | pregunta | opcion           | ocurrido_en             |
++-----------+---------------+----------+------------------+-------------------------+
+|         1 | INICIO        |     NULL | NULL             | 2026-11-12 14:05:54.992 |
+|         2 | VER_PREGUNTA  |        1 | NULL             | 2026-11-12 14:05:55.000 |
+|         3 | SELECCION     |        1 | Distractor A     | 2026-11-12 14:05:55.000 |
+|         4 | CAMBIO_OPCION |        1 | Opción correcta  | 2026-11-12 14:05:55.000 |
+|         5 | NAVEGACION    |        2 | NULL             | 2026-11-12 14:05:56.000 |
+|         6 | VER_PREGUNTA  |        2 | NULL             | 2026-11-12 14:05:56.000 |
+|         7 | SELECCION     |        2 | Opción correcta  | 2026-11-12 14:05:56.000 |
+|         8 | NAVEGACION    |        3 | NULL             | 2026-11-12 14:05:56.000 |
+|         9 | VER_PREGUNTA  |        3 | NULL             | 2026-11-12 14:05:56.000 |
+|        10 | SELECCION     |        3 | Distractor A     | 2026-11-12 14:05:56.000 |
+|        11 | NAVEGACION    |        4 | NULL             | 2026-11-12 14:05:56.000 |
+|        12 | VER_PREGUNTA  |        4 | NULL             | 2026-11-12 14:05:56.000 |
+|        13 | SELECCION     |        4 | Opción correcta  | 2026-11-12 14:05:56.000 |
+|        14 | FIN           |     NULL | NULL             | 2026-11-12 14:05:57.267 |
++-----------+---------------+----------+------------------+-------------------------+
+-- resultados: un único puntaje guardado
++----+------------+-----------+-----------------+---------+-------------------------+
+| id | intento_id | correctas | total_preguntas | puntaje | calculado_en            |
++----+------------+-----------+-----------------+---------+-------------------------+
+| 67 |         67 |         3 |               4 |   75.00 | 2026-11-12 14:05:57.269 |
++----+------------+-----------+-----------------+---------+-------------------------+
+
+== 4. Informe de la docente (Reportes → Intentos finalizados)
+Intento 67: Ana Demo · Problemas con porcentajes · puntaje 75.0 · 3 de 4 · tiempo total 3 s, activo 3 s
+
+== 5. Comparación
+Esperado 75.0 · pantalla 75.0 · base 75.0 · informe 75.0
+PASS El puntaje en pantalla es el esperado
+PASS El puntaje guardado en la base es el esperado
+PASS Hay un único resultado para el intento
+PASS El cambio de respuesta de la pregunta 1 quedó en interacciones (CAMBIO_OPCION)
+PASS La respuesta final de la pregunta 1 es la corregida (correcta)
+PASS La docente ve el mismo puntaje en el informe
+
+Resultado: 6 PASS · 0 FAIL

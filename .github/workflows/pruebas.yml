@@ -71,7 +71,7 @@ jobs:
         run: pwsh -NoProfile -File infra/windows/pruebas/probar-modulo.ps1
 
   contenedores:
-    name: Scripts de atlas-srv01 y de Proxmox en Ubuntu 24.04
+    name: Scripts de atlas-srv01, respaldos, monitoreo y Proxmox en Ubuntu 24.04
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -80,3 +80,7 @@ jobs:
         run: infra/linux/pruebas/probar-en-contenedor.sh
       - name: Ajustes que salieron del laboratorio Proxmox
         run: docker run --rm --privileged -v "$PWD/infra:/infra:ro" atlas-ubuntu-test:24.04 bash /infra/pruebas/probar-ajustes-laboratorio.sh
+      - name: Respaldos automáticos (atlas-respaldo) contra MySQL 8.0 real
+        run: sudo infra/pruebas/probar-respaldos.sh
+      - name: Monitoreo con Zabbix 7.0 LTS (agente, chequeo de salud, SLA)
+        run: sudo infra/pruebas/probar-monitoreo.sh

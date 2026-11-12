@@ -1,0 +1,306 @@
+{
+ "s01": [
+  "Actualmente, muchos sistemas educativos evalúan principalmente resultados finales: notas, respuestas correctas e incorrectas y asistencia. Esto no permite conocer suficientemente cómo aprende cada estudiante, qué capacidades desarrolla ni qué tipo de actividades pueden favorecer su aprendizaje.",
+  "El problema es especialmente relevante en contextos donde existen pocos docentes, recursos limitados o dificultades de acceso a tecnología y conectividad."
+ ],
+ "s02": [
+  "Desarrollar ATLAS, una plataforma informática que utiliza actividades educativas para recopilar información sobre el proceso de resolución de los estudiantes.",
+  "El sistema registra respuestas correctas e incorrectas, cambios de respuesta, cantidad de intentos y tiempos de resolución. Se distingue el tiempo total del tiempo activo, descontando las pausas registradas. Cada pregunta se vincula con una o más habilidades para consultar el porcentaje de aciertos por estudiante y por grupo.",
+  "Estos datos permiten describir el desempeño durante las actividades. Los tiempos, por sí solos, no permiten concluir cómo son la memoria, la atención o las estrategias de una persona: también pueden verse afectados por distracciones, interrupciones o problemas de conexión.",
+  "La plataforma utiliza los datos registrados para elaborar perfiles de desempeño y recomendaciones que el docente puede revisar. ATLAS no pretende diagnosticar ni determinar la inteligencia de una persona. Su objetivo es aportar información que ayude a orientar las actividades educativas."
+ ],
+ "s03": [
+  "Diseñar e implementar una plataforma web capaz de recopilar, procesar y analizar interacciones educativas para generar información personalizada sobre los procesos de aprendizaje de los estudiantes."
+ ],
+ "s05": [
+  "Para estudiantes",
+  "• Registro e inicio de sesión.",
+  "• Acceso a actividades educativas con distintos niveles de dificultad.",
+  "• Resolución de una pregunta por vez y registro de las interacciones.",
+  "• Consulta del resultado, el tiempo total y el tiempo activo.",
+  "• Acceso a la siguiente actividad sugerida por el sistema y confirmada o cambiada por el docente.",
+  "• Acceso a material de estudio, previsto en la propuesta.",
+  "Para docentes",
+  "• Panel de estudiantes y consulta de la evolución individual y grupal.",
+  "• Creación de actividades con habilidades asociadas a cada pregunta.",
+  "• Consultas guiadas por grupo, período y tipo de información.",
+  "• Indicadores de acierto por habilidad y recomendaciones con su fundamento.",
+  "• Confirmación o cambio de la actividad sugerida al estudiante.",
+  "• Estadísticas y reportes.",
+  "Para administradores",
+  "• Gestión de usuarios, instituciones y permisos.",
+  "• Configuración institucional de la aprobación previa a la publicación.",
+  "• Auditoría de accesos.",
+  "• Administración de servidores y monitoreo, dentro del alcance de infraestructura.",
+  "• Respaldos, dentro del alcance de infraestructura."
+ ],
+ "s06": [
+  "ATLAS analiza los datos registrados durante las actividades mediante reglas explícitas.",
+  "Los indicadores muestran resultados y cambios en el desempeño; no asignan etiquetas permanentes al estudiante.",
+  "Por ejemplo, un porcentaje bajo de aciertos en preguntas asociadas a una habilidad puede señalar un contenido que conviene reforzar. El docente consulta el fundamento de la recomendación y confirma o cambia la siguiente actividad. La decisión y la sugerencia original quedan registradas.",
+  "En el Hito 2, la identificación de estudiantes que requieren atención se apoya en las reglas R01 a R08. El aprendizaje automático se mantiene como experimento y solo presenta resultados cuando cuenta con datos suficientes. El asistente conversacional es opcional; las consultas guiadas son la vía principal para consultar la información."
+ ],
+ "s13": [
+  "ATLAS podría utilizarse inicialmente en instituciones educativas y posteriormente adaptarse a diferentes contextos.",
+  "Una posibilidad de validación futura sería realizar una prueba piloto durante actividades de voluntariado educativo, siempre respetando consentimiento, privacidad y protección de datos de menores.",
+  "El objetivo no sería etiquetar a los niños, sino proporcionar herramientas que permitan a docentes comprender mejor sus procesos de aprendizaje."
+ ],
+ "s14": [
+  "Una primera versión será un prototipo académico.",
+  "Posteriormente podría evolucionar hacia una plataforma comercial de aprendizaje adaptativo utilizada por escuelas, instituciones educativas, organizaciones sociales, programas educativos y empresas de capacitación.",
+  "La plataforma podría incorporar nuevos tipos de actividades, modelos de análisis y diferentes idiomas y contextos educativos."
+ ],
+ "s16": [
+  "El resultado final será un prototipo funcional de ATLAS, compuesto por: plataforma web, backend, base de datos, sistema de actividades, motor de análisis, panel docente, gestión de usuarios, infraestructura Linux, integración Windows, red segmentada, firewall, VPN, monitoreo, backups y documentación técnica.",
+  "El proyecto buscará demostrar que es posible utilizar tecnología y análisis de datos para ofrecer una educación más personalizada, manteniendo una infraestructura segura, escalable y administrable."
+ ],
+ "s17": [
+  "Desarrollo del Prototipo Institucional. El proyecto consistirá en el desarrollo de un prototipo funcional de ATLAS (plataforma web, backend, base de datos y motor de análisis) orientado específicamente a la comunidad educativa del Instituto Tecnológico de Informática (ITI) de UTU.",
+  "Recopilación y Análisis de Datos. La plataforma utilizará actividades y juegos educativos para recopilar información sobre el proceso de resolución de problemas de los estudiantes del instituto.",
+  "Perfiles y Recomendaciones. El sistema procesará las interacciones para generar perfiles de aprendizaje y proporcionar recomendaciones a los docentes del ITI, ayudándoles a personalizar las estrategias educativas.",
+  "Infraestructura Tecnológica Integrada. El proyecto implementará una arquitectura cliente-servidor montada sobre una infraestructura que integrará servidores Linux y un entorno Windows Server.",
+  "Seguridad y Redes. Se diseñará una red segmentada mediante VLAN, con implementación de firewall, VPN, mecanismos de monitoreo y políticas de respaldo."
+ ],
+ "s18": [
+  "Límite Institucional y Poblacional. El sistema se diseñará para funcionar inicialmente dentro de una sola institución educativa. Por lo tanto, la implementación y las pruebas se limitarán exclusivamente al Instituto Tecnológico de Informática (ITI) de UTU, quedando fuera del alcance otras sedes de UTU u otras instituciones de Uruguay.",
+  "Límite Clínico y Diagnóstico. La plataforma ATLAS no pretende diagnosticar ni determinar la inteligencia de una persona. El objetivo no es etiquetar a los estudiantes, sino proveer herramientas a los docentes para comprender sus procesos de aprendizaje.",
+  "Límite Comercial y de Escalabilidad Externa. El resultado será un prototipo académico. Su evolución hacia una plataforma comercial o su uso por empresas de capacitación y organizaciones sociales queda fuera del alcance de esta tesis y se considera una proyección futura.",
+  "Límite de Integración Externa. En esta fase de prototipo, el sistema funcionará de manera interna, por lo que la incorporación de sincronización con servicios externos no está contemplada en el alcance inicial.",
+  "Límite del alcance de la inteligencia artificial . Los modelos de aprendizaje automático que incorpora ATLAS son modelos clásicos (agrupamiento y clasificación) entrenados con los datos generados por la propia plataforma. No se desarrollan modelos de lenguaje propios: para las funciones conversacionales se utiliza un modelo de terceros mediante su API, limitado a la redacción de respuestas sobre datos ya procesados por el sistema. El modelo de lenguaje no interviene en el análisis ni en la generación de recomendaciones."
+ ],
+ "s19nota": [
+  "Los datos completos de cada integrante y el correo de equipo, presentado el 8 de agosto y aprobado por el cuerpo docente.",
+  "Cada uno se hace cargo de una tutoría, pero eso no significa que trabaje aislado. El cuerpo docente nos planteó que todos tenemos que conocer todo el proyecto, así que al cierre de cada Sprint hacemos una reunión donde cada uno le explica su parte al resto y contesta preguntas. La idea es que cualquiera pueda defender cualquier sección, no solo la propia."
+ ],
+ "s20_1": [
+  "El problema que planteamos en la sección 1 lo veníamos observando, pero una cosa es observarlo y otra es tener datos. Antes de empezar a diseñar el sistema, tuvimos la idea de preguntarle directamente a los docentes qué les pasa hoy cuando tienen que evaluar el proceso de aprendizaje de un estudiante, no solo el resultado."
+ ],
+ "s20_2": [
+  "Preparamos un cuestionario anónimo de diez preguntas, en formulario digital. Buscamos cubrir estos puntos:"
+ ],
+ "s20_2b": [
+  "La pregunta sobre reparos la pusimos a propósito. Un formulario que solo recoge respuestas favorables no sirve para diseñar nada: si un docente nos dice que le preocupa la privacidad de los datos o que le va a sumar trabajo, eso es información útil que tenemos que contemplar en el diseño."
+ ],
+ "s20_3": [
+  "Mandamos el formulario a docentes de distintos niveles: primaria, educación especial, secundaria, UTU y terciario. Queríamos ver si el problema es general o si se da solo en un nivel.",
+  "Vale aclarar que esto no cambia el alcance del prototipo, que sigue siendo el ITI de UTU como dice la sección 17. Consultar a docentes de otros niveles nos sirve para entender mejor el problema, no para ampliar dónde lo vamos a implementar."
+ ],
+ "s20_4": [
+  "El relevamiento obtuvo cuatro respuestas, cantidad que no permite generalizar ni realizar análisis estadístico. Los resultados se interpretan, por tanto, como indicios cualitativos y no como evidencia concluyente. Aun así, aportan información relevante para el diseño del sistema y, en algunos puntos, obligan a revisar supuestos.",
+  "El problema que planteamos existe, pero su causa es distinta a la que asumimos. La mitad de los docentes consultados trabaja con grupos de más de 35 estudiantes. Cuando se les preguntó qué información sobre sus estudiantes les gustaría tener y hoy no tienen, una respuesta fue especialmente clara: señaló que le interesan las trayectorias personales, pero que por la masividad de los grupos no es posible acceder a ellas. El obstáculo que identifican no es la ausencia de datos, sino la falta de tiempo para procesarlos.",
+  "Esto se confirma en la última pregunta. Al consultarles qué les ayudaría a mejorar el seguimiento pedagógico más allá de una herramienta digital, las cuatro respuestas apuntaron en la misma dirección: más instancias uno a uno, grupos más pequeños, más tiempo para dedicarles de forma individualizada. Ninguna mencionó necesitar más información o mejores registros.",
+  "La valoración de ATLAS fue moderada, no entusiasta. Ante la pregunta sobre la utilidad de una plataforma que muestre tiempo de resolución, intentos y evolución, la mitad respondió con un valor intermedio de la escala y la otra mitad con valores altos. Ninguno la consideró poco útil, pero tampoco hubo una adhesión mayoritaria. En cuanto a la disposición a probar el sistema, la mitad respondió afirmativamente y la otra mitad condicionó su participación al tiempo que la herramienta les demande.",
+  "Los reparos expresados son consistentes entre sí y señalan tres condiciones de adopción.",
+  "El primero plantea que una herramienta de este tipo debe ser un insumo de evaluación más y no la única referencia. El segundo advierte que podría resultar más adecuada para grupos pequeños.",
+  "Los dos restantes se refieren a la eficiencia y al correcto funcionamiento del sistema.",
+  "Estos señalamientos tienen consecuencias directas sobre el proyecto:",
+  "El primer reparo coincide con un límite que ATLAS ya había establecido: la plataforma se define como herramienta de apoyo al docente y no sustituye su criterio ni toma decisiones pedagógicas. El relevamiento confirma que esa delimitación no es meramente formal, sino una condición que los docentes consideran necesaria.",
+  "El segundo reparo constituye la observación más significativa del relevamiento, porque tensiona el planteo original. La mitad de los consultados trabaja con grupos de más de 35 estudiantes, y precisamente uno de ellos sugiere que la herramienta serviría mejor en grupos reducidos. Si ATLAS exige al docente revisar información individual de cada estudiante, en grupos numerosos reproduce el mismo problema de falta de tiempo que pretende resolver. De ello se desprende una orientación de diseño: el análisis grupal no es una funcionalidad complementaria, sino la vía principal de valor para docentes con grupos masivos. La capacidad de identificar dificultades frecuentes del conjunto y de señalar qué estudiantes requieren atención prioritaria resulta más pertinente, en ese contexto, que el detalle individual exhaustivo.",
+  "El tercer y cuarto reparo, referidos a eficiencia y funcionamiento, refuerzan los requisitos RNF-02 y RNF-03: una plataforma lenta o inestable no será adoptada, con independencia de la calidad de su análisis.",
+  "Sobre las prácticas de evaluación actuales. Tres de los cuatro docentes indicaron que utilizan la participación en clase como principal insumo de evaluación, por encima de las pruebas y exámenes. Se trata de una forma de valoración cualitativa que ATLAS no registra ni pretende registrar. Esto delimita con mayor precisión el aporte del sistema: no reemplaza la observación directa del docente, sino que agrega una dimensión —el proceso de resolución— que hoy no queda documentada.",
+  "Respecto de las herramientas digitales existentes, la mitad declaró utilizar una provista por la institución, un cuarto una herramienta propia y el cuarto restante ninguna. Esto indica que ATLAS no ingresaría en un vacío tecnológico: debería convivir con instrumentos ya instalados, lo que refuerza la necesidad de que aporte información diferente y no duplique lo que ya se registra en otros sistemas.",
+  "Conclusión general. El relevamiento valida la existencia del problema pero corrige su formulación. La dificultad de los docentes consultados no radica principalmente en la carencia de datos, sino en la imposibilidad de dedicar tiempo individual en grupos numerosos. En consecuencia, el valor de ATLAS no reside en generar más información para que el docente la analice, sino en procesarla y presentarla de modo que reduzca el tiempo necesario para identificar dónde intervenir. Esta precisión se incorpora al diseño del motor de análisis y otorga prioridad al análisis grupal previsto en RF-18.",
+  "Se prevé ampliar el relevamiento durante el Sprint 2 a fin de incrementar la cantidad de respuestas y confirmar o corregir estos indicios."
+ ],
+ "s21": [
+  "Los objetivos específicos ya están definidos en la sección 4. Lo que agregamos acá es cómo vamos a comprobar que cada uno se cumplió, para que al final del proyecto se pueda verificar de forma objetiva y no quede librado a una apreciación."
+ ],
+ "s22_1": [
+  "La sección 15 dejaba abierta la opción entre Scrum y Kanban. Elegimos Scrum.",
+  "La razón principal es que el proyecto tiene fechas fijas puestas por la institución: tres hitos con fecha de entrega. Scrum trabaja en bloques de tiempo cerrados, que se alinean bien con esas fechas. Kanban funciona con flujo continuo, y nos pareció que no se acoplaba con un calendario de entregas rígido.",
+  "Además, ATLAS se divide en partes que pueden avanzar en paralelo: la autenticación no necesita que el motor de análisis esté listo, y el diseño de red puede ir avanzando mientras se programa. Scrum nos permite organizar eso en ciclos con revisión al final de cada uno."
+ ],
+ "s22_3b": [
+  "Una aclaración sobre el Daily: como ninguno del equipo tiene dedicación completa al proyecto, no llegamos a hacer una reunión todos los días. Lo resolvemos actualizando el tablero cada uno por su cuenta y con reuniones breves cuando hace falta. Lo dejamos escrito tal cual es, porque poner que hacemos reuniones diarias cuando no las hacemos le quitaría valor a toda la documentación.",
+  "Durante el Sprint 1 la coordinación del equipo se realizó de forma asincrónica, sin registro formal de los eventos de Scrum. Las decisiones tomadas se documentan en la sección 31.3. A partir del Sprint 2 se adoptan actas de las reuniones de planificación, revisión y retrospectiva, que se incorporan al Anexo F."
+ ],
+ "s22_4": [
+  "Al cerrar cada Sprint, antes de la Review, cada responsable le explica al resto lo que hizo y contesta preguntas. Esto no es parte de Scrum, lo sumamos nosotros porque el cuerpo docente planteó que todos tenemos que poder dar cuenta de todo el proyecto."
+ ],
+ "s22_8": [
+  "El tablero tiene una lista por cada área del proyecto: Diseño funcional, Programación, Base de datos, POSIX/Linux, Redes MS y Conectividad, Gestión, Puesta en común y Cierre.",
+  "Aparte, hay una lista de Backlog para anotar las tareas de los Sprints siguientes.",
+  "Cada tarjeta tiene descripción, checklist con las subtareas, responsable asignado y fecha de vencimiento. A qué Sprint pertenece se marca con una etiqueta de color."
+ ],
+ "s25_2": [
+  "Capas separadas. La interfaz, la lógica de negocio y el acceso a datos tienen responsabilidades distintas. Un cambio en la presentación no obliga a modificar los cálculos del sistema.",
+  "Comunicación por API. La interfaz solicita datos mediante una API REST que devuelve JSON. El contrato de la API se conserva al incorporar Laravel.",
+  "Laravel y lógica propia. Laravel 12 resuelve el ruteo, la sesión, la validación y los errores de la capa HTTP. Las reglas de negocio, los indicadores, los servicios y los repositorios permanecen en clases PHP propias. El análisis adicional se mantiene en un servicio Python separado. Así se reutiliza el trabajo existente y se evita que las reglas de ATLAS dependan del framework.",
+  "La organización de la capa HTTP se apoya en la documentación de Laravel (s. f.).",
+  "Nginx actúa como servidor web del despliegue documentado (NGINX, s. f.).",
+  "Las máquinas virtuales se alojan en Proxmox. vmbr1 realiza la conmutación de las VLAN y router-lab concentra el enrutamiento y el firewall. Este entorno sustituye la simulación de red prevista en el Hito 1 (Santiago, 2026).",
+  "Servicio de análisis separado. PHP ejecuta las reglas y los indicadores principales.",
+  "Python reúne las funciones adicionales de aprendizaje automático y se comunica mediante una API interna. Este componente es experimental: si no está disponible, la resolución de actividades y el registro de datos siguen funcionando."
+ ],
+ "s25_3b": [
+  "La aprobación previa es configurable por institución y, por defecto, no se exige. El docente puede publicar directamente desde borrador en sus grupos; se registra quién realizó la transición y cuándo. Si la institución exige revisión, se conserva el circuito de pendiente, aprobada o rechazada y publicada."
+ ],
+ "s25_4": [
+  "El análisis se organiza en tres niveles. Las reglas de PHP sostienen el funcionamiento principal; el aprendizaje automático es experimental y el asistente conversacional es opcional.",
+  "Nivel 1 - Reglas explícitas (PHP) El motor calcula cuatro indicadores a partir de los registros de resolución. El puntaje se obtiene como (respuestas correctas / total de preguntas) × 100. La eficiencia relaciona el puntaje con el tiempo de resolución respecto al promedio del grupo. La mejora se calcula como la diferencia entre el resultado del último intento y el del primero. La persistencia cuenta los intentos registrados hasta el resultado final.",
+  "Estos indicadores describen el desempeño registrado. Las diferencias entre intentos y los tiempos no demuestran por sí solos aprendizaje, atención, memoria ni tolerancia a la dificultad.",
+  "Para el Hito 2 se incorpora el acierto por habilidad. Cada pregunta debe asociarse con una o más habilidades antes de publicar la actividad, por ejemplo lógica, comprensión lectora, cálculo o razonamiento espacial. El catálogo puede ampliarse. Los resultados se muestran por estudiante y por grupo, ordenados para identificar qué conviene reforzar.",
+  "Se presenta el tiempo activo separado del total. Una pausa se registra cuando transcurren más de 60 segundos sin actividad o cuando se oculta la pestaña, tomando como inicio la última actividad registrada. El tiempo activo resulta de descontar las pausas del tiempo total.",
+  "Los cálculos, el análisis grupal, el control de la versión de las reglas y el detalle de auditoría se realizan en PHP. La base almacena y protege esos datos. Las reglas R01 a R08 permiten señalar situaciones que requieren atención y consultar el fundamento mediante «¿Por qué?». Con los mismos datos, el nivel determinista produce el mismo resultado.",
+  "Nivel 2 - Aprendizaje automático (Python) El servicio Python conserva los modelos de agrupamiento K-means y regresión logística con scikit-learn. En el Hito 2 se consideran experimentales. La identificación principal de estudiantes que requieren atención se resuelve con las reglas explicables del Nivel 1.",
+  "Los modelos utilizan variables derivadas de los registros, como puntaje promedio, tiempo relativo al grupo, intentos, variación de resultados, actividades abandonadas y frecuencia de uso. Su interpretación depende de contar con datos suficientes.",
+  "Cuando no se alcanza el volumen requerido, el sistema informa «datos insuficientes».",
+  "La existencia del servicio y sus pruebas no equivale a demostrar eficacia pedagógica ni a validar un diagnóstico sobre los estudiantes.",
+  "Nivel 3 - Asistente conversacional (opcional) El asistente permite consultar información ya procesada y redactar respuestas sobre esos datos. No decide qué debe hacer un estudiante ni sustituye el criterio del docente.",
+  "Consultas guiadas como vía principal La pantalla Consultas permite elegir grupo, período y qué información ver: estudiantes que requieren atención, preguntas con mayor dificultad, aciertos por habilidad, resultados y tiempos. Cada consulta explica cómo se obtuvo la información.",
+  "Este recorrido evita que el acceso a los datos dependa de formular una pregunta en lenguaje natural. El asistente queda disponible como complemento opcional.",
+  "Alcance y límites del asistente El modelo de lenguaje recibe indicadores ya calculados y contexto preparado por ATLAS. Su función se limita a redactar respuestas sobre esa información. Las recomendaciones y sus fundamentos se generan mediante las reglas del sistema.",
+  "Limitar el contexto reduce la posibilidad de respuestas sin fundamento, pero no elimina los errores de redacción o interpretación. Por eso, la información verificable permanece disponible en los paneles y las consultas guiadas.",
+  "Protección de datos. El diseño prevé enviar al servicio externo información anonimizada, sin nombres, cédulas ni otros datos identificables. La asociación con la persona se conserva dentro de ATLAS, conforme al requisito RNF-14.",
+  "Estado del Hito 2. Se registraron pruebas del servicio Python, pero la conexión con la API real de Groq sigue pendiente porque requiere una clave. No se presenta esa integración externa como validada.",
+  "Decisión sobre la siguiente actividad ATLAS sugiere una actividad mediante reglas y conserva su fundamento. El docente puede confirmar esa propuesta o elegir otra. La decisión se almacena en decisiones_recomendacion y el estudiante ve la actividad como «Recomendada por tu docente». Esto permite distinguir la sugerencia del sistema de la intervención de la persona responsable."
+ ],
+ "s25_5": [
+  "Los servicios de ATLAS se ejecutan en contenedores Docker. Esta configuración reúne las versiones y dependencias necesarias para que el equipo trabaje en un entorno reproducible.",
+  "Los contenedores reducen diferencias entre equipos, pero no garantizan por sí solos que el laboratorio tenga el mismo comportamiento. La red, los permisos, los recursos del servidor y las políticas de seguridad deben verificarse en ese entorno."
+ ],
+ "s27_3": [
+  "Normalización y resultado almacenado. Se mantiene el modelo en tercera forma normal y el puntaje calculado en resultados. PHP calcula el puntaje al finalizar el intento y lo guarda una sola vez dentro de la misma transacción. Un intento cerrado no se reabre, existe una restricción UNIQUE para el resultado por intento y la cuenta de aplicación no puede modificarlo. E-BD-008 informa 0 inconsistencias sobre 8.749 resultados.",
+  "Separar intentos de resultados. Un intento puede estar en curso y todavía no tener resultado. Esta separación permite distinguir las actividades en curso, abandonadas y terminadas.",
+  "Separar interacciones de respuestas. Las respuestas guardan qué opción eligió el estudiante. Las interacciones conservan eventos del proceso: cambios de opción, intervalos entre acciones y navegación registrada durante la resolución.",
+  "Reglas almacenadas y ejecución en PHP. reglas_analisis conserva la definición y los parámetros que el administrador puede ajustar. PHP aplica las reglas y gestiona su versión; recomendacion_regla conserva la relación con la sugerencia generada. Almacenar una regla no significa ejecutar el cálculo dentro de MySQL."
+ ],
+ "s28_3": [
+  "Los directorios: /srv/atlas/ atlasadmin:atlas-admin 750 ├── web/ atlasweb:atlas-web 750 │ ├── public/ atlasweb:atlas-web 755 │ └── app/ atlasweb:atlas-web 750 ├── datos/ atlasdb:atlas-db 770 ├── logs/ atlasadmin:atlas-admin 770 ├── scripts/ atlasadmin:atlas-admin 750 ├── config/ atlasadmin:atlas-admin 750 └── backups/ atlasbkp:atlas-backup 700",
+  "ACL. Los permisos comunes de Linux solo distinguen dueño, grupo y otros. Eso no alcanza cuando alguien necesita acceso a algo sin pertenecer al grupo dueño y sin que haya que dárselo a todo el mundo. Para eso están las ACL, y así lo configuraríamos: # El respaldo lee los datos sin estar en atlas-db setfacl -m u:atlasbkp:rx /srv/atlas/datos",
+  "# El servicio web escribe logs, y lo hereda lo que se cree después setfacl -m u:atlasweb:rwx /srv/atlas/logs setfacl -d -m u:atlasweb:rwx /srv/atlas/logs",
+  "# Auditoría lee pero no modifica (RF-15) setfacl -m g:atlas-audit:rx /srv/atlas/logs setfacl -d -m g:atlas-audit:rx /srv/atlas/logs La ACL por defecto permite que los nuevos registros hereden los permisos definidos.",
+  "El diseño contempla el atributo inmutable para la configuración y solo anexado para la auditoría; son controles que deben verificarse por recurso, no inferirse del estado general del servicio. chattr +i /srv/atlas/config/atlas.conf chattr +a /srv/atlas/logs/auditoria.log"
+ ],
+ "s29_2": [
+  "La estructura creada contiene OU=ATLAS con Administración, Docentes y Estudiantes, cada una con Usuarios y Equipos; también Servidores y ServiciosTI. OU=Grupos reúne GG_Administracion, GG_Docentes, GG_Estudiantes y GG_SoporteTI. Soporte TI recibe delegación acotada sin pertenecer a Domain Admins.",
+  "DOC-PC01 se unió a la OU de Equipos de Docentes. La captura gpresult confirma el usuario en la OU de Docentes, la pertenencia a GG_Docentes y la aplicación de GPO_Docentes (E-WIN-003b)."
+ ],
+ "s29_4": [
+  "DNS utiliza atlas.local integrada en AD y la zona inversa 16.172.in-addr.arpa. Se documentaron registros A y PTR de ambos servidores, transferencias de zona deshabilitadas y reenviadores 1.1.1.1 y 8.8.8.8."
+ ],
+ "h1": [
+  "H.1.1 Propósito Este anexo especifica los requisitos funcionales y no funcionales de ATLAS. Su finalidad es establecer, de forma precisa y verificable, qué debe hacer el sistema, de modo que el equipo de desarrollo cuente con una referencia común durante la construcción y que el cuerpo docente disponga de un criterio objetivo para evaluar el producto resultante.",
+  "Está dirigido al equipo de desarrollo del proyecto, a los tutores de cada área técnica y al docente de Gestión de Proyectos.",
+  "H.1.2 Alcance El producto especificado es ATLAS, una plataforma web que recopila información sobre el proceso de resolución de actividades educativas, la procesa y genera información de apoyo para el docente.",
+  "El sistema registra las interacciones de los estudiantes durante la resolución (tiempo empleado, cantidad de intentos, cambios de respuesta y secuencia de navegación), construye perfiles de aprendizaje a partir de esos datos y presenta al docente indicadores individuales y grupales, junto con recomendaciones fundamentadas en reglas explícitas.",
+  "ATLAS no diagnostica ni determina la capacidad intelectual de ninguna persona, y no sustituye el criterio pedagógico del docente. Su función es reducir el tiempo necesario para identificar dónde intervenir, particularmente en grupos numerosos.",
+  "El prototipo se implementa y prueba exclusivamente en el Instituto Tecnológico de Informática (ITI) de UTU, conforme a lo establecido en las secciones 17 y 18. La validación de laboratorio es parcial: la red y los servicios tienen evidencias, mientras el circuito funcional completo y la integración de Linux permanecen pendientes."
+ ],
+ "h2_1": [
+  "ATLAS es un producto nuevo y autónomo. No constituye la evolución de un sistema anterior ni un módulo de una plataforma existente. Se implementa como una aplicación web de arquitectura cliente-servidor, organizada en capas, que se ejecuta sobre una infraestructura propia compuesta por un servidor Linux (aplicación, base de datos y servicios de archivos) y un servidor Windows Server (servicios de directorio, resolución de nombres y asignación dinámica de direcciones). Ambos se ubican en un segmento de red dedicado, separado de los segmentos de usuarios mediante VLAN, según se detalla en las secciones 28, 29 y 30.",
+  "El relevamiento realizado indica que ATLAS no ingresaría en un vacío tecnológico: la mayoría de los docentes consultados ya utiliza alguna herramienta digital. En consecuencia, el sistema se concibe para aportar información que esas herramientas no registran —el proceso de resolución— y no para duplicar lo que ya se documenta en otros sistemas."
+ ],
+ "_reqs": [
+  {
+   "tabla": 9,
+   "id": "RF-01",
+   "texto": " Campo Contenido Identificador Nombre Descripción Prioridad Precondición Postcondición RF-01 Registro de usuarios Registrar usuarios con los datos requeridos para su identificación. Alta El administrador ha iniciado sesión y tiene permisos de gestión. El usuario queda almacenado con su rol e institución asociados. Criterios de aceptación Se crea un usuario con datos válidos y queda disponible para iniciar sesión. Con un correo ya registrado, el sistema rechaza el alta e informa el motivo. Con campos obligatorios vacíos, el sistema no persiste el registro. "
+  },
+  {
+   "tabla": 10,
+   "id": "RF-02",
+   "texto": " Identificador RF-02 Nombre Autenticación Descripción El sistema deberá permitir a los usuarios iniciar sesión mediante credenciales válidas. Prioridad Alta Precondición El usuario está registrado y activo en la plataforma. Postcondición Se establece una sesión válida asociada al rol del usuario. Criterios de aceptación Con credenciales válidas, el usuario accede al panel correspondiente a su rol. Con credenciales inválidas, se muestra un error que no revela cuál dato es incorrecto. A los tres intentos fallidos, el acceso se bloquea temporalmente. "
+  },
+  {
+   "tabla": 11,
+   "id": "RF-03",
+   "texto": " Identificador RF-03 Nombre Gestión de roles Descripción El sistema deberá permitir diferenciar los roles de estudiante, docente y administrador. Prioridad Alta Precondición Existen roles definidos con sus permisos asociados. Postcondición Cada usuario accede únicamente a las funciones habilitadas para su rol. Criterios de aceptación Un estudiante no accede al panel docente. Un docente no accede a la gestión administrativa. Todo intento de acceso no autorizado devuelve un error 403 y queda registrado. "
+  },
+  {
+   "tabla": 12,
+   "id": "RF-04",
+   "texto": " Identificador RF-04 Nombre Acceso a actividades educativas Descripción El sistema deberá permitir a los estudiantes acceder a actividades educativas. Prioridad Alta Precondición El estudiante ha iniciado sesión y pertenece a un grupo con actividades publicadas. Postcondición El estudiante visualiza las actividades disponibles y puede iniciarlas. Criterios de aceptación El estudiante ve únicamente las actividades publicadas de sus grupos. Las actividades en borrador o pendientes de aprobación no son visibles. "
+  },
+  {
+   "tabla": 13,
+   "id": "RF-05",
+   "texto": " Identificador RF-05 Nombre Niveles de dificultad Descripción El sistema deberá permitir establecer diferentes niveles de dificultad para las actividades. Prioridad Media Precondición El docente está creando o editando una actividad. Postcondición La actividad queda almacenada con su nivel de dificultad asociado. Criterios de aceptación El docente asigna un nivel a cada actividad y el nivel se refleja en la visualización del estudiante y en los reportes. "
+  },
+  {
+   "tabla": 14,
+   "id": "RF-06",
+   "texto": " Identificador RF-06 Nombre Registro de interacciones Descripción El sistema deberá registrar las interacciones realizadas por los estudiantes durante las actividades. Prioridad Alta Precondición El estudiante ha iniciado un intento de resolución. Postcondición Cada evento de interacción queda almacenado asociado al intento correspondiente. Criterios de aceptación Se registran cambios de opción, pausas y desplazamientos entre preguntas, con su marca temporal. Los registros permiten reconstruir la secuencia de resolución. "
+  },
+  {
+   "tabla": 15,
+   "id": "RF-07",
+   "texto": " Identificador RF-07 Nombre Registro de resultados Descripción El sistema deberá almacenar los resultados obtenidos por los estudiantes. Prioridad Alta Precondición El estudiante ha finalizado un intento. Postcondición El resultado queda calculado y almacenado, asociado al intento. Criterios de aceptación Al cerrar un intento se genera un registro de resultado con el puntaje obtenido. Los intentos abandonados no generan resultado. "
+  },
+  {
+   "tabla": 16,
+   "id": "RF-08",
+   "texto": " Identificador RF-08 Nombre Registro de intentos Descripción El sistema deberá registrar la cantidad de intentos realizados en una actividad. Prioridad Alta Precondición El estudiante accede a una actividad. RF-08 (continuación) Postcondición. Queda registrado cada inicio de resolución con su estado. Criterios de aceptación. Cada inicio genera un registro distinguible. El sistema diferencia los intentos en curso, finalizados y abandonados. "
+  },
+  {
+   "tabla": 17,
+   "id": "RF-09",
+   "texto": " Campo Contenido Identificador Nombre Descripción Prioridad Precondición Postcondición RF-09 Registro de tiempo Registrar por separado el tiempo total y el tiempo activo utilizado al resolver una actividad. Alta Existe un intento iniciado. El intento almacena su duración total y activa, junto con los eventos que permiten registrar las pausas. RF-09 (continuación) Criterios de aceptación. Los tiempos se expresan en segundos. Se registra una pausa cuando hay más de 60 segundos sin actividad o la pestaña queda oculta, desde la última actividad registrada. El tiempo activo descuenta las pausas del total. Un intento interrumpido conserva el tiempo transcurrido hasta la interrupción. La presentación no interpreta estos valores como medidas de memoria o atención. Verificación informada: TiempoActivoTest, ResolucionTest y pruebas de interfaz. "
+  },
+  {
+   "tabla": 18,
+   "id": "RF-10",
+   "texto": " Campo Contenido Identificador Nombre Descripción Prioridad Precondición Postcondición RF-10 Perfil de aprendizaje Procesar los datos registrados para generar información asociada al desempeño del estudiante. Media El estudiante cuenta con intentos finalizados. Se genera o actualiza el perfil con sus indicadores calculados. Criterios de aceptación El perfil se actualiza tras cada actividad finalizada. Cada indicador puede rastrearse hasta los datos que lo originaron. "
+  },
+  {
+   "tabla": 19,
+   "id": "RF-11",
+   "texto": " Identificador RF-11 Nombre Panel docente Descripción El sistema deberá proporcionar al docente un panel para consultar la evolución de los estudiantes. Prioridad Alta Precondición El docente tiene grupos asignados con actividades resueltas. Postcondición El docente visualiza la evolución individual y grupal de sus estudiantes. RF-11 (continuación) Criterios de aceptación. El docente accede únicamente a sus grupos. Puede elegir grupo, período y tipo de consulta. Los resultados incluyen información sobre cómo se calcularon los indicadores. "
+  },
+  {
+   "tabla": 20,
+   "id": "RF-12",
+   "texto": " Campo Contenido Identificador Nombre Descripción Prioridad Precondición Postcondición RF-12 Recomendaciones Generar sugerencias de actividades a partir de los datos registrados y de reglas explícitas. Media Existen perfiles con indicadores calculados. Se generan recomendaciones con su fundamento y la regla que las originó. Criterios de aceptación Cada recomendación indica qué regla la generó. El docente puede consultar el fundamento de cada sugerencia. "
+  },
+  {
+   "tabla": 21,
+   "id": "RF-13",
+   "texto": " Identificador RF-13 Nombre Estadísticas y reportes Descripción El sistema deberá permitir consultar estadísticas y reportes. Prioridad Media Precondición Existen datos registrados de actividades resueltas. Postcondición Se presentan los reportes solicitados según el rol del usuario. Criterios de aceptación Los reportes respetan el alcance de datos de cada rol y pueden filtrarse por grupo, actividad y período. "
+  },
+  {
+   "tabla": 22,
+   "id": "RF-14",
+   "texto": " Identificador RF-14 Nombre Gestión administrativa Descripción El sistema deberá permitir al administrador gestionar usuarios, instituciones y permisos. Prioridad Alta Precondición El usuario autenticado tiene rol de administrador. Postcondición Los cambios quedan aplicados y registrados en la auditoría. Criterios de aceptación El administrador crea, modifica y desactiva usuarios. Toda operación queda registrada con su autor y marca temporal. "
+  },
+  {
+   "tabla": 23,
+   "id": "RF-15",
+   "texto": " Identificador RF-15 Nombre Auditoría Descripción El sistema deberá registrar eventos relacionados con accesos y acciones relevantes realizadas dentro de la plataforma. Prioridad Media Precondición El sistema se encuentra operativo. Postcondición Cada acción relevante queda registrada de forma no modificable. Criterios de aceptación Se registran inicios de sesión, intentos fallidos y operaciones administrativas. Los registros no pueden alterarse ni eliminarse desde la aplicación. "
+  },
+  {
+   "tabla": 24,
+   "id": "RF-16",
+   "texto": " Identificador RF-16 Nombre Creación de actividades Descripción El sistema deberá permitir al docente crear actividades y cargar sus preguntas y opciones de respuesta. Prioridad Alta Precondición El docente ha iniciado sesión. Postcondición La actividad queda almacenada en estado borrador con sus preguntas y opciones. RF-16 (continuación) Criterios de aceptación. Una actividad sin preguntas no puede enviarse a aprobación ni publicarse. Cada pregunta admite opciones con una respuesta correcta identificada y debe vincularse con una o más habilidades antes de publicar. "
+  },
+  {
+   "tabla": 25,
+   "id": "RF-17",
+   "texto": " Campo Contenido Identificador Nombre Descripción Prioridad Precondición Postcondición RF-17 Ciclo de aprobación Gestionar borrador, pendiente, aprobada, rechazada y publicada. La revisión previa es configurable por institución y no se exige por defecto. Media Existe una actividad creada por un docente. La actividad queda en el estado correspondiente y se registra la transición con su autor. RF-17 (continuación) Criterios de aceptación. Solo las actividades publicadas son visibles para estudiantes. Si la institución no exige aprobación, el docente puede publicar directamente desde borrador. Si la exige, se aplica el circuito de revisión. Toda transición queda registrada con su autor. "
+  },
+  {
+   "tabla": 26,
+   "id": "RF-18",
+   "texto": " Campo Contenido Identificador Nombre Descripción RF-18 Análisis grupal Generar resultados agregados por grupo: promedios, distribución, preguntas con dificultad y aciertos por habilidad. Campo Contenido Prioridad Precondición Postcondición Alta El grupo cuenta con actividades resueltas por varios estudiantes. Se presenta el análisis del grupo y el período seleccionado, con sus indicadores. RF-18 (continuación) Criterios de aceptación. El análisis identifica preguntas con mayor proporción de error, muestra el acierto por habilidad y señala estudiantes que requieren atención mediante reglas explicables. Las consultas respetan el período elegido. "
+  },
+  {
+   "tabla": 27,
+   "id": "RF-19",
+   "texto": " Campo Contenido Identificador Nombre Descripción Prioridad Precondición Postcondición RF-19 Análisis de patrones Identificar agrupamientos de comportamientos de resolución mediante aprendizaje automático, como componente experimental. Baja Existe un volumen de datos suficiente para aplicar el modelo. Se generan agrupamientos por grupo y período, o se informa que los datos son insuficientes. RF-19 (continuación) Criterios de aceptación. El agrupamiento se calcula por período y solo se muestra cuando hay datos suficientes. Si el servicio no está disponible, las funciones principales permanecen operativas. "
+  },
+  {
+   "tabla": 28,
+   "id": "RF-20",
+   "texto": " Campo Contenido Identificador Nombre Descripción Prioridad Precondición Postcondición RF-20 Consulta conversacional Permitir consultas opcionales en lenguaje natural sobre datos procesados, sin sustituir las consultas guiadas. Baja El docente tiene grupos asignados con datos registrados. La consulta y su respuesta quedan almacenadas en el historial. Criterios de aceptación. Las respuestas se basan en datos procesados y no se envían datos identificables al modelo externo. La prueba de la API real de Groq está pendiente. H.3.2.1 Especificación detallada (continuación) "
+  },
+  {
+   "tabla": 29,
+   "id": "RF-21",
+   "texto": " Campo Contenido Identificador Nombre Descripción Prioridad Precondición Postcondición RF-21 Habilidades Asociar cada pregunta con una o más habilidades e informar el porcentaje de aciertos por habilidad, por estudiante y por grupo. Por confirmar en el backlog. El docente crea o edita una actividad y dispone del catálogo de habilidades. Las asociaciones quedan registradas y se utilizan en los indicadores. Criterios de aceptación • Cada pregunta debe tener una o más habilidades asociadas para publicar la actividad. • El panel muestra los aciertos por habilidad por estudiante y por grupo. • Las habilidades se ordenan de menor a mayor desempeño y la indicación «a reforzar» se expresa mediante texto. Origen. Decisión D-3. Verificación informada. IndicadoresHabilidadTest, PanelGrupalTest y pruebas de interfaz E-APP-009. H.3.2.1 Especificación detallada (continuación) "
+  },
+  {
+   "tabla": 30,
+   "id": "RF-22",
+   "texto": " Campo Contenido Identificador Nombre Descripción Prioridad Precondición Postcondición RF-22 Decisión del docente Permitir que el docente confirme o cambie la actividad sugerida por el sistema y conservar la decisión. Por confirmar en el backlog. Existe una recomendación para un estudiante al que el docente puede acceder. Se registra la decisión y el estudiante ve la actividad recomendada por su docente. Criterios de aceptación • El docente puede confirmar la actividad sugerida o elegir otra. • Quedan diferenciadas la sugerencia original y la decisión del docente. • El estudiante ve la actividad identificada como «Recomendada por tu docente». Origen. Decisión D-6. Verificación informada. MotorAnalisisApiTest::testElSistemaRecomiendaYElDocenteDecide y pruebas de interfaz E-APP-009. H.3.3 Requisitos no funcionales "
+  }
+ ]
+}

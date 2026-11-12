@@ -1,0 +1,6 @@
+# ATLAS · prueba 'psr12' · ./probar-todo.sh psr12
+# Fecha: 2026-11-12T17:41:52Z · Equipo: Linux 6.18.44-fc-v378 · Commit: 20e0506 + cambios sin commitear
+
+PSR-12: sin errores ni advertencias
+
+rc=0

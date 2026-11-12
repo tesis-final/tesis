@@ -1,0 +1,84 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Arquitectura</title>
+<style>
+ body{margin:0;background:#fff;font-family:"Liberation Sans",Arial,sans-serif;color:#0d1b2a}
+ svg text{font-family:"Liberation Sans",Arial,sans-serif}
+ .t{font-size:15px;font-weight:700}.s{font-size:12.5px}.m{font-size:11.5px;font-family:"Liberation Mono",monospace}
+</style>
+<svg id="d" width="1000" height="760" viewBox="0 0 1000 760" xmlns="http://www.w3.org/2000/svg">
+ <defs><marker id="f" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#13497f"/></marker></defs>
+ <rect x="0" y="0" width="1000" height="760" fill="#fff"/>
+ <!-- usuarios -->
+ <rect x="140" y="16" width="720" height="54" rx="10" fill="#f0f6fc" stroke="#13497f" stroke-width="1.5"/>
+ <text x="500" y="40" text-anchor="middle" class="t">Usuarios</text>
+ <text x="500" y="58" text-anchor="middle" class="s">Administrador (coordinación) · Docente · Estudiante — navegador, escritorio, tableta o celular</text>
+ <line x1="500" y1="70" x2="500" y2="100" stroke="#13497f" stroke-width="2" marker-end="url(#f)"/>
+ <text x="512" y="90" class="s">HTTPS (443) · VLAN 10, 20, 30 o VPN docente</text>
+ <!-- srv01 -->
+ <rect x="20" y="104" width="960" height="480" rx="14" fill="none" stroke="#04255a" stroke-width="2" stroke-dasharray="7 5"/>
+ <text x="36" y="128" class="t">atlas-srv01 · Ubuntu Server 24.04 · 172.16.40.10 (VLAN 40) · Docker Compose</text>
+ <!-- atlas_front -->
+ <rect x="40" y="142" width="600" height="120" rx="10" fill="#dceaf7" stroke="#2f77b8"/>
+ <text x="56" y="164" class="t">atlas-web · Nginx</text>
+ <text x="56" y="184" class="s">Presentación: SPA en HTML5, CSS3 y JavaScript (módulos ES, sin framework)</text>
+ <text x="56" y="202" class="s">CSP estricta · solo public/ expuesto · TLS con certificado de ATLAS-CA</text>
+ <text x="56" y="222" class="m">red atlas_front 192.168.250.0/28 · publica 80→443 en 172.16.40.10</text>
+ <line x1="340" y1="262" x2="340" y2="290" stroke="#13497f" stroke-width="2" marker-end="url(#f)"/>
+ <text x="352" y="282" class="s">API REST / JSON · /api/v1 (43 rutas)</text>
+ <!-- php -->
+ <rect x="40" y="294" width="600" height="168" rx="10" fill="#f0f6fc" stroke="#2f77b8"/>
+ <text x="56" y="316" class="t">atlas-php · PHP 8.3 + Laravel 12</text>
+ <text x="56" y="338" class="s">Middleware: atlas.sesion (401, CSRF) → atlas.permiso (403) → Form Request (422) → atlas.auditoria</text>
+ <text x="56" y="358" class="s">Controladores finos → Services (ActividadService, IntentoService, PanelDocente, Analysis)</text>
+ <text x="56" y="378" class="s">Analysis: Indicadores, IndicadoresHabilidad, MotorReglas, TiempoActivo (D-4)</text>
+ <text x="56" y="398" class="s">→ Repositories (PDO, consultas preparadas) · Asistente con Anonimizador</text>
+ <text x="56" y="420" class="m">atlas_front + atlas_back · cuenta MySQL atlas_app (sin DDL)</text>
+ <text x="56" y="440" class="m">sesiones en archivos · Argon2id · CSRF X-CSRF-Token</text>
+ <line x1="230" y1="462" x2="230" y2="492" stroke="#13497f" stroke-width="2" marker-end="url(#f)"/>
+ <line x1="520" y1="462" x2="520" y2="492" stroke="#13497f" stroke-width="2" marker-end="url(#f)"/>
+ <!-- db -->
+ <rect x="40" y="496" width="340" height="74" rx="10" fill="#fff" stroke="#2f77b8"/>
+ <text x="56" y="518" class="t">atlas-db · MySQL 8.0</text>
+ <text x="56" y="537" class="s">32 tablas · FK, CHECK, triggers de integridad</text>
+ <text x="56" y="556" class="m">red interna atlas_back · 3306 sin publicar</text>
+ <!-- analysis -->
+ <rect x="400" y="496" width="240" height="74" rx="10" fill="#fff" stroke="#2f77b8"/>
+ <text x="414" y="518" class="t">atlas-analysis</text>
+ <text x="414" y="537" class="s">Python 3.11 + FastAPI · ML</text>
+ <text x="414" y="556" class="m">experimental · LLM opcional</text>
+ <!-- monitoreo -->
+ <rect x="664" y="142" width="296" height="428" rx="10" fill="#fff8eb" stroke="#b45309"/>
+ <text x="680" y="164" class="t">Monitoreo (proyecto aparte)</text>
+ <text x="680" y="184" class="s">Zabbix 7.0 LTS en contenedores</text>
+ <rect x="680" y="198" width="264" height="58" rx="8" fill="#fff" stroke="#b45309"/>
+ <text x="692" y="218" class="s"><tspan font-weight="700">zabbix-web</tspan> · solo 127.0.0.1:8080</text>
+ <text x="692" y="238" class="s">se entra por túnel SSH desde VLAN 50</text>
+ <rect x="680" y="266" width="264" height="74" rx="8" fill="#fff" stroke="#b45309"/>
+ <text x="692" y="286" class="s"><tspan font-weight="700">zabbix-server</tspan> · zbx_front .64/28</text>
+ <text x="692" y="306" class="s">agentes de srv01 y dc01 · chequeo</text>
+ <text x="692" y="324" class="s">de /api/v1/health cada minuto</text>
+ <rect x="680" y="350" width="264" height="58" rx="8" fill="#fff" stroke="#b45309"/>
+ <text x="692" y="370" class="s"><tspan font-weight="700">zabbix-db</tspan> · MySQL 8.0</text>
+ <text x="692" y="390" class="s">red interna zbx_back .48/28</text>
+ <rect x="680" y="418" width="264" height="58" rx="8" fill="#fff" stroke="#b45309"/>
+ <text x="692" y="438" class="s"><tspan font-weight="700">zabbix-agent</tspan> · 10050</text>
+ <text x="692" y="458" class="s">UFW: solo desde 192.168.250.64/28</text>
+ <text x="680" y="500" class="s">Alertas: CPU, memoria y disco al 80 %,</text>
+ <text x="680" y="518" class="s">ATLAS caído o más lento que 3 s;</text>
+ <text x="680" y="536" class="s">SLA de disponibilidad del 99 %.</text>
+ <!-- inferior -->
+ <rect x="20" y="604" width="470" height="140" rx="12" fill="#f0f6fc" stroke="#13497f"/>
+ <text x="36" y="628" class="t">Servidor (host)</text>
+ <text x="36" y="650" class="s">UFW + cadena DOCKER-USER (Tabla 44) · SSH solo desde VLAN 50</text>
+ <text x="36" y="670" class="s">atlas.service (systemd) · atlas-ctl con sudo acotado</text>
+ <text x="36" y="690" class="s">atlas-respaldo: completo, incremental, configuración,</text>
+ <text x="36" y="710" class="s">verificación diaria y prueba mensual (temporizadores)</text>
+ <text x="36" y="730" class="s">usuarios y grupos POSIX, ACL y atributos (Tablas 25 a 27)</text>
+ <rect x="510" y="604" width="470" height="140" rx="12" fill="#f0f6fc" stroke="#13497f"/>
+ <text x="526" y="628" class="t">atlas-dc01 · Windows Server 2022 · 172.16.40.20</text>
+ <text x="526" y="650" class="s">AD DS atlas.local · DNS · DHCP · GPO · ATLAS-CA</text>
+ <text x="526" y="670" class="s">\\atlas-dc01\atlas-backups: copia externa (3-2-1),</text>
+ <text x="526" y="690" class="s">svc_atlas_backup crea pero no borra (CT-05)</text>
+ <text x="526" y="710" class="s">tarea diaria de retención · agente de Zabbix</text>
+ <text x="526" y="730" class="s">hora del dominio · unión de srv01 con SSSD</text>
+ <line x1="490" y1="674" x2="510" y2="674" stroke="#13497f" stroke-width="2" marker-end="url(#f)"/>
+</svg></html>

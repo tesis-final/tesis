@@ -1,0 +1,69 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Topología</title>
+<style>body{margin:0;background:#fff}svg text{font-family:"Liberation Sans",Arial,sans-serif;fill:#0d1b2a}.t{font-size:15px;font-weight:700}.s{font-size:12.5px}.m{font-size:11.5px;font-family:"Liberation Mono",monospace}</style>
+<svg id="d" width="1000" height="800" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+ <defs><marker id="f" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#13497f"/></marker></defs>
+ <rect width="1000" height="800" fill="#fff"/>
+ <!-- Internet -->
+ <rect x="30" y="20" width="250" height="60" rx="10" fill="#f0f6fc" stroke="#13497f"/>
+ <text x="155" y="45" text-anchor="middle" class="t">iPhone · red móvil</text><text x="155" y="64" text-anchor="middle" class="s">salida a Internet (USB)</text>
+ <line x1="155" y1="80" x2="155" y2="110" stroke="#13497f" stroke-width="2"/>
+ <rect x="30" y="110" width="250" height="78" rx="10" fill="#f0f6fc" stroke="#13497f"/>
+ <text x="155" y="134" text-anchor="middle" class="t">PC Windows · ICS</text><text x="155" y="153" text-anchor="middle" class="m">192.168.2.1/24</text>
+ <text x="155" y="173" text-anchor="middle" class="s">cliente WireGuard (perfil docente o admin)</text>
+ <line x1="280" y1="150" x2="350" y2="150" stroke="#13497f" stroke-width="2"/><text x="286" y="142" class="s">Ethernet</text><text x="286" y="172" class="s">vmbr0 → vmbr2</text>
+ <!-- Proxmox -->
+ <rect x="350" y="20" width="620" height="760" rx="14" fill="none" stroke="#04255a" stroke-width="2" stroke-dasharray="7 5"/>
+ <text x="366" y="44" class="t">Proxmox VE 9.2.2 (notebook)</text>
+ <text x="366" y="64" class="m">vmbr0 192.168.2.2/24 · vmbr2 10.99.0.1/24 (NAT) · vmbr1.50 172.16.50.10 (Gestión)</text>
+ <!-- router -->
+ <rect x="380" y="86" width="560" height="150" rx="10" fill="#dceaf7" stroke="#2f77b8"/>
+ <text x="396" y="110" class="t">router-lab (VM 110) · Ubuntu 24.04</text>
+ <text x="396" y="131" class="s">WAN ens19 10.99.0.2 · troncal ens18.10 a ens18.50 (.1 de cada VLAN)</text>
+ <text x="396" y="151" class="s">nftables: Tabla 44, política de descarte, registro ATLAS-*</text>
+ <text x="396" y="171" class="s">NAT solo de salida · relay DHCP hacia el DC</text>
+ <text x="396" y="193" class="s"><tspan font-weight="700">wg0 10.8.0.1/24 · UDP 51820</tspan> · admin 10.8.0.0/25 → VLAN 50 (R8)</text>
+ <text x="396" y="213" class="s">docente 10.8.0.128/25 → solo HTTPS a 172.16.40.10 (R9) · sin NAT</text>
+ <line x1="350" y1="150" x2="380" y2="150" stroke="#13497f" stroke-width="2" marker-end="url(#f)"/>
+ <line x1="660" y1="236" x2="660" y2="266" stroke="#13497f" stroke-width="2"/>
+ <!-- vmbr1 -->
+ <rect x="380" y="266" width="560" height="44" rx="8" fill="#13497f"/>
+ <text x="660" y="294" text-anchor="middle" class="t" style="fill:#fff">vmbr1 · switch virtual con VLAN 10, 20, 30, 40 y 50</text>
+ <!-- VLANs -->
+ <line x1="470" y1="310" x2="470" y2="350" stroke="#13497f" stroke-width="2"/>
+ <line x1="660" y1="310" x2="660" y2="350" stroke="#13497f" stroke-width="2"/>
+ <line x1="850" y1="310" x2="850" y2="350" stroke="#13497f" stroke-width="2"/>
+ <rect x="380" y="350" width="180" height="150" rx="10" fill="#f0f6fc" stroke="#2f77b8"/>
+ <text x="396" y="374" class="t">VLAN 20 / 30</text><text x="396" y="394" class="s">cliente-doc (VM 140)</text>
+ <text x="396" y="412" class="s">DOC-PC01, Windows 10</text><text x="396" y="432" class="m">172.16.20.100</text>
+ <text x="396" y="452" class="s">en VLAN 30 para probar</text><text x="396" y="470" class="s">como estudiante</text>
+ <rect x="575" y="350" width="170" height="150" rx="10" fill="#f0f6fc" stroke="#2f77b8"/>
+ <text x="591" y="374" class="t">VLAN 50</text><text x="591" y="394" class="s">Gestión: el propio</text>
+ <text x="591" y="412" class="s">Proxmox (vmbr1.50)</text><text x="591" y="432" class="m">172.16.50.10</text>
+ <text x="591" y="452" class="s">SSH a srv01 y</text><text x="591" y="470" class="s">túnel a Zabbix</text>
+ <rect x="760" y="350" width="180" height="150" rx="10" fill="#f0f6fc" stroke="#2f77b8"/>
+ <text x="776" y="374" class="t">VLAN 10</text><text x="776" y="394" class="s">Administración</text>
+ <text x="776" y="412" class="s">sin estación en el</text><text x="776" y="432" class="s">laboratorio</text>
+ <!-- VLAN 40 -->
+ <path d="M940,288 H960 V645 H940" fill="none" stroke="#13497f" stroke-width="2"/><text x="954" y="470" class="s" transform="rotate(90 954 470)">tag 40</text>
+ <rect x="380" y="530" width="560" height="230" rx="12" fill="#fff" stroke="#04255a" stroke-width="1.5"/>
+ <text x="396" y="554" class="t">VLAN 40 · Servidores · 172.16.40.0/24</text>
+ <rect x="396" y="568" width="260" height="176" rx="10" fill="#dceaf7" stroke="#2f77b8"/>
+ <text x="410" y="590" class="t">atlas-srv01 (VM 130)</text><text x="410" y="608" class="m">172.16.40.10</text>
+ <text x="410" y="628" class="s">ATLAS en Docker (web, php,</text><text x="410" y="646" class="s">db, analysis) · HTTPS 443</text>
+ <text x="410" y="666" class="s">Zabbix (web solo local)</text><text x="410" y="684" class="s">UFW + DOCKER-USER</text>
+ <text x="410" y="704" class="s">respaldos automáticos</text><text x="410" y="722" class="s">→ copia SMB3 cifrada al DC</text>
+ <rect x="668" y="568" width="256" height="176" rx="10" fill="#dceaf7" stroke="#2f77b8"/>
+ <text x="682" y="590" class="t">atlas-dc01 (VM 120)</text><text x="682" y="608" class="m">172.16.40.20</text>
+ <text x="682" y="628" class="s">AD DS, DNS, DHCP, GPO,</text><text x="682" y="646" class="s">ATLAS-CA</text>
+ <text x="682" y="666" class="s">atlas-backups (crear sí,</text><text x="682" y="684" class="s">borrar no) y retención</text>
+ <text x="682" y="704" class="s">agente de Zabbix: 10050</text><text x="682" y="722" class="s">solo desde 172.16.40.10</text>
+ <line x1="656" y1="700" x2="668" y2="700" stroke="#13497f" stroke-width="2" marker-end="url(#f)"/>
+ <!-- leyenda -->
+ <rect x="30" y="230" width="290" height="300" rx="10" fill="#fff" stroke="#9aa9bd"/>
+ <text x="44" y="254" class="t">Cómo leer el diagrama</text>
+ <text x="44" y="278" class="s">· Todo lo que va de una VLAN a otra</text><text x="44" y="296" class="s">  pasa por router-lab (firewall).</text>
+ <text x="44" y="320" class="s">· Dentro de una VLAN el tráfico</text><text x="44" y="338" class="s">  queda en vmbr1.</text>
+ <text x="44" y="362" class="s">· No hay NAT de entrada: desde</text><text x="44" y="380" class="s">  afuera solo se entra por la VPN.</text>
+ <text x="44" y="404" class="s">· La PC llega a la WAN del router</text><text x="44" y="422" class="s">  con una ruta a 10.99.0.0/24</text><text x="44" y="440" class="s">  por 192.168.2.2.</text>
+ <text x="44" y="464" class="s">· Monitoreo y respaldos no cruzan</text><text x="44" y="482" class="s">  el router: srv01 y dc01 están en</text><text x="44" y="500" class="s">  la misma VLAN 40.</text>
+</svg></html>

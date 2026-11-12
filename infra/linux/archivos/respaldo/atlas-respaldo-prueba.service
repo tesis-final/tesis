@@ -1,0 +1,11 @@
+# ATLAS — prueba mensual de restauración (§28.5, Tabla 29). Lo arranca atlas-respaldo-prueba.timer.
+[Unit]
+Description=ATLAS · prueba mensual de restauración
+After=docker.service atlas.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/atlas-respaldo probar-restauracion
+Nice=10
+IOSchedulingClass=idle

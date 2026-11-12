@@ -1,0 +1,114 @@
+# =============================================================================
+# ATLAS — monitoreo con Zabbix 7.0 LTS (§30.5, Tablas 46 y 47; DEC-19, CT-07)
+#
+# Proyecto Compose APARTE de ATLAS, en atlas-srv01. Cuatro contenedores:
+#   zabbix-db      MySQL 8.0 propio del monitoreo, en la red interna zbx_back (sin salida)
+#   zabbix-server  consulta a los agentes de atlas-srv01 y atlas-dc01 (misma VLAN 40: no
+#                  cruza el router, no hacen falta reglas nuevas en la Tabla 44) y prueba
+#                  la salud de ATLAS cada minuto (meta: 3 s o menos)
+#   zabbix-web     la interfaz, publicada SOLO en 127.0.0.1:8080 de srv01. Se entra desde
+#                  la VLAN 50 con un túnel SSH (ssh -L 8080:127.0.0.1:8080 atlasadmin@172.16.40.10)
+#   zabbix-agent   el agente de srv01. Usa la red y los procesos del servidor (CPU y memoria
+#                  reales) y ve su disco en /hostfs, solo lectura. Atiende el 10050 únicamente
+#                  para zabbix-server (192.168.250.64/28); UFW lo cierra para todo lo demás.
+# Las contraseñas están en /srv/atlas/config/monitoreo.conf (las genera 14-monitoreo.sh;
+# no van al repositorio). Los límites de memoria cuidan los 3–4 GB de la VM.
+# Uso: docker compose --env-file /srv/atlas/config/monitoreo.conf -f docker-compose.yml up -d
+# =============================================================================
+name: atlas-monitoreo
+
+x-registro: &registro
+  logging:
+    driver: ${ATLAS_LOG_DRIVER:-journald}
+
+services:
+  zabbix-db:
+    image: ${ATLAS_MYSQL_IMAGE:-mysql:8.0}
+    container_name: zabbix-db
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_bin
+      - --log-bin-trust-function-creators=1   # lo pide el esquema de Zabbix al crearse
+      - --skip-log-bin                        # la base del monitoreo no necesita binlog
+      - --innodb-buffer-pool-size=128M
+    environment:
+      MYSQL_DATABASE: zabbix
+      MYSQL_USER: zabbix
+      MYSQL_PASSWORD: ${ZBX_DB_PASSWORD:?falta ZBX_DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${ZBX_DB_ROOT_PASSWORD:?falta ZBX_DB_ROOT_PASSWORD}
+    volumes:
+      - ${ZBX_DATOS:-/srv/atlas/monitoreo/db}:/var/lib/mysql
+    networks: [zbx_back]
+    mem_limit: 640m
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    <<: *registro
+
+  zabbix-server:
+    image: zabbix/zabbix-server-mysql:alpine-7.0-latest
+    container_name: zabbix-server
+    restart: unless-stopped
+    environment:
+      DB_SERVER_HOST: zabbix-db
+      MYSQL_DATABASE: zabbix
+      MYSQL_USER: zabbix
+      MYSQL_PASSWORD: ${ZBX_DB_PASSWORD}
+      ZBX_CACHESIZE: 64M
+      ZBX_STARTPOLLERS: "5"
+      ZBX_STARTHTTPPOLLERS: "2"
+      ZBX_TIMEOUT: "10"
+    depends_on:
+      zabbix-db:
+        condition: service_healthy
+    networks: [zbx_back, zbx_front]
+    mem_limit: 384m
+    <<: *registro
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-mysql:alpine-7.0-latest
+    container_name: zabbix-web
+    restart: unless-stopped
+    environment:
+      ZBX_SERVER_HOST: zabbix-server
+      ZBX_SERVER_NAME: ATLAS · monitoreo
+      DB_SERVER_HOST: zabbix-db
+      MYSQL_DATABASE: zabbix
+      MYSQL_USER: zabbix
+      MYSQL_PASSWORD: ${ZBX_DB_PASSWORD}
+      PHP_TZ: America/Montevideo
+    ports:
+      - "127.0.0.1:${ZBX_WEB_PUERTO:-8080}:8080"   # solo local: se llega por túnel SSH (DEC-19)
+    depends_on: [zabbix-server]
+    networks: [zbx_back, zbx_front]
+    mem_limit: 256m
+    <<: *registro
+
+  zabbix-agent:
+    image: zabbix/zabbix-agent2:alpine-7.0-latest
+    container_name: zabbix-agent
+    restart: unless-stopped
+    network_mode: host
+    pid: host
+    environment:
+      ZBX_HOSTNAME: atlas-srv01
+      ZBX_PASSIVESERVERS: 192.168.250.64/28   # solo zabbix-server puede pedirle datos
+      ZBX_ACTIVE_ALLOW: "false"
+    volumes:
+      - /:/hostfs:ro
+    mem_limit: 96m
+    <<: *registro
+
+networks:
+  zbx_back:
+    name: zbx_back
+    internal: true
+    ipam:
+      config: [ { subnet: 192.168.250.48/28 } ]
+  zbx_front:
+    name: zbx_front
+    ipam:
+      config: [ { subnet: 192.168.250.64/28 } ]

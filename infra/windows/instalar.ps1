@@ -7,6 +7,8 @@
       Etapa 2:  .\instalar.ps1 -Etapa 2   → 02 (dominio) y reinicia
       Etapa 3:  .\instalar.ps1 -Etapa 3   → 03 a 11 y verificación (entrar como ATLAS\<administrador>)
     Después: .\12-usuarios.ps1 -Csv <archivo>  y  .\10-certificado-srv01.ps1 -Csr <atlas.csr>
+    Fase 12 (Hito 3): .\13-retencion-respaldos.ps1  y  .\14-agente-zabbix.ps1 -Msi <instalador>,
+    y al final .\verificar-dc01.ps1 (completo).
 #>
 [CmdletBinding()]
 param([Parameter(Mandatory)][ValidateSet(1, 2, 3)][int]$Etapa)
@@ -22,6 +24,6 @@ switch ($Etapa) {
             & ".\$s.ps1"
         }
         Write-Host "`n████ Verificación" -ForegroundColor Cyan
-        .\verificar-dc01.ps1
+        .\verificar-dc01.ps1 -SoloFase7
     }
 }

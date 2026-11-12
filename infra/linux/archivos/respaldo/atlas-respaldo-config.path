@@ -1,0 +1,12 @@
+# ATLAS — respaldo de la configuración «cada vez que cambia» (Tabla 29, 10 versiones).
+[Unit]
+Description=ATLAS · vigila /srv/atlas/config para respaldarla cuando cambia
+
+[Path]
+PathChanged=/srv/atlas/config
+PathChanged=/srv/atlas/config/atlas.conf
+TriggerLimitIntervalSec=60
+TriggerLimitBurst=3
+
+[Install]
+WantedBy=paths.target

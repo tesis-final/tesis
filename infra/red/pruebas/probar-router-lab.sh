@@ -8,6 +8,12 @@
 #   rt     el router-lab: ens18.10 … ens18.50 (una "pata" por VLAN) + ens19 (WAN)
 #   adm1 (VLAN 10) doc1 (20) est1 (30) srv01 y dc01 (40, mismo switch) gest (50)
 #   inet   "Internet" simulada 203.0.113.0/24 (RFC 5737)
+#   vpnd / vpna  clientes de la VPN (perfil docente 10.8.0.130 y administración 10.8.0.10)
+#
+# La VPN: las reglas R8 y R9 deciden por la interfaz wg0 y la dirección de origen del
+# túnel (Tabla 45). Acá wg0 es un puente común con los dos clientes detrás, así se prueba
+# la política con tráfico real; el cifrado del túnel lo pone WireGuard y se verifica en
+# el laboratorio (05-vpn.sh y pruebas 15 y 16 del informe de Redes).
 #
 # Qué NO prueba: el etiquetado 802.1Q (lo hace el switch virtual de Proxmox) ni
 # el reenvío de DHCP. Eso se verifica en las VM (guía, paso 8).
@@ -20,7 +26,7 @@ PASS=0; FAIL=0
 ok()  { PASS=$((PASS+1)); printf '  PASS  %s\n' "$1"; }
 mal() { FAIL=$((FAIL+1)); printf '  FAIL  %s\n' "$1"; }
 en()  { ip netns exec "$@"; }
-NS="rt sw adm1 doc1 est1 srv01 dc01 gest inet"
+NS="rt sw adm1 doc1 est1 srv01 dc01 gest inet vpnd vpna"
 PIDS=()
 limpiar() { [ ${#PIDS[@]} -gt 0 ] && kill "${PIDS[@]}" 2>/dev/null; for n in $NS; do ip netns del "$n" 2>/dev/null; done; }
 trap limpiar EXIT
@@ -86,6 +92,14 @@ en rt ip addr add 203.0.113.2/24 dev "$WAN"; en rt ip link set "$WAN" up
 en rt ip route add default via 203.0.113.1
 en inet ip addr add 203.0.113.1/24 dev eth0; en inet ip link set eth0 up
 en inet ip route add 172.16.0.0/16 via 203.0.113.2   # para probar que NO entra nada
+# VPN: wg0 en el router, con un cliente de cada perfil (Tabla 45)
+en rt ip link add wg0 type bridge; en rt ip addr add 10.8.0.1/24 dev wg0; en rt ip link set wg0 up
+for c in vpnd:10.8.0.130 vpna:10.8.0.10; do
+  ip link add "p-${c%%:*}" netns rt type veth peer name eth0 netns "${c%%:*}"
+  en rt ip link set "p-${c%%:*}" master wg0 up
+  en "${c%%:*}" ip addr add "${c##*:}/24" dev eth0; en "${c%%:*}" ip link set eth0 up
+  en "${c%%:*}" ip route add default via 10.8.0.1
+done
 
 en rt nft -f "$REGLAS" || { echo "nftables rechazó las reglas"; exit 1; }
 
@@ -111,7 +125,7 @@ esc adm1  t/22
 esc est1  t/22 t/3389
 esc gest  t/22
 esc inet  t/443 t/80 t/22 u/53 t/53
-esc rt    t/22
+esc rt    t/22 u/51820
 sleep 1.5
 
 # conecta <ns> <proto t|u> <ip> <puerto> -> imprime la IP de origen que vio el destino, o nada
@@ -178,6 +192,19 @@ debe bloquea R7  srv01 u 203.0.113.1 53  "srv01 → DNS de Internet (solo el DC)
 debe pasa    R7  dc01  u 203.0.113.1 53  "dc01 → DNS de Internet (reenvío)"
 debe bloquea §30.3 inet t $SRV 443 "Internet → ATLAS (sin NAT de entrada)"
 debe bloquea §30.3 inet t 172.16.20.100 22 "Internet → PC de Docentes"
+
+echo; echo "── VPN: perfiles de la Tabla 45 (R8, R9) ──"
+debe pasa    R9  vpnd t $SRV 443 "VPN docente → ATLAS HTTPS (prueba 15)"
+r=$(conecta vpnd t $SRV 443)
+[ "$r" = 10.8.0.130 ] && ok "VPN-09  la VPN no se traduce: srv01 ve 10.8.0.130" || mal "VPN-09  srv01 vio '${r:-nada}' (esperado 10.8.0.130)"
+debe bloquea R12 vpnd t $SRV 22  "VPN docente → SSH a srv01 (prueba 16)"
+debe bloquea R12 vpnd t 172.16.50.10 22 "VPN docente → Gestión (P-14)"
+debe bloquea R12 vpnd t $DC 445  "VPN docente → carpetas del DC"
+debe pasa    R8  vpna t 172.16.50.10 22 "VPN administración → Gestión por SSH"
+debe bloquea R12 vpna t $SRV 443 "VPN administración → ATLAS directo (se administra desde Gestión)"
+debe bloquea R12 vpna t 172.16.20.100 22 "VPN administración → PC de Docentes"
+debe pasa    input inet u 203.0.113.2 51820 "Internet → WireGuard del router (UDP 51820)"
+debe bloquea input inet t 203.0.113.2 22 "Internet → SSH al router por la WAN"
 
 echo
 echo "Resultado: $PASS PASS, $FAIL FAIL"

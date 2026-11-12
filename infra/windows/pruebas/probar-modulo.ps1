@@ -90,5 +90,40 @@ Assert-Atlas 'rechaza una regla abierta a cualquiera (Any)' (-not (Test-AtlasSol
 Assert-Atlas 'rechaza la VLAN 50 más otra red' (-not (Test-AtlasSoloDesdeRed -Direcciones @('172.16.50.0/24', '172.16.20.0/24') -Red '172.16.50.0/24'))
 Assert-Atlas 'rechaza una regla sin direcciones' (-not (Test-AtlasSoloDesdeRed -Direcciones @() -Red '172.16.50.0/24'))
 
+'[retención de atlas-backups en el DC (Tabla 29: 28 días / 7 días / 10 versiones)]'
+$hoy = [datetime]::new(2026, 11, 20, 5, 0, 0, [DateTimeKind]::Utc)
+function Get-NombreRespaldo([int]$Dias, [string[]]$Partes) {
+    $s = $hoy.AddDays(-$Dias).AddHours(-3).ToString("yyyyMMdd'T'HHmmss'Z'")
+    $Partes | ForEach-Object { "atlas-srv01_atlas_$s.$_" }
+}
+$completo = 'sql.gz', 'archivos.tar.gz', 'permisos.txt.gz'
+$incremental = 'binlog.tar.gz', 'archivos.tar.gz'
+$nombres = @()
+$nombres += Get-NombreRespaldo 2 $completo        # completo reciente: queda
+$nombres += Get-NombreRespaldo 27 $completo       # completo de 27 días: queda (≤ 28)
+$nombres += Get-NombreRespaldo 35 $completo       # completo de 35 días: vence
+$nombres += Get-NombreRespaldo 1 $incremental     # incremental de ayer: queda
+$nombres += Get-NombreRespaldo 6 $incremental     # incremental de 6 días: queda (≤ 7)
+$nombres += Get-NombreRespaldo 9 $incremental     # incremental de 9 días: vence
+$configs = 0..11 | ForEach-Object { 'atlas-srv01_atlas_config_' + $hoy.AddDays(-$_).ToString("yyyyMMdd'T'HHmmss'Z'") + '.tar.gz' }
+$nombres += $configs
+$nombres += 'leeme.txt', 'atlas-srv01_otra-cosa.zip', 'copia-manual_atlas_20200101T000000Z.sql.gz'
+$v = @(Get-AtlasRespaldoVencido -Nombres $nombres -Ahora $hoy)
+Assert-Atlas 'el completo de 35 días vence entero (sus 3 archivos)' (@($v | Where-Object Tipo -EQ 'COMPLETO').Count -eq 3 -and -not ($v | Where-Object { $_.Tipo -eq 'COMPLETO' -and $_.Nombre -notin (Get-NombreRespaldo 35 $completo) }))
+Assert-Atlas 'el completo de 27 días se guarda' (-not ($v.Nombre | Where-Object { $_ -in (Get-NombreRespaldo 27 $completo) }))
+Assert-Atlas 'el incremental de 9 días vence (binlog y archivos)' (@($v | Where-Object Tipo -EQ 'INCREMENTAL').Count -eq 2 -and -not ($v | Where-Object { $_.Tipo -eq 'INCREMENTAL' -and $_.Nombre -notin (Get-NombreRespaldo 9 $incremental) }))
+Assert-Atlas 'el archivos.tar.gz de un completo no se confunde con uno incremental' (-not ($v.Nombre | Where-Object { $_ -in (Get-NombreRespaldo 27 $completo) -or $_ -in (Get-NombreRespaldo 6 $incremental) }))
+Assert-Atlas 'configuración: de 12 versiones se borran las 2 más viejas' (@($v | Where-Object Tipo -EQ 'CONFIG').Count -eq 2 -and -not (Compare-Object @($v | Where-Object Tipo -EQ 'CONFIG').Nombre $configs[10..11]))
+Assert-Atlas 'lo que no es de atlas-srv01 con ese formato no se toca nunca' (-not ($v.Nombre | Where-Object { $_ -in 'leeme.txt', 'atlas-srv01_otra-cosa.zip', 'copia-manual_atlas_20200101T000000Z.sql.gz' }))
+Assert-Atlas 'carpeta vacía: no hay nada que borrar' (@(Get-AtlasRespaldoVencido -Nombres @() -Ahora $hoy).Count -eq 0)
+
+'[sintaxis de todos los scripts de atlas-dc01]'
+foreach ($f in Get-ChildItem $raiz -Recurse -Include *.ps1, *.psm1) {
+    $errores = $null
+    [void][Management.Automation.Language.Parser]::ParseFile($f.FullName, [ref]$null, [ref]$errores)
+    Assert-Atlas "$($f.Name) se puede leer sin errores de sintaxis" (-not $errores)
+}
+Assert-Atlas 'los .ps1 nuevos tienen BOM (Windows PowerShell 5.1 lee bien los acentos)' (-not (Get-ChildItem $raiz -Filter '1[34]-*.ps1' | Where-Object { $b = [IO.File]::ReadAllBytes($_.FullName); -not ($b[0] -eq 0xEF -and $b[1] -eq 0xBB -and $b[2] -eq 0xBF) }))
+
 ''; "Resultado: $script:ok PASS · $script:mal FAIL"
 if ($script:mal -gt 0) { exit 1 }

@@ -19,6 +19,19 @@ command -v git >/dev/null && command -v genisoimage >/dev/null || {
   apt-get update -q && apt-get install -y -q git genisoimage jq; }
 
 if [ -d "$DIR/.git" ]; then git -C "$DIR" pull -q; else git clone -q "$REPO_URL" "$DIR"; fi
+
+# Hito 3: instalador del agente de Zabbix para atlas-dc01 (14-agente-zabbix.ps1). Proxmox
+# tiene Internet y el DC no: se baja acá y viaja en el CD, en extras\ (fuera de Git).
+ZABBIX_VERSION=${ZABBIX_VERSION:-7.0.32}
+MSI="zabbix_agent2-${ZABBIX_VERSION}-windows-amd64-openssl.msi"
+ZABBIX_MSI_URL=${ZABBIX_MSI_URL:-https://cdn.zabbix.com/zabbix/binaries/stable/${ZABBIX_VERSION%.*}/${ZABBIX_VERSION}/$MSI}
+mkdir -p "$DIR/extras"
+if [ ! -s "$DIR/extras/$MSI" ]; then
+  curl -fsSL -o "$DIR/extras/$MSI.part" "$ZABBIX_MSI_URL" && mv "$DIR/extras/$MSI.part" "$DIR/extras/$MSI" \
+    || { rm -f "$DIR/extras/$MSI.part"; echo "AVISO: no se pudo bajar $ZABBIX_MSI_URL. Bajarlo de https://www.zabbix.com/download_agents (Windows, agente 2, 7.0 LTS, MSI) y dejarlo en $DIR/extras/."; }
+fi
+ls -l "$DIR/extras/" 2>/dev/null | tail -n +2
+
 genisoimage -quiet -J -r -joliet-long -V ATLAS -m .git -o "$ISO" "$DIR"
 ls -lh "$ISO"
-echo "Listo: en las VM Windows aparece como un CD llamado ATLAS."
+echo "Listo: en las VM Windows aparece como un CD llamado ATLAS (el MSI del agente, en extras\\)."

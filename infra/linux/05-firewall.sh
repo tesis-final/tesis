@@ -8,6 +8,7 @@
 #   443/tcp  desde VLAN 10, 20, 30 y VPN docentes ........ reglas 1 y 9
 #   445/tcp  desde VLAN 10 y 20 (Samba) .................. regla 3
 #   445/tcp  desde atlas-dc01 ............................ servicios de dominio (Tabla 35)
+#   10050/tcp desde zabbix-server (192.168.250.64/28) ..... agente de monitoreo (DEC-19, paso 14)
 #   3306     NINGUNA regla: MySQL no se publica (§28.4, DEC-02)
 #
 # Diferencias con el texto de §28.4, decididas en DEC-05: no se abren 80 ni 139
@@ -34,6 +35,7 @@ ufw allow from "$RED_VPN_DOCENTES" to any port 443 proto tcp comment 'R9 HTTPS V
 ufw allow from "$RED_ADMIN"        to any port 445 proto tcp comment 'R3 SMB VLAN10'
 ufw allow from "$RED_DOCENTES"     to any port 445 proto tcp comment 'R3 SMB VLAN20'
 ufw allow from "$IP_DC"            to any port 445 proto tcp comment 'Dominio SMB desde DC'
+ufw allow from "${RED_MONITOREO:-192.168.250.64/28}" to any port 10050 proto tcp comment 'Monitoreo: zabbix-server al agente'
 ufw logging on
 
 paso "Filtro para los puertos que publica Docker (cadena DOCKER-USER)"

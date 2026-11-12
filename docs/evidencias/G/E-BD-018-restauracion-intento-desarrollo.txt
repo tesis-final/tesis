@@ -1,0 +1,57 @@
+ATLAS — Recuperación de un intento después de restaurar un respaldo
+Fecha (UTC): 2026-11-12T14:06:53Z · Equipo: vm · contenedor atlas-db
+Motor: MySQL 8.0.46
+
+== 1. Antes del respaldo
+Último intento en la base en uso: 67 · FINALIZADO · 2026-11-12 14:05:57.267
+Intento a seguir: 67
++----+----------------------+---------------------------+------------+-------------------------+---------+
+| id | estudiante           | actividad                 | estado     | finalizado_en           | puntaje |
++----+----------------------+---------------------------+------------+-------------------------+---------+
+| 67 | ana.demo@atlas.local | Problemas con porcentajes | FINALIZADO | 2026-11-12 14:05:57.267 |   75.00 |
++----+----------------------+---------------------------+------------+-------------------------+---------+
+
+== 2. Respaldo completo con atlas_backup (mysqldump --single-transaction, sin bloquear la aplicación)
+Respaldo tomado a las 2026-11-12T14:06:53Z · 384 ms · 155447 bytes · sha256 f7ab7de4143a84b6…
+
+== 3. Restauración en una base aparte (atlas_restore_prueba)
+Restauración: 1336 ms
+
+== 4. El intento 67 en las dos bases
+PASS Intento: en uso 1 filas · sha256 bab0e6a73a5bb215 · restaurada 1 filas · sha256 bab0e6a73a5bb215
+PASS Respuestas: en uso 4 filas · sha256 8f188371d0df177a · restaurada 4 filas · sha256 8f188371d0df177a
+PASS Interacciones: en uso 14 filas · sha256 fa7bfbfeecfb5e4d · restaurada 14 filas · sha256 fa7bfbfeecfb5e4d
+PASS Resultado (puntaje): en uso 1 filas · sha256 a63a5cceb1d53c26 · restaurada 1 filas · sha256 a63a5cceb1d53c26
+
+Respuestas recuperadas de la base restaurada:
++----------+------------------+-------------+
+| pregunta | opcion           | es_correcta |
++----------+------------------+-------------+
+|        1 | Opción correcta  |           1 |
+|        2 | Opción correcta  |           1 |
+|        3 | Distractor A     |           0 |
+|        4 | Opción correcta  |           1 |
++----------+------------------+-------------+
+Cambios de respuesta recuperados: 1
+Puntaje recuperado: 75.00
+
+Conteo de filas por tabla:
+  usuarios       en uso 15      restaurada 15      PASS
+  actividades    en uso 5       restaurada 5       PASS
+  preguntas      en uso 14      restaurada 14      PASS
+  opciones       en uso 40      restaurada 40      PASS
+  intentos       en uso 67      restaurada 67      PASS
+  respuestas     en uso 268     restaurada 268     PASS
+  interacciones  en uso 157     restaurada 157     PASS
+  resultados     en uso 67      restaurada 67      PASS
+  auditoria      en uso 20      restaurada 20      PASS
+
+== 5. Frente a los objetivos de recuperación (§28.5)
+Último intento recuperado: 67 · FINALIZADO · 2026-11-12 14:05:57.267
+Último intento en la base en uso al terminar: 67 · FINALIZADO · 2026-11-12 14:05:57.267
+Tiempo de respaldo + restauración: 1 s (384 ms + 1336 ms). Objetivo de vuelta a operar (RTO): menos de 4 h.
+Datos perdidos con este respaldo: los posteriores a 2026-11-12T14:06:53Z. Objetivo (RPO): como máximo 24 h, que cumple el respaldo diario de las 02:00 (infra/linux/13-respaldos.sh).
+El tiempo medido es el de la base; volver a operar también incluye reiniciar los contenedores (atlas-ctl reiniciar) y comprobar el acceso.
+
+Resultado: 13 de 13 comparaciones iguales.
+La base de prueba y el archivo del respaldo se borran al terminar (tienen datos de personas).

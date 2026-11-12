@@ -1,0 +1,255 @@
+#!/usr/bin/env bash
+# =============================================================================
+# ATLAS — /usr/local/sbin/atlas-respaldo  (§28.5, Tablas 28 y 29; DEC-09, DEC-10, CT-05, CT-06)
+#
+# Política del documento (Tabla 29):
+#   completo        domingos 02:00 · se guarda 4 semanas · local + Windows
+#   incremental     lunes a sábado 02:00 · 7 días · local (+ Windows, DEC-09)
+#   configuración   cada vez que cambia · 10 versiones · local + Windows
+# Criterio 3-2-1: la copia externa va a \\atlas-dc01\atlas-backups por SMB cifrado, con la
+# cuenta svc_atlas_backup, que puede crear archivos pero no borrarlos (CT-05): si alguien
+# compromete este servidor, no puede borrar las copias del DC. La retención allá la hace una
+# tarea programada del DC (infra/windows/13-retencion-respaldos.ps1).
+#
+# La base se respalda con atlas_backup (solo lectura, DEC-10) y mysqldump --single-transaction
+# (no bloquea la aplicación). El incremental es el registro binario (binlog) de MySQL. Cada
+# archivo se verifica al crearlo (gzip -t, fin del volcado, sha256) y queda anotado en la
+# tabla registro_respaldos (CT-06). Corre como root porque necesita «docker exec»; los
+# archivos quedan de atlasbkp:atlas-backup y solo ellos pueden leerlos (Tabla 27).
+#
+# Órdenes: completo | incremental | config | verificar | probar-restauracion | estado
+# Las contraseñas no pasan por acá: las lee el contenedor de su propio entorno (atlas.conf).
+# =============================================================================
+set -euo pipefail
+umask 077
+RAIZ=${ATLAS_RAIZ:-/srv/atlas}
+DESTINO=${ATLAS_RESPALDOS:-$RAIZ/backups}
+DATOS=${ATLAS_DATOS:-$RAIZ/datos}
+CONT=${ATLAS_DB_CONTENEDOR:-atlas-db}
+CRED=${ATLAS_RESPALDO_CRED:-/etc/atlas/respaldo-smb.cred}
+RECURSO=${ATLAS_RESPALDO_RECURSO:-//atlas-dc01.atlas.local/atlas-backups}
+DUENIO=${ATLAS_RESPALDO_DUENIO:-atlasbkp:atlas-backup}
+RET_COMPLETO_DIAS=${RET_COMPLETO_DIAS:-28}
+RET_INCREMENTAL_DIAS=${RET_INCREMENTAL_DIAS:-7}
+RET_CONFIG_VERSIONES=${RET_CONFIG_VERSIONES:-10}
+# Archivos del sistema que también son configuración (Tabla 28: «configuraciones», alta).
+CONFIG_SISTEMA=(/etc/ssh/sshd_config.d /etc/ufw /etc/samba /etc/sssd /etc/netplan /etc/hosts.allow /etc/hosts.deny
+  /etc/sudoers.d /etc/chrony /etc/systemd/system/atlas.service /etc/audit/rules.d)
+TABLAS_CONTEO=(usuarios grupos_clase actividades preguntas opciones intentos respuestas interacciones resultados recomendaciones auditoria)
+
+AHORA=$(date -u +%Y%m%dT%H%M%SZ)
+log() { echo "$(date -u +%H:%M:%S) $*"; }
+falla() { echo "ERROR: $*" >&2; exit 1; }
+
+# Sin -i: así no se come la entrada de un «while read» que la llame (prueba de restauración).
+raiz() { docker exec "$CONT" sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" --default-character-set=utf8mb4 "$@"' sh "$@" 2>&1 | { grep -v 'Using a password' || true; }; }
+consulta() { raiz -N -B -e "$1" atlas_db; }
+
+# CT-06: cada respaldo queda anotado con atlas_backup (solo puede INSERTAR en esta tabla).
+anotar() {   # anotar <tipo> <destino> <inicio> <resultado> <archivo> <sha256|NULL> <bytes|NULL> <verificado 0|1>
+  local sha="NULL" bytes="NULL"
+  [ "$6" != NULL ] && sha="'$6'"
+  [ "$7" != NULL ] && bytes="$7"
+  docker exec -i "$CONT" sh -c 'exec mysql -uatlas_backup -p"$ATLAS_DB_BACKUP_PASSWORD" atlas_db' >/dev/null 2>&1 <<SQL || log "AVISO: no se pudo anotar en registro_respaldos"
+INSERT INTO registro_respaldos (tipo, destino, iniciado_en, finalizado_en, resultado, archivo, sha256, tamano_bytes, verificado)
+VALUES ('$1', '$2', '$3', UTC_TIMESTAMP(3), '$4', '$5', $sha, $bytes, $8);
+SQL
+}
+
+propio() { chown "$DUENIO" "$@" 2>/dev/null || true; chmod 600 "$@"; }
+fecha_sql() { date -u +'%Y-%m-%d %H:%M:%S'; }
+
+# Verifica un archivo recién creado: gzip íntegro y, si es un volcado, que haya terminado.
+verificar_archivo() {
+  local f=$1
+  gzip -t "$f" || return 1
+  case "$f" in *.sql.gz) zcat "$f" | tail -n 1 | grep -q -- '-- Dump completed' || return 1 ;; esac
+  sha256sum "$f" | sed "s#  .*/#  #" > "$f.sha256"
+  propio "$f.sha256"
+}
+
+# Copia externa (3-2-1). Sin credenciales configuradas se informa y no se anota nada.
+copiar_windows() {   # copiar_windows <tipo> <archivo>
+  local tipo=$1 f=$2 inicio
+  if [ ! -f "$CRED" ]; then log "Copia a Windows: sin $CRED (correr 13-respaldos.sh); se omite."; return 0; fi
+  command -v smbclient >/dev/null || { log "Copia a Windows: falta smbclient."; return 0; }
+  inicio=$(fecha_sql)
+  if smbclient "$RECURSO" -A "$CRED" -m SMB3 --client-protection=encrypt -c "put \"$f\" \"atlas-srv01_$(basename "$f")\"" >/dev/null 2>&1 \
+     || smbclient "$RECURSO" -A "$CRED" -m SMB3 -e -c "put \"$f\" \"atlas-srv01_$(basename "$f")\"" >/dev/null 2>&1; then
+    log "Copia a Windows: OK ($RECURSO)"
+    anotar "$tipo" WINDOWS "$inicio" OK "$(basename "$f")" "$(cut -d' ' -f1 "$f.sha256")" "$(stat -c %s "$f")" 1
+  else
+    log "Copia a Windows: FALLÓ ($RECURSO)"
+    anotar "$tipo" WINDOWS "$inicio" FALLO "$(basename "$f")" NULL NULL 0
+    return 1
+  fi
+}
+
+conteos() {   # una línea "tabla=filas" por tabla, para comparar en la prueba de restauración
+  local t
+  for t in "${TABLAS_CONTEO[@]}"; do echo "$t=$(consulta "SELECT COUNT(*) FROM $t")"; done
+}
+
+respaldo_completo() {
+  local base="$DESTINO/completo/atlas_${AHORA}" inicio sql archivos ok=1
+  mkdir -p "$DESTINO/completo" "$DESTINO/incremental" "$DESTINO/config"
+  inicio=$(fecha_sql)
+  log "Respaldo COMPLETO → $base.*"
+  # Un binlog nuevo marca desde dónde arranca el próximo incremental.
+  raiz -e "FLUSH BINARY LOGS" atlas_db >/dev/null
+  consulta "SHOW MASTER STATUS" | cut -f1 > "$DESTINO/.binlog-desde"
+  conteos > "$base.conteos"
+  sql="$base.sql.gz"
+  docker exec "$CONT" sh -c 'mysqldump -uatlas_backup -p"$ATLAS_DB_BACKUP_PASSWORD" --single-transaction --routines --triggers --no-tablespaces --set-gtid-purged=OFF atlas_db' 2> >(grep -v 'Using a password' >&2) | gzip -9 > "$sql"
+  # Archivos con ACL y atributos (sin ellos se recuperan los archivos pero no los permisos, §28.5).
+  archivos="$base.archivos.tar.gz"
+  cp -f /dev/null "$DESTINO/.snar-archivos"
+  tar --acls --xattrs --listed-incremental="$DESTINO/.snar-archivos" -czf "$archivos" \
+      --exclude="$DESTINO" "$RAIZ/web" "$RAIZ/config" "$RAIZ/logs" 2>/dev/null || true
+  # Usuarios, grupos y permisos (Tabla 28: «usuarios, grupos y ACL», alta).
+  { echo "## passwd"; getent passwd; echo "## group"; getent group; echo "## acl"
+    if command -v getfacl >/dev/null; then getfacl -R -p "$RAIZ" 2>/dev/null | { grep -v "^# file: $DESTINO" || true; }; else echo "(getfacl no instalado)"; fi
+  } | gzip -9 > "$base.permisos.txt.gz"
+  propio "$base".*
+  for f in "$sql" "$archivos" "$base.permisos.txt.gz"; do
+    if verificar_archivo "$f"; then
+      log "  verificado: $(basename "$f") ($(stat -c %s "$f") bytes)"
+      anotar COMPLETO LOCAL "$inicio" OK "$(basename "$f")" "$(cut -d' ' -f1 "$f.sha256")" "$(stat -c %s "$f")" 1
+      copiar_windows COMPLETO "$f" || true
+    else
+      ok=0; log "  FALLÓ la verificación: $(basename "$f")"
+      anotar COMPLETO LOCAL "$inicio" FALLO "$(basename "$f")" NULL NULL 0
+    fi
+  done
+  retencion
+  [ "$ok" = 1 ] || falla "El respaldo completo tiene archivos que no pasaron la verificación."
+  log "Respaldo completo terminado."
+}
+
+respaldo_incremental() {
+  local base="$DESTINO/incremental/atlas_${AHORA}" inicio desde actual lista=() f ok=1
+  [ -f "$DESTINO/.binlog-desde" ] || { log "No hay un completo previo: se hace un completo."; respaldo_completo; return; }
+  mkdir -p "$DESTINO/incremental"
+  inicio=$(fecha_sql)
+  desde=$(cat "$DESTINO/.binlog-desde")
+  raiz -e "FLUSH BINARY LOGS" atlas_db >/dev/null
+  actual=$(consulta "SHOW MASTER STATUS" | cut -f1)
+  # Binlogs cerrados desde el último respaldo (el actual queda para el próximo).
+  while IFS=$'\t' read -r nombre _resto; do
+    [[ "$nombre" < "$desde" ]] && continue
+    [ "$nombre" = "$actual" ] && continue
+    lista+=("$nombre")
+  done < <(consulta "SHOW BINARY LOGS")
+  log "Respaldo INCREMENTAL → $base.* (binlogs: ${lista[*]:-ninguno})"
+  if [ "${#lista[@]}" -gt 0 ]; then
+    tar -czf "$base.binlog.tar.gz" -C "$DATOS" "${lista[@]}"
+  else
+    tar -czf "$base.binlog.tar.gz" -T /dev/null
+  fi
+  echo "$actual" > "$DESTINO/.binlog-desde"
+  [ -f "$DESTINO/.snar-archivos" ] || cp -f /dev/null "$DESTINO/.snar-archivos"
+  tar --acls --xattrs --listed-incremental="$DESTINO/.snar-archivos" -czf "$base.archivos.tar.gz" \
+      --exclude="$DESTINO" "$RAIZ/web" "$RAIZ/config" "$RAIZ/logs" 2>/dev/null || true
+  propio "$base".*
+  for f in "$base.binlog.tar.gz" "$base.archivos.tar.gz"; do
+    if verificar_archivo "$f"; then
+      log "  verificado: $(basename "$f") ($(stat -c %s "$f") bytes)"
+      anotar INCREMENTAL LOCAL "$inicio" OK "$(basename "$f")" "$(cut -d' ' -f1 "$f.sha256")" "$(stat -c %s "$f")" 1
+      copiar_windows INCREMENTAL "$f" || true
+    else
+      ok=0; anotar INCREMENTAL LOCAL "$inicio" FALLO "$(basename "$f")" NULL NULL 0
+    fi
+  done
+  retencion
+  [ "$ok" = 1 ] || falla "El incremental tiene archivos que no pasaron la verificación."
+  log "Respaldo incremental terminado."
+}
+
+respaldo_config() {
+  local f="$DESTINO/config/atlas_config_${AHORA}.tar.gz" inicio existentes=()
+  mkdir -p "$DESTINO/config"
+  inicio=$(fecha_sql)
+  for p in "$RAIZ/config" "${CONFIG_SISTEMA[@]}"; do [ -e "$p" ] && existentes+=("$p"); done
+  tar --acls --xattrs -czf "$f" "${existentes[@]}" 2>/dev/null || true
+  propio "$f"
+  if verificar_archivo "$f"; then
+    log "Configuración respaldada: $(basename "$f")"
+    anotar CONFIG LOCAL "$inicio" OK "$(basename "$f")" "$(cut -d' ' -f1 "$f.sha256")" "$(stat -c %s "$f")" 1
+    copiar_windows CONFIG "$f" || true
+  else
+    anotar CONFIG LOCAL "$inicio" FALLO "$(basename "$f")" NULL NULL 0
+    falla "La copia de la configuración no pasó la verificación."
+  fi
+  retencion
+}
+
+retencion() {
+  find "$DESTINO/completo" -maxdepth 1 -type f -name 'atlas_*' -mtime +"$RET_COMPLETO_DIAS" -delete 2>/dev/null || true
+  find "$DESTINO/incremental" -maxdepth 1 -type f -name 'atlas_*' -mtime +"$RET_INCREMENTAL_DIAS" -delete 2>/dev/null || true
+  # Configuración: las últimas N versiones (cada versión es un .tar.gz con su .sha256).
+  ls -1t "$DESTINO"/config/atlas_config_*.tar.gz 2>/dev/null | tail -n +$((RET_CONFIG_VERSIONES + 1)) | while read -r v; do rm -f "$v" "$v.sha256"; done
+}
+
+# Verificación diaria (§28.5): las huellas de todo lo que hay, y que la frecuencia se cumpla.
+verificar() {
+  local mal=0 total=0 f ultimo_c ultimo_i edad_c edad_i
+  while IFS= read -r f; do
+    total=$((total + 1))
+    if (cd "$(dirname "$f")" && sha256sum -c --quiet "$(basename "$f").sha256" >/dev/null 2>&1) && gzip -t "$f" 2>/dev/null; then :; else mal=$((mal + 1)); echo "FALLA $f"; fi
+  done < <(find "$DESTINO" -type f -name 'atlas_*.gz' | sort)
+  ultimo_c=$(ls -1t "$DESTINO"/completo/atlas_*.sql.gz 2>/dev/null | head -1)
+  ultimo_i=$(ls -1t "$DESTINO"/incremental/atlas_*.binlog.tar.gz "$DESTINO"/completo/atlas_*.sql.gz 2>/dev/null | head -1)
+  edad_c=$([ -n "$ultimo_c" ] && echo $(( ($(date +%s) - $(stat -c %Y "$ultimo_c")) / 3600 )) || echo -1)
+  edad_i=$([ -n "$ultimo_i" ] && echo $(( ($(date +%s) - $(stat -c %Y "$ultimo_i")) / 3600 )) || echo -1)
+  echo "Archivos verificados: $((total - mal)) de $total"
+  echo "Último completo: ${ultimo_c:-ninguno} (hace ${edad_c} h; debe ser ≤ 192 h)"
+  echo "Último respaldo de la base: ${ultimo_i:-ninguno} (hace ${edad_i} h; RPO ≤ 26 h)"
+  [ "$mal" = 0 ] && [ "$edad_c" -ge 0 ] && [ "$edad_c" -le 192 ] && [ "$edad_i" -ge 0 ] && [ "$edad_i" -le 26 ] || { echo "Resultado: FALLA"; return 1; }
+  echo "Resultado: OK"
+}
+
+# Prueba de restauración (§28.5: una vez por mes, en un entorno aparte): el último completo se
+# carga en atlas_restore_prueba y se comparan las filas con las que había al respaldar.
+probar_restauracion() {
+  local sql conteos_f t esperado obtenido bien=0 total=0 t0
+  sql=$(ls -1t "$DESTINO"/completo/atlas_*.sql.gz 2>/dev/null | head -1)
+  [ -n "$sql" ] || falla "No hay respaldos completos para probar."
+  conteos_f="${sql%.sql.gz}.conteos"
+  log "Prueba de restauración de $(basename "$sql")"
+  (cd "$(dirname "$sql")" && sha256sum -c --quiet "$(basename "$sql").sha256") || falla "La huella del respaldo no coincide."
+  t0=$(date +%s%3N)
+  raiz -e "DROP DATABASE IF EXISTS atlas_restore_prueba; CREATE DATABASE atlas_restore_prueba CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci" atlas_db >/dev/null
+  zcat "$sql" | docker exec -i "$CONT" sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" --default-character-set=utf8mb4 atlas_restore_prueba' 2>&1 | { grep -v 'Using a password' || true; }
+  log "Cargado en $(( $(date +%s%3N) - t0 )) ms. Tablas: $(raiz -N -B -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='atlas_restore_prueba' AND table_type='BASE TABLE'" atlas_db)"
+  while IFS='=' read -r t esperado; do
+    obtenido=$(raiz -N -B -e "SELECT COUNT(*) FROM $t" atlas_restore_prueba)
+    total=$((total + 1)); [ "$obtenido" = "$esperado" ] && bien=$((bien + 1))
+    printf '  %-16s al respaldar %-7s restaurado %-7s %s\n' "$t" "$esperado" "$obtenido" "$([ "$obtenido" = "$esperado" ] && echo OK || echo DISTINTO)"
+  done < "$conteos_f"
+  raiz -e "DROP DATABASE IF EXISTS atlas_restore_prueba" atlas_db >/dev/null
+  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $(basename "$sql") $bien/$total tablas iguales" >> "$DESTINO/restauraciones.log"
+  propio "$DESTINO/restauraciones.log"
+  echo "Resultado: $bien de $total tablas con las mismas filas que al respaldar."
+  [ "$bien" = "$total" ]
+}
+
+estado() {
+  echo "Respaldos en $DESTINO:"
+  du -sh "$DESTINO"/completo "$DESTINO"/incremental "$DESTINO"/config 2>/dev/null || true
+  echo; echo "Últimos registros (registro_respaldos):"
+  raiz -t -e "SELECT tipo, destino, iniciado_en, resultado, archivo, verificado FROM registro_respaldos ORDER BY id DESC LIMIT 12" atlas_db
+  echo; systemctl list-timers 'atlas-respaldo*' --no-pager 2>/dev/null || true
+}
+
+[ "$(id -u)" -eq 0 ] || [ -n "${ATLAS_RESPALDO_SIN_ROOT:-}" ] || falla "Correr con sudo."
+docker inspect "$CONT" >/dev/null 2>&1 || falla "No encuentro el contenedor $CONT."
+mkdir -p "$DESTINO"
+case "${1:-}" in
+  completo) respaldo_completo ;;
+  incremental) respaldo_incremental ;;
+  config) respaldo_config ;;
+  verificar) verificar ;;
+  probar-restauracion) probar_restauracion ;;
+  estado) estado ;;
+  *) echo "Uso: sudo atlas-respaldo completo|incremental|config|verificar|probar-restauracion|estado"; exit 2 ;;
+esac

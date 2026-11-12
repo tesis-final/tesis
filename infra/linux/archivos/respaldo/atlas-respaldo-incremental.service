@@ -1,0 +1,11 @@
+# ATLAS — respaldo incremental (binlog de MySQL y archivos cambiados) (§28.5, Tabla 29). Lo arranca atlas-respaldo-incremental.timer.
+[Unit]
+Description=ATLAS · respaldo incremental (binlog de MySQL y archivos cambiados)
+After=docker.service atlas.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/atlas-respaldo incremental
+Nice=10
+IOSchedulingClass=idle

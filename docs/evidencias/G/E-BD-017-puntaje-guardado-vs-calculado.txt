@@ -1,0 +1,125 @@
+ATLAS — Evidencia E-BD-017: puntaje guardado contra puntaje calculado, y rechazo de atlas_app
+Fecha (UTC): 2026-11-12T14:06:35Z
+Motor: MySQL 8.0.46 (imagen mysql:8.0, contenedor descartable)
+Entorno: desarrollo (Docker) con datos representativos. No es atlas-srv01.
+Datos: 9000 intentos, 8749 resultados, 88745 respuestas
+Reporte elegido: Reportes → «Resumen por actividad» del grupo S03 (promedio e intentos por actividad).
+
+== 1. Consulta A: lee el puntaje guardado (resultados.puntaje)
+SELECT i.actividad_id, COUNT(*) AS intentos, ROUND(AVG(r.puntaje), 2) AS promedio
+  FROM resultados r
+  JOIN intentos i         ON i.id = r.intento_id
+  JOIN actividad_grupo ag ON ag.actividad_id = i.actividad_id AND ag.grupo_id = (SELECT id FROM grupos_clase WHERE nombre='S03' AND anio_lectivo=2026 ORDER BY id DESC LIMIT 1)
+  JOIN usuario_grupo ug   ON ug.usuario_id = i.usuario_id AND ug.grupo_id = ag.grupo_id
+ GROUP BY i.actividad_id ORDER BY i.actividad_id
++--------------+----------+----------+
+| actividad_id | intentos | promedio |
++--------------+----------+----------+
+|            1 |       29 |    63.79 |
+|            2 |       30 |    67.00 |
+|            3 |       30 |    67.67 |
+|            4 |       29 |    63.79 |
+|            5 |       30 |    64.67 |
+|            6 |       29 |    71.03 |
+|            7 |       27 |    65.56 |
+|            8 |       30 |    66.67 |
+|            9 |       30 |    65.00 |
+|           10 |       30 |    63.00 |
+|           11 |       30 |    61.67 |
+|           12 |       29 |    67.24 |
+|           13 |       30 |    61.67 |
+|           14 |       30 |    68.33 |
+|           15 |       30 |    69.67 |
+|           16 |       30 |    62.33 |
+|           17 |       29 |    65.52 |
+|           18 |       29 |    68.97 |
+|           19 |       30 |    68.33 |
+|           20 |       30 |    63.33 |
+|           21 |       29 |    71.72 |
+|           22 |       30 |    68.33 |
+|           23 |       26 |    68.85 |
+|           24 |       30 |    63.00 |
+|           25 |       29 |    59.31 |
+|           26 |       30 |    71.00 |
+|           27 |       30 |    66.33 |
+|           28 |       26 |    66.15 |
+|           29 |       30 |    63.67 |
+|           30 |       30 |    63.00 |
++--------------+----------+----------+
+
+== 2. Consulta B: calcula el puntaje desde respuestas y opciones
+SELECT x.actividad_id, COUNT(*) AS intentos, ROUND(AVG(x.p), 2) AS promedio
+  FROM (SELECT i.id, i.actividad_id,
+               100 * COALESCE(SUM(o.es_correcta), 0) / (SELECT COUNT(*) FROM preguntas p WHERE p.actividad_id = i.actividad_id) AS p
+          FROM intentos i
+          JOIN actividad_grupo ag ON ag.actividad_id = i.actividad_id AND ag.grupo_id = (SELECT id FROM grupos_clase WHERE nombre='S03' AND anio_lectivo=2026 ORDER BY id DESC LIMIT 1)
+          JOIN usuario_grupo ug   ON ug.usuario_id = i.usuario_id AND ug.grupo_id = ag.grupo_id
+          LEFT JOIN respuestas re ON re.intento_id = i.id
+          LEFT JOIN opciones o    ON o.id = re.opcion_id
+         WHERE i.estado = 'FINALIZADO'
+         GROUP BY i.id, i.actividad_id) x
+ GROUP BY x.actividad_id ORDER BY x.actividad_id
++--------------+----------+----------+
+| actividad_id | intentos | promedio |
++--------------+----------+----------+
+|            1 |       29 |    63.79 |
+|            2 |       30 |    67.00 |
+|            3 |       30 |    67.67 |
+|            4 |       29 |    63.79 |
+|            5 |       30 |    64.67 |
+|            6 |       29 |    71.03 |
+|            7 |       27 |    65.56 |
+|            8 |       30 |    66.67 |
+|            9 |       30 |    65.00 |
+|           10 |       30 |    63.00 |
+|           11 |       30 |    61.67 |
+|           12 |       29 |    67.24 |
+|           13 |       30 |    61.67 |
+|           14 |       30 |    68.33 |
+|           15 |       30 |    69.67 |
+|           16 |       30 |    62.33 |
+|           17 |       29 |    65.52 |
+|           18 |       29 |    68.97 |
+|           19 |       30 |    68.33 |
+|           20 |       30 |    63.33 |
+|           21 |       29 |    71.72 |
+|           22 |       30 |    68.33 |
+|           23 |       26 |    68.85 |
+|           24 |       30 |    63.00 |
+|           25 |       29 |    59.31 |
+|           26 |       30 |    71.00 |
+|           27 |       30 |    66.33 |
+|           28 |       26 |    66.15 |
+|           29 |       30 |    63.67 |
+|           30 |       30 |    63.00 |
++--------------+----------+----------+
+
+== 3. ¿Devuelven lo mismo?
+Actividades del reporte: 30 · filas con alguna diferencia entre A y B: 0
+Intento por intento, en toda la base: 8749 resultados comparados · diferencias: 0 · finalizados sin resultado: 0
+
+== 4. Tiempos en el servidor (20 ejecuciones de cada una, SHOW PROFILES)
+A · puntaje guardado:   mín 3.89 ms · mediana 5.61 ms · p95 7.28 ms · máx 8.16 ms (n=20)
+B · puntaje calculado:  mín 35.49 ms · mediana 49.35 ms · p95 54.21 ms · máx 56.11 ms (n=20)
+
+== 5. atlas_app intenta modificar el puntaje de un intento cerrado
+Intento de prueba: 1 (FINALIZADO), puntaje guardado: 70.00
+Conexión: atlas_app desde 192.168.251.21 (red de la prueba, equivalente a atlas_back), sin permisos de DDL.
+
+-- a) UPDATE resultados SET puntaje = 100 WHERE intento_id = 1;
+ERROR 1142 (42000) at line 1: UPDATE command denied to user 'atlas_app'@'192.168.251.21' for table 'resultados'
+-- b) DELETE FROM resultados WHERE intento_id = 1;
+ERROR 1142 (42000) at line 1: DELETE command denied to user 'atlas_app'@'192.168.251.21' for table 'resultados'
+-- c) INSERT de un segundo resultado para el mismo intento
+ERROR 1062 (23000) at line 1: Duplicate entry '1' for key 'resultados.uq_resultados_intento'
+-- d) Cambiar la respuesta de una pregunta del intento cerrado
+ERROR 1644 (45000) at line 1: ATLAS: solo se modifica la respuesta de un intento en curso
+-- e) Reabrir el intento cerrado
+ERROR 1644 (45000) at line 1: ATLAS: un intento cerrado no puede cambiar de estado
+
+Puntaje después de los cinco intentos: 70.00 (antes: 70.00) · resultados del intento: 1
+
+== 6. Conclusión
+Aprobada: las dos consultas devuelven los mismos valores, el puntaje guardado no se pudo alterar y sigue habiendo un único resultado.
+Lectura de los tiempos: la consulta A lee una fila por intento; la B tiene que juntar todas las respuestas
+con sus opciones y contar las preguntas de cada actividad. La diferencia crece con la cantidad de respuestas.

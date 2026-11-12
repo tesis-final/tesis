@@ -1,0 +1,56 @@
+# ATLAS · prueba 'respaldos' · ./probar-todo.sh respaldos
+# Fecha: 2026-11-12T17:49:07Z · Equipo: Linux 6.18.44-fc-v378 · Commit: 397e55b + cambios sin commitear
+
+== MySQL descartable (mysql:8.0) con binlog, como atlas-db
+
+[completo]
+    17:49:18 Respaldo COMPLETO → /tmp/tmp.nDJk0j1hD7/raiz/backups/completo/atlas_20261112T174918Z.*
+    17:49:20   verificado: atlas_20261112T174918Z.sql.gz (10485 bytes)
+    17:49:20   verificado: atlas_20261112T174918Z.archivos.tar.gz (502 bytes)
+    17:49:20   verificado: atlas_20261112T174918Z.permisos.txt.gz (1159 bytes)
+  PASS  volcado de la base creado
+  PASS  el volcado está completo (-- Dump completed)
+  PASS  el volcado tiene el esquema (resultados)
+  PASS  archivos (con ACL) y permisos respaldados
+  PASS  los respaldos quedan con modo 600
+  PASS  registro_respaldos: 3 archivos del completo anotados por atlas_backup, verificados
+  PASS  la huella anotada coincide con la del archivo
+
+[incremental: se crean datos nuevos y se respaldan los binlog]
+    17:49:21 Respaldo INCREMENTAL → /tmp/tmp.nDJk0j1hD7/raiz/backups/incremental/atlas_20261112T174920Z.* (binlogs: atlas-bin.000004)
+    17:49:21   verificado: atlas_20261112T174920Z.binlog.tar.gz (1078 bytes)
+    17:49:21   verificado: atlas_20261112T174920Z.archivos.tar.gz (368 bytes)
+  PASS  el incremental contiene binlog
+  PASS  el dato nuevo está en el binlog respaldado
+  PASS  registro_respaldos: incremental anotado
+
+[configuración: cada cambio es una versión; se guardan las últimas 3]
+  PASS  retención: quedan 3 versiones de 5
+  PASS  la última versión tiene el último cambio
+
+[verificación diaria]
+  PASS  verificar: huellas y frecuencia OK
+  PASS  verificar detecta un archivo alterado
+
+[prueba de restauración en una base aparte]
+    17:49:27 Prueba de restauración de atlas_20261112T174918Z.sql.gz
+    17:49:28 Cargado en 907 ms. Tablas: 32
+      usuarios         al respaldar 0       restaurado 0       OK
+      grupos_clase     al respaldar 0       restaurado 0       OK
+      actividades      al respaldar 0       restaurado 0       OK
+      preguntas        al respaldar 0       restaurado 0       OK
+      opciones         al respaldar 0       restaurado 0       OK
+      intentos         al respaldar 0       restaurado 0       OK
+      respuestas       al respaldar 0       restaurado 0       OK
+      interacciones    al respaldar 0       restaurado 0       OK
+      resultados       al respaldar 0       restaurado 0       OK
+      recomendaciones  al respaldar 0       restaurado 0       OK
+      auditoria        al respaldar 0       restaurado 0       OK
+    Resultado: 11 de 11 tablas con las mismas filas que al respaldar.
+  PASS  la base restaurada tiene las 32 tablas
+  PASS  las filas coinciden con las del momento del respaldo
+  PASS  la base de prueba se borra al terminar
+
+Resultado: 17 PASS · 0 FAIL
+
+rc=0

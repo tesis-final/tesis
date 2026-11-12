@@ -8,6 +8,7 @@
 #   03-crear-vms.sh    PUENTE_WAN y --cpu en las 4 VM (INC-03, INC-05)
 #   04-router-lab.sh   otro netplan para la WAN se guarda aparte (INC-04)
 #   verificar.sh       atlas.conf con las ACL de la Tabla 27 (INC-10)
+#   05-vpn.sh          VPN con los dos perfiles de la Tabla 45 (pruebas 15 y 16, Hito 3)
 # No es Proxmox: qm e ifreload se reemplazan por comandos de prueba que solo
 # anotan lo que reciben. Lo que se prueba es lo que cada script escribe o pide.
 #
@@ -74,6 +75,38 @@ cond=$(grep 'atlasadmin:atlas-admin\\ 6' "$I/linux/verificar.sh" | sed 's/^ *//;
 eval "$cond" && ok "verificar.sh acepta atlas.conf con las ACL de la Tabla 27" || mal "verificar.sh rechaza el archivo correcto"
 chmod o+r $f; eval "$cond" && mal "verificar.sh acepta lectura para otros" || ok "verificar.sh rechaza atlas.conf si otros pueden leerlo"
 chmod o-r $f; chown root $f; eval "$cond" && mal "verificar.sh acepta otro dueño" || ok "verificar.sh rechaza atlas.conf con otro dueño"
+
+echo; echo "[05-vpn.sh: los dos perfiles de la Tabla 45 (Hito 3)]"
+# wg, nft, ip y systemctl de prueba: anotan lo que reciben y devuelven lo justo.
+S=/tmp/stubs-vpn; mkdir -p $S
+cat > $S/wg <<'X'
+#!/bin/sh
+case "$1" in genkey) echo "cHJpdmFkYS1kZWwtc2Vydmlkb3ItZGUtcHJ1ZWJhLWF0bGFzPQ==" ;; pubkey) echo "ServidorPublicaDePruebaAtlasXXXXXXXXXXXXXXX=" ;; *) echo "wg $*" >> /tmp/wg.log ;; esac
+X
+printf '#!/bin/sh\n[ "$1" = strip ] && cat /etc/wireguard/wg0.conf\n' > $S/wg-quick
+printf '#!/bin/sh\necho "iifname \\"wg0\\" ip saddr 10.8.0.0/25 oifname x accept"\necho "iifname \\"wg0\\" ip saddr 10.8.0.128/25 ip daddr 172.16.40.10 tcp dport 443 accept"\n' > $S/nft
+printf '#!/bin/sh\ncase "$*" in *"link show wg0"*) exit 1 ;; *"addr show"*) echo "ens19 UP 10.99.0.2/24" ;; esac\n' > $S/ip
+printf '#!/bin/sh\necho "systemctl $*" >> /tmp/wg.log\n' > $S/systemctl
+chmod +x $S/*
+V() { PATH=$S:$PATH bash "$I/proxmox/05-vpn.sh" "$@" 2>&1; }
+DOC=AbCdEfGhIjKlMnOpQrStUvWxYz0123456789+/abcdE=
+ADM=ZyXwVuTsRqPoNmLkJiHgFeDcBa9876543210+/zyxwA=
+SAL=$(V agregar docente "$DOC")
+grep -q $'docente\t10.8.0.130\t'"$DOC" /etc/wireguard/atlas-pares.tsv && ok "docente: queda con 10.8.0.130 (segmento 10.8.0.128/25)" || mal "alta del docente"
+grep -q "AllowedIPs = 10.8.0.130/32" /etc/wireguard/wg0.conf && ok "wg0.conf: el par del docente solo usa su dirección" || mal "wg0.conf del docente"
+grep -q "AllowedIPs = 172.16.40.10/32" <<<"$SAL" && grep -q "Endpoint = 10.99.0.2:51820" <<<"$SAL" && ok "cliente docente: solo hacia ATLAS (172.16.40.10) por 10.99.0.2:51820" || mal "config del cliente docente"
+SAL=$(V agregar admin "$ADM")
+grep -q $'admin\t10.8.0.10\t' /etc/wireguard/atlas-pares.tsv && ok "administración: toma la primera libre del segmento 10.8.0.0/25" || mal "alta de administración"
+grep -q "AllowedIPs = 172.16.50.0/24" <<<"$SAL" && ok "cliente administración: hacia la VLAN 50 (Gestión)" || mal "config del cliente admin"
+OTRA=MnOpQrStUvWxYz0123456789+/AbCdEfGhIjKlabcdQ=
+V agregar docente "$OTRA" 10.8.0.20 | grep -q "no está en el segmento" && ok "rechaza un docente con una IP del segmento de administración" || mal "segmento del perfil"
+V agregar docente "no-es-una-clave" | grep -q "no parece una clave" && ok "rechaza algo que no es una clave pública" || mal "clave inválida"
+V agregar admin "$DOC" | grep -q "ya está dada de alta" && ok "no da de alta dos veces la misma clave" || mal "clave repetida"
+! grep -q "PrivateKey" /etc/wireguard/wg0.conf && ok "wg0.conf no contiene ninguna clave privada (la del servidor va en un archivo aparte)" || mal "clave privada en wg0.conf"
+V quitar "$DOC" >/dev/null
+! grep -q "$DOC" /etc/wireguard/wg0.conf && grep -q "$ADM" /etc/wireguard/wg0.conf && ok "quitar: se va el docente y queda administración" || mal "quitar"
+PATH=$S:$PATH bash "$I/proxmox/05-vpn-docente.sh" "$DOC" >/dev/null 2>&1
+grep -q $'docente\t10.8.0.130\t'"$DOC"$'\tdocente-remoto' /etc/wireguard/atlas-pares.tsv && ok "05-vpn-docente.sh (el del informe de Redes) sigue funcionando" || mal "compatibilidad 05-vpn-docente.sh"
 
 echo; echo "Resultado: $pass PASS · $fail FAIL"
 [ "$fail" -eq 0 ]

@@ -1,0 +1,73 @@
+# E-RED-012 · Monitoreo con Zabbix 7.0 LTS: paso 14 de atlas-srv01 corrido de punta a punta en desarrollo
+# Fecha: 2026-11-12 13:37–13:40 UTC · Entorno: equipo de desarrollo (Ubuntu 24.04, Docker 29.9.2), NO la VM del laboratorio
+# Comando: sudo ATLAS_PARAMETROS=<copia> ATLAS_REPO_TESIS=<repo> infra/linux/14-monitoreo.sh
+# Cómo se simuló srv01: la IP del servidor es la del bridge de zbx_front (192.168.250.65) y ATLAS se publicó en esa IP,
+#   así el chequeo web hace el mismo camino que en el laboratorio (IP del servidor → DNAT de Docker → atlas-web).
+#   atlas-dc01 se reemplazó por una IP sin equipo (192.0.2.250): por eso su único FAIL es esperado. Sin UFW en este equipo (aviso).
+#   El registro de contenedores fue json-file porque este equipo no tiene journald (en srv01 es journald).
+# Las líneas de Docker Compose (creación de redes y contenedores) se omiten. Las alertas de disco son reales: este equipo
+#   tiene el disco al 81,6 %, por encima del umbral del 80 % de la Tabla 47.
+# Capturas: E/capturas/zabbix-hosts.png, zabbix-web.png, zabbix-problemas.png, zabbix-sla.png
+# Estado: EJECUTADO en desarrollo. En el laboratorio: PENDIENTE (plan de Redes del Hito 3).
+
+==> 1/5 Contraseñas del monitoreo en <simulación>/srv-atlas/config/monitoreo.conf (root 600)
+    root:root 600 · claves: ZBX_DB_PASSWORD ZBX_DB_ROOT_PASSWORD ZBX_ADMIN_PASSWORD ZBX_DATOS ATLAS_LOG_DRIVER
+==> 2/5 Compose del monitoreo en <simulación>/srv-atlas/monitoreo
+NAME            IMAGE                                             COMMAND                  SERVICE         CREATED          STATUS                                     PORTS
+zabbix-agent    zabbix/zabbix-agent2:alpine-7.0-latest            "/usr/bin/docker-ent…"   zabbix-agent    21 seconds ago   Up 20 seconds                              
+zabbix-db       mysql:8.0                                         "docker-entrypoint.s…"   zabbix-db       21 seconds ago   Up 21 seconds (healthy)                    3306/tcp, 33060/tcp
+zabbix-server   zabbix/zabbix-server-mysql:alpine-7.0-latest      "/usr/bin/docker-ent…"   zabbix-server   21 seconds ago   Up Less than a second                      10051/tcp
+zabbix-web      zabbix/zabbix-web-nginx-mysql:alpine-7.0-latest   "docker-entrypoint.sh"   zabbix-web      21 seconds ago   Up Less than a second (health: starting)   127.0.0.1:8080->8080/tcp, 8443/tcp
+==> 3/5 UFW: el agente (10050) solo para zabbix-server (192.168.250.64/28)
+AVISO: UFW no está instalado: correr el paso 5.
+==> 4/5 Configuración de Zabbix por su API (espera a que termine de crear su base)
+Zabbix 7.0.32 en http://127.0.0.1:8080/api_jsonrpc.php
+  Contraseña inicial de Admin reemplazada (la de monitoreo.conf)
+  atlas-srv01: creado, agente en 192.168.250.65:10050
+  atlas-dc01: creado, agente en 192.0.2.250:10050
+  Escenario web atlas-salud: https://192.168.250.65/api/v1/health cada minuto
+  Disparador: ATLAS no responde (salud de la plataforma)
+  Disparador: ATLAS tarda más de 3 s en responder (RNF-03)
+  Servicio: ATLAS · plataforma web
+  SLA: 99 %, diario (Servicios → SLA report)
+Listo. Interfaz: túnel SSH desde la VLAN 50 → http://127.0.0.1:8080 (usuario Admin).
+==> 5/5 Estado inicial (los primeros datos tardan 1 o 2 minutos)
+Zabbix 7.0.32 · 2026-11-12 13:39:35 +0000
+  PASS  la contraseña inicial de Admin («zabbix») ya no entra
+
+[agentes]
+  FAIL  atlas-dc01 (192.0.2.250:10050) responde — Get value from agent failed: Cannot establish TCP connection to [[192.0.2.250]:10050]: [113] Host is unreachable
+  PASS  atlas-srv01 (192.168.250.65:10050) responde
+        CPU          3.3 %  (umbral de alerta 80 %)
+        memoria     13.2 %  (umbral de alerta 80 %)
+        disco /     81.6 %  (umbral de alerta 80 %)
+  PASS  atlas-srv01 y atlas-dc01 están dados de alta
+
+[escenario web atlas-salud]
+  PASS  último chequeo de /api/v1/health sin fallas
+        código HTTP 200
+  PASS  tiempo de respuesta 29 ms (meta ≤ 3 s, RNF-03)
+
+[problemas abiertos]
+        12/11 13:39  Linux: FS [/hostfs/run/netns]: Space is low (used > 80%, total 252.0GB)
+        12/11 13:39  Linux: FS [/hostfs]: Space is low (used > 80%, total 252.0GB)
+        12/11 13:39  Linux: FS [/hostfs/var/lib/docker]: Space is low (used > 80%, total 252.0GB)
+        12/11 13:39  Linux: FS [/hostfs/opt/claude-code]: Space is critically low (used > 90%, total 0.3GB)
+        total: 4
+
+[SLA]
+  PASS  SLA «ATLAS · disponibilidad (RNF-02)» definido
+        06/11/2026  SLI -1.000 %  (SLO 99 %)
+        07/11/2026  SLI -1.000 %  (SLO 99 %)
+        08/11/2026  SLI -1.000 %  (SLO 99 %)
+        09/11/2026  SLI -1.000 %  (SLO 99 %)
+        10/11/2026  SLI -1.000 %  (SLO 99 %)
+        11/11/2026  SLI -1.000 %  (SLO 99 %)
+        12/11/2026  SLI 100.000 %  (SLO 99 %)
+
+Resultado: 1 control(es) en FAIL
+AVISO: Hay controles pendientes (si es atlas-dc01: falta infra/windows/14-agente-zabbix.ps1).
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+LISTEN 0      4096       127.0.0.1:8080       0.0.0.0:*          
+LISTEN 0      4096         0.0.0.0:10050      0.0.0.0:*          
+==> Listo. Estado en cualquier momento: sudo atlas-ctl monitoreo
