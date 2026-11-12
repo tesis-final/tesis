@@ -43,7 +43,10 @@ token = None
 _id = 0
 
 
-def api(metodo, params, intentos=6):
+TRANSITORIOS = ("Database error", "Connection refused", "Lost connection", "Connection to Zabbix server")
+
+
+def api(metodo, params, intentos=12):
     global _id
     for intento in range(intentos):
         _id += 1
@@ -57,8 +60,9 @@ def api(metodo, params, intentos=6):
             return datos["result"]
         detalle = datos["error"].get("data") or datos["error"].get("message")
         # Recién instalado, zabbix-server todavía escribe en su base y la API puede devolver
-        # «Database error occurred» por un bloqueo: se reintenta unos segundos después.
-        if "Database error" not in str(detalle) or intento == intentos - 1:
+        # «Database error occurred» o «Connection refused» mientras termina de arrancar: se
+        # reintenta unos segundos después (hasta un minuto).
+        if not any(t in str(detalle) for t in TRANSITORIOS) or intento == intentos - 1:
             raise RuntimeError(f"{metodo}: {detalle}")
         time.sleep(5)
 

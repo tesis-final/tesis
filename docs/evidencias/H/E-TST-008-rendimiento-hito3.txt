@@ -1,0 +1,16 @@
+# E-TST-008 — Tiempos de respuesta de la API (RNF-03: 3 s o menos) en desarrollo, Hito 3
+# Fecha: 2026-11-12 14:07 UTC · Commit: 20e0506 · Comando: python3 atlas/tests/rendimiento/medir.py https://localhost <clave demo> 30
+# Entorno: equipo de desarrollo, pila local con datos SINTÉTICOS. En el laboratorio el tiempo lo mide Zabbix (escenario atlas-salud).
+
+# 30 repeticiones por consulta · límite RNF-03: 3000 ms (percentil 95)
+Inicio de sesión (una vez): docente 320 ms · estudiante 281 ms
+Rol        Consulta                                    mín  mediana    p95    máx  Resultado
+docente    Mis actividades                              17       21     24     26  PASS
+docente    Dónde intervenir / análisis del grupo        41       51     56     60  PASS
+docente    Consulta guiada (grupo + período)            38       52     58     71  PASS
+docente    Perfil de un estudiante                      29       34     42     48  PASS
+docente    Reportes                                     22       28     31     34  PASS
+estudiante Actividades del estudiante                   17       22     30     35  PASS
+estudiante Sesión actual                                14       19     23     33  PASS
+
+Resultado: 7 PASS · 0 FAIL

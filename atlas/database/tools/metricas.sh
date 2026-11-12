@@ -105,7 +105,7 @@ ejecutar() {
   echo "  Tiempo de respuesta ≤ 3 s (RNF-03) ........ python3 atlas/tests/rendimiento/medir.py https://<servidor> <clave> 30"
   echo "  Disponibilidad ≥ 99 % (RNF-02) ............ atlas/tests/rendimiento/disponibilidad.sh https://<servidor> <minutos>, y Zabbix en el laboratorio"
   echo "  Recuperación: RTO < 4 h, RPO ≤ 24 h ....... sudo atlas/database/tools/restaurar_intento.sh"
-  echo "  CPU, memoria y disco: alerta al 80 % ...... Zabbix (infra/monitoreo)"
+  echo "  CPU, memoria y disco: alerta al 80 % ...... Zabbix (infra/monitoring, paso 14)"
   echo "  Eventos de seguridad de red ............... registro ATLAS-* de router-lab (journalctl -k) y Visor de eventos del DC"
   [ "$FALLA" = 0 ]
 }

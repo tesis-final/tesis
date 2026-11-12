@@ -44,8 +44,8 @@ iPhone compartiendo Internet. No hay que cablear nada nuevo ni comprar nada. Lo 
 
 ## 2. Antes de empezar
 
-- Los cambios del Hito 3 tienen que estar en `main` del repositorio que clona el laboratorio
-  (`https://github.com/tesis-final/tesis`, sección 4.4 del informe). Si el laboratorio clona otro, usar ese.
+- Los cambios del Hito 3 tienen que estar en `main` (merge del pull request) antes de empezar: el laboratorio clona
+  `https://github.com/tesis-final/tesis` (sección 4.4 del informe), que es este mismo repositorio.
 - En Proxmox existe el atajo `vm` (`/usr/local/bin/vm`, informe sección 12.1) para correr comandos en las VM con el agente
   de QEMU y ver la salida limpia. Se usa abajo.
 - Ninguna contraseña se escribe en un comando ni aparece en una captura. Cuando un script pide una, la pide sin eco.
