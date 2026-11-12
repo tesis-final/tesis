@@ -1,4 +1,4 @@
-# E-RED-009 · Monitoreo con Zabbix 7.0 LTS: paso 14 de atlas-srv01 corrido de punta a punta en desarrollo
+# E-RED-012 · Monitoreo con Zabbix 7.0 LTS: paso 14 de atlas-srv01 corrido de punta a punta en desarrollo
 # Fecha: 2026-11-12 13:37–13:40 UTC · Entorno: equipo de desarrollo (Ubuntu 24.04, Docker 29.9.2), NO la VM del laboratorio
 # Comando: sudo ATLAS_PARAMETROS=<copia> ATLAS_REPO_TESIS=<repo> infra/linux/14-monitoreo.sh
 # Cómo se simuló srv01: la IP del servidor es la del bridge de zbx_front (192.168.250.65) y ATLAS se publicó en esa IP,
@@ -8,7 +8,7 @@
 # Las líneas de Docker Compose (creación de redes y contenedores) se omiten. Las alertas de disco son reales: este equipo
 #   tiene el disco al 81,6 %, por encima del umbral del 80 % de la Tabla 47.
 # Capturas: E/capturas/zabbix-hosts.png, zabbix-web.png, zabbix-problemas.png, zabbix-sla.png
-# Estado: EJECUTADO en desarrollo. En el laboratorio: PENDIENTE (plan de Redes, paso R-7).
+# Estado: EJECUTADO en desarrollo. En el laboratorio: PENDIENTE (plan de Redes del Hito 3).
 
 ==> 1/5 Contraseñas del monitoreo en <simulación>/srv-atlas/config/monitoreo.conf (root 600)
     root:root 600 · claves: ZBX_DB_PASSWORD ZBX_DB_ROOT_PASSWORD ZBX_ADMIN_PASSWORD ZBX_DATOS ATLAS_LOG_DRIVER

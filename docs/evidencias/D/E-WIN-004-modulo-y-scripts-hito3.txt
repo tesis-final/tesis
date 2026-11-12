@@ -1,4 +1,4 @@
-# E-WIN-003 — Pruebas del módulo AtlasComun y de los scripts de atlas-dc01 sin Windows Server, Hito 3
+# E-WIN-004 — Pruebas del módulo AtlasComun y de los scripts de atlas-dc01 sin Windows Server, Hito 3
 # Fecha: 2026-11-12 13:45 UTC
 # Comando: pwsh -NoProfile -File infra/windows/pruebas/probar-modulo.ps1 (PowerShell 7.4 en contenedor Ubuntu)
 # Nuevo en el Hito 3: decisión de retención de atlas-backups (Tabla 29) y lectura sin errores de los 19 scripts.

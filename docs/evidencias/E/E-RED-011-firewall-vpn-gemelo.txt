@@ -1,8 +1,9 @@
-# E-RED-008 · Firewall de router-lab con la VPN de la Tabla 45 (perfiles administración y docente), con tráfico real
+# E-RED-011 · Firewall de router-lab con la VPN de la Tabla 45 (perfiles administración y docente), con tráfico real
 # Fecha: 2026-11-12 13:44 UTC · Entorno: contenedor Linux 6.18.44-fc-v378, nftables v1.0.9 (Old Doc Yak #3)
 # Comando: sudo bash infra/red/pruebas/probar-router-lab.sh
 # Estado: EJECUTADO en espacios de red de Linux (no en Proxmox). wg0 se simula con un bridge y dos clientes (10.8.0.10 admin, 10.8.0.130 docente):
 #   lo que se prueba es el filtrado R8/R9/R12 y que el origen de la VPN no se traduce (VPN-09). El túnel WireGuard real se prueba en el laboratorio (pruebas 14–16, pendientes).
+#   Las evidencias del laboratorio E-RED-008a/b/c (VPN real, informe de Redes del Hito 2) siguen pendientes.
 
 
 ── netplan generado ──

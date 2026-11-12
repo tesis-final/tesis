@@ -1,4 +1,4 @@
-# E-RED-010 · Prueba automática del monitoreo (Zabbix 7.0 LTS real, contraseñas descartables)
+# E-RED-013 · Prueba automática del monitoreo (Zabbix 7.0 LTS real, contraseñas descartables)
 # Fecha: 2026-11-12 13:52–13:56 UTC · Entorno: equipo de desarrollo (Ubuntu 24.04, Docker 29.9.2)
 # Comando: sudo infra/pruebas/probar-monitoreo.sh
 # Qué simula: un /api/v1/health de prueba publicado en la IP del «servidor» (bridge de zbx_front); atlas-dc01 es una IP sin equipo.
