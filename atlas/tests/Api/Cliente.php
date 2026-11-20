@@ -58,6 +58,7 @@ final class Cliente
         );
         $respuesta = $kernel->handle($peticion);
         $kernel->terminate($peticion, $respuesta);
+        $this->anotarRuta($laravel, $peticion, $respuesta->getStatusCode());
         // Laravel instala sus manejadores de errores al arrancar; se quitan como en sus propias
         // pruebas. Y se suelta la aplicación entera, para que cierre sus conexiones a MySQL.
         HandleExceptions::flushState();
@@ -75,6 +76,32 @@ final class Cliente
         $json = (string) $respuesta->getContent();
 
         return $json === '' ? null : json_decode($json, true);
+    }
+
+    /**
+     * Cobertura de rutas (informe de Testing del Hito 3): si ATLAS_RUTAS_CUBIERTAS apunta a un
+     * archivo, anota cada ruta que la prueba alcanzó, con su método y el código de respuesta, y
+     * deja al lado (.todas) la lista completa de rutas de la API para comparar.
+     */
+    private function anotarRuta(object $laravel, Request $peticion, int $estado): void
+    {
+        $archivo = getenv('ATLAS_RUTAS_CUBIERTAS');
+        if ($archivo === false || $archivo === '') {
+            return;
+        }
+        $ruta = $peticion->route();
+        $patron = $ruta === null ? 'SIN-RUTA ' . $peticion->path() : $peticion->method() . ' ' . $ruta->uri();
+        file_put_contents($archivo, "{$patron}\t{$estado}\n", FILE_APPEND | LOCK_EX);
+        if (!is_file($archivo . '.todas')) {
+            $todas = [];
+            foreach ($laravel['router']->getRoutes() as $r) {
+                foreach (array_diff($r->methods(), ['HEAD']) as $m) {
+                    $todas[] = "{$m} {$r->uri()}";
+                }
+            }
+            sort($todas);
+            file_put_contents($archivo . '.todas', implode("\n", $todas) . "\n", LOCK_EX);
+        }
     }
 
     /** @return array<string, mixed> */

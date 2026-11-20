@@ -1,0 +1,50 @@
+Rutas de /api/v1: 44
+Alcanzadas por las pruebas de API: 44 (100.0 %)
+Probadas también con una respuesta de error (4xx): 27
+Pedidos hechos por las pruebas: 1138
+
+Ruta                                                       Pedidos  Códigos
+GET api/v1/actividades                                           2  200 401
+GET api/v1/actividades/{id}                                      2  200 403
+GET api/v1/actividades/{id}/transiciones                         1  200
+GET api/v1/asistente/consultas                                   1  200
+GET api/v1/auditoria                                             2  200 403
+GET api/v1/auth/me                                               3  200 401
+GET api/v1/catalogos                                             1  200
+GET api/v1/docente/estudiantes/{id}/perfil                       6  200 403
+GET api/v1/docente/grupos/{id}/analisis                          7  200 403
+GET api/v1/estudiante/actividades                                5  200 401
+GET api/v1/grupos                                                2  200
+GET api/v1/grupos/{id}/miembros                                  3  200 403
+GET api/v1/health                                                1  200
+GET api/v1/instituciones                                         2  200 403
+GET api/v1/intentos/{id}/resultado                               2  404 409
+GET api/v1/recomendaciones/{id}/fundamento                       2  200 403
+GET api/v1/reglas                                                1  200
+GET api/v1/reportes                                              4  200 403
+GET api/v1/roles                                                 1  200
+GET api/v1/usuarios                                              2  401 403
+PATCH api/v1/actividades/{id}                                    3  200
+PATCH api/v1/instituciones/{id}                                  1  200
+PATCH api/v1/reglas/{codigo}                                     4  200 403 422
+PATCH api/v1/usuarios/{id}                                       2  200
+POST api/v1/actividades                                         49  201 403 422
+POST api/v1/actividades/{id}/aprobar                            35  200 403
+POST api/v1/actividades/{id}/enviar                             42  200 403 409 422
+POST api/v1/actividades/{id}/publicar                           39  200 403 409 422
+POST api/v1/actividades/{id}/rechazar                            2  200 422
+POST api/v1/asistente/consultas                                  8  200 403
+POST api/v1/auth/login                                         230  200 401 423
+POST api/v1/auth/logout                                          1  204
+POST api/v1/grupos                                               1  201
+POST api/v1/instituciones                                        4  201
+POST api/v1/intentos                                           111  201 403 404
+POST api/v1/intentos/{id}/abandonar                              3  200
+POST api/v1/intentos/{id}/eventos                              103  200
+POST api/v1/intentos/{id}/finalizar                            101  200
+POST api/v1/recomendaciones/{id}/decision                        6  200 403 409 422
+POST api/v1/usuarios                                             5  201 422
+POST api/v1/usuarios/{id}/desactivar                             2  200 409
+PUT api/v1/grupos/{id}/miembros                                  1  200
+PUT api/v1/intentos/{id}/respuestas/{pregunta}                 334  204 422
+PUT api/v1/roles/{id}/permisos                                   1  409

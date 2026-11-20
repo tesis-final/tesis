@@ -1,0 +1,138 @@
+
+
+Code Coverage Report:
+  2026-11-20 12:04:56
+
+ Summary:
+  Classes: 63.08% (41/65)
+  Methods: 82.12% (271/330)
+  Lines:   91.82% (2110/2298)
+
+Atlas\Core\App
+  Methods: 100.00% (21/21)   Lines: 100.00% ( 62/ 62)
+Atlas\Core\Clock
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
+Atlas\Core\Config
+  Methods:  60.00% ( 3/ 5)   Lines:  60.00% (  6/ 10)
+Atlas\Core\Database
+  Methods:  80.00% ( 4/ 5)   Lines:  89.29% ( 25/ 28)
+Atlas\Core\HttpException
+  Methods: 100.00% ( 6/ 6)   Lines: 100.00% (  6/  6)
+Atlas\Core\SesionLaravel
+  Methods: 100.00% ( 5/ 5)   Lines: 100.00% (  5/  5)
+Atlas\Http\Controllers\ActividadController
+  Methods: 100.00% (10/10)   Lines: 100.00% ( 36/ 36)
+Atlas\Http\Controllers\AdminController
+  Methods:  52.94% ( 9/17)   Lines:  80.17% ( 93/116)
+Atlas\Http\Controllers\AuthController
+  Methods: 100.00% ( 3/ 3)   Lines: 100.00% (  6/  6)
+Atlas\Http\Controllers\Controller
+  Methods:  83.33% ( 5/ 6)   Lines:  90.91% ( 10/ 11)
+Atlas\Http\Controllers\DocenteController
+  Methods: 100.00% ( 7/ 7)   Lines: 100.00% ( 27/ 27)
+Atlas\Http\Controllers\EstudianteController
+  Methods: 100.00% ( 7/ 7)   Lines: 100.00% ( 22/ 22)
+Atlas\Http\Controllers\SaludController
+  Methods:   0.00% ( 0/ 1)   Lines:  81.82% (  9/ 11)
+Atlas\Http\Json
+  Methods: 100.00% ( 4/ 4)   Lines: 100.00% (  4/  4)
+Atlas\Http\Middleware\Auditoria
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 17/ 17)
+Atlas\Http\Middleware\Autenticacion
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 21/ 21)
+Atlas\Http\Middleware\Permiso
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 14/ 14)
+Atlas\Http\Middleware\Ruta
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  2/  2)
+Atlas\Http\Requests\ActividadRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  6/  6)
+Atlas\Http\Requests\AtlasRequest
+  Methods:  66.67% ( 2/ 3)   Lines:  93.33% ( 14/ 15)
+Atlas\Http\Requests\ConsultaAsistenteRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  3/  3)
+Atlas\Http\Requests\CrearGrupoRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  5/  5)
+Atlas\Http\Requests\CrearInstitucionRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  4/  4)
+Atlas\Http\Requests\CrearUsuarioRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  8/  8)
+Atlas\Http\Requests\DecisionRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  3/  3)
+Atlas\Http\Requests\EventosRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  3/  3)
+Atlas\Http\Requests\IniciarIntentoRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  3/  3)
+Atlas\Http\Requests\LoginRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  4/  4)
+Atlas\Http\Requests\MiembrosRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  3/  3)
+Atlas\Http\Requests\ModificarInstitucionRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  5/  5)
+Atlas\Http\Requests\ModificarUsuarioRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  8/  8)
+Atlas\Http\Requests\PermisosRolRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  3/  3)
+Atlas\Http\Requests\PublicarRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  3/  3)
+Atlas\Http\Requests\RechazarRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  3/  3)
+Atlas\Http\Requests\ResponderRequest
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  4/  4)
+Atlas\Providers\AtlasServiceProvider
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  6/  6)
+Atlas\Repositories\ActividadRepository
+  Methods:  92.86% (13/14)   Lines:  98.36% (120/122)
+Atlas\Repositories\AnalisisRepository
+  Methods: 100.00% (24/24)   Lines: 100.00% (141/141)
+Atlas\Repositories\AuditoriaRepository
+  Methods:  50.00% ( 1/ 2)   Lines:  79.31% ( 23/ 29)
+Atlas\Repositories\ConversacionRepository
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 16/ 16)
+Atlas\Repositories\IntentoRepository
+  Methods:  92.86% (13/14)   Lines:  93.06% ( 67/ 72)
+Atlas\Repositories\OrganizacionRepository
+  Methods:  94.12% (16/17)   Lines:  83.52% ( 76/ 91)
+Atlas\Repositories\ReporteRepository
+  Methods:  50.00% ( 5/10)   Lines:  92.00% (115/125)
+Atlas\Repositories\Repository
+  Methods:  87.50% ( 7/ 8)   Lines:  92.00% ( 23/ 25)
+Atlas\Repositories\UsuarioRepository
+  Methods:  81.82% ( 9/11)   Lines:  80.30% ( 53/ 66)
+Atlas\Services\ActividadService
+  Methods:  81.25% (13/16)   Lines:  92.65% (126/136)
+Atlas\Services\AnalisisClient
+  Methods:  50.00% ( 3/ 6)   Lines:  28.21% ( 11/ 39)
+Atlas\Services\Analysis\AnalisisService
+  Methods:  33.33% ( 1/ 3)   Lines:  92.00% ( 69/ 75)
+Atlas\Services\Analysis\Indicadores
+  Methods: 100.00% ( 3/ 3)   Lines: 100.00% ( 26/ 26)
+Atlas\Services\Analysis\IndicadoresHabilidad
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 31/ 31)
+Atlas\Services\Analysis\MotorReglas
+  Methods:  50.00% ( 2/ 4)   Lines:  91.11% ( 41/ 45)
+Atlas\Services\Analysis\Periodo
+  Methods: 100.00% ( 3/ 3)   Lines: 100.00% (  5/  5)
+Atlas\Services\Analysis\ResumenGrupal
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 16/ 16)
+Atlas\Services\Analysis\TiempoActivo
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 16/ 16)
+Atlas\Services\Asistente\Anonimizador
+  Methods: 100.00% ( 7/ 7)   Lines: 100.00% ( 45/ 45)
+Atlas\Services\Asistente\AsistenteService
+  Methods:  28.57% ( 2/ 7)   Lines:  93.58% (175/187)
+Atlas\Services\Asistente\Consulta
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
+Atlas\Services\Asistente\IntentParser
+  Methods: 100.00% ( 3/ 3)   Lines: 100.00% ( 41/ 41)
+Atlas\Services\Asistente\Texto
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% (  6/  6)
+Atlas\Services\AuditoriaService
+  Methods:  50.00% ( 1/ 2)   Lines:  86.67% ( 13/ 15)
+Atlas\Services\AuthService
+  Methods:  83.33% ( 5/ 6)   Lines:  98.68% ( 75/ 76)
+Atlas\Services\IntentoService
+  Methods:  70.59% (12/17)   Lines:  85.47% (153/179)
+Atlas\Services\PanelDocenteService
+  Methods:  33.33% ( 3/ 9)   Lines:  95.17% (138/145)
+Atlas\Services\UsuarioService
+  Methods:  80.00% ( 4/ 5)   Lines:  97.14% ( 34/ 35)

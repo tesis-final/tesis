@@ -12,6 +12,7 @@ Equipo Error404 · ATLAS · entrega: viernes 20/11/2026 · estado al 20/11/2026
 | Versión anterior, V3.0 del 12/11 (solo desarrollo) | `ATLAS_Documento_integrador_V3.0.*` |
 | Plan de Redes paso a paso para el laboratorio (R-0 a R-12) | [`plan-redes-laboratorio.md`](plan-redes-laboratorio.md) |
 | Fuente del documento (se regenera con un comando) | [`documento/`](documento/) |
+| Hito 3 de Testing: cobertura, calidad y conclusiones (Word y PDF) | [`Hito3_Testing_ATLAS.docx`](Hito3_Testing_ATLAS.docx), [`Hito3_Testing_ATLAS.pdf`](Hito3_Testing_ATLAS.pdf) y [`testing/`](testing/) |
 
 El documento se arma con `docs/hito-3/documento/armar-pdf.sh` (Node.js con `docx`, LibreOffice y
 `pdfunite`). Los resultados que cita salen de `documento/resultados.js`, y cada uno apunta a un archivo

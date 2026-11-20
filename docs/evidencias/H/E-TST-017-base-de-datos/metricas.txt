@@ -1,0 +1,26 @@
+ATLAS — Métricas de verificación de requisitos y objetivos
+Fecha (UTC): 2026-11-20T12:11:16Z · Equipo: vm · MySQL 8.0.46
+Base: 17 usuarios · 69 intentos · 69 resultados · 183 interacciones
+
+ID   Métrica                                                   Valor                      Meta                   Est.  Origen
+------------------------------------------------------------------------------------------------------------------------------------------------------
+M1   Intentos finalizados registrados completos (Obj. 3)        69 de 69 (100.0 %)         100 %                  PASS  intentos, respuestas, interacciones, resultados
+M2   Intentos con más de un resultado                          0                          0                      PASS  resultados (UNIQUE uq_resultados_intento)
+M3   Resultados distintos del puntaje recalculado               0 de 69                    0                      PASS  resultados vs respuestas/opciones
+M4   Recomendaciones con regla y versión registradas (Obj. 5)  53 de 53 (100.0 %)         100 %                  PASS  recomendaciones, recomendacion_regla
+M5   Reglas explicables activas (Obj. 5: al menos 8)            8                          ≥ 8                  PASS  reglas_analisis
+M6   Sugerencias confirmadas por el docente (acuerdo, D-6)      3 de 3 (100.0 %)           informativa            INFO  decisiones_recomendacion
+M7   Preguntas publicadas con habilidad (D-3)                   15 de 15 (100.0 %)         100 %                  PASS  preguntas, pregunta_habilidad
+M8   Accesos denegados registrados (total · últimos 7 días)  4 · 4                     registrados            INFO  auditoria (revisión semanal, Tabla 47)
+M9   Cuentas bloqueadas ahora por intentos fallidos (RF-02)     0                          informativa            INFO  usuarios.bloqueado_hasta
+M10  Respaldos exitosos en 30 días (RNF-04)                    sin registros              100 %                  INFO  registro_respaldos (correr 13-respaldos.sh)
+M11  Horas desde el último respaldo de la base (RPO)           sin registros              ≤ 24 h               INFO  registro_respaldos
+
+Resultado: 6 PASS · 0 FAIL · 5 informativas
+
+Métricas que se miden con otra herramienta (sección 12 y Tabla 47):
+  Tiempo de respuesta ≤ 3 s (RNF-03) ........ python3 atlas/tests/rendimiento/medir.py https://<servidor> <clave> 30
+  Disponibilidad ≥ 99 % (RNF-02) ............ atlas/tests/rendimiento/disponibilidad.sh https://<servidor> <minutos>, y Zabbix en el laboratorio
+  Recuperación: RTO < 4 h, RPO ≤ 24 h ....... sudo atlas/database/tools/restaurar_intento.sh
+  CPU, memoria y disco: alerta al 80 % ...... Zabbix (infra/monitoring, paso 14)
+  Eventos de seguridad de red ............... registro ATLAS-* de router-lab (journalctl -k) y Visor de eventos del DC

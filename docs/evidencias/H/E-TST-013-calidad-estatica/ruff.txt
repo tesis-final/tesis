@@ -1,0 +1,59 @@
+ruff 0.8.4
+atlas-analysis/app/db.py:79:131: E501 Line too long (136 > 130)
+atlas-analysis/app/db.py:95:131: E501 Line too long (131 > 130)
+atlas-analysis/app/features.py:103:9: B007 Loop control variable `usuario` not used within loop body
+atlas-analysis/app/main.py:30:35: B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+atlas-analysis/app/main.py:34:34: B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+atlas-analysis/app/main.py:57:31: B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+atlas-analysis/app/main.py:66:38: B008 Do not perform function call `Query` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+atlas-analysis/app/main.py:66:61: B008 Do not perform function call `Query` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+atlas-analysis/app/main.py:67:32: B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+atlas-analysis/app/main.py:67:72: B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+atlas-analysis/app/main.py:73:36: B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+atlas-analysis/app/main.py:73:76: B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+atlas-analysis/app/main.py:80:57: B008 Do not perform function call `Depends` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+atlas-analysis/app/models/risk.py:51:131: E501 Line too long (131 > 130)
+atlas-analysis/tests/test_features.py:19:131: E501 Line too long (144 > 130)
+atlas-analysis/tests/test_features.py:20:131: E501 Line too long (144 > 130)
+atlas-analysis/tests/test_features.py:21:131: E501 Line too long (143 > 130)
+atlas-analysis/tests/test_features.py:22:131: E501 Line too long (144 > 130)
+atlas-analysis/tests/test_modelos.py:63:131: E501 Line too long (132 > 130)
+atlas/database/tools/generar_documentacion.py:61:22: B007 Loop control variable `nul` not used within loop body
+atlas/database/tools/generar_documentacion.py:69:19: B007 Loop control variable `rc` not used within loop body
+atlas/database/tools/generar_documentacion.py:92:131: E501 Line too long (137 > 130)
+atlas/tests/e2e/interfaz.py:191:131: E501 Line too long (133 > 130)
+atlas/tests/e2e/interfaz.py:192:131: E501 Line too long (135 > 130)
+atlas/tests/e2e/interfaz.py:227:131: E501 Line too long (131 > 130)
+atlas/tests/e2e/trazar_intento.py:59:30: E741 Ambiguous variable name: `l`
+atlas/tests/e2e/trazar_intento.py:142:131: E501 Line too long (159 > 130)
+atlas/tests/e2e/trazar_intento.py:152:131: E501 Line too long (140 > 130)
+atlas/tests/e2e/trazar_intento.py:156:131: E501 Line too long (131 > 130)
+atlas/tests/e2e/trazar_intento.py:157:131: E501 Line too long (140 > 130)
+atlas/tests/e2e/trazar_intento.py:171:131: E501 Line too long (169 > 130)
+atlas/tests/rendimiento/medir.py:85:131: E501 Line too long (133 > 130)
+infra/monitoring/estado-zabbix.py:45:131: E501 Line too long (143 > 130)
+infra/monitoring/estado-zabbix.py:64:131: E501 Line too long (155 > 130)
+infra/monitoring/estado-zabbix.py:65:131: E501 Line too long (137 > 130)
+infra/monitoring/estado-zabbix.py:82:131: E501 Line too long (136 > 130)
+infra/monitoring/estado-zabbix.py:85:131: E501 Line too long (137 > 130)
+infra/monitoring/estado-zabbix.py:97:131: E501 Line too long (147 > 130)
+infra/red/pruebas/revisar_configuraciones.py:59:30: E741 Ambiguous variable name: `l`
+infra/red/pruebas/revisar_configuraciones.py:62:9: E741 Ambiguous variable name: `l`
+infra/red/pruebas/revisar_configuraciones.py:79:9: E741 Ambiguous variable name: `l`
+infra/red/pruebas/revisar_configuraciones.py:91:9: E741 Ambiguous variable name: `l`
+infra/red/pruebas/revisar_configuraciones.py:95:116: E741 Ambiguous variable name: `l`
+infra/red/pruebas/revisar_configuraciones.py:102:35: E741 Ambiguous variable name: `l`
+infra/red/pruebas/revisar_configuraciones.py:132:35: E741 Ambiguous variable name: `l`
+infra/red/pruebas/revisar_configuraciones.py:143:131: E501 Line too long (160 > 130)
+infra/red/pruebas/revisar_configuraciones.py:146:131: E501 Line too long (138 > 130)
+infra/red/pruebas/revisar_configuraciones.py:151:115: E741 Ambiguous variable name: `l`
+infra/red/pruebas/revisar_configuraciones.py:153:131: E501 Line too long (162 > 130)
+infra/red/pruebas/revisar_configuraciones.py:153:155: E741 Ambiguous variable name: `l`
+infra/red/pruebas/revisar_configuraciones.py:155:37: E741 Ambiguous variable name: `l`
+infra/red/pruebas/revisar_configuraciones.py:158:36: E741 Ambiguous variable name: `l`
+infra/red/pruebas/revisar_configuraciones.py:162:131: E501 Line too long (134 > 130)
+infra/red/pruebas/revisar_configuraciones.py:165:92: E741 Ambiguous variable name: `l`
+infra/red/pruebas/revisar_configuraciones.py:174:35: E741 Ambiguous variable name: `l`
+infra/red/pruebas/revisar_configuraciones.py:178:33: E741 Ambiguous variable name: `l`
+Found 56 errors.
+No fixes available (3 hidden fixes can be enabled with the `--unsafe-fixes` option).

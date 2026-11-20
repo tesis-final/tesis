@@ -15,7 +15,7 @@
 # Uso: sudo infra/pruebas/probar-monitoreo.sh      (necesita Docker y las imágenes de Zabbix)
 # =============================================================================
 set -uo pipefail
-cd "$(dirname "$0")/../.."
+cd "$(dirname "$0")/../.." || exit 1
 RAIZ=$PWD
 TMP=$(mktemp -d)
 PUERTO=${ZBX_WEB_PUERTO:-18081}

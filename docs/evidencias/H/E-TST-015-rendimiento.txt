@@ -1,0 +1,13 @@
+# ATLAS · tiempos de respuesta (medir.py) · 2026-11-20T12:10:13Z · entorno de pruebas, pila local con datos de demostración · commit eb73e76 + cambios de este hito
+# 30 repeticiones por consulta · límite RNF-03: 3000 ms (percentil 95)
+Inicio de sesión (una vez): docente 234 ms · estudiante 233 ms
+Rol        Consulta                                    mín  mediana    p95    máx  Resultado
+docente    Mis actividades                              11       13     15     16  PASS
+docente    Dónde intervenir / análisis del grupo        31       38     42     47  PASS
+docente    Consulta guiada (grupo + período)            35       40     51     56  PASS
+docente    Perfil de un estudiante                      20       25     29     44  PASS
+docente    Reportes                                     15       18     20     20  PASS
+estudiante Actividades del estudiante                   13       15     17     17  PASS
+estudiante Sesión actual                                11       14     18     18  PASS
+
+Resultado: 7 PASS · 0 FAIL

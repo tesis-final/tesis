@@ -43,7 +43,9 @@ set +e
   echo "# Ejecución: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   echo "# Servidor: $(docker exec "$CONT" mysql -uroot -p"$ATLAS_TEST_ROOT_PASSWORD" -N -e 'SELECT VERSION()' 2>/dev/null)"
   echo "# Imagen: $IMAGEN"
-  vendor/bin/phpunit --testsuite "${ATLAS_TEST_SUITES:-database}" --colors=never
+  # ATLAS_PHPUNIT_ARGS: opciones extra, p. ej. la cobertura de tests/cobertura.sh.
+  # shellcheck disable=SC2086
+  vendor/bin/phpunit --testsuite "${ATLAS_TEST_SUITES:-database}" --colors=never ${ATLAS_PHPUNIT_ARGS:-}
 } 2>&1 | if [ -n "$SALIDA" ]; then tee "$SALIDA"; else cat; fi
 RC=${PIPESTATUS[0]}
 

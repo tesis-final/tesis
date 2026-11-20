@@ -1,0 +1,17 @@
+# Ejecución: 2026-11-20T12:02:32Z
+# Servidor: 8.0.46
+# Imagen: mysql:8.0
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.3.6 with PCOV 1.0.11
+Configuration: /home/user/tesis/atlas/phpunit-cobertura.xml
+
+...............................................................  63 / 170 ( 37%)
+............................................................... 126 / 170 ( 74%)
+............................................                    170 / 170 (100%)
+
+Time: 02:23.525, Memory: 42.00 MB
+
+OK (170 tests, 1733 assertions)
+
+Generating code coverage report in Clover XML format ... done [00:00.022]

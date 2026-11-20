@@ -27,10 +27,59 @@ def sin_scroll_horizontal(page):
     return page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
 
 
+class CoberturaJs:
+    """Cobertura del JavaScript del frontend con el perfilador de Chromium (el mismo dato que
+    muestra el panel Coverage de DevTools). Solo con ATLAS_COBERTURA_JS=<archivo de salida>.
+    Junta, por archivo de /js/, los caracteres de código que se ejecutaron al menos una vez."""
+
+    def __init__(self, ctx, page):
+        self.page, self.cdp, self.usados, self.largo = page, ctx.new_cdp_session(page), {}, {}
+        self.cdp.send("Profiler.enable")
+        self.cdp.send("Profiler.startPreciseCoverage", {"callCount": False, "detailed": True})
+
+    def tomar(self):
+        for script in self.cdp.send("Profiler.takePreciseCoverage")["result"]:
+            url = script["url"].split("?")[0]
+            if "/js/" not in url:
+                continue
+            if url not in self.largo:
+                self.largo[url] = len(self.page.request.get(url).text())
+                self.usados[url] = set()
+            marca = {}
+            for funcion in script["functions"]:          # los rangos internos pisan a los externos
+                for r in funcion["ranges"]:
+                    for i in range(r["startOffset"], min(r["endOffset"], self.largo[url])):
+                        marca[i] = r["count"] > 0
+            self.usados[url] |= {i for i, usado in marca.items() if usado}
+
+    def guardar(self, archivo):
+        self.tomar()
+        total = sum(self.largo.values())
+        usado = sum(len(v) for v in self.usados.values())
+        with open(archivo, "w", encoding="utf-8") as f:
+            f.write(f"Cobertura del JavaScript del frontend (caracteres ejecutados): {usado} de {total} "
+                    f"({100 * usado / total:.1f} %)\n\n")
+            for url in sorted(self.largo):
+                n, t = len(self.usados[url]), self.largo[url]
+                f.write(f"{url.split('/js/', 1)[1]:28} {n:>7} de {t:>7}  {100 * n / t:5.1f} %\n")
+
+
+def tomar_cobertura():
+    # Entrar y salir recargan la página; lo medido se toma antes, o se perdería.
+    if cobertura:
+        cobertura.tomar()
+
+
+def salir(page):
+    tomar_cobertura()
+    page.click("#sesion button")
+
+
 def entrar(page, correo):
     page.goto(BASE + "/#/login")
     page.fill("#correo", correo)
     page.fill("#contrasena", CLAVE)
+    tomar_cobertura()
     page.click("button[type=submit]")
     page.wait_for_selector("#sesion button")
 
@@ -40,6 +89,7 @@ with sync_playwright() as p:
     nav = p.chromium.launch(executable_path=os.environ.get("PW_CHROMIUM") or None, args=["--no-sandbox"])
     ctx = nav.new_context(ignore_https_errors=True, locale="es-UY")
     page = ctx.new_page()
+    cobertura = CoberturaJs(ctx, page) if os.environ.get("ATLAS_COBERTURA_JS") else None
     errores = []
     page.on("console", lambda m: errores.append(m.text) if m.type == "error" else None)
     page.on("pageerror", lambda e: errores.append(str(e)))
@@ -104,7 +154,11 @@ with sync_playwright() as p:
             nombre = nombre.replace(a, b)
         estudiante_d6 = f"{nombre}.demo@atlas.local"
         # Se espera a que termine de cargar el perfil de ESTE estudiante: hasta entonces se
-        # sigue viendo el perfil anterior y el clic quedaría en otro estudiante.
+        # sigue viendo el perfil anterior y el clic quedaría en otro estudiante. Antes se pasa por
+        # el inicio: si el perfil elegido ya estaba abierto (pasa al repetir la prueba sobre los
+        # mismos datos, INC-T2), la dirección no cambiaría y el perfil no se volvería a pedir.
+        page.goto(BASE + "/#/")
+        page.wait_for_selector("text=Dónde intervenir hoy")
         with page.expect_response(lambda r: f"/docente/estudiantes/{elegido['id']}/perfil" in r.url):
             page.goto(BASE + f"/#/estudiante/{elegido['id']}")
         page.wait_for_load_state("networkidle")
@@ -185,7 +239,7 @@ with sync_playwright() as p:
     page.wait_for_selector(".burbuja.atlas")
     page.screenshot(path=f"{CAPTURAS}/docente-asistente-1024.png", full_page=True)
     registrar("RF-20 / RNF-15 el asistente responde con datos verificados sin LLM", "datos verificados" in page.inner_text("#app"))
-    page.click("#sesion button")
+    salir(page)
     page.wait_for_selector("#correo")  # el logout recarga la página y vuelve al login
 
     # Estudiante: resolver una actividad por la interfaz
@@ -211,7 +265,7 @@ with sync_playwright() as p:
     registrar("RF-07 el estudiante ve su resultado", "Puntaje" in page.inner_text("#app"))
     registrar("D-8 el resultado muestra tiempo total y activo", "Tiempo activo" in page.inner_text("#app"))
     registrar("DEC-00b el estudiante no ve menú docente", page.locator("#menu a").count() == 1)
-    page.click("#sesion button")
+    salir(page)
     page.wait_for_selector("#correo")  # el logout recarga la página y vuelve al login
 
     # Administrador
@@ -247,7 +301,7 @@ with sync_playwright() as p:
     page.wait_for_selector(f"text=docente.singrupo.{sufijo}@atlas.local")
     # La pantalla de usuarios también tiene un campo #correo: se espera la recarga del logout.
     with page.expect_navigation():
-        page.click("#sesion button")
+        salir(page)
     page.set_viewport_size({"width": 1024, "height": 900})
     entrar(page, f"docente.singrupo.{sufijo}@atlas.local")
     page.goto(BASE + "/#/actividades/nueva")
@@ -273,6 +327,8 @@ with sync_playwright() as p:
     registrar("Sin violaciones de CSP", not csp, "; ".join(csp[:3]))
     otros = [e for e in errores if e not in csp and "401" not in e and "Failed to load resource" not in e]
     registrar("Sin errores de JavaScript", not otros, "; ".join(otros[:3]))
+    if cobertura:
+        cobertura.guardar(os.environ["ATLAS_COBERTURA_JS"])
     nav.close()
 
 with open(f"{CAPTURAS}/resultado-interfaz.json", "w", encoding="utf-8") as f:
