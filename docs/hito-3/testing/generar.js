@@ -15,7 +15,7 @@ const c = [];
 for (let i = 0; i < 3; i++) c.push(Vacio());
 c.push(Centro(`**${TITULO}**`));
 c.push(Vacio());
-c.push(Centro('Santiago Emanuel Viñas Rezzano, Juan Pablo Beracochea Cabrera, Aaron Britos Alonso, Brian Daniel Reyes Ortiz y Sergio Enrique Rodríguez Oquel'));
+c.push(Centro('Santiago Emanuel Viñas Rezzano, Juan Pablo Beracochea Cabrera y Aaron Britos Alonso'));
 c.push(Centro('Grupo Error404'));
 c.push(Centro('Tecnicatura en Redes y Software, Instituto Tecnológico de Informática, ITI-CETP/UTU'));
 c.push(Centro('Testing, Clase TC4, Proyecto Final de Egreso'));
@@ -52,7 +52,7 @@ c.push(P('Las pruebas de este hito se ejecutaron en tres lugares y cada resultad
 c.push(...Tabla('Entornos en los que se ejecutaron las pruebas', ['Entorno', 'Qué se ejecutó', 'Características'], [
   ['Entorno de pruebas', `La corrida completa de los once conjuntos, la cobertura, el análisis estático, la prueba de interfaz, los tiempos de respuesta y las comprobaciones de base de datos, el ${R.fecha}`, R.entorno],
   ['GitHub Actions', 'Las pruebas automáticas en cada pull request, desde el Hito 2', 'Máquinas ubuntu-24.04 de GitHub, cuatro trabajos en paralelo'],
-  ['Laboratorio Proxmox', 'El circuito completo de ATLAS, la prueba 7 de la red, las comprobaciones de base de datos, el respaldo de la máquina virtual y los verificadores, el 19 y el 20 de noviembre', 'Proxmox VE 9.2.2 con router-lab, atlas-dc01, atlas-srv01 y cliente-doc'],
+  ['Laboratorio Proxmox', 'El circuito completo de ATLAS, las pruebas de red 7 y 14 a 16 (con la VPN), el monitoreo con Zabbix, las comprobaciones de base de datos, el respaldo de la máquina virtual y los verificadores, el 19 y el 20 de noviembre', 'Proxmox VE 9.2.2 con router-lab, atlas-dc01, atlas-srv01 y cliente-doc'],
 ], [2.5, 5, 4.5]));
 
 c.push(H2('Qué se midió y cómo'));
@@ -114,12 +114,12 @@ c.push(...Tabla('Pruebas ejecutadas en el laboratorio Proxmox el 19 y el 20 de n
   ['Prueba 15: con la VPN, el docente llega a ATLAS', 'Test-NetConnection al 443 True desde 10.8.0.130 y la pantalla de ingreso en el navegador de la PC; el servidor registra el origen 10.8.0.130 (sin NAT)', 'Aprobada'],
   ['Prueba 16: con la VPN, el docente no llega al SSH', 'TcpTestSucceeded False y cinco líneas ATLAS-R12 desde wg0 en router-lab', 'Aprobada'],
   ['Prueba 14: sin VPN, desde la WAN no se entra', 'curl terminó con rc=28 y router-lab registró ATLAS-R12 desde ens19 hacia el 443', 'Aprobada'],
-  ['Monitoreo con Zabbix en atlas-srv01', 'Dos agentes respondiendo, chequeo web en 11 ms, SLA definido; al apagar ATLAS se abrió «ATLAS no responde» y se resolvió al encenderlo (3 min 40 s). Detectó el disco de srv01 al 99,1 %', 'Aprobada'],
+  ['Monitoreo con Zabbix en atlas-srv01', 'Dos agentes respondiendo, chequeo web en 11 ms, SLA definido; al apagar ATLAS se abrió «ATLAS no responde» y se resolvió al encenderlo (3 min 40 s). Detectó el disco de srv01 al 99,1 %, que se amplió esa noche a 28 GB (42 % de uso)', 'Aprobada'],
   ['Retención de respaldos en atlas-dc01', 'La tarea quedó instalada, pero la simulación falló con la carpeta vacía (INC-18); corregida y verificada fuera de Windows', 'Fallada, corregida'],
   ['verificar.sh en atlas-srv01', '86 PASS y 31 FAIL el 19/11; después del paso 14, 93 PASS y 24 FAIL, y monitoreo y firewall 23 de 23. Los FAIL que quedan son de los pasos 8 a 13, que no se corrieron', 'Fallada (pasos sin ejecutar)'],
   ['verificar-dc01.ps1 en atlas-dc01', '63 PASS y 5 FAIL con el script viejo el 19/11; 73 PASS y 0 FAIL con los scripts nuevos el 20/11', 'Aprobada'],
   ['Firewall de router-lab', 'El volcado de nftables muestra cargadas las reglas de la VPN (R8 y R9) y la entrada UDP 51820', 'Aprobada'],
-], [4.2, 6, 1.8], 'Detalle y capturas en el documento integrador V3.1, sección 26.6 y Anexo K (Error404, 2026a), y en docs/hito-3/capturas/ del repositorio.'));
+], [4.2, 6, 1.8], 'Detalle y capturas en el documento integrador V3.2, secciones 26.6 y 28 a 30 y Anexo K (Error404, 2026a), y en docs/hito-3/capturas/ del repositorio.'));
 c.push(...Fig(LAB + 'H3-53-app-aviso-motivo.png', 'ATLAS no publica una actividad sin opción correcta y explica el motivo',
   'Captura del laboratorio, cliente-doc, 19 de noviembre de 2026. El aviso es de ATLAS y nombra la pregunta que falla; la pregunta queda marcada en rojo. Es la corrección de la incidencia INC-09 del Hito 2 vista en el entorno real.', 520, 520));
 c.push(...Fig(LAB + 'H3-57-router-registro-445.png', 'Registro del bloqueo del puerto 445 en router-lab',
@@ -131,7 +131,7 @@ c.push(...Fig(LAB + 'H3-74a-srv01-verificar.png', 'Final de verificar.sh en atla
 c.push(...Fig(LAB + 'H3-43-router-registro-prueba16.png', 'Prueba 16: el SSH del servidor desde la VPN queda bloqueado y registrado',
   'Captura del laboratorio, router-lab, 20 de noviembre de 2026 (hora UTC). A las 21:17 aparecen los intentos desde 10.8.0.130, entrando por wg0, hacia 172.16.40.10:22, descartados por R12. Las otras líneas son de atlas-srv01 intentando sincronizar la hora con Internet (INC-20).', 560, 600));
 c.push(...Fig(LAB + 'H3-34-zabbix-alerta-resuelta.png', 'Zabbix avisa que ATLAS no responde y registra cuando vuelve',
-  'Captura del laboratorio, Zabbix, 20 de noviembre de 2026. Con ATLAS apagado a propósito, el problema «ATLAS no responde» se abrió a las 19:02 y se resolvió a las 19:06, al volver a encenderlo. Siguen abiertos el disco de atlas-srv01 por encima del 90 % (INC-19) y dos avisos que no son del servicio.', 560, 520));
+  'Captura del laboratorio, Zabbix, 20 de noviembre de 2026. Con ATLAS apagado a propósito, el problema «ATLAS no responde» se abrió a las 19:02 y se resolvió a las 19:06, al volver a encenderlo. En ese momento seguía abierto el aviso del disco de atlas-srv01 por encima del 90 %, que se resolvió esa noche ampliando el volumen (INC-19); los otros dos avisos no son del servicio.', 560, 520));
 
 c.push(H2('Ejecución en GitHub Actions'));
 c.push(P(R.ci.texto));
@@ -227,7 +227,7 @@ c.push(H1('Referencias'));
 [
   'Batchelder, N. (2024). *Coverage.py* (Versión 7.6) [Software]. https://coverage.readthedocs.io',
   'Bergmann, S. (2026). *PHPUnit* (Versión 11.5.56) [Software]. https://phpunit.de',
-  'Error404. (2026a). *ATLAS: Plataforma inteligente de aprendizaje adaptativo. Documento integrador* (Versión 3.1) [Documento inédito]. Instituto Tecnológico de Informática, ITI-CETP/UTU.',
+  'Error404. (2026a). *ATLAS: Plataforma inteligente de aprendizaje adaptativo. Documento integrador* (Versión 3.2) [Documento inédito]. Instituto Tecnológico de Informática, ITI-CETP/UTU.',
   'Error404. (2026b). *Hito 2 de Testing: Implementación y ejecución de pruebas de ATLAS* [Informe inédito]. Instituto Tecnológico de Informática, ITI-CETP/UTU.',
   'Error404. (2026c). *tesis* [Repositorio de código fuente]. GitHub. https://github.com/tesis-final/tesis',
   'Google. (s. f.). *Coverage: Find unused JavaScript and CSS*. Chrome for Developers. https://developer.chrome.com/docs/devtools/coverage',

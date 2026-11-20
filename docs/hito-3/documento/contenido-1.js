@@ -22,7 +22,7 @@ add(Vacio(), Logo('atlas/public/assets/logotipo.png', 230), Vacio());
 add(Centro('**ATLAS**'), Centro('**Plataforma Inteligente de Aprendizaje Adaptativo**'));
 add(Centro('Documento integrador - Versión 3.2'), Centro('Hito 3: Proyecto consolidado y documentado'), Vacio());
 add(Centro('Grupo Error404'));
-for (const n of ['Santiago Emanuel Viñas Rezzano', 'Juan Pablo Beracochea Cabrera', 'Aaron Britos Alonso', 'Brian Daniel Reyes Ortiz', 'Sergio Enrique Rodríguez Oquel']) add(Centro(n, { simple: true }));
+for (const n of ['Santiago Emanuel Viñas Rezzano', 'Juan Pablo Beracochea Cabrera', 'Aaron Britos Alonso']) add(Centro(n, { simple: true }));
 add(Vacio(), Centro('Instituto Tecnológico de Informática - ITI-CETP/UTU'), Centro('Tecnicatura en Redes y Software - Clase TC4'), Centro('Proyecto Final de Egreso'));
 add(Centro('Cuerpo docente: E. Valles, M. Viar'));
 add(Centro(`Actualización: ${R.fechaDocumento}`), Centro('Entrega del Hito 3: 20 de noviembre de 2026'));

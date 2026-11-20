@@ -1,7 +1,7 @@
 {
   "fecha": "20 de noviembre",
   "entorno": "Contenedor Linux con kernel 6.18.44, Docker, PHP 8.3.6 con pcov, MySQL 8.0.46 descartable, Python 3.11, PowerShell 7 y Chromium con Playwright",
-  "resumen": "Este informe cierra el proceso de pruebas de ATLAS, la plataforma web del grupo Error404 que registra cómo resuelven los estudiantes sus actividades y le indica al docente dónde intervenir. En el Hito 2 las pruebas quedaron escritas y automatizadas; en este hito se midió qué parte del sistema ejecutan, se analizó la calidad del software a partir de los resultados y se documentaron las evidencias. La corrida completa del 20 de noviembre de 2026 aprobó los once conjuntos automáticos, con 37 pruebas unitarias, 58 de base de datos, 75 de la API y 23 del servicio de análisis, además de las pruebas de infraestructura. Las pruebas de la aplicación ejecutan el 91,8 % de las líneas del código PHP y alcanzan las 44 rutas de la API; el servicio de análisis tiene una cobertura del 76 % y la prueba de interfaz ejecuta el 81,2 % del JavaScript del navegador. El análisis de cobertura encontró cuatro rutas sin una prueba que las ejercitara completas, y se escribieron las pruebas que faltaban. El análisis estático no encontró errores, y las diez advertencias de los scripts de Bash quedaron corregidas. En el laboratorio Proxmox se ejecutó por primera vez el circuito completo de ATLAS sobre las máquinas virtuales, se probó la VPN con un cliente real y quedó funcionando el monitoreo con Zabbix, que el primer día detectó el disco del servidor casi lleno. Quedan sin ejecutar la integración de atlas-srv01 con el dominio y sus respaldos automáticos, y así se informa.",
+  "resumen": "Este informe cierra el proceso de pruebas de ATLAS, la plataforma web del grupo Error404 que registra cómo resuelven los estudiantes sus actividades y le indica al docente dónde intervenir. En el Hito 2 las pruebas quedaron escritas y automatizadas; en este hito se midió qué parte del sistema ejecutan, se analizó la calidad del software a partir de los resultados y se documentaron las evidencias. La corrida completa del 20 de noviembre de 2026 aprobó los once conjuntos automáticos, con 37 pruebas unitarias, 58 de base de datos, 75 de la API y 23 del servicio de análisis, además de las pruebas de infraestructura. Las pruebas de la aplicación ejecutan el 91,8 % de las líneas del código PHP y alcanzan las 44 rutas de la API; el servicio de análisis tiene una cobertura del 76 % y la prueba de interfaz ejecuta el 81,2 % del JavaScript del navegador. El análisis de cobertura encontró cuatro rutas sin una prueba que las ejercitara completas, y se escribieron las pruebas que faltaban. El análisis estático no encontró errores, y las diez advertencias de los scripts de Bash quedaron corregidas. En el laboratorio Proxmox se ejecutó por primera vez el circuito completo de ATLAS sobre las máquinas virtuales, se probó la VPN con un cliente real y quedó funcionando el monitoreo con Zabbix, que el primer día detectó el disco del servidor casi lleno; el problema se resolvió esa misma noche. Quedan sin ejecutar la integración de atlas-srv01 con el dominio y sus respaldos automáticos, y así se informa.",
   "corrida": {
     "texto": "Los once conjuntos automáticos dieron Aprobada en la corrida completa del 20 de noviembre de 2026, hecha con probar-todo.sh entre las 12:20 y las 12:31 (hora UTC), con el código de este hito. Es la tercera corrida del día y la única que vale como resultado. La primera se descartó porque la pila local de ATLAS había vuelto a arrancar sola y ocupaba la misma red que usa la base de datos descartable, así que los conjuntos de base de datos y de API no pudieron ni empezar (incidencia INC-T7). La segunda aprobó los once conjuntos, pero después el análisis de cobertura llevó a agregar pruebas y a corregir scripts, y la corrida se repitió entera para que el resultado corresponda al código final. La Tabla 5 presenta los resultados; la salida del script está en el Apéndice C.",
     "filas": [
@@ -209,7 +209,7 @@
     ]
   },
   "ci": {
-    "texto": "Desde que se agregó el workflow, en el Hito 2, GitHub corrió las pruebas 15 veces: en cada pull request y en cada unión a la rama principal. Doce corridas aprobaron y tres fallaron, todas en el pull request 14 y en el mismo trabajo, el de los scripts de atlas-srv01, respaldos y monitoreo. Ninguna de las tres fallas era un error del producto: dos eran defectos de las propias pruebas que solo aparecían en las máquinas de GitHub. Se buscó la causa de cada una en vez de volver a correr hasta que pasara, y la corrida siguiente a la última corrección aprobó los cuatro trabajos. La Tabla 9 lo resume.",
+    "texto": "Desde que se agregó el workflow, en el Hito 2, GitHub corrió las pruebas 19 veces hasta el cierre de este informe: en cada pull request y en cada unión a la rama principal. Dieciséis corridas aprobaron y tres fallaron, todas en el pull request 14 y en el mismo trabajo, el de los scripts de atlas-srv01, respaldos y monitoreo. Ninguna de las tres fallas era un error del producto: eran dos defectos de las propias pruebas que solo aparecían en las máquinas de GitHub. Se buscó la causa de cada uno en vez de volver a correr hasta que pasara, y desde la corrección todas las corridas aprobaron los cuatro trabajos. La Tabla 9 lo resume.",
     "filas": [
       [
         "Hito 2 (30/10 al 01/11)",
@@ -231,9 +231,16 @@
         "2",
         "3",
         "Corridas 11 y 12: prueba de respaldos (INC-T5). Corrida 13: segunda configuración de Zabbix (INC-T6)"
+      ],
+      [
+        "Hito 3, pull requests 15 y 16 (20/11)",
+        "4",
+        "4",
+        "0",
+        "—"
       ]
     ],
-    "nota": "Fuente: historial de GitHub Actions del repositorio. Cuenta las corridas de pull requests y de uniones a la rama principal. En la corrida 11 se sabe que falló el mismo trabajo; el detalle de la prueba se vio en la corrida 12."
+    "nota": "Fuente: historial de GitHub Actions del repositorio. Cuenta las corridas de pull requests y de uniones a la rama principal, hasta la corrida 19. En la corrida 11 se sabe que falló el mismo trabajo; el detalle de la prueba se vio en la corrida 12."
   },
   "cobertura": {
     "intro": "La cobertura se midió el 20 de noviembre en el entorno de pruebas, con las mismas pruebas de la corrida completa. Para el código PHP se hizo dos veces: una antes de escribir las pruebas nuevas y otra después, para mostrar qué cambió. Los resultados completos están en docs/evidencias/H/E-TST-012-cobertura/.",
@@ -512,13 +519,13 @@
           "Pasos del instalador de atlas-srv01",
           "14",
           "14 (88 comprobaciones, más respaldos y monitoreo)",
-          "Pasos 1 a 7"
+          "Pasos 1 a 7 y 14"
         ],
         [
           "Scripts de atlas-dc01",
           "21",
           "21, sin Windows (52 pruebas)",
-          "Fases 1 a 7 del Hito 2"
+          "Fases 1 a 7 (Hito 2) y Fase 12 (20/11)"
         ]
       ],
       "nota": "Los requisitos ejecutados en el laboratorio son los que se vieron funcionar en el circuito del 19 de noviembre, en las pruebas de red o con Zabbix el 20; el detalle está en el Anexo H del documento integrador (Error404, 2026a)."
@@ -527,7 +534,7 @@
   },
   "calidad": {
     "defectos": {
-      "texto": "En el hito se registraron 15 incidencias nuevas. Cuatro eran fallas del producto que aparecieron usando ATLAS o instalándolo en el laboratorio, y están corregidas y verificadas. Seis son observaciones de las jornadas de laboratorio del 19 y el 20 de noviembre: una ya se cerró y las demás tienen una causa probable o una decisión pendiente. Las otras cinco son de las pruebas o del entorno de pruebas, y cuatro quedaron resueltas. Además se cerró INC-T2, que venía del Hito 2. La Tabla 15 muestra cada una.",
+      "texto": "En el hito se registraron 15 incidencias nuevas. Cuatro eran fallas del producto que aparecieron usando ATLAS o instalándolo en el laboratorio, y están corregidas y verificadas. Seis son observaciones de las jornadas de laboratorio del 19 y el 20 de noviembre: dos ya se cerraron, entre ellas el disco casi lleno que detectó Zabbix, y las demás tienen una causa probable o una decisión pendiente. Las otras cinco son de las pruebas o del entorno de pruebas, y cuatro quedaron resueltas. Además se cerró INC-T2, que venía del Hito 2. La Tabla 15 muestra cada una.",
       "filas": [
         [
           "INC-11",
@@ -589,8 +596,8 @@
           "INC-19",
           "Zabbix en el laboratorio (20/11)",
           "«Space is critically low»: el disco de atlas-srv01 está al 99,1 %",
-          "Disco de 13,7 GB con ATLAS, Zabbix e imágenes de Docker",
-          "Abierta: liberar espacio o agrandar el disco. Es la primera alerta real del monitoreo"
+          "El instalador de Ubuntu dejó el volumen lógico en 14 de los 28 GB del disco",
+          "Cerrada el mismo día: limpieza de imágenes de Docker (1,9 GB) y volumen ampliado a 28 GB sin apagar el servidor; disco al 42 %, salud ok y verificaciones otra vez sin FAIL"
         ],
         [
           "INC-20",
@@ -815,7 +822,7 @@
       ],
       [
         "Fiabilidad",
-        "Restauración por intento 13 de 13 en los dos entornos; respaldo y restauración de la máquina virtual; 60 de 60 respuestas en 10 minutos; Zabbix midiendo en el laboratorio desde el 20/11, con una alerta real de disco; respaldos automáticos probados pero no instalados en srv01",
+        "Restauración por intento 13 de 13 en los dos entornos; respaldo y restauración de la máquina virtual; 60 de 60 respuestas en 10 minutos; Zabbix midiendo en el laboratorio desde el 20/11, con una alerta real de disco que se resolvió el mismo día; respaldos automáticos probados pero no instalados en srv01",
         "Buena; falta un período de medición sin caídas provocadas"
       ],
       [
@@ -1042,11 +1049,6 @@
   },
   "pendientes": [
     [
-      "Espacio en el disco de atlas-srv01 (INC-19)",
-      "El disco está al 99,1 % según Zabbix",
-      "Liberar espacio o agrandar el disco antes de seguir"
-    ],
-    [
       "Script de retención corregido en el DC (INC-18)",
       "La corrección está probada fuera de Windows",
       "Copiar el script nuevo y repetir 13-retencion-respaldos.ps1"
@@ -1114,13 +1116,13 @@
       ],
       [
         "4. La base de datos",
-        "Brian Reyes",
+        "Santiago Viñas",
         "Seguimiento de un intento, puntaje guardado contra calculado y restauración por intento, en los dos entornos",
         "3 min"
       ],
       [
         "5. La infraestructura",
-        "Sergio Rodríguez y Juan Pablo Beracochea",
+        "Juan Pablo Beracochea",
         "Firewall con tráfico real, scripts de los servidores, respaldos y Zabbix; lo que se ejecutó en el laboratorio",
         "3 min"
       ],
@@ -1180,7 +1182,7 @@
     "El proceso de pruebas de ATLAS queda cerrado para esta etapa con resultados medidos y no supuestos. Los once conjuntos automáticos aprobaron en una corrida completa con el código final, y las mismas pruebas corren en GitHub en cada cambio. La cobertura muestra que las pruebas ejecutan el 91,8 % de las líneas del código PHP, el 76 % del servicio de análisis y el 81,2 % del JavaScript de la interfaz, y que las 44 rutas de la API tienen al menos una prueba.",
     "La medición fue útil porque se usó para buscar lo que faltaba. Encontró cuatro rutas sin una prueba completa, entre ellas la que la interfaz usa en cada pantalla para saber quién está conectado, y las pruebas se escribieron en el mismo hito. También dejó a la vista lo que no está cubierto y por qué, como el cliente del servicio de Python, que conviene probar con el servicio real el semestre que viene.",
     "La calidad se sostiene en evidencia que no depende solo de la cobertura: cero diferencias entre el puntaje guardado y el calculado en 8749 intentos, la restauración de un intento igual en el entorno de pruebas y en atlas-srv01, tiempos de respuesta muy por debajo de los 3 segundos, y un análisis estático sin errores en PHP, JavaScript, Bash y Python. Los defectos que aparecieron usando ATLAS en el laboratorio quedaron corregidos, y las fallas de las pruebas en GitHub se resolvieron buscando la causa, no repitiendo hasta que pasaran.",
-    "El circuito completo de ATLAS, que en el Hito 2 se había cortado al publicar, corrió en las máquinas virtuales el 19 de noviembre: el docente creó y publicó, el estudiante resolvió desde la red de estudiantes y el docente vio los indicadores. El 20 se probó la VPN con un cliente real, con lo que quedaron ejecutadas las 17 pruebas de red del plan, y Zabbix quedó funcionando: en su primer día avisó que el disco del servidor estaba casi lleno. Lo que falta está identificado y tiene sus pasos escritos: la integración de atlas-srv01 con el dominio, sus respaldos automáticos y la prueba de uso con docentes. Hasta que se ejecuten, siguen informados como no ejecutados."
+    "El circuito completo de ATLAS, que en el Hito 2 se había cortado al publicar, corrió en las máquinas virtuales el 19 de noviembre: el docente creó y publicó, el estudiante resolvió desde la red de estudiantes y el docente vio los indicadores. El 20 se probó la VPN con un cliente real, con lo que quedaron ejecutadas las 17 pruebas de red del plan, y Zabbix quedó funcionando: en su primer día avisó que el disco del servidor estaba casi lleno, y se amplió esa misma noche. Lo que falta está identificado y tiene sus pasos escritos: la integración de atlas-srv01 con el dominio, sus respaldos automáticos y la prueba de uso con docentes. Hasta que se ejecuten, siguen informados como no ejecutados."
   ],
   "evidencias": [
     [
@@ -1234,7 +1236,7 @@
     [
       "Laboratorio, segunda jornada",
       "VPN, Zabbix y DC del 20 de noviembre",
-      "docs/hito-3/capturas/ (H3-03 a H3-47, H3-74d y H3-74e)",
+      "docs/hito-3/capturas/ (H3-03 a H3-47, H3-74d a H3-74g y H3-75)",
       "Completa para lo ejecutado"
     ],
     [
@@ -1247,7 +1249,7 @@
       "Pruebas en GitHub",
       "Resultado de cada trabajo en cada pull request",
       "Pestaña Checks de cada pull request",
-      "15 corridas: 12 aprobadas y 3 falladas con su causa"
+      "19 corridas: 16 aprobadas y 3 falladas con su causa"
     ]
   ],
   "apendiceC": {

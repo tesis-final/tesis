@@ -133,7 +133,7 @@ add(Tabla(null, 'Datos generales de la especificación', ['Campo', 'Valor'], [
 add(H2('H.1 Introducción'));
 V24.h1.forEach((p) => {
   const m = p.match(/^(H\.1\.\d) (Propósito|Alcance) (.*)$/);
-  if (m) { add(H3(`${m[1]} ${m[2]}`)); add(P(m[3])); } else add(P(p.replace('La validación de laboratorio es parcial: la red y los servicios tienen evidencias, mientras el circuito funcional completo y la integración de Linux permanecen pendientes.', 'Al Hito 3, cada requisito tiene su verificación en desarrollo; la del laboratorio se completa con el plan del Anexo J.')));
+  if (m) { add(H3(`${m[1]} ${m[2]}`)); add(P(m[3])); } else add(P(p.replace('La validación de laboratorio es parcial: la red y los servicios tienen evidencias, mientras el circuito funcional completo y la integración de Linux permanecen pendientes.', 'Al Hito 3, cada requisito tiene su verificación en desarrollo. En el laboratorio ya se ejecutaron el circuito completo, la VPN y el monitoreo; lo que falta está en el plan del Anexo J.')));
 });
 add(H3('H.1.3 Definiciones, acrónimos y abreviaturas'));
 add(Tabla(null, 'Definiciones y acrónimos utilizados en la especificación', ['Término', 'Definición'], [
@@ -300,7 +300,7 @@ add(Tabla(null, 'Puntos de la devolución de Programación del Hito 1 y decision
 add(H2('I.2 Hito 2: devolución de Gestión de Proyectos'));
 add(Tabla(null, 'Devolución de Gestión del Hito 2 y respuesta', ['Observación', 'Respuesta', 'Evidencia'], [
   ['Resolver el 422 y completar el circuito docente-estudiante en el laboratorio', 'Causa corregida (INC-09); circuito completo ejecutado el 19/11/2026', 'Sección 26.6; E-APP-014'],
-  ['Completar VPN, monitoreo centralizado y configuraciones pendientes del servidor Linux', 'Implementados y probados fuera del laboratorio; en el laboratorio solo están cargadas las reglas de la VPN (pasos R-3 a R-7 sin ejecutar)', 'E-RED-011 a 013 y 017; E-LNX-005 y 006'],
+  ['Completar VPN, monitoreo centralizado y configuraciones pendientes del servidor Linux', 'En el laboratorio desde el 20/11: VPN del docente probada (pruebas 14 a 16) y Zabbix con agentes en srv01 y el DC. Del servidor Linux quedan sin ejecutar los pasos 8 a 13 (dominio, Samba y respaldos)', 'E-RED-008a/b/c, 011 a 015 y 017; E-LNX-005 y 006'],
   ['Verificar respaldos completos, recuperación y controles de acceso', 'Respaldos automáticos con copia al DC; restauración por intento; rechazos', 'probar-respaldos; E-BD-017 y 018'],
   ['Fortalecer actas, seguimiento de tareas y evidencias Scrum', 'Registro por pull request y formato de acta', 'Sección 22.9; Tabla I4'],
   ['Entregar las devoluciones de los hitos anteriores', 'Este anexo', '—'],
@@ -376,6 +376,6 @@ add(Tabla(null, 'Evidencias del laboratorio Proxmox (19 y 20/11/2026)', ['Códig
   ['E-WIN-006', 'CD nuevo, scripts copiados, retención y agente de Zabbix en el DC', 'Instalados; retención con INC-18', 'H3-03, H3-05, H3-23, H3-24 y H3-28'],
   ['E-RED-008a/b/c', 'Pruebas 15 y 16 por la VPN y VPN-09 sin NAT', 'Aprobadas', 'H3-36 a H3-44 y H3-47'],
   ['E-RED-014', 'Prueba 14: sin VPN no se entra desde la WAN', 'Aprobada', 'H3-45 y H3-46'],
-  ['E-RED-015', 'Zabbix en el laboratorio: agentes, web, alerta y SLA', 'Funcionando; alerta probada; SLA 89,7 % el primer día', 'H3-26 a H3-35'],
+  ['E-RED-015', 'Zabbix en el laboratorio: agentes, web, alerta y SLA', 'Funcionando; alerta probada; SLA 89,7 % el primer día; alerta real de disco resuelta (INC-19)', 'H3-26 a H3-35, H3-75, H3-74f y H3-74g'],
   ['E-RED-017', 'Ruleset de router-lab', 'Reglas de la VPN cargadas', 'H3-74c'],
 ], [1.6, 4, 3, 3.4], 'Siguen como *No ejecutada*, con el paso del Anexo J que las cubre: E-APP-013 y E-TST-006 (R-3) y E-LNX-007 (R-5). No se tomaron las capturas H3-01, H3-02, H3-04, H3-06 a H3-22, H3-25, H3-48, H3-59 y H3-60.', 'Tabla K2'));
