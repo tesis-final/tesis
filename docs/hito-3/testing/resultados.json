@@ -1116,13 +1116,13 @@
       ],
       [
         "4. La base de datos",
-        "Brian Reyes",
+        "Santiago Viñas",
         "Seguimiento de un intento, puntaje guardado contra calculado y restauración por intento, en los dos entornos",
         "3 min"
       ],
       [
         "5. La infraestructura",
-        "Sergio Rodríguez y Juan Pablo Beracochea",
+        "Juan Pablo Beracochea",
         "Firewall con tráfico real, scripts de los servidores, respaldos y Zabbix; lo que se ejecutó en el laboratorio",
         "3 min"
       ],

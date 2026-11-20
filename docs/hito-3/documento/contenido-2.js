@@ -12,8 +12,6 @@ add(Tabla('equipo', 'Roles, integrantes y tutorías asignadas', ['Rol de coordin
   ['Coordinador', 'Product Owner', 'Santiago Emanuel Viñas Rezzano', 'Gestión y documentación'],
   ['Subcoordinador', 'Scrum Master', 'Juan Pablo Beracochea Cabrera', 'Redes MS y Conectividad'],
   ['Integrante 1', 'Developer', 'Aaron Britos Alonso', 'Programación'],
-  ['Integrante 2', 'Developer', 'Brian Daniel Reyes Ortiz', 'Base de datos'],
-  ['Integrante 3', 'Developer', 'Sergio Enrique Rodríguez Oquel', 'POSIX / Linux'],
 ], [2.2, 2, 3.4, 3]));
 v24('s19nota');
 
@@ -58,7 +56,7 @@ add(P('Los roles, eventos y artefactos siguen la Guía Scrum (Schwaber y Sutherl
 add(Tabla('rolesScrum', 'Roles y responsabilidades del equipo Scrum', ['Rol', 'Quién', 'Qué hace'], [
   ['Product Owner', 'Santiago Viñas', 'Define y prioriza el Product Backlog; consolida la documentación.'],
   ['Scrum Master', 'Juan Pablo Beracochea', 'Coordina los eventos, hace el seguimiento y destraba lo que se frena.'],
-  ['Developers', 'Aaron Britos, Brian Reyes, Sergio Rodríguez', 'Diseñan, desarrollan e implementan los componentes.'],
+  ['Developer', 'Aaron Britos', 'Diseña, desarrolla e implementa los componentes.'],
 ], [2.2, 3.4, 6.4], 'Todos colaboramos entre áreas cuando hace falta, según lo que necesite cada Sprint.'));
 add(H3('22.3 Eventos'));
 add(Tabla('eventos', 'Organización de los eventos de Scrum', ['Evento', 'Cuándo', 'Duración', 'Qué queda registrado'], [
@@ -124,7 +122,7 @@ add(Tabla('riesgos', 'Riesgos identificados y medidas de mitigación', ['Riesgo'
   ['Pocas respuestas en el relevamiento', 'Medio', 'Ampliarlo en la prueba piloto de la sección 32.'],
   ['Perder trabajo del proyecto', 'Alto', 'Documentación en Drive con historial; código y evidencias en Git; respaldos automáticos del servidor.'],
   ['Laboratorio dependiente de la conexión del iPhone (ICS)', 'Medio', 'Descargas antes de la jornada; ATLAS arranca sin Internet (INC-01); snapshots antes de cada cambio.'],
-  ['Poco tiempo para ejecutar en el laboratorio lo implementado en el Hito 3', 'Alto', 'Plan paso a paso con comandos y resultados esperados (Anexo J), repartido entre los cinco integrantes.'],
+  ['Poco tiempo para ejecutar en el laboratorio lo implementado en el Hito 3', 'Alto', 'Plan paso a paso con comandos y resultados esperados (Anexo J), repartido entre los integrantes del equipo.'],
 ], [4.2, 1.2, 6.6]));
 
 // 24 ------------------------------------------------------------------------------------------

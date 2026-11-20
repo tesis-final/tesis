@@ -2,7 +2,7 @@
 // Uso: NODE_PATH=$(npm root -g) node docs/hito-3/documento/generar-integrador.js [salida.docx]
 const fs = require('fs');
 const path = require('path');
-const { Document, Packer, Paragraph, TextRun, Header, AlignmentType, PageNumber } = require('docx');
+const { Document, Packer, Paragraph, TextRun, Header, AlignmentType, PageNumber, ImageRun } = require('docx');
 const L = require('./lib');
 require('./contenido-1');
 require('./contenido-2');
@@ -12,7 +12,13 @@ require('./anexos');
 
 const cuenta = L.numerar();
 const hijos = L.render();
-const encabezado = new Header({ children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ children: [PageNumber.CURRENT] })] })] });
+// Encabezado de todas las hojas: la tira institucional (ITI CETP · ANEP-UTU) a lo ancho del texto y, debajo, el número de página (APA 7).
+const tira = fs.readFileSync(path.join(__dirname, 'img', 'encabezado-iti-anep.png'));
+const encabezado = new Header({ children: [
+  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 60 }, children: [new ImageRun({ type: 'png', data: tira, transformation: { width: 602, height: 56 },
+    altText: { title: 'Encabezado institucional', description: 'ITI CETP, CTT Redes y Software; ANEP-UTU, Dirección General de Educación Técnico Profesional', name: 'encabezado' } })] }),
+  new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ children: [PageNumber.CURRENT] })] }),
+] });
 const estilo = (id, nombre, extra) => ({ id, name: nombre, basedOn: 'Normal', next: 'Normal', quickFormat: true,
   run: { font: L.FUENTE, size: 24, bold: true, color: '000000', ...extra.run }, paragraph: { spacing: L.DOBLE, ...extra.paragraph } });
 const doc = new Document({

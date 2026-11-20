@@ -15,7 +15,7 @@ const c = [];
 for (let i = 0; i < 3; i++) c.push(Vacio());
 c.push(Centro(`**${TITULO}**`));
 c.push(Vacio());
-c.push(Centro('Santiago Emanuel Viñas Rezzano, Juan Pablo Beracochea Cabrera, Aaron Britos Alonso, Brian Daniel Reyes Ortiz y Sergio Enrique Rodríguez Oquel'));
+c.push(Centro('Santiago Emanuel Viñas Rezzano, Juan Pablo Beracochea Cabrera y Aaron Britos Alonso'));
 c.push(Centro('Grupo Error404'));
 c.push(Centro('Tecnicatura en Redes y Software, Instituto Tecnológico de Informática, ITI-CETP/UTU'));
 c.push(Centro('Testing, Clase TC4, Proyecto Final de Egreso'));
