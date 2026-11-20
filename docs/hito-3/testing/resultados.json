@@ -209,7 +209,7 @@
     ]
   },
   "ci": {
-    "texto": "Desde que se agregó el workflow, en el Hito 2, GitHub corrió las pruebas 15 veces: en cada pull request y en cada unión a la rama principal. Doce corridas aprobaron y tres fallaron, todas en el pull request 14 y en el mismo trabajo, el de los scripts de atlas-srv01, respaldos y monitoreo. Ninguna de las tres fallas era un error del producto: dos eran defectos de las propias pruebas que solo aparecían en las máquinas de GitHub. Se buscó la causa de cada una en vez de volver a correr hasta que pasara, y la corrida siguiente a la última corrección aprobó los cuatro trabajos. La Tabla 9 lo resume.",
+    "texto": "Desde que se agregó el workflow, en el Hito 2, GitHub corrió las pruebas 19 veces hasta el cierre de este informe: en cada pull request y en cada unión a la rama principal. Dieciséis corridas aprobaron y tres fallaron, todas en el pull request 14 y en el mismo trabajo, el de los scripts de atlas-srv01, respaldos y monitoreo. Ninguna de las tres fallas era un error del producto: eran dos defectos de las propias pruebas que solo aparecían en las máquinas de GitHub. Se buscó la causa de cada uno en vez de volver a correr hasta que pasara, y desde la corrección todas las corridas aprobaron los cuatro trabajos. La Tabla 9 lo resume.",
     "filas": [
       [
         "Hito 2 (30/10 al 01/11)",
@@ -231,9 +231,16 @@
         "2",
         "3",
         "Corridas 11 y 12: prueba de respaldos (INC-T5). Corrida 13: segunda configuración de Zabbix (INC-T6)"
+      ],
+      [
+        "Hito 3, pull requests 15 y 16 (20/11)",
+        "4",
+        "4",
+        "0",
+        "—"
       ]
     ],
-    "nota": "Fuente: historial de GitHub Actions del repositorio. Cuenta las corridas de pull requests y de uniones a la rama principal. En la corrida 11 se sabe que falló el mismo trabajo; el detalle de la prueba se vio en la corrida 12."
+    "nota": "Fuente: historial de GitHub Actions del repositorio. Cuenta las corridas de pull requests y de uniones a la rama principal, hasta la corrida 19. En la corrida 11 se sabe que falló el mismo trabajo; el detalle de la prueba se vio en la corrida 12."
   },
   "cobertura": {
     "intro": "La cobertura se midió el 20 de noviembre en el entorno de pruebas, con las mismas pruebas de la corrida completa. Para el código PHP se hizo dos veces: una antes de escribir las pruebas nuevas y otra después, para mostrar qué cambió. Los resultados completos están en docs/evidencias/H/E-TST-012-cobertura/.",
@@ -512,13 +519,13 @@
           "Pasos del instalador de atlas-srv01",
           "14",
           "14 (88 comprobaciones, más respaldos y monitoreo)",
-          "Pasos 1 a 7"
+          "Pasos 1 a 7 y 14"
         ],
         [
           "Scripts de atlas-dc01",
           "21",
           "21, sin Windows (52 pruebas)",
-          "Fases 1 a 7 del Hito 2"
+          "Fases 1 a 7 (Hito 2) y Fase 12 (20/11)"
         ]
       ],
       "nota": "Los requisitos ejecutados en el laboratorio son los que se vieron funcionar en el circuito del 19 de noviembre, en las pruebas de red o con Zabbix el 20; el detalle está en el Anexo H del documento integrador (Error404, 2026a)."
@@ -1242,7 +1249,7 @@
       "Pruebas en GitHub",
       "Resultado de cada trabajo en cada pull request",
       "Pestaña Checks de cada pull request",
-      "15 corridas: 12 aprobadas y 3 falladas con su causa"
+      "19 corridas: 16 aprobadas y 3 falladas con su causa"
     ]
   ],
   "apendiceC": {

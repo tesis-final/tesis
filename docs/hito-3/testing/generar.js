@@ -52,7 +52,7 @@ c.push(P('Las pruebas de este hito se ejecutaron en tres lugares y cada resultad
 c.push(...Tabla('Entornos en los que se ejecutaron las pruebas', ['Entorno', 'Qué se ejecutó', 'Características'], [
   ['Entorno de pruebas', `La corrida completa de los once conjuntos, la cobertura, el análisis estático, la prueba de interfaz, los tiempos de respuesta y las comprobaciones de base de datos, el ${R.fecha}`, R.entorno],
   ['GitHub Actions', 'Las pruebas automáticas en cada pull request, desde el Hito 2', 'Máquinas ubuntu-24.04 de GitHub, cuatro trabajos en paralelo'],
-  ['Laboratorio Proxmox', 'El circuito completo de ATLAS, la prueba 7 de la red, las comprobaciones de base de datos, el respaldo de la máquina virtual y los verificadores, el 19 y el 20 de noviembre', 'Proxmox VE 9.2.2 con router-lab, atlas-dc01, atlas-srv01 y cliente-doc'],
+  ['Laboratorio Proxmox', 'El circuito completo de ATLAS, las pruebas de red 7 y 14 a 16 (con la VPN), el monitoreo con Zabbix, las comprobaciones de base de datos, el respaldo de la máquina virtual y los verificadores, el 19 y el 20 de noviembre', 'Proxmox VE 9.2.2 con router-lab, atlas-dc01, atlas-srv01 y cliente-doc'],
 ], [2.5, 5, 4.5]));
 
 c.push(H2('Qué se midió y cómo'));
@@ -119,7 +119,7 @@ c.push(...Tabla('Pruebas ejecutadas en el laboratorio Proxmox el 19 y el 20 de n
   ['verificar.sh en atlas-srv01', '86 PASS y 31 FAIL el 19/11; después del paso 14, 93 PASS y 24 FAIL, y monitoreo y firewall 23 de 23. Los FAIL que quedan son de los pasos 8 a 13, que no se corrieron', 'Fallada (pasos sin ejecutar)'],
   ['verificar-dc01.ps1 en atlas-dc01', '63 PASS y 5 FAIL con el script viejo el 19/11; 73 PASS y 0 FAIL con los scripts nuevos el 20/11', 'Aprobada'],
   ['Firewall de router-lab', 'El volcado de nftables muestra cargadas las reglas de la VPN (R8 y R9) y la entrada UDP 51820', 'Aprobada'],
-], [4.2, 6, 1.8], 'Detalle y capturas en el documento integrador V3.1, sección 26.6 y Anexo K (Error404, 2026a), y en docs/hito-3/capturas/ del repositorio.'));
+], [4.2, 6, 1.8], 'Detalle y capturas en el documento integrador V3.2, secciones 26.6 y 28 a 30 y Anexo K (Error404, 2026a), y en docs/hito-3/capturas/ del repositorio.'));
 c.push(...Fig(LAB + 'H3-53-app-aviso-motivo.png', 'ATLAS no publica una actividad sin opción correcta y explica el motivo',
   'Captura del laboratorio, cliente-doc, 19 de noviembre de 2026. El aviso es de ATLAS y nombra la pregunta que falla; la pregunta queda marcada en rojo. Es la corrección de la incidencia INC-09 del Hito 2 vista en el entorno real.', 520, 520));
 c.push(...Fig(LAB + 'H3-57-router-registro-445.png', 'Registro del bloqueo del puerto 445 en router-lab',
@@ -227,7 +227,7 @@ c.push(H1('Referencias'));
 [
   'Batchelder, N. (2024). *Coverage.py* (Versión 7.6) [Software]. https://coverage.readthedocs.io',
   'Bergmann, S. (2026). *PHPUnit* (Versión 11.5.56) [Software]. https://phpunit.de',
-  'Error404. (2026a). *ATLAS: Plataforma inteligente de aprendizaje adaptativo. Documento integrador* (Versión 3.1) [Documento inédito]. Instituto Tecnológico de Informática, ITI-CETP/UTU.',
+  'Error404. (2026a). *ATLAS: Plataforma inteligente de aprendizaje adaptativo. Documento integrador* (Versión 3.2) [Documento inédito]. Instituto Tecnológico de Informática, ITI-CETP/UTU.',
   'Error404. (2026b). *Hito 2 de Testing: Implementación y ejecución de pruebas de ATLAS* [Informe inédito]. Instituto Tecnológico de Informática, ITI-CETP/UTU.',
   'Error404. (2026c). *tesis* [Repositorio de código fuente]. GitHub. https://github.com/tesis-final/tesis',
   'Google. (s. f.). *Coverage: Find unused JavaScript and CSS*. Chrome for Developers. https://developer.chrome.com/docs/devtools/coverage',
