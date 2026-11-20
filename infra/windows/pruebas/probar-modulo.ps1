@@ -116,6 +116,13 @@ Assert-Atlas 'el archivos.tar.gz de un completo no se confunde con uno increment
 Assert-Atlas 'configuración: de 12 versiones se borran las 2 más viejas' (@($v | Where-Object Tipo -EQ 'CONFIG').Count -eq 2 -and -not (Compare-Object @($v | Where-Object Tipo -EQ 'CONFIG').Nombre $configs[10..11]))
 Assert-Atlas 'lo que no es de atlas-srv01 con ese formato no se toca nunca' (-not ($v.Nombre | Where-Object { $_ -in 'leeme.txt', 'atlas-srv01_otra-cosa.zip', 'copia-manual_atlas_20200101T000000Z.sql.gz' }))
 Assert-Atlas 'carpeta vacía: no hay nada que borrar' (@(Get-AtlasRespaldoVencido -Nombres @() -Ahora $hoy).Count -eq 0)
+# Laboratorio del 20/11 (INC-18): con atlas-backups vacía, 13-retencion-respaldos.ps1 pasaba
+# @($archivos.Name), que es @($null), y el parámetro rechazaba la cadena vacía.
+$sinArchivos = @()
+$r = try { @(Get-AtlasRespaldoVencido -Nombres @($sinArchivos.Name) -Ahora $hoy).Count } catch { "error: $($_.Exception.Message)" }
+Assert-Atlas 'carpeta vacía, tal como la lee el script (@($archivos.Name)): sin error y nada que borrar' ($r -eq 0)
+$linea = (Select-String -Path (Join-Path $raiz '13-retencion-respaldos.ps1') -Pattern 'Get-AtlasRespaldoVencido -Nombres').Line
+Assert-Atlas 'el script arma la lista de nombres sin dejar un elemento vacío' ($linea -notmatch '\$archivos\.Name')
 
 '[sintaxis de todos los scripts de atlas-dc01]'
 foreach ($f in Get-ChildItem $raiz -Recurse -Include *.ps1, *.psm1) {

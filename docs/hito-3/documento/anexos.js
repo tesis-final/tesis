@@ -49,7 +49,7 @@ add(Tabla(null, 'Evidencias del servidor Linux', ['Código', 'Contenido', 'Entor
   ['E-LNX-005', 'Scripts de srv01 en Ubuntu 24.04 real, Hito 3, con la regla 10050 del agente', 'Contenedor privilegiado; único FAIL esperado (smbd sin systemd)'],
   ['probar-respaldos.sh', 'Respaldo completo, incremental, configuración, anotación, verificación y restauración', 'MySQL 8.0 real; 17 de 17 (E-TST-010)'],
   ['E-RED-012', 'Paso 14 corrido de punta a punta, con el chequeo de ATLAS por la IP del servidor', 'Desarrollo; solo falla atlas-dc01 (sin Windows)'],
-  ['E-LNX-006', 'verificar.sh completo en srv01, 20/11/2026', 'Laboratorio: 86 PASS y 31 FAIL; los FAIL son de los pasos 8 a 14, que no se corrieron (sección 28.6)'],
+  ['E-LNX-006', 'verificar.sh completo en srv01, 20/11/2026', 'Laboratorio: 86 PASS y 31 FAIL el 19/11; después del paso 14, 93 PASS y 24 FAIL, y monitoreo y firewall 23 de 23 (sección 28.6)'],
   ['E-LNX-007', 'Respaldos con copia al DC en srv01', 'Laboratorio: *No ejecutada* (R-5)'],
 ], [2.4, 5.8, 3.8], 'Archivos en docs/evidencias/C/ y E/. Las figuras E61 a E86 del Anexo E documentan la instalación de srv01 en el Hito 2.', 'Tabla C1'));
 add(Salto());
@@ -62,8 +62,8 @@ add(Tabla(null, 'Evidencias del cliente y del controlador', ['Código / captura'
   ['E-WIN-003b / E60', 'gpresult /r', 'DOC-PC01 en el dominio, GPO_Docentes y GG_Docentes.'],
   ['E49 a E51', 'Verificador y revisión manual del DC', '63 PASS y 5 FAIL falsos (INC-06, INC-07).'],
   ['E-WIN-004', 'Módulo y scripts del DC con PowerShell 7, Hito 3', '52 de 52: retención, sintaxis de los 19 scripts y codificación.'],
-  ['E-WIN-005', 'Verificador del DC, 20/11/2026', '63 PASS y 5 FAIL, igual que en el Hito 2; probablemente la versión anterior del script (sección 29.6).'],
-  ['E-WIN-006', 'Retención instalada en el DC', 'Laboratorio: *No ejecutada* (R-5).'],
+  ['E-WIN-005', 'Verificador del DC, 20/11/2026', '19/11: 63 PASS y 5 FAIL, con el script viejo. 20/11, con los scripts nuevos: 73 PASS y 0 FAIL (sección 29.6).'],
+  ['E-WIN-006', 'Retención y agente de Zabbix instalados en el DC, 20/11/2026', 'Tarea programada lista; la simulación falló con la carpeta vacía (INC-18, corregida). Agente con firma válida, respondiendo a Zabbix.'],
   ['H3-55', 'ipconfig de cliente-doc en la VLAN 30', '172.16.30.100/24, puerta 172.16.30.1 y sufijo atlas.local, entregados por el DHCP del DC a través del relay.'],
 ], [2.6, 4, 5.4], null, 'Tabla D1'));
 add(Figura(null, LAB + 'H3-55-cliente-vlan30.png', 'cliente-doc en la VLAN 30 después de renovar la dirección', 'Captura H3-55, sesión de prueba.docente, 19/11/2026, 20:15. Después de ipconfig /release y /renew, el equipo recibe 172.16.30.100 con máscara 255.255.255.0, puerta de enlace 172.16.30.1 y sufijo atlas.local: el ámbito de la VLAN 30 del DHCP del DC, por el relay de router-lab.', { etiqueta: 'Figura D1', maxAlto: 480 }));
@@ -268,14 +268,14 @@ add(Tabla(null, 'Trazabilidad y verificación de los requisitos funcionales', ['
   reqs.map((r) => [r.id, `N.º ${objetivo[r.id]}`, verif[r.id][0], verif[r.id][1]]), [1.4, 1.8, 1.4, 7.4],
   'El circuito completo (RF-04 a RF-13, RF-16, RF-17, RF-21 y RF-22) se ejecutó también en el laboratorio el 19/11/2026 (sección 26.6). RF-02 (bloqueo) y RF-20 (asistente con la API real) no se probaron en el laboratorio.', `Tabla H${nH++}`));
 add(Tabla(null, 'Trazabilidad y verificación de los requisitos no funcionales', ['RNF', 'Evidencia al Hito 3', 'Alcance'], [
-  ['RNF-01 / 09', 'ControlAccesoTest; firewall del laboratorio (E-RED-009/010); gemelo con VPN (E-RED-011)', 'Laboratorio para la red; desarrollo para la aplicación'],
-  ['RNF-02', `Disponibilidad ${R.disponibilidad} (E-TST-009); SLA de Zabbix (E-RED-013)`, 'Desarrollo; en el laboratorio sin medir (R-6 no ejecutado)'],
+  ['RNF-01 / 09', 'ControlAccesoTest; firewall del laboratorio (E-RED-009/010); gemelo con VPN (E-RED-011)', 'Laboratorio para la red (17 de 17 pruebas, VPN incluida); desarrollo para la aplicación'],
+  ['RNF-02', `Disponibilidad ${R.disponibilidad} (E-TST-009); SLA de Zabbix (E-RED-013)`, 'Desarrollo; en el laboratorio, SLA de Zabbix desde el 20/11'],
   ['RNF-03', `Percentil 95 máximo ${R.rendimiento.p95max} (E-TST-008)`, 'Desarrollo; laboratorio con Zabbix'],
   ['RNF-04 / 05', `probar-respaldos.sh 17 de 17; ${R.restauracion}. Laboratorio: restauración por intento 13 de 13 y respaldo de la VM (E-BD-020, E-BD-015)`, 'Recuperación verificada en el laboratorio; respaldos automáticos solo en desarrollo (R-5 no ejecutado)'],
   ['RNF-06 / 13', 'Interfaz reemplazada completa sin tocar la API; PSR-12 sin errores', 'Repositorio'],
   ['RNF-07', 'Pila en srv01 y dominio en dc01 (Hito 2)', 'Laboratorio parcial: unión de srv01 en R-4'],
   ['RNF-08', 'DHCP por VLAN desde el cliente (E56, E106-E107)', 'Laboratorio'],
-  ['RNF-10', `Zabbix con alertas y SLA (${R.monitoreo}); registro ATLAS-*`, 'Desarrollo; laboratorio en R-6'],
+  ['RNF-10', `Zabbix con alertas y SLA (${R.monitoreo}); registro ATLAS-*`, 'Desarrollo y laboratorio: alerta probada al apagar ATLAS y alerta real de disco en srv01'],
   ['RNF-11 / 12', `Prueba de interfaz en cinco anchos (${R.interfaz})`, 'Desarrollo; prueba con docentes en la sección 32'],
   ['RNF-14', 'Anonimizador (AsistenteTest); datos de demostración sintéticos', 'Desarrollo'],
   ['RNF-15', 'Registro y consulta con el análisis caído (pruebas de API con cliente falso); arranque sin Internet (E-TST-003)', 'Desarrollo; laboratorio en R-3'],
@@ -332,16 +332,16 @@ add(P('El plan completo, con todos los comandos, está en docs/hito-3/plan-redes
 add(Tabla(null, 'Pasos del plan de laboratorio', ['Paso', 'Dónde', 'Qué se hace', 'Qué tiene que salir', 'Evidencia', 'Estado'], [
   ['R-0', 'Proxmox', 'Revisar ICS; snapshot hito3_inicio de las cuatro VM', 'Snapshots creados', '—', 'Sin evidencia'],
   ['R-1', 'Proxmox', 'CPU host en 110/120/140; srv01 a 4 GB; quitar ISO; frase de paso a atlas_admin', 'qm config con los cambios', '—', 'Sin evidencia'],
-  ['R-2', 'Proxmox y DC', 'Actualizar repositorio y CD (con el MSI del agente); copiar scripts al DC', 'Scripts 13 y 14 en C:\\ATLAS', '—', 'Sin evidencia (sección 29.6)'],
+  ['R-2', 'Proxmox y DC', 'Actualizar repositorio y CD (con el MSI del agente); copiar scripts al DC', 'Scripts 13 y 14 en C:\\ATLAS', '—', 'Ejecutado 20/11'],
   ['R-3', 'srv01', 'git pull; pasos 5 a 7; arranque sin Internet', 'atlas-ctl salud ok sin Internet', 'E-APP-013, E-TST-006', 'No ejecutado'],
   ['R-4', 'srv01 y DC', 'Pasos 8 a 12; certificado firmado por ATLAS-CA', 'verificar.sh sin FAIL en esas secciones', 'E-LNX-006', 'No ejecutado'],
-  ['R-5', 'DC y srv01', 'Rotar svc_atlas_backup; paso 13; probar borrado; retención en el DC', 'Copia en el DC; borrado denegado; tarea lista', 'E-LNX-007, E-WIN-006', 'No ejecutado'],
-  ['R-6', 'srv01 y DC', 'Paso 14; agente del DC; túnel a la interfaz; alerta real', 'Todo en PASS; alerta al detener ATLAS', 'E-RED-015', 'No ejecutado'],
-  ['R-7', 'router, PC y Proxmox', 'VPN docente (y admin); pruebas 14, 15 y 16; VPN-09', '15 pasa; 14 y 16 bloqueadas con registro', 'E-RED-008a/b/c, E-RED-014', 'Reglas cargadas; pruebas no ejecutadas'],
+  ['R-5', 'DC y srv01', 'Rotar svc_atlas_backup; paso 13; probar borrado; retención en el DC', 'Copia en el DC; borrado denegado; tarea lista', 'E-LNX-007, E-WIN-006', 'Retención en el DC instalada (INC-18); paso 13 y rotación sin ejecutar'],
+  ['R-6', 'srv01 y DC', 'Paso 14; agente del DC; túnel a la interfaz; alerta real', 'Todo en PASS; alerta al detener ATLAS', 'E-RED-015', 'Ejecutado 20/11'],
+  ['R-7', 'router, PC y Proxmox', 'VPN docente (y admin); pruebas 14, 15 y 16; VPN-09', '15 pasa; 14 y 16 bloqueadas con registro', 'E-RED-008a/b/c, E-RED-014', 'Ejecutado 20/11 (perfil docente)'],
   ['R-8', 'Cliente y navegador', 'Asignar grupo, publicar, resolver desde VLAN 30, ver indicadores; 445 desde VLAN 30', 'Circuito completo; 445 bloqueado con registro', 'E-APP-014, E-RED-016', 'Ejecutado 19/11'],
   ['R-9', 'srv01', 'seguir_intento, restaurar_intento y metricas', 'Un resultado; huellas iguales; tiempos', 'E-BD-019 a 021, E-BD-013', 'Ejecutado 19/11'],
   ['R-10', 'Proxmox', 'vzdump de la VM 130 y restauración con la placa desconectada', 'Tiempos frente al RTO', 'E-BD-015', 'Ejecutado 19/11'],
-  ['R-11', 'Las tres máquinas', 'verificar.sh, verificar-dc01 y nft list ruleset', 'Sin FAIL', 'E-LNX-006, E-WIN-005, E-RED-017', 'Ejecutado 20/11, con FAIL'],
+  ['R-11', 'Las tres máquinas', 'verificar.sh, verificar-dc01 y nft list ruleset', 'Sin FAIL', 'E-LNX-006, E-WIN-005, E-RED-017', 'Ejecutado 20/11: DC sin FAIL; srv01 con los FAIL de los pasos 8 a 13'],
   ['R-12', 'Todas', 'Rotar credenciales; limpiar historiales; revisar dmesg; snapshots finales', 'Sin credenciales expuestas', '—', 'Sin evidencia'],
 ], [0.9, 1.6, 3.6, 2.6, 1.7, 1.6], 'El estado es el de la jornada del 19 y 20/11/2026. «Sin evidencia» quiere decir que el paso puede haberse hecho, pero no hay captura ni archivo que lo muestre.', 'Tabla J1'));
 add(Salto());
@@ -371,7 +371,11 @@ add(Tabla(null, 'Evidencias del laboratorio Proxmox (19 y 20/11/2026)', ['Códig
   ['E-BD-020', 'Restauración por intento', '13 de 13', 'H3-71'],
   ['E-BD-021', 'Métricas M1 a M11', '6 PASS, 0 FAIL, 5 informativas', 'H3-72'],
   ['E-BD-015', 'Respaldo y restauración de la VM 130', 'Ejecutado; atlas-web sin red en la copia', 'H3-73a, H3-73b y H3-73c'],
-  ['E-LNX-006', 'verificar.sh en srv01', '86 PASS y 31 FAIL (pasos 8 a 14 sin correr)', 'H3-74a'],
-  ['E-WIN-005', 'Verificador del DC', '63 PASS y 5 FAIL (probablemente script anterior)', 'H3-74b'],
+  ['E-LNX-006', 'verificar.sh en srv01', '86 PASS y 31 FAIL; después del paso 14, 93 y 24; monitoreo y firewall 23 de 23', 'H3-74a, H3-26 y H3-74e'],
+  ['E-WIN-005', 'Verificador del DC', '63/5 con el script viejo; 73 PASS y 0 FAIL con los nuevos', 'H3-74b y H3-74d'],
+  ['E-WIN-006', 'CD nuevo, scripts copiados, retención y agente de Zabbix en el DC', 'Instalados; retención con INC-18', 'H3-03, H3-05, H3-23, H3-24 y H3-28'],
+  ['E-RED-008a/b/c', 'Pruebas 15 y 16 por la VPN y VPN-09 sin NAT', 'Aprobadas', 'H3-36 a H3-44 y H3-47'],
+  ['E-RED-014', 'Prueba 14: sin VPN no se entra desde la WAN', 'Aprobada', 'H3-45 y H3-46'],
+  ['E-RED-015', 'Zabbix en el laboratorio: agentes, web, alerta y SLA', 'Funcionando; alerta probada; SLA 89,7 % el primer día', 'H3-26 a H3-35'],
   ['E-RED-017', 'Ruleset de router-lab', 'Reglas de la VPN cargadas', 'H3-74c'],
-], [1.6, 4, 3, 3.4], 'Siguen como *No ejecutada*, con el paso del Anexo J que las cubre: E-APP-013 y E-TST-006 (R-3), E-LNX-007 y E-WIN-006 (R-5), E-RED-015 (R-6) y E-RED-008a/b/c y E-RED-014 (R-7). Las capturas H3-01 a H3-48, H3-59 y H3-60 no se tomaron.', 'Tabla K2'));
+], [1.6, 4, 3, 3.4], 'Siguen como *No ejecutada*, con el paso del Anexo J que las cubre: E-APP-013 y E-TST-006 (R-3) y E-LNX-007 (R-5). No se tomaron las capturas H3-01, H3-02, H3-04, H3-06 a H3-22, H3-25, H3-48, H3-59 y H3-60.', 'Tabla K2'));

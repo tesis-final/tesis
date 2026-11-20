@@ -279,7 +279,7 @@ function Get-AtlasRespaldoVencido {
        La fecha sale del nombre, no de la fecha del archivo (copiar un archivo la cambia).
        Lo que no tiene ese formato no se toca nunca. #>
     param(
-        [Parameter(Mandatory)][AllowEmptyCollection()][string[]]$Nombres,
+        [Parameter(Mandatory)][AllowEmptyCollection()][AllowEmptyString()][AllowNull()][string[]]$Nombres,
         [datetime]$Ahora = [datetime]::UtcNow,
         [int]$DiasCompleto = 28, [int]$DiasIncremental = 7, [int]$VersionesConfig = 10
     )
@@ -287,6 +287,7 @@ function Get-AtlasRespaldoVencido {
     $estilo = [Globalization.DateTimeStyles]'AssumeUniversal, AdjustToUniversal'
     $grupos = @{}; $configs = @()
     foreach ($n in $Nombres) {
+        if ([string]::IsNullOrWhiteSpace($n)) { continue }   # un nombre vacío no es un respaldo
         if ($n -match '^atlas-srv01_atlas_config_(\d{8}T\d{6}Z)\.tar\.gz$') {
             $configs += [pscustomobject]@{ Nombre = $n; Fecha = [datetime]::ParseExact($Matches[1], "yyyyMMdd'T'HHmmss'Z'", $cultura, $estilo) }
         } elseif ($n -match '^atlas-srv01_atlas_(\d{8}T\d{6}Z)\.[a-z.]+$') {

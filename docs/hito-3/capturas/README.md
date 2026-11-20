@@ -37,4 +37,23 @@ https://172.16.40.10 (aviso «No seguro»: el cliente todavía no confía en ATL
 | H3-74b-dc-verificar.png | E-WIN-005 | verificar-dc01.ps1: 63 PASS, 5 FAIL |
 | H3-74c-router-nft.png | E-RED-017 | nft list ruleset con las reglas de wg0 |
 
-No se tomaron: H3-01 a H3-48, H3-59 y H3-60.
+
+### Segunda jornada (20/11/2026): DC, VPN y Zabbix
+
+| Archivo | Evidencia | Qué se ve |
+|---|---|---|
+| H3-03-proxmox-iso-repo.png | E-WIN-006 | CD regenerado con el MSI del agente de Zabbix |
+| H3-05-dc-scripts-copiados.png | E-WIN-006 | Scripts 10 a 14 copiados a C:\ATLAS |
+| H3-23-dc-retencion.png | E-WIN-006 / INC-18 | Tarea instalada y error de la simulación con la carpeta vacía |
+| H3-24-dc-tarea-programada.png | E-WIN-006 | Tarea «ATLAS - Retencion de respaldos», diaria 05:00 |
+| H3-26-srv01-instalar-14.png | E-RED-015 | Paso 14 y verificación: 93 PASS · 24 FAIL |
+| H3-27-srv01-zabbix-contenedores.png | E-RED-015 | Contenedores de Zabbix; interfaz solo en 127.0.0.1:8080 |
+| H3-28-dc-agente-zabbix.png | E-WIN-006 | Agente con firma válida, 10050 solo desde 172.16.40.10 |
+| H3-29-srv01-atlas-ctl-monitoreo.png | E-RED-015 | Resultado OK; disco de srv01 al 99,1 % |
+| H3-30 a H3-35 | E-RED-015 | Hosts, últimos datos, web, alerta abierta y resuelta, SLA 89,7 % |
+| H3-36 a H3-44, H3-47 | E-RED-008a/b/c | Alta del par, ruta, túnel activo, pruebas 15 y 16, wg show, sin NAT, estado |
+| H3-45, H3-46 | E-RED-014 | Prueba 14: rc=28 y ATLAS-R12 desde ens19 |
+| H3-74d-dc-verificar-nuevo.png | E-WIN-005 | Verificador del DC: 73 PASS · 0 FAIL |
+| H3-74e-srv01-verificar-monitoreo.png | E-RED-015 | monitoreo y firewall: 23 PASS · 0 FAIL |
+
+No se tomaron: H3-01, H3-02, H3-04, H3-06 a H3-22, H3-25, H3-48, H3-59 y H3-60. Tampoco llegaron H3-23b ni la H3-74-a de la segunda jornada.
