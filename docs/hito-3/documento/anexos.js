@@ -376,6 +376,6 @@ add(Tabla(null, 'Evidencias del laboratorio Proxmox (19 y 20/11/2026)', ['Códig
   ['E-WIN-006', 'CD nuevo, scripts copiados, retención y agente de Zabbix en el DC', 'Instalados; retención con INC-18', 'H3-03, H3-05, H3-23, H3-24 y H3-28'],
   ['E-RED-008a/b/c', 'Pruebas 15 y 16 por la VPN y VPN-09 sin NAT', 'Aprobadas', 'H3-36 a H3-44 y H3-47'],
   ['E-RED-014', 'Prueba 14: sin VPN no se entra desde la WAN', 'Aprobada', 'H3-45 y H3-46'],
-  ['E-RED-015', 'Zabbix en el laboratorio: agentes, web, alerta y SLA', 'Funcionando; alerta probada; SLA 89,7 % el primer día', 'H3-26 a H3-35'],
+  ['E-RED-015', 'Zabbix en el laboratorio: agentes, web, alerta y SLA', 'Funcionando; alerta probada; SLA 89,7 % el primer día; alerta real de disco resuelta (INC-19)', 'H3-26 a H3-35, H3-75, H3-74f y H3-74g'],
   ['E-RED-017', 'Ruleset de router-lab', 'Reglas de la VPN cargadas', 'H3-74c'],
 ], [1.6, 4, 3, 3.4], 'Siguen como *No ejecutada*, con el paso del Anexo J que las cubre: E-APP-013 y E-TST-006 (R-3) y E-LNX-007 (R-5). No se tomaron las capturas H3-01, H3-02, H3-04, H3-06 a H3-22, H3-25, H3-48, H3-59 y H3-60.', 'Tabla K2'));

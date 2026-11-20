@@ -114,7 +114,7 @@ c.push(...Tabla('Pruebas ejecutadas en el laboratorio Proxmox el 19 y el 20 de n
   ['Prueba 15: con la VPN, el docente llega a ATLAS', 'Test-NetConnection al 443 True desde 10.8.0.130 y la pantalla de ingreso en el navegador de la PC; el servidor registra el origen 10.8.0.130 (sin NAT)', 'Aprobada'],
   ['Prueba 16: con la VPN, el docente no llega al SSH', 'TcpTestSucceeded False y cinco líneas ATLAS-R12 desde wg0 en router-lab', 'Aprobada'],
   ['Prueba 14: sin VPN, desde la WAN no se entra', 'curl terminó con rc=28 y router-lab registró ATLAS-R12 desde ens19 hacia el 443', 'Aprobada'],
-  ['Monitoreo con Zabbix en atlas-srv01', 'Dos agentes respondiendo, chequeo web en 11 ms, SLA definido; al apagar ATLAS se abrió «ATLAS no responde» y se resolvió al encenderlo (3 min 40 s). Detectó el disco de srv01 al 99,1 %', 'Aprobada'],
+  ['Monitoreo con Zabbix en atlas-srv01', 'Dos agentes respondiendo, chequeo web en 11 ms, SLA definido; al apagar ATLAS se abrió «ATLAS no responde» y se resolvió al encenderlo (3 min 40 s). Detectó el disco de srv01 al 99,1 %, que se amplió esa noche a 28 GB (42 % de uso)', 'Aprobada'],
   ['Retención de respaldos en atlas-dc01', 'La tarea quedó instalada, pero la simulación falló con la carpeta vacía (INC-18); corregida y verificada fuera de Windows', 'Fallada, corregida'],
   ['verificar.sh en atlas-srv01', '86 PASS y 31 FAIL el 19/11; después del paso 14, 93 PASS y 24 FAIL, y monitoreo y firewall 23 de 23. Los FAIL que quedan son de los pasos 8 a 13, que no se corrieron', 'Fallada (pasos sin ejecutar)'],
   ['verificar-dc01.ps1 en atlas-dc01', '63 PASS y 5 FAIL con el script viejo el 19/11; 73 PASS y 0 FAIL con los scripts nuevos el 20/11', 'Aprobada'],
@@ -131,7 +131,7 @@ c.push(...Fig(LAB + 'H3-74a-srv01-verificar.png', 'Final de verificar.sh en atla
 c.push(...Fig(LAB + 'H3-43-router-registro-prueba16.png', 'Prueba 16: el SSH del servidor desde la VPN queda bloqueado y registrado',
   'Captura del laboratorio, router-lab, 20 de noviembre de 2026 (hora UTC). A las 21:17 aparecen los intentos desde 10.8.0.130, entrando por wg0, hacia 172.16.40.10:22, descartados por R12. Las otras líneas son de atlas-srv01 intentando sincronizar la hora con Internet (INC-20).', 560, 600));
 c.push(...Fig(LAB + 'H3-34-zabbix-alerta-resuelta.png', 'Zabbix avisa que ATLAS no responde y registra cuando vuelve',
-  'Captura del laboratorio, Zabbix, 20 de noviembre de 2026. Con ATLAS apagado a propósito, el problema «ATLAS no responde» se abrió a las 19:02 y se resolvió a las 19:06, al volver a encenderlo. Siguen abiertos el disco de atlas-srv01 por encima del 90 % (INC-19) y dos avisos que no son del servicio.', 560, 520));
+  'Captura del laboratorio, Zabbix, 20 de noviembre de 2026. Con ATLAS apagado a propósito, el problema «ATLAS no responde» se abrió a las 19:02 y se resolvió a las 19:06, al volver a encenderlo. En ese momento seguía abierto el aviso del disco de atlas-srv01 por encima del 90 %, que se resolvió esa noche ampliando el volumen (INC-19); los otros dos avisos no son del servicio.', 560, 520));
 
 c.push(H2('Ejecución en GitHub Actions'));
 c.push(P(R.ci.texto));

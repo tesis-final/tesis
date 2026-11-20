@@ -9,7 +9,7 @@ add(H3('31.1 Resumen'));
 add(Tabla('resumen', 'Estado por área y entorno', ['Área', 'Repositorio y desarrollo', 'Laboratorio', 'Pendiente'], [
   ['Programación', `Circuito completo, interfaz rediseñada; ${R.interfaz}`, 'Circuito completo el 19/11: el docente crea y publica, el estudiante resuelve desde la VLAN 30 y el docente ve los indicadores', 'Revisar la lista de atención cuando un intento posterior corrige la señal'],
   ['Base de datos', 'Tres comprobaciones de la devolución verificadas (E-BD-016 a 018)', 'Seguimiento del intento, restauración por intento (13 de 13), métricas y respaldo de la VM', 'Cambio de respuesta en el laboratorio; reinicio de contenedores en la VM restaurada'],
-  ['Linux', 'Pasos 1 a 14; respaldos y monitoreo probados', 'Pasos 1 a 7 y 14 (Zabbix); verificar.sh con 93 PASS y 24 FAIL', 'Pasos 8 a 13 (R-3 a R-5); liberar espacio en disco (INC-19)'],
+  ['Linux', 'Pasos 1 a 14; respaldos y monitoreo probados', 'Pasos 1 a 7 y 14 (Zabbix); verificar.sh con 93 PASS y 24 FAIL', 'Pasos 8 a 13 (R-3 a R-5)'],
   ['Windows', 'Retención y agente de Zabbix (E-WIN-004 y 54 de 54)', 'Dominio, DNS, DHCP, GPO y cliente unido; Fase 12 instalada; verificador con 73 PASS y 0 FAIL', 'Copiar el script de retención corregido (INC-18)'],
   ['Conectividad', 'VPN y firewall en el gemelo (46 de 46); monitoreo (14 de 14)', 'Las 17 pruebas de red ejecutadas: 14 de 17 en el Hito 2 y las 14, 15 y 16 el 20/11; VPN docente y Zabbix funcionando', 'Perfil de administración de la VPN'],
   ['Gestión', 'Métricas, plan de laboratorio, plan de continuidad y anexo de devoluciones', '—', 'Actas de cierre del Sprint 5'],
@@ -78,12 +78,12 @@ add(Vineta([
   'El reloj de cliente-doc marca tres horas menos que la hora de Uruguay. Los datos no se afectan porque los tiempos los pone el servidor; hay que revisar la zona horaria del cliente.',
   'El verificador del DC dio el 19/11 lo mismo que en el Hito 2 (63 PASS y 5 FAIL). El 20/11, con los scripts nuevos copiados, dio 73 PASS y 0 FAIL: era el script viejo (INC-14, cerrada).',
   'La retención del DC falló con la carpeta atlas-backups vacía (INC-18). Ya está corregida y tiene una prueba que reproduce el caso; falta copiar el script corregido al DC.',
-  'Zabbix detectó en su primer día que el disco de atlas-srv01 está al 99,1 % (INC-19). Hay que liberar espacio antes de que ATLAS o MySQL se queden sin lugar.',
+  'Zabbix detectó en su primer día que el disco de atlas-srv01 estaba al 99,1 % (INC-19). La causa era que el instalador de Ubuntu había usado 14 de los 28 GB del disco; se amplió el volumen esa noche y quedó al 42 %.',
   'router-lab registra a srv01 intentando sincronizar la hora con servidores de Internet (UDP 123), algo que la política bloquea (INC-20). Se resuelve con el paso 8, que hace que srv01 tome la hora del DC.',
   'En la VM restaurada con la placa desconectada, atlas-web no arranca porque no tiene dónde publicar sus puertos. Para que la prueba de restauración de la VM sea completa, hay que hacerla en una red aislada con la misma dirección, no solo sin placa.',
 ]));
 add(H3('31.7 Trabajo pendiente'));
-add(P('Ya se ejecutaron el circuito completo (R-8), las comprobaciones de base de datos (R-9), el respaldo de la VM (R-10), la VPN con las pruebas 14 a 16 (R-7), el monitoreo con los dos agentes (R-6), la Fase 12 del DC y su verificación (R-2, parte de R-5 y R-11). Lo que falta tiene su paso en el Anexo J: liberar espacio en el disco de srv01 (INC-19) y comprobar el arranque sin Internet (R-3), unir srv01 al dominio e instalar el certificado de ATLAS-CA (R-4), activar los respaldos con la copia al DC y copiar al DC el script de retención corregido (R-5), y rotar las credenciales que quedaron expuestas en el Hito 2 (R-12). Hasta que se ejecuten, cada una de esas pruebas figura como *No ejecutada*.'));
+add(P('Ya se ejecutaron el circuito completo (R-8), las comprobaciones de base de datos (R-9), el respaldo de la VM (R-10), la VPN con las pruebas 14 a 16 (R-7), el monitoreo con los dos agentes (R-6), la Fase 12 del DC y su verificación (R-2, parte de R-5 y R-11). Lo que falta tiene su paso en el Anexo J: comprobar el arranque sin Internet (R-3), unir srv01 al dominio e instalar el certificado de ATLAS-CA (R-4), activar los respaldos con la copia al DC y copiar al DC el script de retención corregido (R-5), y rotar las credenciales que quedaron expuestas en el Hito 2 (R-12). Hasta que se ejecuten, cada una de esas pruebas figura como *No ejecutada*.'));
 
 // 32 ------------------------------------------------------------------------------------------
 add(H2('32. Continuidad: plan para los semestres siguientes'));
@@ -102,7 +102,6 @@ add(Tabla('plan', 'Plan de trabajo para los semestres siguientes', ['Período', 
 ], [2.2, 2.8, 3.8, 3.2]));
 add(H3('32.3 Backlog priorizado'));
 add(Tabla('backlog', 'Backlog para la siguiente etapa', ['Prioridad', 'Ítem', 'Motivo'], [
-  ['Alta', 'Liberar espacio en el disco de atlas-srv01 (INC-19)', 'Zabbix lo marcó al 99,1 %; sin espacio, MySQL deja de escribir.'],
   ['Alta', 'Completar el Anexo J (R-3, R-4, R-5 y R-12)', 'Cierra los pendientes de laboratorio que quedaron después del 20/11.'],
   ['Media', 'Lista de atención: descartar señales ya corregidas por un intento posterior', 'Observación de la jornada del 19/11 (sección 31.6).'],
   ['Alta', 'Protocolo de la prueba piloto y consentimiento', 'Condición para usar datos de estudiantes reales.'],

@@ -55,5 +55,8 @@ https://172.16.40.10 (aviso «No seguro»: el cliente todavía no confía en ATL
 | H3-45, H3-46 | E-RED-014 | Prueba 14: rc=28 y ATLAS-R12 desde ens19 |
 | H3-74d-dc-verificar-nuevo.png | E-WIN-005 | Verificador del DC: 73 PASS · 0 FAIL |
 | H3-74e-srv01-verificar-monitoreo.png | E-RED-015 | monitoreo y firewall: 23 PASS · 0 FAIL |
+| H3-75-srv01-disco-ampliado.png | INC-19 | Limpieza de Docker y volumen de 14 a 28 GB: disco al 42 %, salud ok |
+| H3-74f-dc-verificar-despues-disco.png | E-WIN-005 | DC otra vez: 73 PASS · 0 FAIL |
+| H3-74g-srv01-verificar-despues-disco.png | E-RED-015 | srv01 otra vez: 23 PASS · 0 FAIL |
 
 No se tomaron: H3-01, H3-02, H3-04, H3-06 a H3-22, H3-25, H3-48, H3-59 y H3-60. Tampoco llegaron H3-23b ni la H3-74-a de la segunda jornada.
