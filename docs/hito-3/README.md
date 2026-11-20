@@ -1,13 +1,15 @@
 # Hito 3 · Proyecto consolidado y documentado
 
-Equipo Error404 · ATLAS · entrega: viernes 20/11/2026 · estado al 12/11/2026
+Equipo Error404 · ATLAS · entrega: viernes 20/11/2026 · estado al 20/11/2026
 
 ## Qué se entrega
 
 | Entregable | Dónde |
 |---|---|
-| Documento integrador V3.0 en Word (editable, APA 7) | [`ATLAS_Documento_integrador_V3.0.docx`](ATLAS_Documento_integrador_V3.0.docx) |
-| Documento integrador V3.0 en un único PDF (cuerpo + Anexo E con el informe de Redes del Hito 2) | [`ATLAS_Documento_integrador_V3.0.pdf`](ATLAS_Documento_integrador_V3.0.pdf) |
+| Documento integrador V3.1 en Word (editable, APA 7), con los resultados del laboratorio | [`ATLAS_Documento_integrador_V3.1.docx`](ATLAS_Documento_integrador_V3.1.docx) |
+| Documento integrador V3.1 en un único PDF (cuerpo + Anexo E con el informe de Redes del Hito 2) | [`ATLAS_Documento_integrador_V3.1.pdf`](ATLAS_Documento_integrador_V3.1.pdf) |
+| Capturas del laboratorio (19 y 20/11/2026) | [`capturas/`](capturas/) |
+| Versión anterior, V3.0 del 12/11 (solo desarrollo) | `ATLAS_Documento_integrador_V3.0.*` |
 | Plan de Redes paso a paso para el laboratorio (R-0 a R-12) | [`plan-redes-laboratorio.md`](plan-redes-laboratorio.md) |
 | Fuente del documento (se regenera con un comando) | [`documento/`](documento/) |
 
@@ -27,14 +29,15 @@ de `docs/evidencias/`. Los diagramas de arquitectura y topología se dibujan en 
 | Redes | `05-vpn.sh` con los perfiles de la Tabla 45; pruebas de VPN en el gemelo del router | E-RED-011 (46/46) |
 | Pruebas | Conjunto `monitoreo` en `probar-todo.sh` y en GitHub Actions | E-TST-010 |
 
-## Qué falta (laboratorio)
+## Laboratorio (jornada del 19/11/2026)
 
-Todo lo anterior está probado **en desarrollo**. En el laboratorio Proxmox figura como *No ejecutada*
-hasta correr el plan: pasos 8 a 14 de srv01, Fase 12 del DC, VPN y pruebas 14 a 16, circuito completo
-desde la VLAN 30, comprobaciones de base de datos en srv01, respaldo de la VM y verificación completa.
-Cuando se ejecute, se actualizan `documento/resultados.js` y los textos de estado, y se publica la V3.1.
-
-Antes de empezar el plan, los cambios tienen que estar en `main`: el laboratorio clona este repositorio.
+| Paso del plan | Estado | Resultado |
+|---|---|---|
+| R-8 circuito completo | Ejecutado | Docente crea y publica, estudiante resuelve desde la VLAN 30, docente ve indicadores; prueba 7 con registro ATLAS-R12 |
+| R-9 base de datos | Ejecutado | seguir_intento OK; restaurar_intento 13/13; metricas 6 PASS, 0 FAIL |
+| R-10 respaldo de la VM | Ejecutado | vzdump en 2 min; restauración en 81 s; en la copia sin red, atlas-web se reinicia |
+| R-11 verificaciones | Ejecutado con FAIL | srv01 86 PASS / 31 FAIL (pasos 8 a 14 sin correr); DC 63 PASS / 5 FAIL (probable script viejo); firewall con reglas de la VPN |
+| R-0 a R-7, R-12 | No ejecutado o sin evidencia | Siguen en el plan |
 
 ## Cómo repetir las pruebas
 

@@ -4,6 +4,7 @@ const { add, P, PSin, H1, H2, H3, Vineta, Salto, Tabla, Figura, Consola } = L;
 const V24 = require('./fuente-v2.4.json');
 const R = require('./resultados');
 const C = 'docs/evidencias/B/capturas/hito3/';
+const LAB = 'docs/hito-3/capturas/';
 
 // A -------------------------------------------------------------------------------------------
 add(H1('Anexo A'));
@@ -26,16 +27,17 @@ add(Tabla(null, 'Resultados de las pruebas de programación', ['Código', 'Prueb
 ], [1.6, 4.8, 2.4, 3.2], 'Rutas relativas a docs/evidencias/. Los resultados corresponden al entorno de desarrollo.', 'Tabla B1'));
 add(Tabla(null, 'Aplicación en atlas-srv01 (laboratorio)', ['Código', 'Resultado y alcance'], [
   ['E-APP-013', 'Hito 2: estado documentado con docker ps y systemctl, porque atlas-ctl no estaba instalado (INC-08, corregido). En el Hito 3 se repite con atlas-ctl estado y salud (R-3).'],
-  ['E-APP-014', 'Hito 2: incompleta (acceso, usuarios, grupo y borrador; publicación rechazada con 422). En el Hito 3: circuito completo en el paso R-8, *No ejecutada* al cierre de esta versión.'],
-], [2, 10], 'El resultado de desarrollo no reemplaza la prueba del mismo circuito en el laboratorio.', 'Tabla B2'));
+  ['E-APP-014', 'Hito 2: incompleta (acceso, usuarios, grupo y borrador; publicación rechazada con 422). Hito 3, 19/11/2026: circuito completo ejecutado. El docente creó y publicó, el estudiante resolvió desde la VLAN 30, el docente vio los indicadores y la auditoría registró todo (sección 26.6; capturas H3-49 a H3-69, salvo la 59 y la 60, que no se tomaron).'],
+], [2, 10], 'El resultado de desarrollo no reemplaza la prueba del mismo circuito en el laboratorio. Las capturas del laboratorio están en docs/hito-3/capturas/.', 'Tabla B2'));
 add(Figura(null, C + 'docente-sin-grupo-1024.png', 'Aviso al docente sin grupo asignado: la causa del 422 del laboratorio', 'Captura de E-APP-015. El botón de publicar queda deshabilitado y el aviso explica qué falta (INC-09).', { etiqueta: 'Figura B1', maxAlto: 480 }));
-add(Figura(null, C + 'docente-editor-habilidades-1024.png', 'Editor de actividades con habilidades por pregunta', 'Captura de E-APP-015, con datos sintéticos (D-3, RF-21).', { etiqueta: 'Figura B2', maxAlto: 560 }));
-add(Figura(null, C + 'docente-decision-recomendacion-1024.png', 'Perfil del estudiante y decisión del docente sobre la actividad sugerida', 'Captura de E-APP-015, con datos sintéticos (D-6, RF-22).', { etiqueta: 'Figura B3', maxAlto: 560 }));
-add(Figura(null, C + 'estudiante-resultado-375.png', 'Resultado de la actividad en el celular, con tiempo total y tiempo activo', 'Captura de E-APP-015, con datos sintéticos (D-8, RF-09).', { etiqueta: 'Figura B4', maxAlto: 560, maxAncho: 300 }));
+add(Figura(null, LAB + 'H3-52-app-editor.png', 'Editor de actividades en el laboratorio, con la habilidad de la pregunta y la opción correcta', 'Captura H3-52, cliente-doc, 19/11/2026, 20:07. «Actividad de prueba 2»: nivel Básico, categoría Atención, una pregunta que mide Cálculo y la opción B marcada como correcta (D-3, RF-21). La actividad empieza con una sola pregunta; las demás se agregan con «Agregar pregunta».', { etiqueta: 'Figura B2', maxAlto: 560 }));
+add(Figura(null, LAB + 'H3-63-app-docente-estudiante.png', 'Perfil de Matias Perez visto por el docente', 'Captura H3-63, 19/11/2026, 20:33. Dos actividades con datos, puntaje promedio y último puntaje de 100 y tres recomendaciones; la evolución baja a 0 y vuelve a 100; el acierto en Cálculo es del 100 % (2 de 2). Arriba, el aviso de que los indicadores describen el proceso y no diagnostican ni etiquetan (D-6, D-8).', { etiqueta: 'Figura B3', maxAlto: 560 }));
+add(Figura(null, LAB + 'H3-61-app-estudiante-resultado.png', 'Resultado que ve el estudiante al terminar, con tiempo total y tiempo activo', 'Captura H3-61, cliente-doc en la VLAN 30, 19/11/2026, 20:27. 100 de 100, 1 de 1 respuestas correctas, tiempo total de 3 s y tiempo activo de 3 s (D-8, RF-09).', { etiqueta: 'Figura B4', maxAlto: 520 }));
 add(Figura(null, C + 'admin-reglas-768.png', 'Coordinación: reglas de análisis con sus parámetros', 'Captura de E-APP-015 en una tableta (768 píxeles).', { etiqueta: 'Figura B5', maxAlto: 560 }));
-add(Figura(null, C + 'ingreso-1440-claro.png', 'Pantalla de ingreso con el logotipo de ATLAS (tema claro)', 'Captura tomada el 12/11/2026 sobre la pila local, a 1440 píxeles de ancho.', { etiqueta: 'Figura B6', maxAlto: 420 }));
-add(Figura(null, C + 'docente-inicio-1366-oscuro.png', 'Inicio del docente en tema oscuro', 'Captura tomada el 12/11/2026 sobre la pila local, con datos sintéticos de demostración.', { etiqueta: 'Figura B7', maxAlto: 420 }));
-add(Figura(null, C + 'estudiante-inicio-390-claro.png', 'Inicio del estudiante en un celular, con la actividad recomendada destacada', 'Captura tomada el 12/11/2026 sobre la pila local, con datos sintéticos; la actividad destacada la creó la prueba de interfaz.', { etiqueta: 'Figura B8', maxAlto: 560, maxAncho: 300 }));
+add(Figura(null, LAB + 'H3-49-app-ingreso.png', 'Pantalla de ingreso de ATLAS en el laboratorio', 'Captura H3-49, cliente-doc, 19/11/2026, 19:57. Logotipo, presentación del sistema y aviso de que tres intentos fallidos bloquean el acceso por unos minutos. El aviso «No seguro» del navegador se debe a que el certificado firmado por ATLAS-CA todavía no se instaló (paso R-4).', { etiqueta: 'Figura B6', maxAlto: 460 }));
+add(Figura(null, LAB + 'H3-68-app-tema-oscuro.png', 'Inicio del docente en tema oscuro', 'Captura H3-68, 19/11/2026, 20:00. Es la misma pantalla de la {F:fDocente} después de tocar el botón del tema.', { etiqueta: 'Figura B7', maxAlto: 460 }));
+add(Figura(null, LAB + 'H3-58-app-estudiante-inicio.png', 'Inicio del estudiante con la próxima actividad destacada', 'Captura H3-58, cliente-doc en la VLAN 30, 19/11/2026, 20:26. Matias Perez ve «Actividad de prueba 3» como próxima actividad y, debajo, la que ya resolvió el 12/11, con su último resultado (100/100) y la opción de intentar de nuevo.', { etiqueta: 'Figura B8', maxAlto: 460 }));
+add(Figura(null, LAB + 'H3-50-app-coordinacion-grupos.png', 'Coordinación: grupos del año y sus integrantes', 'Captura H3-50, 19/11/2026, 19:59. Grupos «Docentes» y «Grupo 1» de 2026 en el Instituto Tecnológico de Informática. En los miembros de Grupo 1 aparecen Juan Fernandez (docente) y Matias Perez (estudiante); la pantalla recuerda que un docente solo puede publicar en los grupos de los que es miembro, la regla que explica el 422 del Hito 2.', { etiqueta: 'Figura B9', maxAlto: 460 }));
 add(Salto());
 
 // C -------------------------------------------------------------------------------------------
@@ -47,7 +49,8 @@ add(Tabla(null, 'Evidencias del servidor Linux', ['Código', 'Contenido', 'Entor
   ['E-LNX-005', 'Scripts de srv01 en Ubuntu 24.04 real, Hito 3, con la regla 10050 del agente', 'Contenedor privilegiado; único FAIL esperado (smbd sin systemd)'],
   ['probar-respaldos.sh', 'Respaldo completo, incremental, configuración, anotación, verificación y restauración', 'MySQL 8.0 real; 17 de 17 (E-TST-010)'],
   ['E-RED-012', 'Paso 14 corrido de punta a punta, con el chequeo de ATLAS por la IP del servidor', 'Desarrollo; solo falla atlas-dc01 (sin Windows)'],
-  ['E-LNX-006 / 007', 'verificar.sh completo y respaldos con copia al DC en srv01', 'Laboratorio: *No ejecutada* (R-5, R-11)'],
+  ['E-LNX-006', 'verificar.sh completo en srv01, 20/11/2026', 'Laboratorio: 86 PASS y 31 FAIL; los FAIL son de los pasos 8 a 14, que no se corrieron (sección 28.6)'],
+  ['E-LNX-007', 'Respaldos con copia al DC en srv01', 'Laboratorio: *No ejecutada* (R-5)'],
 ], [2.4, 5.8, 3.8], 'Archivos en docs/evidencias/C/ y E/. Las figuras E61 a E86 del Anexo E documentan la instalación de srv01 en el Hito 2.', 'Tabla C1'));
 add(Salto());
 
@@ -59,8 +62,11 @@ add(Tabla(null, 'Evidencias del cliente y del controlador', ['Código / captura'
   ['E-WIN-003b / E60', 'gpresult /r', 'DOC-PC01 en el dominio, GPO_Docentes y GG_Docentes.'],
   ['E49 a E51', 'Verificador y revisión manual del DC', '63 PASS y 5 FAIL falsos (INC-06, INC-07).'],
   ['E-WIN-004', 'Módulo y scripts del DC con PowerShell 7, Hito 3', '52 de 52: retención, sintaxis de los 19 scripts y codificación.'],
-  ['E-WIN-005 / 006', 'Verificador completo y retención instalada en el DC', 'Laboratorio: *No ejecutada* (R-5, R-11).'],
+  ['E-WIN-005', 'Verificador del DC, 20/11/2026', '63 PASS y 5 FAIL, igual que en el Hito 2; probablemente la versión anterior del script (sección 29.6).'],
+  ['E-WIN-006', 'Retención instalada en el DC', 'Laboratorio: *No ejecutada* (R-5).'],
+  ['H3-55', 'ipconfig de cliente-doc en la VLAN 30', '172.16.30.100/24, puerta 172.16.30.1 y sufijo atlas.local, entregados por el DHCP del DC a través del relay.'],
 ], [2.6, 4, 5.4], null, 'Tabla D1'));
+add(Figura(null, LAB + 'H3-55-cliente-vlan30.png', 'cliente-doc en la VLAN 30 después de renovar la dirección', 'Captura H3-55, sesión de prueba.docente, 19/11/2026, 20:15. Después de ipconfig /release y /renew, el equipo recibe 172.16.30.100 con máscara 255.255.255.0, puerta de enlace 172.16.30.1 y sufijo atlas.local: el ámbito de la VLAN 30 del DHCP del DC, por el relay de router-lab.', { etiqueta: 'Figura D1', maxAlto: 480 }));
 add(Salto());
 
 // E -------------------------------------------------------------------------------------------
@@ -98,11 +104,13 @@ add(Tabla(null, 'Verificaciones de base de datos en desarrollo (Hito 2)', ['Cód
   ['E-BD-010', 'Privilegios con migración 004', 'Según la tabla de privilegios'],
 ], [2, 5.4, 4.6], null, 'Tabla G1'));
 add(Tabla(null, 'Verificaciones en el laboratorio', ['Código', 'Resultado', 'Estado'], [
-  ['E-BD-013', 'Conteos de tablas antes del circuito (intentos en 0)', 'Repetir después del circuito (R-9)'],
-  ['E-BD-014', 'Volcado de 78 KB y restauración en base aparte; usuarios 3/3', 'Acotada; la reemplaza E-BD-020'],
-  ['E-BD-015', 'Respaldo de la VM completa', '*No ejecutada* (R-10)'],
-  ['E-BD-019 a 021', 'Seguimiento del intento, restauración por intento y métricas en srv01', '*No ejecutada* (R-9)'],
-], [2.2, 6, 3.8], null, 'Tabla G2'));
+  ['E-BD-013', 'Conteos de tablas antes del circuito (intentos en 0, Hito 2); después del circuito, en E-BD-020: 5 usuarios, 3 intentos, 3 resultados, 12 interacciones y 78 registros de auditoría', 'Ejecutada (19/11)'],
+  ['E-BD-014', 'Volcado de 78 KB y restauración en base aparte; usuarios 3/3 (Hito 2)', 'Acotada; la reemplaza E-BD-020'],
+  ['E-BD-015', `Respaldo de la VM 130 con vzdump (${R.lab.vzdump}) y restauración como VM 930 en ${R.lab.qmrestore}; en la copia sin red, atlas-web se reinicia`, 'Ejecutada (19/11); ver figuras G3 y G4'],
+  ['E-BD-019', `Seguimiento del intento en srv01: ${R.lab.seguir}`, 'Aprobada, sin cambio de respuesta en el intento'],
+  ['E-BD-020', `Restauración por intento en srv01: ${R.lab.restauracion}`, 'Aprobada'],
+  ['E-BD-021', `Métricas M1 a M11 en srv01: ${R.lab.metricas}`, 'Ejecutada'],
+], [2.2, 6, 3.8], 'Capturas H3-70 a H3-73 en docs/hito-3/capturas/. Los scripts se lanzaron desde la Shell de Proxmox con el atajo vm.', 'Tabla G2'));
 add(Tabla(null, 'Comprobaciones del Hito 3 en desarrollo', ['Código', 'Comprobación', 'Resultado', 'Archivo'], [
   ['E-BD-016', 'Seguimiento de un intento de la pantalla a la base y al informe', R.trazado.replace(/ \(.*\)/, ''), 'G/E-BD-016-trazado-intento/'],
   ['E-BD-017', 'Puntaje guardado contra calculado; tiempos; rechazos de atlas_app', `Mismos valores; medianas ${R.comparacion.medianaA} y ${R.comparacion.medianaB}; 5 rechazos`, 'G/E-BD-017-puntaje-guardado-vs-calculado.txt'],
@@ -110,6 +118,8 @@ add(Tabla(null, 'Comprobaciones del Hito 3 en desarrollo', ['Código', 'Comproba
 ], [1.6, 4, 3.4, 3], null, 'Tabla G3'));
 add(Figura(null, 'docs/evidencias/G/E-BD-016-trazado-intento/2-estudiante-resultado.png', 'Resultado que ve el estudiante al terminar el intento seguido (75)', 'Captura de E-BD-016, con datos sintéticos.', { etiqueta: 'Figura G1', maxAlto: 520 }));
 add(Figura(null, 'docs/evidencias/G/E-BD-016-trazado-intento/3-docente-informe.png', 'El mismo intento en el informe del docente', 'Captura de E-BD-016, con datos sintéticos. El puntaje coincide con el de la pantalla y con el guardado en resultados.', { etiqueta: 'Figura G2', maxAlto: 520 }));
+add(Figura(null, LAB + 'H3-73b-proxmox-restauracion.png', 'Restauración de la copia de la VM 130 como VM 930', 'Captura H3-73b (E-BD-015), historial de tareas de Proxmox, 19/11/2026. «VM 930 - Restore» de 23:46:48 a 23:48:09, con 32 GB leídos en 79 s y «TASK OK»; la VM 930 se arrancó a las 23:49:16.', { etiqueta: 'Figura G3', maxAlto: 560 }));
+add(Figura(null, LAB + 'H3-73c-vm930-docker-ps.png', 'Contenedores en la VM 930 restaurada, arrancada con la placa desconectada', 'Captura H3-73c (E-BD-015), consola de la VM 930. atlas-db y atlas-analysis sanos, atlas-php en marcha y atlas-web en «Restarting». Con la placa desconectada no queda configurada la dirección 172.16.40.10, donde Nginx publica sus puertos; es la explicación más probable, no comprobada (sección 27.7).', { etiqueta: 'Figura G4', maxAlto: 420 }));
 add(Salto());
 
 // H -------------------------------------------------------------------------------------------
@@ -256,12 +266,12 @@ const verif = {
 };
 add(Tabla(null, 'Trazabilidad y verificación de los requisitos funcionales', ['RF', 'Objetivo', 'Diseño', 'Verificación al Hito 3 (desarrollo)'],
   reqs.map((r) => [r.id, `N.º ${objetivo[r.id]}`, verif[r.id][0], verif[r.id][1]]), [1.4, 1.8, 1.4, 7.4],
-  'La verificación en el laboratorio del circuito completo (RF-04 a RF-13, RF-16, RF-17, RF-21 y RF-22) es el paso R-8 del Anexo J.', `Tabla H${nH++}`));
+  'El circuito completo (RF-04 a RF-13, RF-16, RF-17, RF-21 y RF-22) se ejecutó también en el laboratorio el 19/11/2026 (sección 26.6). RF-02 (bloqueo) y RF-20 (asistente con la API real) no se probaron en el laboratorio.', `Tabla H${nH++}`));
 add(Tabla(null, 'Trazabilidad y verificación de los requisitos no funcionales', ['RNF', 'Evidencia al Hito 3', 'Alcance'], [
   ['RNF-01 / 09', 'ControlAccesoTest; firewall del laboratorio (E-RED-009/010); gemelo con VPN (E-RED-011)', 'Laboratorio para la red; desarrollo para la aplicación'],
-  ['RNF-02', `Disponibilidad ${R.disponibilidad} (E-TST-009); SLA de Zabbix (E-RED-013)`, 'Desarrollo; laboratorio desde R-6'],
+  ['RNF-02', `Disponibilidad ${R.disponibilidad} (E-TST-009); SLA de Zabbix (E-RED-013)`, 'Desarrollo; en el laboratorio sin medir (R-6 no ejecutado)'],
   ['RNF-03', `Percentil 95 máximo ${R.rendimiento.p95max} (E-TST-008)`, 'Desarrollo; laboratorio con Zabbix'],
-  ['RNF-04 / 05', `probar-respaldos.sh 17 de 17; ${R.restauracion}`, 'Desarrollo; laboratorio en R-5, R-9 y R-10'],
+  ['RNF-04 / 05', `probar-respaldos.sh 17 de 17; ${R.restauracion}. Laboratorio: restauración por intento 13 de 13 y respaldo de la VM (E-BD-020, E-BD-015)`, 'Recuperación verificada en el laboratorio; respaldos automáticos solo en desarrollo (R-5 no ejecutado)'],
   ['RNF-06 / 13', 'Interfaz reemplazada completa sin tocar la API; PSR-12 sin errores', 'Repositorio'],
   ['RNF-07', 'Pila en srv01 y dominio en dc01 (Hito 2)', 'Laboratorio parcial: unión de srv01 en R-4'],
   ['RNF-08', 'DHCP por VLAN desde el cliente (E56, E106-E107)', 'Laboratorio'],
@@ -289,19 +299,19 @@ add(Tabla(null, 'Puntos de la devolución de Programación del Hito 1 y decision
 ], [1.2, 4.6, 6.2], 'Fuente: acta de decisiones (docs/evidencias/F/acta_tesis). La redacción de la columna «Observación» resume el punto al que responde cada decisión.', 'Tabla I1'));
 add(H2('I.2 Hito 2: devolución de Gestión de Proyectos'));
 add(Tabla(null, 'Devolución de Gestión del Hito 2 y respuesta', ['Observación', 'Respuesta', 'Evidencia'], [
-  ['Resolver el 422 y completar el circuito docente-estudiante en el laboratorio', 'Causa corregida (INC-09); circuito en R-8', 'Prueba de interfaz; Anexo J'],
-  ['Completar VPN, monitoreo centralizado y configuraciones pendientes del servidor Linux', 'Implementados y probados; pasos R-3 a R-7', 'E-RED-011 a 013; E-LNX-005'],
+  ['Resolver el 422 y completar el circuito docente-estudiante en el laboratorio', 'Causa corregida (INC-09); circuito completo ejecutado el 19/11/2026', 'Sección 26.6; E-APP-014'],
+  ['Completar VPN, monitoreo centralizado y configuraciones pendientes del servidor Linux', 'Implementados y probados fuera del laboratorio; en el laboratorio solo están cargadas las reglas de la VPN (pasos R-3 a R-7 sin ejecutar)', 'E-RED-011 a 013 y 017; E-LNX-005 y 006'],
   ['Verificar respaldos completos, recuperación y controles de acceso', 'Respaldos automáticos con copia al DC; restauración por intento; rechazos', 'probar-respaldos; E-BD-017 y 018'],
   ['Fortalecer actas, seguimiento de tareas y evidencias Scrum', 'Registro por pull request y formato de acta', 'Sección 22.9; Tabla I4'],
   ['Entregar las devoluciones de los hitos anteriores', 'Este anexo', '—'],
-  ['Hito 3: integración, corrección de incidencias y demostración de extremo a extremo', 'Incidencias corregidas; demostración en desarrollo; laboratorio en R-8', 'Sección 31.5; E-BD-016'],
+  ['Hito 3: integración, corrección de incidencias y demostración de extremo a extremo', 'Incidencias corregidas; demostración completa en el laboratorio el 19/11/2026', 'Secciones 26.6 y 31.5; E-APP-014'],
   ['Incorporar métricas que permitan verificar requisitos y objetivos', 'M1 a M16 con meta y medición', 'Sección 31.4'],
 ], [4.4, 4.4, 3.2], null, 'Tabla I2'));
 add(H2('I.3 Hito 2: devolución de Base de Datos'));
 add(Tabla(null, 'Devolución de Base de Datos del Hito 2 y respuesta', ['Pedido', 'Respuesta', 'Evidencia'], [
-  ['Seguir un intento desde la pantalla del estudiante (cambiar una respuesta, puntaje esperado) hasta la base (respuesta final, cambio en interacciones, único puntaje) y el informe del docente', 'Prueba automática de punta a punta; versión para srv01', 'E-BD-016; seguir_intento.sh (E-BD-019 en R-9)'],
+  ['Seguir un intento desde la pantalla del estudiante (cambiar una respuesta, puntaje esperado) hasta la base (respuesta final, cambio en interacciones, único puntaje) y el informe del docente', 'Prueba automática de punta a punta; versión para srv01', 'E-BD-016; E-BD-019 (laboratorio, sin cambio de respuesta)'],
   ['Comparar la consulta con puntaje guardado contra la calculada, con tiempos en varias ejecuciones; intentar modificar con atlas_app el puntaje de un intento cerrado y conservar el rechazo', 'Mismos valores; 20 ejecuciones de cada una; cinco intentos rechazados', 'E-BD-017'],
-  ['Repetir la restauración en el laboratorio después del circuito, recuperar el intento por su identificador comparando respuestas, interacciones y puntaje, registrar el tiempo y el último intento recuperado frente a RPO/RTO; respaldo de la VM', 'Herramienta lista y probada en desarrollo; laboratorio después del circuito; vzdump de la VM', 'E-BD-018; E-BD-020 y E-BD-015 en R-9 y R-10'],
+  ['Repetir la restauración en el laboratorio después del circuito, recuperar el intento por su identificador comparando respuestas, interacciones y puntaje, registrar el tiempo y el último intento recuperado frente a RPO/RTO; respaldo de la VM', 'Ejecutado en el laboratorio después del circuito: intento 3 recuperado igual, 13 de 13, respaldo y restauración en 1 s; además, vzdump de la VM', 'E-BD-018; E-BD-020; E-BD-015'],
 ], [5, 4, 3], null, 'Tabla I3'));
 add(H2('I.4 Formato de acta adoptado'));
 add(Tabla(null, 'Contenido mínimo de cada acta de Scrum', ['Campo', 'Qué se registra'], [
@@ -319,21 +329,21 @@ add(Salto());
 add(H1('Anexo J'));
 add(PSin('**Plan de trabajo de Redes en el laboratorio (Hito 3)**'));
 add(P('El plan completo, con todos los comandos, está en docs/hito-3/plan-redes-laboratorio.md. Arranca donde terminó el laboratorio del Hito 2. No requiere cambios físicos: la PC, el Proxmox con el adaptador USB y el iPhone quedaron armados; hace falta Internet en la primera parte para descargar actualizaciones e imágenes (unos 300 a 400 MB) y subir la memoria de srv01 a 4 GB. Duración estimada: entre 6 y 8 horas, en dos jornadas.'));
-add(Tabla(null, 'Pasos del plan de laboratorio', ['Paso', 'Dónde', 'Qué se hace', 'Qué tiene que salir', 'Evidencia'], [
-  ['R-0', 'Proxmox', 'Revisar ICS; snapshot hito3_inicio de las cuatro VM', 'Snapshots creados', '—'],
-  ['R-1', 'Proxmox', 'CPU host en 110/120/140; srv01 a 4 GB; quitar ISO; frase de paso a atlas_admin', 'qm config con los cambios', '—'],
-  ['R-2', 'Proxmox y DC', 'Actualizar repositorio y CD (con el MSI del agente); copiar scripts al DC', 'Scripts 13 y 14 en C:\\ATLAS', '—'],
-  ['R-3', 'srv01', 'git pull; pasos 5 a 7; arranque sin Internet', 'atlas-ctl salud ok sin Internet', 'E-APP-013, E-TST-006'],
-  ['R-4', 'srv01 y DC', 'Pasos 8 a 12; certificado firmado por ATLAS-CA', 'verificar.sh sin FAIL en esas secciones', 'E-LNX-006'],
-  ['R-5', 'DC y srv01', 'Rotar svc_atlas_backup; paso 13; probar borrado; retención en el DC', 'Copia en el DC; borrado denegado; tarea lista', 'E-LNX-007, E-WIN-006'],
-  ['R-6', 'srv01 y DC', 'Paso 14; agente del DC; túnel a la interfaz; alerta real', 'Todo en PASS; alerta al detener ATLAS', 'E-RED-015'],
-  ['R-7', 'router, PC y Proxmox', 'VPN docente (y admin); pruebas 14, 15 y 16; VPN-09', '15 pasa; 14 y 16 bloqueadas con registro', 'E-RED-008a/b/c, E-RED-014'],
-  ['R-8', 'Cliente y navegador', 'Asignar grupo, publicar, resolver desde VLAN 30, ver indicadores; 445 desde VLAN 30', 'Circuito completo; 445 bloqueado con registro', 'E-APP-014, E-RED-016'],
-  ['R-9', 'srv01', 'seguir_intento, restaurar_intento y metricas', 'Un resultado; huellas iguales; tiempos', 'E-BD-019 a 021, E-BD-013'],
-  ['R-10', 'Proxmox', 'vzdump de la VM 130 y restauración con la placa desconectada', 'Tiempos frente al RTO', 'E-BD-015'],
-  ['R-11', 'Las tres máquinas', 'verificar.sh, verificar-dc01 y nft list ruleset', 'Sin FAIL', 'E-LNX-006, E-WIN-005, E-RED-017'],
-  ['R-12', 'Todas', 'Rotar credenciales; limpiar historiales; revisar dmesg; snapshots finales', 'Sin credenciales expuestas', '—'],
-], [1, 1.9, 4, 3, 2.1], null, 'Tabla J1'));
+add(Tabla(null, 'Pasos del plan de laboratorio', ['Paso', 'Dónde', 'Qué se hace', 'Qué tiene que salir', 'Evidencia', 'Estado'], [
+  ['R-0', 'Proxmox', 'Revisar ICS; snapshot hito3_inicio de las cuatro VM', 'Snapshots creados', '—', 'Sin evidencia'],
+  ['R-1', 'Proxmox', 'CPU host en 110/120/140; srv01 a 4 GB; quitar ISO; frase de paso a atlas_admin', 'qm config con los cambios', '—', 'Sin evidencia'],
+  ['R-2', 'Proxmox y DC', 'Actualizar repositorio y CD (con el MSI del agente); copiar scripts al DC', 'Scripts 13 y 14 en C:\\ATLAS', '—', 'Sin evidencia (sección 29.6)'],
+  ['R-3', 'srv01', 'git pull; pasos 5 a 7; arranque sin Internet', 'atlas-ctl salud ok sin Internet', 'E-APP-013, E-TST-006', 'No ejecutado'],
+  ['R-4', 'srv01 y DC', 'Pasos 8 a 12; certificado firmado por ATLAS-CA', 'verificar.sh sin FAIL en esas secciones', 'E-LNX-006', 'No ejecutado'],
+  ['R-5', 'DC y srv01', 'Rotar svc_atlas_backup; paso 13; probar borrado; retención en el DC', 'Copia en el DC; borrado denegado; tarea lista', 'E-LNX-007, E-WIN-006', 'No ejecutado'],
+  ['R-6', 'srv01 y DC', 'Paso 14; agente del DC; túnel a la interfaz; alerta real', 'Todo en PASS; alerta al detener ATLAS', 'E-RED-015', 'No ejecutado'],
+  ['R-7', 'router, PC y Proxmox', 'VPN docente (y admin); pruebas 14, 15 y 16; VPN-09', '15 pasa; 14 y 16 bloqueadas con registro', 'E-RED-008a/b/c, E-RED-014', 'Reglas cargadas; pruebas no ejecutadas'],
+  ['R-8', 'Cliente y navegador', 'Asignar grupo, publicar, resolver desde VLAN 30, ver indicadores; 445 desde VLAN 30', 'Circuito completo; 445 bloqueado con registro', 'E-APP-014, E-RED-016', 'Ejecutado 19/11'],
+  ['R-9', 'srv01', 'seguir_intento, restaurar_intento y metricas', 'Un resultado; huellas iguales; tiempos', 'E-BD-019 a 021, E-BD-013', 'Ejecutado 19/11'],
+  ['R-10', 'Proxmox', 'vzdump de la VM 130 y restauración con la placa desconectada', 'Tiempos frente al RTO', 'E-BD-015', 'Ejecutado 19/11'],
+  ['R-11', 'Las tres máquinas', 'verificar.sh, verificar-dc01 y nft list ruleset', 'Sin FAIL', 'E-LNX-006, E-WIN-005, E-RED-017', 'Ejecutado 20/11, con FAIL'],
+  ['R-12', 'Todas', 'Rotar credenciales; limpiar historiales; revisar dmesg; snapshots finales', 'Sin credenciales expuestas', '—', 'Sin evidencia'],
+], [0.9, 1.6, 3.6, 2.6, 1.7, 1.6], 'El estado es el de la jornada del 19 y 20/11/2026. «Sin evidencia» quiere decir que el paso puede haberse hecho, pero no hay captura ni archivo que lo muestre.', 'Tabla J1'));
 add(Salto());
 
 // K -------------------------------------------------------------------------------------------
@@ -353,4 +363,15 @@ add(Tabla(null, 'Evidencias generadas en el Hito 3', ['Código', 'Qué muestra',
   ['E-TST-008', 'Tiempos de respuesta', '7/7', 'H/E-TST-008-rendimiento-hito3.txt'],
   ['E-TST-009', 'Disponibilidad durante 10 minutos', R.disponibilidad.replace(/ \(.*/, ''), 'H/E-TST-009-disponibilidad-hito3.txt'],
   ['E-TST-010', 'Corrida completa de probar-todo.sh', 'Sección 31.3', 'H/E-TST-010-ejecucion-2026-11-12/'],
-], [1.6, 4, 2.6, 3.8], 'Todas corresponden al entorno de desarrollo. Las evidencias de laboratorio del Hito 3 (E-RED-008a/b/c y 014 a 017, E-LNX-006 y 007, E-WIN-005 y 006, E-APP-013 y 014, E-TST-006, E-BD-013, 015 y 019 a 021) figuran como *No ejecutada* hasta correr el Anexo J.', 'Tabla K1'));
+], [1.6, 4, 2.6, 3.8], 'Todas corresponden al entorno de desarrollo.', 'Tabla K1'));
+add(Tabla(null, 'Evidencias del laboratorio Proxmox (19 y 20/11/2026)', ['Código', 'Qué muestra', 'Resultado', 'Capturas (docs/hito-3/capturas/)'], [
+  ['E-APP-014', 'Circuito completo docente-estudiante', 'Ejecutado y verificado', 'H3-49 a H3-58, H3-61 a H3-69'],
+  ['E-RED-016', 'Prueba 7 repetida: 445 desde la VLAN 30 con registro', 'False; ATLAS-R12 registrado', 'H3-55, H3-56 y H3-57'],
+  ['E-BD-019', 'Seguimiento del intento 3', 'RESULTADO: OK', 'H3-70'],
+  ['E-BD-020', 'Restauración por intento', '13 de 13', 'H3-71'],
+  ['E-BD-021', 'Métricas M1 a M11', '6 PASS, 0 FAIL, 5 informativas', 'H3-72'],
+  ['E-BD-015', 'Respaldo y restauración de la VM 130', 'Ejecutado; atlas-web sin red en la copia', 'H3-73a, H3-73b y H3-73c'],
+  ['E-LNX-006', 'verificar.sh en srv01', '86 PASS y 31 FAIL (pasos 8 a 14 sin correr)', 'H3-74a'],
+  ['E-WIN-005', 'Verificador del DC', '63 PASS y 5 FAIL (probablemente script anterior)', 'H3-74b'],
+  ['E-RED-017', 'Ruleset de router-lab', 'Reglas de la VPN cargadas', 'H3-74c'],
+], [1.6, 4, 3, 3.4], 'Siguen como *No ejecutada*, con el paso del Anexo J que las cubre: E-APP-013 y E-TST-006 (R-3), E-LNX-007 y E-WIN-006 (R-5), E-RED-015 (R-6) y E-RED-008a/b/c y E-RED-014 (R-7). Las capturas H3-01 a H3-48, H3-59 y H3-60 no se tomaron.', 'Tabla K2'));
