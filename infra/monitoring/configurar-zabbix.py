@@ -43,7 +43,10 @@ token = None
 _id = 0
 
 
-TRANSITORIOS = ("Database error", "Connection refused", "Lost connection", "Connection to Zabbix server")
+TRANSITORIOS = ("Database error", "Connection refused", "Lost connection", "Connection to Zabbix server",
+                # Bloqueos de MySQL mientras zabbix-server escribe en las mismas tablas (por ejemplo,
+                # al vincular la plantilla a un host recién creado): se reintenta la operación.
+                "SQL statement execution has failed", "Deadlock", "Lock wait timeout", "try restarting transaction")
 
 
 def api(metodo, params, intentos=12):
