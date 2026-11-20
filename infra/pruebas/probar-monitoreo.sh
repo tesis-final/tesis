@@ -65,7 +65,7 @@ export ZBX_URL="http://127.0.0.1:$PUERTO" SRV_IP="$GW" DC_IP=192.0.2.250 ATLAS_U
 python3 infra/monitoring/configurar-zabbix.py > "$TMP/config1.txt" 2>&1 && ok "configurar-zabbix.py terminó bien" || mal "configurar-zabbix.py" "$(tail -1 "$TMP/config1.txt")"
 sed 's/^/    /' "$TMP/config1.txt"
 python3 infra/monitoring/configurar-zabbix.py > "$TMP/config2.txt" 2>&1 && ! grep -qE 'creado|Escenario|Disparador|Servicio:|SLA:' "$TMP/config2.txt" \
-  && ok "segunda corrida: no crea nada de nuevo (idempotente)" || mal "segunda corrida idempotente"
+  && ok "segunda corrida: no crea nada de nuevo (idempotente)" || { mal "segunda corrida idempotente"; sed "s/^/    /" "$TMP/config2.txt"; }
 
 echo
 echo "[datos — se espera hasta 5 minutos a que lleguen]"

@@ -13,6 +13,8 @@
 # Las contraseñas son de PRUEBA y el contenedor se borra al terminar.
 # =============================================================================
 set -uo pipefail
+# Ojo: con pipefail, «… | grep -q» falla al azar (grep corta y el productor muere por SIGPIPE);
+# en esas tuberías se usa «grep … >/dev/null», que lee toda la entrada.
 cd "$(dirname "$0")/../.."
 RAIZ_REPO=$PWD
 IMAGEN=${ATLAS_TEST_MYSQL_IMAGE:-mysql:8.0}
@@ -53,7 +55,7 @@ echo "[completo]"
 SALIDA=$("${R[@]}" completo 2>&1); echo "$SALIDA" | sed 's/^/    /' | grep -v Windows
 ls "$B"/completo/atlas_*.sql.gz >/dev/null 2>&1 && ok "volcado de la base creado" || mal "volcado de la base creado"
 zcat "$B"/completo/atlas_*.sql.gz | tail -1 | grep -q -- '-- Dump completed' && ok "el volcado está completo (-- Dump completed)" || mal "el volcado está completo"
-zcat "$B"/completo/atlas_*.sql.gz | grep -q 'CREATE TABLE `resultados`' && ok "el volcado tiene el esquema (resultados)" || mal "el volcado tiene el esquema"
+zcat "$B"/completo/atlas_*.sql.gz | grep 'CREATE TABLE `resultados`' >/dev/null && ok "el volcado tiene el esquema (resultados)" || mal "el volcado tiene el esquema"
 ls "$B"/completo/atlas_*.archivos.tar.gz "$B"/completo/atlas_*.permisos.txt.gz >/dev/null 2>&1 && ok "archivos (con ACL) y permisos respaldados" || mal "archivos y permisos respaldados"
 [ "$(find "$B" -name '*.gz' -perm 600 | wc -l)" -eq "$(find "$B" -name '*.gz' | wc -l)" ] && ok "los respaldos quedan con modo 600" || mal "los respaldos quedan con modo 600"
 [ "$(sql "SELECT COUNT(*) FROM registro_respaldos WHERE tipo='COMPLETO' AND destino='LOCAL' AND resultado='OK' AND verificado")" = 3 ] \
@@ -66,7 +68,7 @@ echo "[incremental: se crean datos nuevos y se respaldan los binlog]"
 sql "INSERT INTO instituciones (nombre, activa) VALUES ('Institucion creada despues del completo (prueba)', TRUE)"
 SALIDA=$("${R[@]}" incremental 2>&1); echo "$SALIDA" | sed 's/^/    /' | grep -v Windows
 INC=$(ls -1t "$B"/incremental/atlas_*.binlog.tar.gz 2>/dev/null | head -1)
-[ -n "$INC" ] && tar -tzf "$INC" | grep -q 'atlas-bin\.' && ok "el incremental contiene binlog" || mal "el incremental contiene binlog"
+[ -n "$INC" ] && tar -tzf "$INC" | grep 'atlas-bin\.' >/dev/null && ok "el incremental contiene binlog" || mal "el incremental contiene binlog"
 mkdir -p "$TMP/bl" && tar -xzf "$INC" -C "$TMP/bl" 2>/dev/null
 grep -aq 'creada despues del completo' "$TMP"/bl/atlas-bin.* 2>/dev/null && ok "el dato nuevo está en el binlog respaldado" || mal "el dato nuevo está en el binlog respaldado"
 [ "$(sql "SELECT COUNT(*) FROM registro_respaldos WHERE tipo='INCREMENTAL' AND resultado='OK'")" = 2 ] && ok "registro_respaldos: incremental anotado" || mal "registro_respaldos: incremental anotado"
@@ -75,7 +77,7 @@ echo
 echo "[configuración: cada cambio es una versión; se guardan las últimas 3]"
 for i in 1 2 3 4 5; do echo "CAMBIO=$i" >> "$TMP/raiz/config/atlas.conf"; "${R[@]}" config >/dev/null 2>&1; sleep 1; done
 [ "$(ls "$B"/config/atlas_config_*.tar.gz 2>/dev/null | wc -l)" = 3 ] && ok "retención: quedan 3 versiones de 5" || mal "retención de la configuración" "$(ls "$B"/config | wc -l) archivos"
-tar -xzOf "$(ls -1t "$B"/config/atlas_config_*.tar.gz | head -1)" 2>/dev/null | grep -q 'CAMBIO=5' && ok "la última versión tiene el último cambio" || mal "la última versión tiene el último cambio"
+tar -xzOf "$(ls -1t "$B"/config/atlas_config_*.tar.gz | head -1)" 2>/dev/null | grep 'CAMBIO=5' >/dev/null && ok "la última versión tiene el último cambio" || mal "la última versión tiene el último cambio"
 
 echo
 echo "[verificación diaria]"
