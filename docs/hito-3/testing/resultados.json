@@ -1,0 +1,1256 @@
+{
+  "fecha": "20 de noviembre",
+  "entorno": "Contenedor Linux con kernel 6.18.44, Docker, PHP 8.3.6 con pcov, MySQL 8.0.46 descartable, Python 3.11, PowerShell 7 y Chromium con Playwright",
+  "resumen": "Este informe cierra el proceso de pruebas de ATLAS, la plataforma web del grupo Error404 que registra cómo resuelven los estudiantes sus actividades y le indica al docente dónde intervenir. En el Hito 2 las pruebas quedaron escritas y automatizadas; en este hito se midió qué parte del sistema ejecutan, se analizó la calidad del software a partir de los resultados y se documentaron las evidencias. La corrida completa del 20 de noviembre de 2026 aprobó los once conjuntos automáticos, con 37 pruebas unitarias, 58 de base de datos, 75 de la API y 23 del servicio de análisis, además de las pruebas de infraestructura. Las pruebas de la aplicación ejecutan el 91,8 % de las líneas del código PHP y alcanzan las 44 rutas de la API; el servicio de análisis tiene una cobertura del 76 % y la prueba de interfaz ejecuta el 81,2 % del JavaScript del navegador. El análisis de cobertura encontró cuatro rutas sin una prueba que las ejercitara completas, y se escribieron las pruebas que faltaban. El análisis estático no encontró errores, y las diez advertencias de los scripts de Bash quedaron corregidas. En el laboratorio Proxmox se ejecutó por primera vez el circuito completo de ATLAS sobre las máquinas virtuales. Quedan sin ejecutar la VPN con un cliente real, el monitoreo en el laboratorio y la integración de atlas-srv01 con el dominio, y así se informa.",
+  "corrida": {
+    "texto": "Los once conjuntos automáticos dieron Aprobada en la corrida completa del 20 de noviembre de 2026, hecha con probar-todo.sh entre las 12:20 y las 12:31 (hora UTC), con el código de este hito. Es la tercera corrida del día y la única que vale como resultado. La primera se descartó porque la pila local de ATLAS había vuelto a arrancar sola y ocupaba la misma red que usa la base de datos descartable, así que los conjuntos de base de datos y de API no pudieron ni empezar (incidencia INC-T7). La segunda aprobó los once conjuntos, pero después el análisis de cobertura llevó a agregar pruebas y a corregir scripts, y la corrida se repitió entera para que el resultado corresponda al código final. La Tabla 5 presenta los resultados; la salida del script está en el Apéndice C.",
+    "filas": [
+      [
+        "Unitarias (PHP)",
+        "37",
+        "37 aprobadas",
+        "Aprobada"
+      ],
+      [
+        "Estándar PSR-12",
+        "Todo el código PHP",
+        "Sin errores ni advertencias",
+        "Aprobada"
+      ],
+      [
+        "Base de datos (MySQL 8.0.46 real)",
+        "58",
+        "58 aprobadas",
+        "Aprobada"
+      ],
+      [
+        "API (Laravel y MySQL real)",
+        "75",
+        "75 aprobadas",
+        "Aprobada"
+      ],
+      [
+        "Servicio de análisis (Python)",
+        "23",
+        "23 aprobadas",
+        "Aprobada"
+      ],
+      [
+        "Firewall de router-lab con tráfico real, con la VPN",
+        "46",
+        "46 aprobadas",
+        "Aprobada"
+      ],
+      [
+        "Scripts de atlas-dc01",
+        "52",
+        "52 aprobadas",
+        "Aprobada"
+      ],
+      [
+        "Scripts de atlas-srv01 en Ubuntu 24.04",
+        "88",
+        "87 aprobadas y 1 FAIL esperado",
+        "Aprobada"
+      ],
+      [
+        "Ajustes del laboratorio y script de la VPN",
+        "29",
+        "29 aprobadas",
+        "Aprobada"
+      ],
+      [
+        "Respaldos automáticos contra MySQL 8.0 real",
+        "17",
+        "17 aprobadas",
+        "Aprobada"
+      ],
+      [
+        "Monitoreo con Zabbix 7.0 real",
+        "14",
+        "14 aprobadas",
+        "Aprobada"
+      ]
+    ],
+    "nota": "El único FAIL de los scripts de atlas-srv01 es «smbd activo», el mismo del Hito 2: Samba no puede quedar corriendo en un contenedor sin systemd y se comprueba en la máquina virtual. El total de 88 suma las 68 comprobaciones de las cinco verificaciones, con ese FAIL incluido, y 20 pruebas de conexión: SSH, cadena DOCKER-USER y, nuevas en este hito, tres del puerto 10050. En el Hito 2 eran 68 y 17. Las salidas completas están en docs/evidencias/H/E-TST-011-ejecucion-2026-11-20/.",
+    "comparacion": "Frente al Hito 2 hay dos conjuntos nuevos, respaldos y monitoreo, que prueban los pasos 13 y 14 del instalador de atlas-srv01 contra servicios reales: un MySQL con registro binario y un Zabbix 7.0 completo, al que se le apaga ATLAS para comprobar que avisa. El firewall pasó de 36 a 46 pruebas por las reglas de la VPN, los scripts del controlador de dominio de 25 a 52 por la retención de respaldos y el agente de monitoreo, y la API de 71 a 75 por las pruebas que salieron del análisis de cobertura."
+  },
+  "interfaz": {
+    "texto": "La prueba de interfaz recorrió ATLAS en Chromium con los tres roles, en cinco anchos de pantalla, y aprobó 32 de 32 comprobaciones. Son las 29 del Hito 2 y tres nuevas: que el aviso de un error diga el motivo pregunta por pregunta, que ninguna acción abra un cartel del navegador y que la confirmación al finalizar tenga el diseño de ATLAS. Se corrió cuatro veces seguidas el 20 de noviembre, entre las 12:05 y las 12:10 (hora UTC), con ATLAS en Docker y los datos de demostración. La primera vez fue con los datos recién cargados y aprobó. La segunda, sobre los mismos datos, falló: era la incidencia INC-T2 del Hito 2, que seguía abierta. Se corrigió la prueba, y la tercera y la cuarta, también sobre datos ya usados, aprobaron 32 de 32. La corrección se explica en el apartado de incidencias. Las figuras 1 a 4 son capturas tomadas por la propia prueba.",
+    "figuras": [
+      [
+        "docente-donde-intervenir-escritorio-1366.png",
+        "Pantalla «Dónde intervenir hoy» del docente en escritorio",
+        "Captura de la prueba de interfaz del 20 de noviembre de 2026, con 1366 píxeles de ancho y datos de demostración sintéticos. Muestra quién requiere atención, con la regla que lo explica, y las preguntas que más cuestan.",
+        560,
+        520
+      ],
+      [
+        "estudiante-resolviendo-375.png",
+        "Estudiante resolviendo una actividad en un celular",
+        "Captura con 375 píxeles de ancho. Se ve una pregunta por vez, con el indicador de pasos, y no hay desplazamiento horizontal (RNF-12).",
+        300,
+        560
+      ],
+      [
+        "docente-analisis-grupal-1366.png",
+        "Análisis del grupo 3A en escritorio",
+        "Captura con 1366 píxeles de ancho y datos de demostración sintéticos. Doce estudiantes con datos y promedio de 73,6; cada estudiante de la atención prioritaria muestra las reglas que lo explican (R01, R07, R08 y R05). El análisis por aprendizaje automático no muestra agrupamientos porque solo 9 de 20 estudiantes tienen intentos suficientes (D-7).",
+        540,
+        600
+      ],
+      [
+        "docente-editor-habilidades-1024.png",
+        "Editor de actividades con el aviso que explica por qué no se puede publicar",
+        "Captura con 1024 píxeles de ancho, tomada por una de las comprobaciones nuevas. El aviso nombra la pregunta que falla («Pregunta 1: Cada pregunta necesita exactamente 1 opción correcta») y la habilidad Cálculo queda marcada en la pregunta (D-3, INC-12).",
+        520,
+        560
+      ]
+    ]
+  },
+  "rendimiento": {
+    "texto": "El requisito RNF-03 pide un tiempo de respuesta igual o menor a 3 segundos en las consultas más frecuentes. medir.py repitió cada consulta 30 veces con la sesión del rol que corresponde, el 20 de noviembre, contra ATLAS en Docker con los datos de demostración. La consulta más pesada, el análisis del grupo, tuvo un percentil 95 de 42 ms, y la consulta guiada, de 51 ms. La más lenta quedó casi sesenta veces por debajo del límite. La Tabla 6 muestra los valores.",
+    "filas": [
+      [
+        "Docente",
+        "Mis actividades",
+        "11",
+        "13",
+        "15",
+        "16",
+        "Aprobada"
+      ],
+      [
+        "Docente",
+        "Dónde intervenir y análisis del grupo",
+        "31",
+        "38",
+        "42",
+        "47",
+        "Aprobada"
+      ],
+      [
+        "Docente",
+        "Consulta guiada (grupo y período)",
+        "35",
+        "40",
+        "51",
+        "56",
+        "Aprobada"
+      ],
+      [
+        "Docente",
+        "Perfil de un estudiante",
+        "20",
+        "25",
+        "29",
+        "44",
+        "Aprobada"
+      ],
+      [
+        "Docente",
+        "Reportes",
+        "15",
+        "18",
+        "20",
+        "20",
+        "Aprobada"
+      ],
+      [
+        "Estudiante",
+        "Actividades del estudiante",
+        "13",
+        "15",
+        "17",
+        "17",
+        "Aprobada"
+      ],
+      [
+        "Estudiante",
+        "Sesión actual",
+        "11",
+        "14",
+        "18",
+        "18",
+        "Aprobada"
+      ]
+    ],
+    "nota": "Treinta repeticiones por consulta. P95 = percentil 95. El inicio de sesión tardó 234 ms con la docente y 233 ms con el estudiante. En el Hito 2 el percentil 95 más alto había sido de 71 ms. La medición es del entorno de pruebas, con pocos datos; en atlas-srv01 no se midió (ver pendientes).",
+    "sin_uso": ""
+  },
+  "disponibilidad": "Para la disponibilidad (RNF-02, meta del 99 %), disponibilidad.sh pidió /api/v1/health cada 10 segundos durante 10 minutos, el 20 de noviembre entre las 12:10 y las 12:20 (hora UTC). Las 60 respuestas fueron correctas (100 %) y la más lenta tardó 33 ms. Diez minutos en el entorno de pruebas no prueban la disponibilidad del servicio en el tiempo; eso lo mide Zabbix con su SLA, que está probado en el conjunto de monitoreo pero todavía no está instalado en el laboratorio.",
+  "bd": {
+    "texto": "La devolución de Base de Datos del Hito 2 pidió tres comprobaciones: seguir un intento desde la pantalla hasta la base y el informe, comparar el puntaje guardado con el calculado, y restaurar un intento frente a los objetivos de recuperación. Las tres tienen su herramienta en el repositorio. El 20 de noviembre se volvieron a correr en el entorno de pruebas, y el 19 se corrieron por primera vez en atlas-srv01. La Tabla 7 junta los dos entornos.",
+    "filas": [
+      [
+        "Seguimiento de un intento",
+        "6 de 6: el puntaje esperado (75) coincide en la pantalla, la base y el informe, y el cambio de respuesta queda en interacciones",
+        "Un único resultado de 100,00 igual al recalculado; ese intento no tuvo cambio de respuesta",
+        "Aprobada"
+      ],
+      [
+        "Puntaje guardado contra calculado",
+        "0 diferencias en 8749 resultados; mediana de 2,91 ms contra 20,63 ms; los cinco intentos de atlas_app de modificar un puntaje cerrado, rechazados",
+        "No ejecutada en el laboratorio",
+        "Aprobada en el entorno de pruebas"
+      ],
+      [
+        "Restauración por intento",
+        "13 de 13 iguales; respaldo en 304 ms y restauración en 1025 ms",
+        "13 de 13 iguales; respaldo en 165 ms y restauración en 1004 ms",
+        "Aprobada"
+      ],
+      [
+        "Métricas M1 a M11",
+        "6 PASS, 0 FAIL y 5 informativas sobre 69 intentos",
+        "6 PASS, 0 FAIL y 5 informativas sobre 3 intentos",
+        "Aprobada"
+      ]
+    ]
+  },
+  "ci": {
+    "texto": "Desde que se agregó el workflow, en el Hito 2, GitHub corrió las pruebas 15 veces: en cada pull request y en cada unión a la rama principal. Doce corridas aprobaron y tres fallaron, todas en el pull request 14 y en el mismo trabajo, el de los scripts de atlas-srv01, respaldos y monitoreo. Ninguna de las tres fallas era un error del producto: dos eran defectos de las propias pruebas que solo aparecían en las máquinas de GitHub. Se buscó la causa de cada una en vez de volver a correr hasta que pasara, y la corrida siguiente a la última corrección aprobó los cuatro trabajos. La Tabla 9 lo resume.",
+    "filas": [
+      [
+        "Hito 2 (30/10 al 01/11)",
+        "5",
+        "5",
+        "0",
+        "—"
+      ],
+      [
+        "Hito 3, pull requests 12 y 13 (12/11)",
+        "5",
+        "5",
+        "0",
+        "—"
+      ],
+      [
+        "Hito 3, pull request 14 (20/11)",
+        "5",
+        "2",
+        "3",
+        "Corridas 11 y 12: prueba de respaldos (INC-T5). Corrida 13: segunda configuración de Zabbix (INC-T6)"
+      ]
+    ],
+    "nota": "Fuente: historial de GitHub Actions del repositorio. Cuenta las corridas de pull requests y de uniones a la rama principal. En la corrida 11 se sabe que falló el mismo trabajo; el detalle de la prueba se vio en la corrida 12."
+  },
+  "cobertura": {
+    "intro": "La cobertura se midió el 20 de noviembre en el entorno de pruebas, con las mismas pruebas de la corrida completa. Para el código PHP se hizo dos veces: una antes de escribir las pruebas nuevas y otra después, para mostrar qué cambió. Los resultados completos están en docs/evidencias/H/E-TST-012-cobertura/.",
+    "php": {
+      "texto": "Las pruebas unitarias, de API y de base de datos, corridas juntas, ejecutan 2110 de las 2298 líneas de código de atlas/app/ (91,8 %) y 271 de sus 330 métodos (82,1 %). En la primera medición eran 2091 líneas (91,0 %) y 265 métodos (80,3 %); la diferencia la hicieron las cuatro pruebas de API nuevas. La Tabla 10 muestra la cobertura de cada capa de la aplicación.",
+      "filas": [
+        [
+          "Middleware (sesión, permisos, auditoría)",
+          "4",
+          "54 de 54",
+          "100 %",
+          "7 de 7"
+        ],
+        [
+          "Validación de datos (Form Requests)",
+          "17",
+          "82 de 83",
+          "98,8 %",
+          "18 de 19"
+        ],
+        [
+          "Servicios del asistente y anonimización",
+          "5",
+          "268 de 280",
+          "95,7 %",
+          "15 de 20"
+        ],
+        [
+          "Indicadores y motor de reglas",
+          "7",
+          "204 de 214",
+          "95,3 %",
+          "14 de 18"
+        ],
+        [
+          "Repositorios (acceso a MySQL)",
+          "9",
+          "634 de 687",
+          "92,3 %",
+          "90 de 102"
+        ],
+        [
+          "Núcleo (configuración, sesión, reloj)",
+          "7",
+          "105 de 116",
+          "90,5 %",
+          "40 de 47"
+        ],
+        [
+          "Controladores",
+          "7",
+          "203 de 229",
+          "88,6 %",
+          "41 de 51"
+        ],
+        [
+          "Servicios de la aplicación",
+          "7",
+          "550 de 625",
+          "88,0 %",
+          "41 de 61"
+        ],
+        [
+          "Otros (respuesta JSON y proveedor)",
+          "2",
+          "10 de 10",
+          "100 %",
+          "5 de 5"
+        ],
+        [
+          "Total de atlas/app/",
+          "65",
+          "2110 de 2298",
+          "91,8 %",
+          "271 de 330"
+        ]
+      ],
+      "nota": "Medido con PHPUnit 11.5.56 y pcov sobre 170 pruebas (37 unitarias, 75 de API y 58 de base de datos) contra un MySQL 8.0.46 descartable. «Métodos cubiertos» cuenta los métodos con todas sus líneas ejecutadas.",
+      "lectura": "Las partes que deciden qué ve el docente y quién puede hacer qué son las más cubiertas: el middleware y la validación están cubiertos casi por completo, y los indicadores, el motor de reglas y la anonimización, por encima del 95 %. Lo que queda sin ejecutar son, sobre todo, caminos de error poco probables (una falla de MySQL en mitad de una operación, una configuración que falta) y el cliente HTTP que llama al servicio de Python. Ese cliente, AnalisisClient, tiene un 28,2 %: en las pruebas de API se reemplaza por uno falso, para que el resultado no dependa de que el servicio esté levantado, y la conexión real se comprueba con el servicio funcionando (el informe de salud de ATLAS indica si el servicio responde). Las tres clases por debajo del 70 % están en el Apéndice D, cada una con su motivo."
+    },
+    "python": {
+      "texto": "Las 23 pruebas del servicio de análisis ejecutan 262 de sus 330 sentencias, (79,4 %) y 32 de sus 56 ramas, para una cobertura combinada del 76 %. Los modelos de aprendizaje automático y la anonimización están por encima del 90 %. El número baja por app/db.py, con un 18 %: es el módulo que lee los datos de MySQL, y las pruebas usan datos preparados en memoria en lugar de una base. La Tabla 11 muestra cada módulo.",
+      "filas": [
+        [
+          "app/servicio.py (lógica del servicio)",
+          "23",
+          "0",
+          "2 de 2",
+          "100 %"
+        ],
+        [
+          "app/models/clustering.py (K-means)",
+          "36",
+          "1",
+          "9 de 10",
+          "96 %"
+        ],
+        [
+          "app/llm/client.py (cliente del LLM con anonimización)",
+          "29",
+          "2",
+          "6 de 6",
+          "94 %"
+        ],
+        [
+          "app/models/risk.py (regresión logística)",
+          "36",
+          "2",
+          "5 de 6",
+          "93 %"
+        ],
+        [
+          "app/features.py (variables del modelo)",
+          "65",
+          "3",
+          "9 de 12",
+          "92 %"
+        ],
+        [
+          "app/config.py",
+          "20",
+          "2",
+          "—",
+          "90 %"
+        ],
+        [
+          "app/main.py (API del servicio)",
+          "55",
+          "11",
+          "1 de 2",
+          "79 %"
+        ],
+        [
+          "app/db.py (lectura de MySQL)",
+          "61",
+          "47",
+          "0 de 18",
+          "18 %"
+        ],
+        [
+          "Total",
+          "330",
+          "68",
+          "32 de 56",
+          "76 %"
+        ]
+      ],
+      "nota": "Medido con pytest 8.3.4 y pytest-cov 6.0 (coverage.py) con medición de ramas, en un contenedor de Python 3.11. Los módulos vacíos (__init__.py y prompts.py) tienen 100 % y no se listan."
+    },
+    "js": {
+      "texto": "El JavaScript de la interfaz no tenía ninguna medición. Se le pidió a Chromium, durante la prueba de interfaz, qué partes del código se ejecutaron: es el mismo dato que muestra el panel Coverage de las herramientas de desarrollo (Google, s. f.). En total se ejecutaron 88 842 de 109 367 caracteres de código, el 81,2 %. La primera medición había dado 36,8 % porque la aplicación recarga la página al iniciar y al cerrar sesión, y lo medido hasta ese momento se perdía; se tomó la medición antes de cada recarga y el número quedó en el valor real (incidencia INC-T8). La Tabla 12 muestra cada archivo.",
+      "filas": [
+        [
+          "iconos.js y tema.js",
+          "Íconos y tema claro u oscuro",
+          "5548 de 5548",
+          "100 %"
+        ],
+        [
+          "api.js",
+          "Comunicación con la API y el token CSRF",
+          "1844 de 1852",
+          "99,6 %"
+        ],
+        [
+          "graficos.js",
+          "Gráficos en SVG",
+          "6395 de 6544",
+          "97,7 %"
+        ],
+        [
+          "login.js",
+          "Pantalla de ingreso",
+          "4288 de 4660",
+          "92,0 %"
+        ],
+        [
+          "ui.js",
+          "Avisos, confirmaciones y componentes comunes",
+          "11 516 de 13 306",
+          "86,5 %"
+        ],
+        [
+          "vistas/docente.js",
+          "Pantallas del docente",
+          "32 755 de 38 178",
+          "85,8 %"
+        ],
+        [
+          "vistas/estudiante.js",
+          "Resolución y resultado",
+          "8520 de 10 471",
+          "81,4 %"
+        ],
+        [
+          "app.js",
+          "Rutas de la aplicación y menú",
+          "7184 de 10 203",
+          "70,4 %"
+        ],
+        [
+          "registro.js",
+          "Registro de interacciones por lotes",
+          "2021 de 2925",
+          "69,1 %"
+        ],
+        [
+          "vistas/admin.js",
+          "Pantallas de coordinación",
+          "8771 de 15 680",
+          "55,9 %"
+        ],
+        [
+          "Total",
+          "",
+          "88 842 de 109 367",
+          "81,2 %"
+        ]
+      ],
+      "nota": "Medido en la tercera corrida de la prueba de interfaz, el 20 de noviembre de 2026. Cuenta caracteres de código que se ejecutaron al menos una vez, no líneas."
+    },
+    "rutas": {
+      "texto": "Se agregó al cliente de las pruebas de API un registro de cada ruta que alcanza una prueba y del código que recibe. En la primera medición, 41 de las 44 rutas de /api/v1 tenían alguna prueba. Faltaban tres consultas de coordinación, y había una cuarta ruta alcanzada solo a medias: GET /auth/me, que la interfaz usa en cada pantalla para saber quién está conectado, se probaba sin sesión (401), pero nunca con una sesión válida. Se escribieron cuatro pruebas nuevas, en ConsultasOrganizacionTest, que comprueban también quién no puede ver esos datos. Con ellas las 44 rutas tienen prueba, 27 se prueban además con una respuesta de error, y las pruebas hacen 1138 pedidos a la API. La Tabla 13 muestra las rutas que faltaban.",
+      "filas": [
+        [
+          "GET /auth/me con sesión",
+          "Perfil y token CSRF de quien está conectado",
+          "Nueva prueba: devuelve el rol, los permisos y el mismo token, sin el hash de la contraseña"
+        ],
+        [
+          "GET /grupos",
+          "Lista de grupos",
+          "Nueva prueba: la coordinación ve todos y el docente solo los suyos"
+        ],
+        [
+          "GET /grupos/{id}/miembros",
+          "Integrantes de un grupo",
+          "Nueva prueba: la coordinación y los miembros los ven; un estudiante de otro grupo recibe 403"
+        ],
+        [
+          "GET /instituciones",
+          "Lista de instituciones con su opción de aprobación",
+          "Nueva prueba: la coordinación la ve; un docente recibe 403"
+        ]
+      ],
+      "nota": "Las 44 rutas son las 43 de la API documentadas en el Hito 2 más /api/v1/health. Resumen completo, ruta por ruta, en docs/evidencias/H/E-TST-012-cobertura/php-despues/rutas.txt."
+    },
+    "requisitos": {
+      "texto": "La cobertura de código no dice si se probó lo que el proyecto prometió. Para eso se cruzaron los requisitos del documento de ATLAS con las pruebas ejecutadas (Error404, 2026a). Los 22 requisitos funcionales tienen al menos una prueba automática; el único caso incompleto es RF-20, el asistente con un modelo de lenguaje, que se prueba con un servicio falso porque no hay una clave de la API real. De los 15 requisitos no funcionales, 13 tienen una prueba automática; los otros dos son la prueba de uso con docentes (RNF-11) y el despliegue en los servidores (RNF-07), que se comprueba con los verificadores del laboratorio. La Tabla 14 resume la cobertura de requisitos y la de infraestructura.",
+      "filas": [
+        [
+          "Requisitos funcionales (RF)",
+          "22",
+          "22 (RF-20 con un servicio falso)",
+          "16, en el circuito del 19/11"
+        ],
+        [
+          "Requisitos no funcionales (RNF)",
+          "15",
+          "13",
+          "6 (RNF-01, 05, 07, 08, 09 y 12)"
+        ],
+        [
+          "Rutas de la API",
+          "44",
+          "44",
+          "Las que usa el circuito completo"
+        ],
+        [
+          "Reglas del firewall de router-lab (R1 a R12, M2, NAT, VPN)",
+          "16",
+          "16, con tráfico real (46 pruebas)",
+          "14 de 17 pruebas en el Hito 2 y la prueba 7 repetida"
+        ],
+        [
+          "Pasos del instalador de atlas-srv01",
+          "14",
+          "14 (88 comprobaciones, más respaldos y monitoreo)",
+          "Pasos 1 a 7"
+        ],
+        [
+          "Scripts de atlas-dc01",
+          "21",
+          "21, sin Windows (52 pruebas)",
+          "Fases 1 a 7 del Hito 2"
+        ]
+      ],
+      "nota": "Los requisitos ejecutados en el laboratorio son los que se vieron funcionar en el circuito del 19 de noviembre o en las pruebas de red; el detalle está en el Anexo H del documento integrador (Error404, 2026a)."
+    },
+    "limites": "Una cobertura alta no garantiza que el sistema esté bien, y eso vale para estos números. Una línea cuenta como cubierta si se ejecutó, aunque ninguna comprobación revise lo que hizo. Por eso las pruebas de ATLAS comparan resultados concretos (el puntaje esperado, el código de respuesta, que la auditoría tenga la fila) y no solo recorren el código. La cobertura de JavaScript cuenta caracteres ejecutados y no comprobaciones; la de la infraestructura se mide con escenarios y no con líneas. Y nada de esto reemplaza al laboratorio: el 91,8 % de las líneas PHP no dice si ATLAS arranca sin Internet en atlas-srv01, ni si la VPN deja entrar a un docente desde afuera. Eso solo se sabe ejecutándolo en las máquinas virtuales."
+  },
+  "calidad": {
+    "defectos": {
+      "texto": "En el hito se registraron 13 incidencias nuevas. Tres eran fallas del producto que aparecieron usando ATLAS en el laboratorio y ya están corregidas y verificadas. Cuatro son observaciones de la jornada de laboratorio del 19 de noviembre que todavía no tienen una causa confirmada. Las otras seis son de las pruebas o del entorno de pruebas, y cinco quedaron resueltas. La Tabla 15 muestra cada una.",
+      "filas": [
+        [
+          "INC-11",
+          "Uso en el laboratorio (12/11)",
+          "Un doble clic en Guardar creaba dos actividades iguales",
+          "El botón seguía habilitado mientras se guardaba",
+          "Botones deshabilitados mientras se procesa (pull request 13). Corregida; sin prueba automática que reproduzca el doble clic"
+        ],
+        [
+          "INC-12",
+          "Uso en el laboratorio (12/11)",
+          "Al no poder publicar, el aviso no decía el motivo; algunos avisos eran carteles del navegador",
+          "El aviso mostraba solo el mensaje general del 422",
+          "El aviso nombra cada campo o pregunta que falla y todos los avisos son de ATLAS. Verificada con la prueba de interfaz y en el laboratorio"
+        ],
+        [
+          "INC-13",
+          "Uso en el laboratorio (12/11)",
+          "El editor agregaba una «Pregunta 2» vacía que impedía publicar",
+          "La actividad nueva empezaba con dos preguntas",
+          "Empieza con una; las demás se agregan. Verificada en el laboratorio"
+        ],
+        [
+          "INC-14",
+          "Laboratorio (20/11)",
+          "verificar-dc01.ps1 dio 63 PASS y 5 FAIL, igual que en el Hito 2",
+          "Probablemente se corrió la versión anterior del script",
+          "Abierta: copiar los scripts nuevos (paso R-2) y repetir"
+        ],
+        [
+          "INC-15",
+          "Laboratorio (19/11)",
+          "En la copia restaurada de atlas-srv01, el contenedor web se reiniciaba",
+          "Probablemente la placa desconectada: sin la dirección 172.16.40.10, Nginx no publica sus puertos",
+          "Abierta: repetir la restauración en una red aislada"
+        ],
+        [
+          "INC-16",
+          "Laboratorio (19/11)",
+          "El reloj de cliente-doc marca tres horas menos que la hora de Uruguay",
+          "Probablemente la zona horaria del cliente",
+          "Abierta; no afecta los datos, porque las horas las pone el servidor"
+        ],
+        [
+          "INC-17",
+          "Laboratorio (19/11)",
+          "La lista de atención sigue mostrando a un estudiante cuyo intento siguiente sacó 100",
+          "La lista muestra las señales del período, no solo la del último intento",
+          "Abierta: decidir si la lista debe descartar una señal ya corregida"
+        ],
+        [
+          "INC-T5",
+          "GitHub Actions (20/11)",
+          "La prueba de respaldos dio FAIL con el respaldo correcto",
+          "Con pipefail, «tar | grep -q» falla cuando grep corta antes de que tar termine",
+          "Las comprobaciones leen toda la salida. Resuelta: falla reproducida y 17 de 17"
+        ],
+        [
+          "INC-T6",
+          "GitHub Actions (20/11)",
+          "La segunda configuración de Zabbix falló en menos de un segundo",
+          "Probablemente un bloqueo de MySQL mientras zabbix-server escribía en su base",
+          "Esos errores se reintentan y la prueba muestra la salida si falla. Resuelta: 14 de 14 y corridas siguientes aprobadas"
+        ],
+        [
+          "INC-T7",
+          "Entorno de pruebas (20/11)",
+          "Los conjuntos de base de datos y de API no arrancaron",
+          "La pila local volvió a levantarse y ocupaba la misma red",
+          "Se bajó la pila y se repitió la corrida completa. Resuelta"
+        ],
+        [
+          "INC-T8",
+          "Medición de cobertura (20/11)",
+          "La cobertura de JavaScript dio 36,8 %",
+          "Iniciar y cerrar sesión recargan la página y se perdía lo medido",
+          "Se mide antes de cada recarga. Resuelta: 81,2 %"
+        ],
+        [
+          "INC-T9",
+          "Entorno de pruebas (20/11)",
+          "probar-local.sh no pudo construir la imagen del servicio de análisis",
+          "pip no confiaba en el certificado del proxy del entorno",
+          "Se usaron las imágenes ya construidas. Abierta (solo del entorno)"
+        ],
+        [
+          "INC-T2",
+          "Hito 2",
+          "La prueba de interfaz fallaba al repetirse sobre los mismos datos",
+          "Elegía un perfil que ya estaba abierto y esperaba un pedido que no se hacía",
+          "Pasa por el inicio antes de abrir el perfil. Resuelta: falla reproducida en la segunda corrida; tercera y cuarta, 32 de 32"
+        ]
+      ],
+      "nota": "Se sigue la numeración del Hito 2: INC con número para el producto y el laboratorio, e INC-T para las pruebas y su entorno. INC-T2 se incluye porque se cerró en este hito."
+    },
+    "hito2": {
+      "texto": "Al cierre del Hito 2 quedaron incidencias corregidas en el código pero sin verificar en las máquinas virtuales, y una abierta. La Tabla 16 muestra en qué quedaron.",
+      "filas": [
+        [
+          "INC-01",
+          "Corregida; arranque sin Internet sin probar en atlas-srv01",
+          "Sin cambios: no se hizo la prueba de desconectar Internet en el laboratorio"
+        ],
+        [
+          "INC-02",
+          "Corregida; sin verificar",
+          "Sin cambios: requiere instalar atlas-srv01 desde cero"
+        ],
+        [
+          "INC-05",
+          "Corregida; causa sin confirmar",
+          "Sin cambios: el enlace USB no volvió a caerse con vmbr2, pero no se revisó dmesg"
+        ],
+        [
+          "INC-06 e INC-07",
+          "Corregidas; falta el verificador en el controlador de dominio",
+          "El verificador se corrió y dio lo mismo que en el Hito 2; ver INC-14"
+        ],
+        [
+          "INC-08",
+          "Corregida; sin verificar",
+          "Sin verificar: la sección sudo de verificar.sh sigue en FAIL porque el paso 12 no se corrió"
+        ],
+        [
+          "INC-09",
+          "Corregida en desarrollo",
+          "Verificada en el laboratorio: el circuito completo se ejecutó el 19/11"
+        ],
+        [
+          "INC-10",
+          "Corregida; falta verificar.sh en atlas-srv01",
+          "Verificada en el laboratorio: la sección atlas, que revisa atlas.conf, dio sin FAIL el 20/11"
+        ],
+        [
+          "INC-T2",
+          "Abierta",
+          "Resuelta y verificada (Tabla 15)"
+        ]
+      ]
+    },
+    "estatico": {
+      "texto": "El análisis estático revisa el código sin ejecutarlo y encuentra errores que ninguna prueba recorrió. Se pasó por todo el código del repositorio el 20 de noviembre. No apareció ningún error. Las diez advertencias de los scripts de Bash se corrigieron, y los 56 avisos de Python son de estilo o falsos positivos.",
+      "filas": [
+        [
+          "PHP",
+          "PHP_CodeSniffer, estándar PSR-12",
+          "app, bootstrap, config, routes, public/index.php, bin y tests",
+          "Sin errores ni advertencias (RNF-13)"
+        ],
+        [
+          "PHP",
+          "php -l",
+          "101 archivos",
+          "101 sin errores de sintaxis"
+        ],
+        [
+          "JavaScript",
+          "node --check",
+          "Los 11 módulos de la interfaz",
+          "11 sin errores de sintaxis"
+        ],
+        [
+          "Bash",
+          "ShellCheck 0.9.0, nivel advertencia",
+          "49 scripts",
+          "0 errores. 10 advertencias, corregidas: cuatro cd sin control de error, una variable sin usar y cinco falsos positivos marcados con su motivo. Después, 0"
+        ],
+        [
+          "Python",
+          "Ruff 0.8.4 (reglas E, F, W y B)",
+          "24 archivos",
+          "0 errores lógicos (reglas F). 56 avisos: 28 líneas largas, 15 nombres de variable «l», 10 B008 por el uso estándar de Depends en FastAPI y 3 variables de bucle sin usar"
+        ]
+      ],
+      "nota": "Salidas en docs/evidencias/H/E-TST-013-calidad-estatica/. Los avisos de Python no se corrigieron porque no cambian el comportamiento; quedan anotados."
+    },
+    "evolucion": {
+      "texto": "Entre el 30 de octubre y el 20 de noviembre la cantidad de comprobaciones automáticas pasó de 382 a 471, y ninguna se sacó ni se desactivó para que el resultado diera bien. La Tabla 18 compara los dos hitos.",
+      "filas": [
+        [
+          "Unitarias",
+          "37",
+          "37",
+          "—"
+        ],
+        [
+          "Base de datos",
+          "58",
+          "58",
+          "—"
+        ],
+        [
+          "API",
+          "71",
+          "75",
+          "Las cuatro rutas que faltaban"
+        ],
+        [
+          "Servicio de análisis",
+          "23",
+          "23",
+          "—"
+        ],
+        [
+          "Firewall de router-lab",
+          "36",
+          "46",
+          "Reglas de la VPN"
+        ],
+        [
+          "Scripts de atlas-dc01",
+          "25",
+          "52",
+          "Retención de respaldos, agente de monitoreo y sintaxis de todos los scripts"
+        ],
+        [
+          "Scripts de atlas-srv01",
+          "85",
+          "88",
+          "Tres pruebas de conexión del puerto 10050 del agente de monitoreo"
+        ],
+        [
+          "Ajustes del laboratorio",
+          "18",
+          "29",
+          "Script de la VPN"
+        ],
+        [
+          "Respaldos automáticos",
+          "—",
+          "17",
+          "Conjunto nuevo"
+        ],
+        [
+          "Monitoreo con Zabbix",
+          "—",
+          "14",
+          "Conjunto nuevo"
+        ],
+        [
+          "Prueba de interfaz",
+          "29",
+          "32",
+          "Motivo de cada error y avisos propios de ATLAS"
+        ],
+        [
+          "Total",
+          "382",
+          "471",
+          ""
+        ]
+      ]
+    },
+    "iso": [
+      [
+        "Adecuación funcional",
+        "Circuito completo en el entorno de pruebas y en el laboratorio; 22 de 22 requisitos funcionales con prueba; 0 diferencias de puntaje en 8749 intentos",
+        "Fuerte"
+      ],
+      [
+        "Eficiencia de desempeño",
+        "Percentil 95 de 51 ms o menos, frente a 3 segundos; sin medir en atlas-srv01",
+        "Fuerte en el entorno de pruebas; falta el laboratorio"
+      ],
+      [
+        "Fiabilidad",
+        "Restauración por intento 13 de 13 en los dos entornos; respaldo y restauración de la máquina virtual; 60 de 60 respuestas en 10 minutos; respaldos automáticos probados pero no instalados",
+        "Buena; falta la medición continua"
+      ],
+      [
+        "Seguridad",
+        "Acceso cruzado entre roles rechazado y auditado; atlas_app no puede alterar resultados; firewall con 46 pruebas y bloqueo registrado en el laboratorio; anonimización antes del LLM",
+        "Fuerte; falta la VPN real"
+      ],
+      [
+        "Mantenibilidad",
+        "91,8 % de líneas PHP cubiertas; PSR-12 sin errores; ShellCheck sin advertencias; pruebas en cada pull request",
+        "Fuerte"
+      ],
+      [
+        "Usabilidad",
+        "Interfaz responsiva en cinco anchos y avisos con el motivo; sin prueba con docentes reales (RNF-11)",
+        "Parcial"
+      ],
+      [
+        "Portabilidad",
+        "Pila en Docker que corre igual en la notebook, en GitHub y en atlas-srv01",
+        "Buena"
+      ]
+    ]
+  },
+  "ajustes": [
+    [
+      "Cuatro pruebas de API para las rutas sin cobertura",
+      "atlas/tests/Api/ConsultasOrganizacionTest.php",
+      "4 de 4 aprobadas; 44 de 44 rutas cubiertas"
+    ],
+    [
+      "Medición de cobertura de PHP y de rutas",
+      "atlas/tests/cobertura.sh, phpunit-cobertura.xml, tests/Api/Cliente.php y la opción ATLAS_PHPUNIT_ARGS de tests/Database/run.sh",
+      "Dos mediciones guardadas (antes y después)"
+    ],
+    [
+      "Medición de cobertura del JavaScript",
+      "atlas/tests/e2e/interfaz.py",
+      "81,2 %, con la corrección de INC-T8"
+    ],
+    [
+      "Prueba de interfaz que se puede repetir (INC-T2)",
+      "atlas/tests/e2e/interfaz.py",
+      "Falla reproducida; después, dos corridas seguidas con 32 de 32"
+    ],
+    [
+      "Comprobaciones de respaldos sin falsos FAIL (INC-T5)",
+      "infra/pruebas/probar-respaldos.sh",
+      "17 de 17 en el entorno de pruebas y en GitHub"
+    ],
+    [
+      "Reintento de los bloqueos de MySQL en la API de Zabbix (INC-T6)",
+      "infra/monitoring/configurar-zabbix.py",
+      "14 de 14 en el entorno de pruebas y en GitHub"
+    ],
+    [
+      "Advertencias de ShellCheck corregidas",
+      "probar-todo.sh, tres scripts de prueba, comparar_puntaje.sh y 14-monitoreo.sh",
+      "ShellCheck sin advertencias en los 49 scripts"
+    ],
+    [
+      "Avisos con motivo, sin doble envío y sin pregunta vacía (INC-11 a INC-13)",
+      "atlas/public/js/ (pull request 13)",
+      "Prueba de interfaz 32 de 32 y circuito del laboratorio"
+    ]
+  ],
+  "noHechas": [
+    [
+      "Una prueba automática del doble clic en Guardar (INC-11)",
+      "Hoy la corrección no tiene una prueba que la reproduzca",
+      "Próximo semestre"
+    ],
+    [
+      "Probar el cliente real del servicio de análisis (AnalisisClient)",
+      "Hoy se reemplaza por uno falso en las pruebas de API",
+      "Próximo semestre, con el servicio levantado en la prueba"
+    ],
+    [
+      "Corregir los avisos de estilo de Ruff",
+      "No cambian el comportamiento",
+      "Cuando se toquen esos archivos"
+    ],
+    [
+      "Medir la cobertura en GitHub Actions en cada pull request",
+      "Hoy se mide a mano con cobertura.sh",
+      "Próximo semestre"
+    ]
+  ],
+  "criterios": {
+    "texto": "De los 21 criterios que se revisaron en el Hito 2, en este hito 16 quedan aprobados con una prueba ejecutada, aunque tres de ellos solo en el entorno de pruebas; 4 son parciales y 1 no se ejecutó. Mejoraron los que dependían de respaldos, disponibilidad y alertas, que ahora tienen una prueba automática contra servicios reales, aunque todavía no en el laboratorio. La Tabla 22 compara cada criterio con el Hito 2.",
+    "filas": [
+      [
+        "Objetivo 1: los tres roles acceden solo a lo suyo, con diez casos de prueba documentados",
+        "ControlAccesoTest, casos C01 a C10, y las pruebas nuevas de grupos e instituciones",
+        "Aprobada",
+        "Aprobada"
+      ],
+      [
+        "Objetivo 2: la actividad recorre sus estados y queda registro de cada cambio",
+        "CicloActividadTest y CicloAprobacionApiTest; historial visto en el laboratorio",
+        "Aprobada",
+        "Aprobada, también en el laboratorio"
+      ],
+      [
+        "Objetivo 3: sobre 50 resoluciones, el 100 % queda con respuestas, tiempo e intentos",
+        "Prueba de API de las cincuenta resoluciones; M1 con 69 de 69 y en el laboratorio 3 de 3",
+        "Aprobada",
+        "Aprobada"
+      ],
+      [
+        "Objetivo 4: base en tercera forma normal, integridad y privilegios por rol",
+        "EsquemaTest, IntegridadTest y PrivilegiosTest; rechazos de atlas_app",
+        "Aprobada",
+        "Aprobada"
+      ],
+      [
+        "Objetivo 5: al menos ocho reglas y cada recomendación rastreable a su regla",
+        "MotorReglasTest; M4 y M5; «¿Por qué?» en el laboratorio",
+        "Aprobada",
+        "Aprobada, también en el laboratorio"
+      ],
+      [
+        "Objetivo 6: perfil individual y grupal",
+        "PanelGrupalTest y la interfaz; perfil y grupo en el laboratorio",
+        "Aprobada",
+        "Aprobada, también en el laboratorio"
+      ],
+      [
+        "Objetivo 7: intentos de acceso no autorizado rechazados y registrados",
+        "Casos C01 a C10; 5 accesos denegados en la auditoría del laboratorio",
+        "Aprobada",
+        "Aprobada, también en el laboratorio"
+      ],
+      [
+        "RNF-01: todo acceso cruzado entre roles devuelve error y queda registrado",
+        "Casos C01 a C10 y las pruebas nuevas",
+        "Aprobada",
+        "Aprobada"
+      ],
+      [
+        "RNF-03: 3 segundos o menos en las consultas más frecuentes",
+        "medir.py: percentil 95 de 51 ms o menos",
+        "Aprobada en el entorno de pruebas",
+        "Aprobada en el entorno de pruebas; falta el laboratorio"
+      ],
+      [
+        "RNF-05: restauración con verificación de integridad",
+        "Restauración por intento 13 de 13 en los dos entornos y restauración de la máquina virtual",
+        "Aprobada",
+        "Aprobada, también en el laboratorio"
+      ],
+      [
+        "RNF-07: despliegue en los servidores definidos",
+        "ATLAS en atlas-srv01 atendió el circuito completo",
+        "Aprobada",
+        "Aprobada"
+      ],
+      [
+        "RNF-12: sin desplazamiento horizontal en escritorio, tableta y celular",
+        "Interfaz en cinco anchos; celular emulado en el laboratorio",
+        "Aprobada",
+        "Aprobada"
+      ],
+      [
+        "RNF-13: código modular y con los criterios de desarrollo",
+        "PSR-12, ShellCheck y Ruff sin errores; 91,8 % de cobertura",
+        "Aprobada",
+        "Aprobada"
+      ],
+      [
+        "RNF-15: sin el LLM o sin el análisis, el registro y la consulta siguen funcionando",
+        "AsistenteApiTest sin LLM; en el entorno de pruebas ATLAS funcionó con el servicio de análisis caído, que el informe de salud marca como no disponible",
+        "Aprobada",
+        "Aprobada"
+      ],
+      [
+        "Objetivo 8: autenticación centralizada y recursos compartidos entre Linux y Windows",
+        "cliente-doc en el dominio; atlas-srv01 sin unir (pasos 8 a 12 en FAIL)",
+        "Parcial",
+        "Parcial"
+      ],
+      [
+        "Objetivo 9, RNF-08 y RNF-09: VLAN, direccionamiento y plan de pruebas de red",
+        "14 de 17 pruebas y la 7 completa con su registro; firewall con 46 pruebas",
+        "Parcial",
+        "Parcial: las pruebas 14 a 16 siguen sin ejecutar"
+      ],
+      [
+        "Objetivo 10: firewall, VPN y monitoreo con registro de eventos",
+        "Firewall en el laboratorio; reglas de la VPN cargadas; VPN y monitoreo probados fuera del laboratorio",
+        "Parcial",
+        "Parcial: VPN real y Zabbix sin ejecutar en el laboratorio"
+      ],
+      [
+        "RNF-14: solo los datos necesarios, según la Ley N.º 18.331",
+        "Anonimización antes del LLM (94 % de cobertura del cliente); revisión de finalidad pendiente",
+        "Parcial",
+        "Parcial"
+      ],
+      [
+        "RNF-02 y RNF-10: disponibilidad del 99 % y alertas",
+        "Conjunto de monitoreo con Zabbix real: SLA y alerta al apagar ATLAS; disponibilidad.sh 60 de 60",
+        "No ejecutada",
+        "Aprobada en el entorno de pruebas; falta el laboratorio"
+      ],
+      [
+        "RNF-04: respaldos con la frecuencia definida",
+        "Conjunto de respaldos 17 de 17; en atlas-srv01 el paso 13 no se corrió",
+        "No ejecutada",
+        "Aprobada en el entorno de pruebas; falta el laboratorio"
+      ],
+      [
+        "RNF-11: docentes completan las tareas sin ayuda",
+        "Sesión de uso con docentes",
+        "No ejecutada",
+        "No ejecutada"
+      ]
+    ]
+  },
+  "pendientes": [
+    [
+      "Pruebas 14, 15 y 16: acceso desde afuera y VPN con un cliente real",
+      "No ejecutadas: la jornada del 19/11 no llegó a ese paso",
+      "Bloque B del plan de cierre del laboratorio"
+    ],
+    [
+      "Monitoreo con Zabbix en el laboratorio (RNF-02 y RNF-10)",
+      "No ejecutado en las máquinas virtuales; probado con Zabbix real en el entorno de pruebas",
+      "Bloque C del plan de cierre"
+    ],
+    [
+      "Pasos 8 a 14 en atlas-srv01: dominio, hora, Samba, registros, sudo, respaldos y monitoreo",
+      "No ejecutados: verificar.sh da 31 FAIL en esas secciones",
+      "Pasos R-3 a R-6 del plan de laboratorio"
+    ],
+    [
+      "Verificador del controlador de dominio con los scripts nuevos (INC-14)",
+      "Corrió el script anterior, según todo indica",
+      "Bloque A y paso D1 del plan de cierre"
+    ],
+    [
+      "Arranque de ATLAS sin Internet en atlas-srv01 (INC-01)",
+      "No ejecutado en el laboratorio",
+      "Paso R-3 del plan de laboratorio"
+    ],
+    [
+      "Tiempo de respuesta en atlas-srv01 (RNF-03)",
+      "Medido solo en el entorno de pruebas",
+      "Correr medir.py contra https://172.16.40.10"
+    ],
+    [
+      "Comparación de puntajes en atlas-srv01",
+      "Corrida solo en el entorno de pruebas",
+      "Correr comparar_puntaje.sh en atlas-srv01"
+    ],
+    [
+      "Restauración de la máquina virtual en una red aislada (INC-15)",
+      "La prueba se hizo con la placa desconectada",
+      "Repetirla en un puente sin salida"
+    ],
+    [
+      "Prueba de uso con docentes (RNF-11)",
+      "No ejecutada: requiere una sesión con docentes reales y su consentimiento",
+      "Prueba piloto planificada para el primer semestre de 2027"
+    ],
+    [
+      "Asistente con la API real del modelo de lenguaje (RF-20)",
+      "Probado con un servicio falso",
+      "Cuando haya una clave, fuera del repositorio"
+    ]
+  ],
+  "defensa": {
+    "guion": [
+      [
+        "1. El problema y qué se prueba",
+        "Santiago Viñas",
+        "Qué hace ATLAS, por qué el registro del proceso tiene que ser exacto y qué pide verificar el documento",
+        "2 min"
+      ],
+      [
+        "2. Cómo se organizan las pruebas",
+        "Juan Pablo Beracochea",
+        "Niveles de prueba, probar-todo.sh y GitHub Actions; criterio de Aprobada, Fallada y No ejecutada",
+        "2 min"
+      ],
+      [
+        "3. La aplicación",
+        "Aaron Britos",
+        "Pruebas de API y de interfaz; cobertura de PHP, de rutas y de JavaScript; las pruebas que salieron de la cobertura",
+        "3 min"
+      ],
+      [
+        "4. La base de datos",
+        "Brian Reyes",
+        "Seguimiento de un intento, puntaje guardado contra calculado y restauración por intento, en los dos entornos",
+        "3 min"
+      ],
+      [
+        "5. La infraestructura",
+        "Sergio Rodríguez y Juan Pablo Beracochea",
+        "Firewall con tráfico real, scripts de los servidores, respaldos y Zabbix; lo que se ejecutó en el laboratorio",
+        "3 min"
+      ],
+      [
+        "6. Calidad, incidencias y cierre",
+        "Santiago Viñas",
+        "Defectos encontrados y corregidos, análisis estático, lo que falta y por qué",
+        "2 min"
+      ]
+    ],
+    "demo": [
+      "Correr probar-todo.sh unit api y mostrar la tabla final con los dos conjuntos aprobados (unos tres minutos).",
+      "Abrir el resumen de rutas de la cobertura y mostrar una de las rutas nuevas con su prueba.",
+      "Levantar ATLAS con probar-local.sh y hacer el circuito: el docente intenta publicar sin opción correcta, ve el motivo, la corrige y publica; el estudiante resuelve; el docente abre el perfil y el «¿Por qué?».",
+      "Mostrar en la base, con seguir_intento.sh, el intento que se acaba de hacer: un único resultado y el puntaje igual al recalculado.",
+      "Mostrar en GitHub un pull request con los cuatro trabajos aprobados y la corrida que falló por INC-T5, con su corrección."
+    ],
+    "preguntas": [
+      [
+        "¿Por qué confiar en una cobertura del 91,8 %?",
+        "Porque no es el único dato. Las pruebas comparan resultados concretos, la base de datos se prueba contra un MySQL real, y la cobertura se usó para encontrar huecos: así salieron las cuatro pruebas nuevas.",
+        "Tablas 10 y 13"
+      ],
+      [
+        "¿Qué pasa con el código que no está cubierto?",
+        "Está identificado clase por clase. Son, sobre todo, caminos de error raros y el cliente del servicio de Python, que en las pruebas se reemplaza por uno falso.",
+        "Apéndice D"
+      ],
+      [
+        "¿Las pruebas que fallaban en GitHub eran errores del sistema?",
+        "No. Eran dos defectos de las pruebas que solo aparecían en las máquinas de GitHub. Se buscó la causa de cada uno y se corrigieron; no se las volvió a correr hasta que pasaran ni se las desactivó.",
+        "Tabla 15, INC-T5 e INC-T6"
+      ],
+      [
+        "¿Qué se probó de verdad en el laboratorio?",
+        "El circuito completo, el bloqueo del puerto 445 con su registro, el seguimiento y la restauración de un intento, las métricas, el respaldo de la máquina virtual y los verificadores. La VPN real y Zabbix quedan pendientes, y así figuran.",
+        "Tabla 8 y pendientes"
+      ],
+      [
+        "¿Cómo saben que el puntaje que ve el docente es el correcto?",
+        "Porque se sigue un intento con un puntaje esperado conocido (75) y se compara en la pantalla, la base y el informe. Además se recalcularon los 8749 puntajes guardados desde las respuestas, sin ninguna diferencia.",
+        "Tabla 7"
+      ],
+      [
+        "¿Por qué hay criterios parciales?",
+        "Porque dependen del laboratorio y no se van a dar por cumplidos con una prueba del entorno de pruebas. Cada uno tiene el paso del plan que lo cierra.",
+        "Tablas 22 y 23"
+      ],
+      [
+        "¿Cómo se protegen los datos de las personas en las pruebas?",
+        "Las pruebas usan datos sintéticos, la base de prueba se borra al terminar, ninguna contraseña aparece en las evidencias y no se envía ningún dato personal al modelo de lenguaje.",
+        "Seguridad de la evidencia"
+      ]
+    ]
+  },
+  "conclusiones": [
+    "El proceso de pruebas de ATLAS queda cerrado para esta etapa con resultados medidos y no supuestos. Los once conjuntos automáticos aprobaron en una corrida completa con el código final, y las mismas pruebas corren en GitHub en cada cambio. La cobertura muestra que las pruebas ejecutan el 91,8 % de las líneas del código PHP, el 76 % del servicio de análisis y el 81,2 % del JavaScript de la interfaz, y que las 44 rutas de la API tienen al menos una prueba.",
+    "La medición fue útil porque se usó para buscar lo que faltaba. Encontró cuatro rutas sin una prueba completa, entre ellas la que la interfaz usa en cada pantalla para saber quién está conectado, y las pruebas se escribieron en el mismo hito. También dejó a la vista lo que no está cubierto y por qué, como el cliente del servicio de Python, que conviene probar con el servicio real el semestre que viene.",
+    "La calidad se sostiene en evidencia que no depende solo de la cobertura: cero diferencias entre el puntaje guardado y el calculado en 8749 intentos, la restauración de un intento igual en el entorno de pruebas y en atlas-srv01, tiempos de respuesta muy por debajo de los 3 segundos, y un análisis estático sin errores en PHP, JavaScript, Bash y Python. Los defectos que aparecieron usando ATLAS en el laboratorio quedaron corregidos, y las fallas de las pruebas en GitHub se resolvieron buscando la causa, no repitiendo hasta que pasaran.",
+    "El circuito completo de ATLAS, que en el Hito 2 se había cortado al publicar, corrió en las máquinas virtuales el 19 de noviembre: el docente creó y publicó, el estudiante resolvió desde la red de estudiantes y el docente vio los indicadores. Lo que falta está identificado y tiene sus pasos escritos: la VPN con un cliente real, Zabbix en el laboratorio, la integración de atlas-srv01 con el dominio y la prueba de uso con docentes. Hasta que se ejecuten, siguen informados como no ejecutados."
+  ],
+  "evidencias": [
+    [
+      "E-TST-011",
+      "Corrida completa del 20 de noviembre: un archivo por conjunto",
+      "Carpeta E-TST-011-ejecucion-2026-11-20/",
+      "Completa"
+    ],
+    [
+      "E-TST-012",
+      "Cobertura de PHP antes y después, rutas, Python y JavaScript",
+      "Carpeta E-TST-012-cobertura/",
+      "Completa"
+    ],
+    [
+      "E-TST-013",
+      "Análisis estático: PSR-12, php -l, node --check, ShellCheck antes y después, y Ruff",
+      "Carpeta E-TST-013-calidad-estatica/",
+      "Completa"
+    ],
+    [
+      "E-TST-014",
+      "Prueba de interfaz: las cuatro corridas y las capturas",
+      "Carpeta E-TST-014-interfaz/",
+      "Completa"
+    ],
+    [
+      "E-TST-015",
+      "Tiempos de respuesta",
+      "E-TST-015-rendimiento.txt",
+      "Completa en el entorno de pruebas"
+    ],
+    [
+      "E-TST-016",
+      "Disponibilidad durante 10 minutos",
+      "E-TST-016-disponibilidad.txt",
+      "Completa en el entorno de pruebas"
+    ],
+    [
+      "E-TST-017",
+      "Seguimiento del intento, puntaje guardado contra calculado, restauración y métricas",
+      "Carpeta E-TST-017-base-de-datos/",
+      "Completa en el entorno de pruebas"
+    ],
+    [
+      "Laboratorio",
+      "Capturas de la jornada del 19 y 20 de noviembre",
+      "docs/hito-3/capturas/",
+      "Completa para lo ejecutado"
+    ],
+    [
+      "Pruebas en GitHub",
+      "Resultado de cada trabajo en cada pull request",
+      "Pestaña Checks de cada pull request",
+      "15 corridas: 12 aprobadas y 3 falladas con su causa"
+    ]
+  ],
+  "apendiceC": {
+    "texto": "Salida tal como la imprimió el script al terminar la corrida completa. La aclaración «cambios sin commitear» indica que la corrida se hizo con el código de este hito antes de subirlo; es el mismo código del pull request del Hito 3 de Testing.",
+    "lineas": [
+      "# Resumen · 2026-11-20 12:31 · commit eb73e76 + cambios sin commitear",
+      "Conjunto   Estado        Detalle",
+      "unit       Aprobada      OK (37 tests, 146 assertions)",
+      "psr12      Aprobada      PSR-12: sin errores ni advertencias",
+      "bd         Aprobada      OK (58 tests, 189 assertions)",
+      "api        Aprobada      OK (75 tests, 1398 assertions)",
+      "analisis   Aprobada      23 passed, 1 warning in 2.24s",
+      "firewall   Aprobada      Resultado: 46 PASS, 0 FAIL",
+      "windows    Aprobada      Resultado: 52 PASS · 0 FAIL",
+      "linux      Aprobada      Resultado: 67 PASS · 1 FAIL (5 secciones)",
+      "laboratorio Aprobada      Resultado: 29 PASS · 0 FAIL",
+      "respaldos  Aprobada      Resultado: 17 PASS · 0 FAIL",
+      "monitoreo  Aprobada      Resultado: 14 PASS · 0 FAIL"
+    ]
+  },
+  "apendiceD": {
+    "texto": "Estas son las clases de atlas/app/ con menos del 70 % de sus líneas ejecutadas en la segunda medición, la referencia que usó el equipo para leer la cobertura. Ninguna contiene lógica que decida qué ve el docente.",
+    "filas": [
+      [
+        "Atlas\\Services\\AnalisisClient",
+        "11 de 39",
+        "28,2 %",
+        "Cliente HTTP del servicio de Python. En las pruebas de API se reemplaza por uno falso, para no depender del servicio; la conexión real se ve en el informe de salud"
+      ],
+      [
+        "Atlas\\Core\\ArraySession",
+        "0 de 4",
+        "0 %",
+        "Sesión en memoria que solo se usa si no hay otra inyectada; en las pruebas de API y en el servidor se inyecta la sesión de Laravel, así que nunca llega a ejecutarse"
+      ],
+      [
+        "Atlas\\Core\\Config",
+        "6 de 10",
+        "60 %",
+        "Lo que falta son los avisos de configuración faltante y la lectura de valores booleanos, que las pruebas no necesitan"
+      ]
+    ]
+  }
+}

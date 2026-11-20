@@ -1,0 +1,13 @@
+Cobertura del JavaScript del frontend (caracteres ejecutados): 88842 de 109367 (81.2 %)
+
+api.js                          1844 de    1852   99.6 %
+app.js                          7184 de   10203   70.4 %
+graficos.js                     6395 de    6544   97.7 %
+iconos.js                       5047 de    5047  100.0 %
+registro.js                     2021 de    2925   69.1 %
+tema.js                          501 de     501  100.0 %
+ui.js                          11516 de   13306   86.5 %
+vistas/admin.js                 8771 de   15680   55.9 %
+vistas/docente.js              32755 de   38178   85.8 %
+vistas/estudiante.js            8520 de   10471   81.4 %
+vistas/login.js                 4288 de    4660   92.0 %

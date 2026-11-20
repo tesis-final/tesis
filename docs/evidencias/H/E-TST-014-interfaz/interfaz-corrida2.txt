@@ -1,0 +1,18 @@
+PASS RF-02 mensaje genérico en la interfaz
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 375px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 480px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 768px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 1024px
+PASS RNF-12 sin desplazamiento horizontal · docente inicio · 1366px
+PASS RF-18 análisis grupal visible
+PASS RNF-12 tablas como tarjetas en celular (sin desplazamiento horizontal)
+PASS RF-12 '¿por qué?' muestra regla, versión y datos
+PASS D-3 el perfil muestra el acierto por habilidad
+Traceback (most recent call last):
+  File "/home/user/tesis/atlas/tests/e2e/interfaz.py", line 158, in <module>
+    with page.expect_response(lambda r: f"/docente/estudiantes/{elegido['id']}/perfil" in r.url):
+  File "/usr/local/lib/python3.11/dist-packages/playwright/_impl/_sync_base.py", line 85, in __exit__
+    self._event.value
+  File "/usr/local/lib/python3.11/dist-packages/playwright/_impl/_sync_base.py", line 59, in value
+    raise exception
+playwright._impl._errors.TimeoutError: Timeout 30000ms exceeded while waiting for event "response"

@@ -1,0 +1,29 @@
+== php-antes
+Core                     7 clases  líneas  105/ 116  90.5 %  métodos  40/ 47
+Http\Controllers         7 clases  líneas  192/ 229  83.8 %  métodos  37/ 51
+Http\Json                1 clases  líneas    4/   4 100.0 %  métodos   4/  4
+Http\Middleware          4 clases  líneas   54/  54 100.0 %  métodos   7/  7
+Http\Requests           17 clases  líneas   82/  83  98.8 %  métodos  18/ 19
+Providers                1 clases  líneas    6/   6 100.0 %  métodos   1/  1
+Repositories             9 clases  líneas  626/ 687  91.1 %  métodos  88/102
+Services                 7 clases  líneas  550/ 625  88.0 %  métodos  41/ 61
+Services\Analysis        7 clases  líneas  204/ 214  95.3 %  métodos  14/ 18
+Services\Asistente       5 clases  líneas  268/ 280  95.7 %  métodos  15/ 20
+   bajo 70 %: Atlas\Core\ArraySession 0/4 0.0 %
+   bajo 70 %: Atlas\Core\Config 6/10 60.0 %
+   bajo 70 %: Atlas\Http\Controllers\AuthController 4/6 66.7 %
+   bajo 70 %: Atlas\Services\AnalisisClient 11/39 28.2 %
+== php-despues
+Core                     7 clases  líneas  105/ 116  90.5 %  métodos  40/ 47
+Http\Controllers         7 clases  líneas  203/ 229  88.6 %  métodos  41/ 51
+Http\Json                1 clases  líneas    4/   4 100.0 %  métodos   4/  4
+Http\Middleware          4 clases  líneas   54/  54 100.0 %  métodos   7/  7
+Http\Requests           17 clases  líneas   82/  83  98.8 %  métodos  18/ 19
+Providers                1 clases  líneas    6/   6 100.0 %  métodos   1/  1
+Repositories             9 clases  líneas  634/ 687  92.3 %  métodos  90/102
+Services                 7 clases  líneas  550/ 625  88.0 %  métodos  41/ 61
+Services\Analysis        7 clases  líneas  204/ 214  95.3 %  métodos  14/ 18
+Services\Asistente       5 clases  líneas  268/ 280  95.7 %  métodos  15/ 20
+   bajo 70 %: Atlas\Core\ArraySession 0/4 0.0 %
+   bajo 70 %: Atlas\Core\Config 6/10 60.0 %
+   bajo 70 %: Atlas\Services\AnalisisClient 11/39 28.2 %

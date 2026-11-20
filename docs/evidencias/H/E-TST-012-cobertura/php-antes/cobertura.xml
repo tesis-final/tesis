@@ -1,0 +1,3047 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1795175885">
+  <project timestamp="1795175885" name="Clover Coverage">
+    <package name="Atlas\Core">
+      <file name="/home/user/tesis/atlas/app/Core/App.php">
+        <class name="Atlas\Core\App" namespace="Atlas\Core">
+          <metrics complexity="22" methods="21" coveredmethods="21" conditionals="0" coveredconditionals="0" statements="62" coveredstatements="62" elements="83" coveredelements="83"/>
+        </class>
+        <line num="38" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="72"/>
+        <line num="44" type="stmt" count="72"/>
+        <line num="52" type="method" name="una" visibility="private" complexity="1" crap="1" count="72"/>
+        <line num="54" type="stmt" count="72"/>
+        <line num="57" type="method" name="db" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="59" type="stmt" count="70"/>
+        <line num="62" type="method" name="sesion" visibility="public" complexity="1" crap="1" count="72"/>
+        <line num="65" type="stmt" count="72"/>
+        <line num="68" type="method" name="reloj" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="70" type="stmt" count="70"/>
+        <line num="73" type="method" name="clienteAnalisis" visibility="public" complexity="1" crap="1" count="17"/>
+        <line num="75" type="stmt" count="17"/>
+        <line num="76" type="stmt" count="17"/>
+        <line num="77" type="stmt" count="17"/>
+        <line num="78" type="stmt" count="17"/>
+        <line num="79" type="stmt" count="17"/>
+        <line num="82" type="method" name="usuarios" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="84" type="stmt" count="70"/>
+        <line num="87" type="method" name="organizacion" visibility="public" complexity="1" crap="1" count="46"/>
+        <line num="89" type="stmt" count="46"/>
+        <line num="92" type="method" name="actividadesRepo" visibility="public" complexity="1" crap="1" count="41"/>
+        <line num="94" type="stmt" count="41"/>
+        <line num="97" type="method" name="intentosRepo" visibility="public" complexity="1" crap="1" count="30"/>
+        <line num="99" type="stmt" count="30"/>
+        <line num="102" type="method" name="analisisRepo" visibility="public" complexity="1" crap="1" count="31"/>
+        <line num="104" type="stmt" count="31"/>
+        <line num="107" type="method" name="reportesRepo" visibility="public" complexity="1" crap="1" count="16"/>
+        <line num="109" type="stmt" count="16"/>
+        <line num="112" type="method" name="auditoriaRepo" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="114" type="stmt" count="70"/>
+        <line num="117" type="method" name="auditoria" visibility="public" complexity="2" crap="2" count="70"/>
+        <line num="119" type="stmt" count="70"/>
+        <line num="120" type="stmt" count="70"/>
+        <line num="121" type="stmt" count="70"/>
+        <line num="122" type="stmt" count="70"/>
+        <line num="123" type="stmt" count="70"/>
+        <line num="126" type="method" name="auth" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="128" type="stmt" count="70"/>
+        <line num="129" type="stmt" count="70"/>
+        <line num="130" type="stmt" count="70"/>
+        <line num="131" type="stmt" count="70"/>
+        <line num="132" type="stmt" count="70"/>
+        <line num="133" type="stmt" count="70"/>
+        <line num="134" type="stmt" count="70"/>
+        <line num="135" type="stmt" count="70"/>
+        <line num="138" type="method" name="usuariosService" visibility="public" complexity="1" crap="1" count="6"/>
+        <line num="140" type="stmt" count="6"/>
+        <line num="143" type="method" name="actividades" visibility="public" complexity="1" crap="1" count="41"/>
+        <line num="145" type="stmt" count="41"/>
+        <line num="146" type="stmt" count="41"/>
+        <line num="147" type="stmt" count="41"/>
+        <line num="148" type="stmt" count="41"/>
+        <line num="149" type="stmt" count="41"/>
+        <line num="152" type="method" name="analisis" visibility="public" complexity="1" crap="1" count="30"/>
+        <line num="154" type="stmt" count="30"/>
+        <line num="157" type="method" name="intentos" visibility="public" complexity="1" crap="1" count="30"/>
+        <line num="159" type="stmt" count="30"/>
+        <line num="160" type="stmt" count="30"/>
+        <line num="161" type="stmt" count="30"/>
+        <line num="162" type="stmt" count="30"/>
+        <line num="163" type="stmt" count="30"/>
+        <line num="164" type="stmt" count="30"/>
+        <line num="165" type="stmt" count="30"/>
+        <line num="168" type="method" name="panel" visibility="public" complexity="1" crap="1" count="10"/>
+        <line num="170" type="stmt" count="10"/>
+        <line num="171" type="stmt" count="10"/>
+        <line num="172" type="stmt" count="10"/>
+        <line num="173" type="stmt" count="10"/>
+        <line num="174" type="stmt" count="10"/>
+        <line num="175" type="stmt" count="10"/>
+        <line num="176" type="stmt" count="10"/>
+        <line num="177" type="stmt" count="10"/>
+        <line num="180" type="method" name="asistente" visibility="public" complexity="1" crap="1" count="6"/>
+        <line num="182" type="stmt" count="6"/>
+        <line num="183" type="stmt" count="6"/>
+        <line num="184" type="stmt" count="6"/>
+        <line num="185" type="stmt" count="6"/>
+        <line num="186" type="stmt" count="6"/>
+        <line num="187" type="stmt" count="6"/>
+        <line num="188" type="stmt" count="6"/>
+        <line num="189" type="stmt" count="6"/>
+        <line num="190" type="stmt" count="6"/>
+        <line num="191" type="stmt" count="6"/>
+        <metrics loc="194" ncloc="179" classes="1" methods="21" coveredmethods="21" conditionals="0" coveredconditionals="0" statements="62" coveredstatements="62" elements="83" coveredelements="83"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Core/ArraySession.php">
+        <class name="Atlas\Core\ArraySession" namespace="Atlas\Core">
+          <metrics complexity="4" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="0" elements="8" coveredelements="0"/>
+        </class>
+        <line num="14" type="method" name="obtener" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="16" type="stmt" count="0"/>
+        <line num="19" type="method" name="guardar" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="21" type="stmt" count="0"/>
+        <line num="24" type="method" name="regenerar" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="26" type="stmt" count="0"/>
+        <line num="29" type="method" name="destruir" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="31" type="stmt" count="0"/>
+        <metrics loc="34" ncloc="32" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="0" elements="8" coveredelements="0"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Core/Clock.php">
+        <class name="Atlas\Core\Clock" namespace="Atlas\Core">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
+        </class>
+        <line num="13" type="method" name="ahora" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="15" type="stmt" count="70"/>
+        <metrics loc="18" ncloc="17" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Core/Config.php">
+        <class name="Atlas\Core\Config" namespace="Atlas\Core">
+          <metrics complexity="8" methods="5" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="6" elements="15" coveredelements="9"/>
+        </class>
+        <line num="14" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="72"/>
+        <line num="16" type="stmt" count="72"/>
+        <line num="18" type="method" name="desdeEntorno" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="20" type="stmt" count="1"/>
+        <line num="23" type="method" name="texto" visibility="public" complexity="2" crap="2.06" count="70"/>
+        <line num="25" type="stmt" count="70"/>
+        <line num="26" type="stmt" count="70"/>
+        <line num="27" type="stmt" count="0"/>
+        <line num="30" type="stmt" count="70"/>
+        <line num="33" type="method" name="entero" visibility="public" complexity="2" crap="2" count="70"/>
+        <line num="35" type="stmt" count="70"/>
+        <line num="38" type="method" name="booleano" visibility="public" complexity="2" crap="6" count="0"/>
+        <line num="40" type="stmt" count="0"/>
+        <line num="41" type="stmt" count="0"/>
+        <line num="44" type="stmt" count="0"/>
+        <metrics loc="47" ncloc="42" classes="1" methods="5" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="6" elements="15" coveredelements="9"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Core/Database.php">
+        <class name="Atlas\Core\Database" namespace="Atlas\Core">
+          <metrics complexity="6" methods="5" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="28" coveredstatements="25" elements="33" coveredelements="29"/>
+        </class>
+        <line num="19" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="21" type="stmt" count="70"/>
+        <line num="23" type="method" name="app" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="25" type="stmt" count="70"/>
+        <line num="28" type="method" name="lectura" visibility="public" complexity="1" crap="1" count="12"/>
+        <line num="30" type="stmt" count="12"/>
+        <line num="38" type="method" name="transaccion" visibility="public" complexity="2" crap="2.21" count="41"/>
+        <line num="40" type="stmt" count="41"/>
+        <line num="41" type="stmt" count="41"/>
+        <line num="43" type="stmt" count="41"/>
+        <line num="44" type="stmt" count="41"/>
+        <line num="46" type="stmt" count="41"/>
+        <line num="47" type="stmt" count="0"/>
+        <line num="48" type="stmt" count="0"/>
+        <line num="49" type="stmt" count="0"/>
+        <line num="53" type="method" name="conectar" visibility="private" complexity="1" crap="1" count="70"/>
+        <line num="55" type="stmt" count="70"/>
+        <line num="56" type="stmt" count="70"/>
+        <line num="57" type="stmt" count="70"/>
+        <line num="58" type="stmt" count="70"/>
+        <line num="59" type="stmt" count="70"/>
+        <line num="60" type="stmt" count="70"/>
+        <line num="61" type="stmt" count="70"/>
+        <line num="62" type="stmt" count="70"/>
+        <line num="63" type="stmt" count="70"/>
+        <line num="64" type="stmt" count="70"/>
+        <line num="65" type="stmt" count="70"/>
+        <line num="66" type="stmt" count="70"/>
+        <line num="67" type="stmt" count="70"/>
+        <line num="68" type="stmt" count="70"/>
+        <line num="69" type="stmt" count="70"/>
+        <line num="70" type="stmt" count="70"/>
+        <line num="72" type="stmt" count="70"/>
+        <metrics loc="75" ncloc="65" classes="1" methods="5" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="28" coveredstatements="25" elements="33" coveredelements="29"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Core/HttpException.php">
+        <class name="Atlas\Core\HttpException" namespace="Atlas\Core">
+          <metrics complexity="6" methods="6" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="6" elements="12" coveredelements="12"/>
+        </class>
+        <line num="15" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="43"/>
+        <line num="20" type="stmt" count="43"/>
+        <line num="23" type="method" name="noAutenticado" visibility="public" complexity="1" crap="1" count="3"/>
+        <line num="25" type="stmt" count="3"/>
+        <line num="28" type="method" name="prohibido" visibility="public" complexity="1" crap="1" count="17"/>
+        <line num="30" type="stmt" count="17"/>
+        <line num="33" type="method" name="noEncontrado" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="35" type="stmt" count="2"/>
+        <line num="39" type="method" name="validacion" visibility="public" complexity="1" crap="1" count="11"/>
+        <line num="41" type="stmt" count="11"/>
+        <line num="44" type="method" name="conflicto" visibility="public" complexity="1" crap="1" count="7"/>
+        <line num="46" type="stmt" count="7"/>
+        <metrics loc="49" ncloc="44" classes="1" methods="6" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="6" elements="12" coveredelements="12"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Core/SesionLaravel.php">
+        <class name="Atlas\Core\SesionLaravel" namespace="Atlas\Core">
+          <metrics complexity="5" methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="10" coveredelements="10"/>
+        </class>
+        <line num="18" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="72"/>
+        <line num="20" type="stmt" count="72"/>
+        <line num="22" type="method" name="obtener" visibility="public" complexity="1" crap="1" count="66"/>
+        <line num="24" type="stmt" count="66"/>
+        <line num="27" type="method" name="guardar" visibility="public" complexity="1" crap="1" count="67"/>
+        <line num="29" type="stmt" count="67"/>
+        <line num="32" type="method" name="regenerar" visibility="public" complexity="1" crap="1" count="67"/>
+        <line num="34" type="stmt" count="67"/>
+        <line num="37" type="method" name="destruir" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="39" type="stmt" count="1"/>
+        <metrics loc="42" ncloc="36" classes="1" methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="10" coveredelements="10"/>
+      </file>
+    </package>
+    <file name="/home/user/tesis/atlas/app/Core/Session.php">
+      <metrics loc="22" ncloc="17" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <package name="Atlas\Http\Controllers">
+      <file name="/home/user/tesis/atlas/app/Http/Controllers/ActividadController.php">
+        <class name="Atlas\Http\Controllers\ActividadController" namespace="Atlas\Http\Controllers">
+          <metrics complexity="12" methods="10" coveredmethods="10" conditionals="0" coveredconditionals="0" statements="36" coveredstatements="36" elements="46" coveredelements="46"/>
+        </class>
+        <line num="17" type="method" name="listar" visibility="public" complexity="3" crap="3" count="1"/>
+        <line num="19" type="stmt" count="1"/>
+        <line num="20" type="stmt" count="1"/>
+        <line num="21" type="stmt" count="1"/>
+        <line num="22" type="stmt" count="1"/>
+        <line num="25" type="stmt" count="1"/>
+        <line num="26" type="stmt" count="1"/>
+        <line num="27" type="stmt" count="1"/>
+        <line num="30" type="method" name="catalogos" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="32" type="stmt" count="1"/>
+        <line num="33" type="stmt" count="1"/>
+        <line num="34" type="stmt" count="1"/>
+        <line num="35" type="stmt" count="1"/>
+        <line num="36" type="stmt" count="1"/>
+        <line num="39" type="method" name="ver" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="41" type="stmt" count="2"/>
+        <line num="44" type="method" name="crear" visibility="public" complexity="1" crap="1" count="41"/>
+        <line num="46" type="stmt" count="41"/>
+        <line num="47" type="stmt" count="41"/>
+        <line num="48" type="stmt" count="41"/>
+        <line num="49" type="stmt" count="41"/>
+        <line num="52" type="method" name="editar" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="54" type="stmt" count="1"/>
+        <line num="55" type="stmt" count="1"/>
+        <line num="56" type="stmt" count="1"/>
+        <line num="57" type="stmt" count="1"/>
+        <line num="58" type="stmt" count="1"/>
+        <line num="61" type="method" name="enviar" visibility="public" complexity="1" crap="1" count="36"/>
+        <line num="63" type="stmt" count="36"/>
+        <line num="66" type="method" name="aprobar" visibility="public" complexity="1" crap="1" count="32"/>
+        <line num="68" type="stmt" count="32"/>
+        <line num="71" type="method" name="rechazar" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="73" type="stmt" count="1"/>
+        <line num="74" type="stmt" count="1"/>
+        <line num="75" type="stmt" count="1"/>
+        <line num="76" type="stmt" count="1"/>
+        <line num="77" type="stmt" count="1"/>
+        <line num="80" type="method" name="publicar" visibility="public" complexity="1" crap="1" count="36"/>
+        <line num="82" type="stmt" count="36"/>
+        <line num="83" type="stmt" count="36"/>
+        <line num="84" type="stmt" count="36"/>
+        <line num="85" type="stmt" count="36"/>
+        <line num="86" type="stmt" count="36"/>
+        <line num="89" type="method" name="transiciones" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="91" type="stmt" count="1"/>
+        <line num="93" type="stmt" count="1"/>
+        <metrics loc="96" ncloc="94" classes="1" methods="10" coveredmethods="10" conditionals="0" coveredconditionals="0" statements="36" coveredstatements="36" elements="46" coveredelements="46"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Controllers/AdminController.php">
+        <class name="Atlas\Http\Controllers\AdminController" namespace="Atlas\Http\Controllers">
+          <metrics complexity="39" methods="17" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="116" coveredstatements="84" elements="133" coveredelements="90"/>
+        </class>
+        <line num="29" type="method" name="usuarios" visibility="public" complexity="2" crap="6" count="0"/>
+        <line num="31" type="stmt" count="0"/>
+        <line num="33" type="stmt" count="0"/>
+        <line num="34" type="stmt" count="0"/>
+        <line num="35" type="stmt" count="0"/>
+        <line num="38" type="method" name="crearUsuario" visibility="public" complexity="2" crap="2.01" count="4"/>
+        <line num="40" type="stmt" count="4"/>
+        <line num="41" type="stmt" count="4"/>
+        <line num="42" type="stmt" count="0"/>
+        <line num="44" type="stmt" count="4"/>
+        <line num="45" type="stmt" count="2"/>
+        <line num="46" type="stmt" count="2"/>
+        <line num="47" type="stmt" count="2"/>
+        <line num="49" type="stmt" count="2"/>
+        <line num="52" type="method" name="modificarUsuario" visibility="public" complexity="3" crap="3.14" count="2"/>
+        <line num="54" type="stmt" count="2"/>
+        <line num="55" type="stmt" count="2"/>
+        <line num="56" type="stmt" count="0"/>
+        <line num="59" type="stmt" count="2"/>
+        <line num="62" type="method" name="desactivarUsuario" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="64" type="stmt" count="2"/>
+        <line num="68" type="method" name="modificarAuditado" visibility="private" complexity="1" crap="1" count="3"/>
+        <line num="70" type="stmt" count="3"/>
+        <line num="71" type="stmt" count="3"/>
+        <line num="72" type="stmt" count="3"/>
+        <line num="73" type="stmt" count="2"/>
+        <line num="74" type="stmt" count="2"/>
+        <line num="75" type="stmt" count="2"/>
+        <line num="76" type="stmt" count="2"/>
+        <line num="77" type="stmt" count="2"/>
+        <line num="79" type="stmt" count="2"/>
+        <line num="82" type="method" name="instituciones" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="84" type="stmt" count="0"/>
+        <line num="87" type="method" name="crearInstitucion" visibility="public" complexity="1" crap="1" count="4"/>
+        <line num="89" type="stmt" count="4"/>
+        <line num="90" type="stmt" count="4"/>
+        <line num="92" type="stmt" count="4"/>
+        <line num="96" type="method" name="modificarInstitucion" visibility="public" complexity="1" crap="1.00" count="1"/>
+        <line num="98" type="stmt" count="1"/>
+        <line num="99" type="stmt" count="1"/>
+        <line num="100" type="stmt" count="1"/>
+        <line num="101" type="stmt" count="0"/>
+        <line num="102" type="stmt" count="1"/>
+        <line num="103" type="stmt" count="1"/>
+        <line num="104" type="stmt" count="1"/>
+        <line num="105" type="stmt" count="1"/>
+        <line num="106" type="stmt" count="1"/>
+        <line num="107" type="stmt" count="1"/>
+        <line num="109" type="stmt" count="1"/>
+        <line num="112" type="method" name="grupos" visibility="public" complexity="2" crap="6" count="0"/>
+        <line num="114" type="stmt" count="0"/>
+        <line num="115" type="stmt" count="0"/>
+        <line num="117" type="stmt" count="0"/>
+        <line num="120" type="method" name="crearGrupo" visibility="public" complexity="2" crap="2.03" count="1"/>
+        <line num="122" type="stmt" count="1"/>
+        <line num="123" type="stmt" count="1"/>
+        <line num="124" type="stmt" count="0"/>
+        <line num="126" type="stmt" count="1"/>
+        <line num="128" type="stmt" count="1"/>
+        <line num="131" type="method" name="miembros" visibility="public" complexity="3" crap="12" count="0"/>
+        <line num="133" type="stmt" count="0"/>
+        <line num="134" type="stmt" count="0"/>
+        <line num="135" type="stmt" count="0"/>
+        <line num="136" type="stmt" count="0"/>
+        <line num="139" type="stmt" count="0"/>
+        <line num="142" type="method" name="definirMiembros" visibility="public" complexity="5" crap="5.93" count="1"/>
+        <line num="144" type="stmt" count="1"/>
+        <line num="145" type="stmt" count="1"/>
+        <line num="146" type="stmt" count="0"/>
+        <line num="148" type="stmt" count="1"/>
+        <line num="149" type="stmt" count="1"/>
+        <line num="150" type="stmt" count="1"/>
+        <line num="151" type="stmt" count="1"/>
+        <line num="152" type="stmt" count="0"/>
+        <line num="153" type="stmt" count="0"/>
+        <line num="154" type="stmt" count="0"/>
+        <line num="157" type="stmt" count="1"/>
+        <line num="159" type="stmt" count="1"/>
+        <line num="162" type="method" name="roles" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="164" type="stmt" count="1"/>
+        <line num="165" type="stmt" count="1"/>
+        <line num="166" type="stmt" count="1"/>
+        <line num="167" type="stmt" count="1"/>
+        <line num="170" type="method" name="permisosDeRol" visibility="public" complexity="5" crap="10.09" count="1"/>
+        <line num="172" type="stmt" count="1"/>
+        <line num="173" type="stmt" count="1"/>
+        <line num="174" type="stmt" count="1"/>
+        <line num="175" type="stmt" count="0"/>
+        <line num="177" type="stmt" count="1"/>
+        <line num="178" type="stmt" count="1"/>
+        <line num="179" type="stmt" count="0"/>
+        <line num="181" type="stmt" count="1"/>
+        <line num="182" type="stmt" count="1"/>
+        <line num="184" type="stmt" count="0"/>
+        <line num="185" type="stmt" count="0"/>
+        <line num="186" type="stmt" count="0"/>
+        <line num="187" type="stmt" count="0"/>
+        <line num="188" type="stmt" count="0"/>
+        <line num="189" type="stmt" count="0"/>
+        <line num="190" type="stmt" count="0"/>
+        <line num="192" type="stmt" count="0"/>
+        <line num="195" type="method" name="reglas" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="197" type="stmt" count="1"/>
+        <line num="200" type="method" name="modificarRegla" visibility="public" complexity="5" crap="5.00" count="1"/>
+        <line num="202" type="stmt" count="1"/>
+        <line num="203" type="stmt" count="1"/>
+        <line num="204" type="stmt" count="0"/>
+        <line num="205" type="stmt" count="1"/>
+        <line num="206" type="stmt" count="1"/>
+        <line num="207" type="stmt" count="1"/>
+        <line num="208" type="stmt" count="1"/>
+        <line num="210" type="stmt" count="1"/>
+        <line num="212" type="stmt" count="1"/>
+        <line num="213" type="stmt" count="1"/>
+        <line num="214" type="stmt" count="1"/>
+        <line num="215" type="stmt" count="1"/>
+        <line num="216" type="stmt" count="1"/>
+        <line num="217" type="stmt" count="1"/>
+        <line num="218" type="stmt" count="1"/>
+        <line num="219" type="stmt" count="1"/>
+        <line num="220" type="stmt" count="1"/>
+        <line num="222" type="stmt" count="1"/>
+        <line num="225" type="method" name="auditoria" visibility="public" complexity="3" crap="3" count="1"/>
+        <line num="227" type="stmt" count="1"/>
+        <line num="228" type="stmt" count="1"/>
+        <line num="229" type="stmt" count="1"/>
+        <line num="230" type="stmt" count="1"/>
+        <line num="231" type="stmt" count="1"/>
+        <line num="232" type="stmt" count="1"/>
+        <line num="233" type="stmt" count="1"/>
+        <line num="234" type="stmt" count="1"/>
+        <line num="235" type="stmt" count="1"/>
+        <line num="237" type="stmt" count="1"/>
+        <metrics loc="240" ncloc="231" classes="1" methods="17" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="116" coveredstatements="84" elements="133" coveredelements="90"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Controllers/AuthController.php">
+        <class name="Atlas\Http\Controllers\AuthController" namespace="Atlas\Http\Controllers">
+          <metrics complexity="3" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="4" elements="9" coveredelements="6"/>
+        </class>
+        <line num="16" type="method" name="login" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="18" type="stmt" count="70"/>
+        <line num="20" type="stmt" count="70"/>
+        <line num="23" type="method" name="logout" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="25" type="stmt" count="1"/>
+        <line num="27" type="stmt" count="1"/>
+        <line num="30" type="method" name="yo" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="32" type="stmt" count="0"/>
+        <line num="33" type="stmt" count="0"/>
+        <metrics loc="36" ncloc="35" classes="1" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="4" elements="9" coveredelements="6"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Controllers/Controller.php">
+        <class name="Atlas\Http\Controllers\Controller" namespace="Atlas\Http\Controllers">
+          <metrics complexity="11" methods="6" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="10" elements="17" coveredelements="15"/>
+        </class>
+        <line num="19" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="21" type="stmt" count="70"/>
+        <line num="24" type="method" name="usuario" visibility="protected" complexity="1" crap="1" count="46"/>
+        <line num="26" type="stmt" count="46"/>
+        <line num="35" type="method" name="auditar" visibility="protected" complexity="1" crap="1" count="5"/>
+        <line num="37" type="stmt" count="5"/>
+        <line num="41" type="method" name="id" visibility="protected" complexity="2" crap="2.06" count="43"/>
+        <line num="43" type="stmt" count="43"/>
+        <line num="44" type="stmt" count="43"/>
+        <line num="45" type="stmt" count="0"/>
+        <line num="48" type="stmt" count="43"/>
+        <line num="51" type="method" name="consultaEntera" visibility="protected" complexity="3" crap="3" count="7"/>
+        <line num="53" type="stmt" count="7"/>
+        <line num="55" type="stmt" count="7"/>
+        <line num="58" type="method" name="consultaFecha" visibility="protected" complexity="3" crap="3" count="11"/>
+        <line num="60" type="stmt" count="11"/>
+        <line num="62" type="stmt" count="11"/>
+        <metrics loc="65" ncloc="51" classes="1" methods="6" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="10" elements="17" coveredelements="15"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Controllers/DocenteController.php">
+        <class name="Atlas\Http\Controllers\DocenteController" namespace="Atlas\Http\Controllers">
+          <metrics complexity="7" methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="27" coveredstatements="27" elements="34" coveredelements="34"/>
+        </class>
+        <line num="18" type="method" name="analisisGrupal" visibility="public" complexity="1" crap="1" count="5"/>
+        <line num="20" type="stmt" count="5"/>
+        <line num="21" type="stmt" count="5"/>
+        <line num="22" type="stmt" count="5"/>
+        <line num="23" type="stmt" count="5"/>
+        <line num="24" type="stmt" count="5"/>
+        <line num="25" type="stmt" count="5"/>
+        <line num="26" type="stmt" count="5"/>
+        <line num="29" type="method" name="perfil" visibility="public" complexity="1" crap="1" count="5"/>
+        <line num="31" type="stmt" count="5"/>
+        <line num="32" type="stmt" count="5"/>
+        <line num="33" type="stmt" count="5"/>
+        <line num="34" type="stmt" count="5"/>
+        <line num="35" type="stmt" count="5"/>
+        <line num="38" type="method" name="fundamento" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="40" type="stmt" count="2"/>
+        <line num="44" type="method" name="decidir" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="46" type="stmt" count="1"/>
+        <line num="47" type="stmt" count="1"/>
+        <line num="48" type="stmt" count="1"/>
+        <line num="49" type="stmt" count="1"/>
+        <line num="50" type="stmt" count="1"/>
+        <line num="53" type="method" name="reportes" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="55" type="stmt" count="2"/>
+        <line num="56" type="stmt" count="2"/>
+        <line num="57" type="stmt" count="2"/>
+        <line num="58" type="stmt" count="2"/>
+        <line num="59" type="stmt" count="2"/>
+        <line num="60" type="stmt" count="2"/>
+        <line num="61" type="stmt" count="2"/>
+        <line num="64" type="method" name="consultar" visibility="public" complexity="1" crap="1" count="6"/>
+        <line num="66" type="stmt" count="6"/>
+        <line num="69" type="method" name="historial" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="71" type="stmt" count="1"/>
+        <metrics loc="74" ncloc="71" classes="1" methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="27" coveredstatements="27" elements="34" coveredelements="34"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Controllers/EstudianteController.php">
+        <class name="Atlas\Http\Controllers\EstudianteController" namespace="Atlas\Http\Controllers">
+          <metrics complexity="7" methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="22" elements="29" coveredelements="29"/>
+        </class>
+        <line num="18" type="method" name="actividades" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="20" type="stmt" count="2"/>
+        <line num="23" type="method" name="iniciar" visibility="public" complexity="1" crap="1" count="30"/>
+        <line num="25" type="stmt" count="30"/>
+        <line num="26" type="stmt" count="30"/>
+        <line num="27" type="stmt" count="30"/>
+        <line num="28" type="stmt" count="30"/>
+        <line num="31" type="method" name="eventos" visibility="public" complexity="1" crap="1" count="24"/>
+        <line num="33" type="stmt" count="24"/>
+        <line num="34" type="stmt" count="24"/>
+        <line num="35" type="stmt" count="24"/>
+        <line num="36" type="stmt" count="24"/>
+        <line num="37" type="stmt" count="24"/>
+        <line num="40" type="method" name="responder" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="42" type="stmt" count="23"/>
+        <line num="43" type="stmt" count="23"/>
+        <line num="44" type="stmt" count="23"/>
+        <line num="45" type="stmt" count="23"/>
+        <line num="46" type="stmt" count="23"/>
+        <line num="47" type="stmt" count="23"/>
+        <line num="48" type="stmt" count="23"/>
+        <line num="49" type="stmt" count="23"/>
+        <line num="51" type="stmt" count="22"/>
+        <line num="54" type="method" name="finalizar" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="56" type="stmt" count="23"/>
+        <line num="59" type="method" name="abandonar" visibility="public" complexity="1" crap="1" count="3"/>
+        <line num="61" type="stmt" count="3"/>
+        <line num="64" type="method" name="resultado" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="66" type="stmt" count="2"/>
+        <metrics loc="69" ncloc="68" classes="1" methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="22" elements="29" coveredelements="29"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Controllers/SaludController.php">
+        <class name="Atlas\Http\Controllers\SaludController" namespace="Atlas\Http\Controllers">
+          <metrics complexity="4" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="9" elements="12" coveredelements="9"/>
+        </class>
+        <line num="13" type="method" name="salud" visibility="public" complexity="4" crap="4.10" count="1"/>
+        <line num="15" type="stmt" count="1"/>
+        <line num="17" type="stmt" count="1"/>
+        <line num="18" type="stmt" count="0"/>
+        <line num="19" type="stmt" count="0"/>
+        <line num="21" type="stmt" count="1"/>
+        <line num="23" type="stmt" count="1"/>
+        <line num="24" type="stmt" count="1"/>
+        <line num="25" type="stmt" count="1"/>
+        <line num="26" type="stmt" count="1"/>
+        <line num="27" type="stmt" count="1"/>
+        <line num="28" type="stmt" count="1"/>
+        <metrics loc="31" ncloc="30" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="9" elements="12" coveredelements="9"/>
+      </file>
+    </package>
+    <package name="Atlas\Http">
+      <file name="/home/user/tesis/atlas/app/Http/Json.php">
+        <class name="Atlas\Http\Json" namespace="Atlas\Http">
+          <metrics complexity="4" methods="4" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="8" coveredelements="8"/>
+        </class>
+        <line num="23" type="method" name="ok" visibility="public" complexity="1" crap="1" count="73"/>
+        <line num="25" type="stmt" count="73"/>
+        <line num="28" type="method" name="creado" visibility="public" complexity="1" crap="1" count="43"/>
+        <line num="30" type="stmt" count="43"/>
+        <line num="33" type="method" name="sinContenido" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="35" type="stmt" count="23"/>
+        <line num="39" type="method" name="error" visibility="public" complexity="1" crap="1" count="44"/>
+        <line num="41" type="stmt" count="44"/>
+        <metrics loc="44" ncloc="39" classes="1" methods="4" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="8" coveredelements="8"/>
+      </file>
+    </package>
+    <package name="Atlas\Http\Middleware">
+      <file name="/home/user/tesis/atlas/app/Http/Middleware/Auditoria.php">
+        <class name="Atlas\Http\Middleware\Auditoria" namespace="Atlas\Http\Middleware">
+          <metrics complexity="5" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="17" coveredstatements="17" elements="19" coveredelements="19"/>
+        </class>
+        <line num="24" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="58"/>
+        <line num="26" type="stmt" count="58"/>
+        <line num="28" type="method" name="handle" visibility="public" complexity="4" crap="4" count="51"/>
+        <line num="30" type="stmt" count="51"/>
+        <line num="31" type="stmt" count="51"/>
+        <line num="32" type="stmt" count="51"/>
+        <line num="33" type="stmt" count="18"/>
+        <line num="35" type="stmt" count="45"/>
+        <line num="36" type="stmt" count="45"/>
+        <line num="37" type="stmt" count="45"/>
+        <line num="38" type="stmt" count="45"/>
+        <line num="39" type="stmt" count="45"/>
+        <line num="40" type="stmt" count="45"/>
+        <line num="41" type="stmt" count="45"/>
+        <line num="42" type="stmt" count="45"/>
+        <line num="43" type="stmt" count="45"/>
+        <line num="44" type="stmt" count="45"/>
+        <line num="45" type="stmt" count="45"/>
+        <line num="47" type="stmt" count="45"/>
+        <metrics loc="50" ncloc="40" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="17" coveredstatements="17" elements="19" coveredelements="19"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Middleware/Autenticacion.php">
+        <class name="Atlas\Http\Middleware\Autenticacion" namespace="Atlas\Http\Middleware">
+          <metrics complexity="8" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="21" coveredstatements="21" elements="23" coveredelements="23"/>
+        </class>
+        <line num="19" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="66"/>
+        <line num="21" type="stmt" count="66"/>
+        <line num="23" type="method" name="handle" visibility="public" complexity="7" crap="7" count="66"/>
+        <line num="25" type="stmt" count="66"/>
+        <line num="26" type="stmt" count="66"/>
+        <line num="27" type="stmt" count="66"/>
+        <line num="28" type="stmt" count="3"/>
+        <line num="30" type="stmt" count="64"/>
+        <line num="31" type="stmt" count="59"/>
+        <line num="32" type="stmt" count="59"/>
+        <line num="33" type="stmt" count="59"/>
+        <line num="34" type="stmt" count="1"/>
+        <line num="35" type="stmt" count="1"/>
+        <line num="36" type="stmt" count="1"/>
+        <line num="37" type="stmt" count="1"/>
+        <line num="38" type="stmt" count="1"/>
+        <line num="39" type="stmt" count="1"/>
+        <line num="40" type="stmt" count="1"/>
+        <line num="41" type="stmt" count="1"/>
+        <line num="42" type="stmt" count="1"/>
+        <line num="43" type="stmt" count="1"/>
+        <line num="46" type="stmt" count="63"/>
+        <line num="48" type="stmt" count="63"/>
+        <metrics loc="51" ncloc="47" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="21" coveredstatements="21" elements="23" coveredelements="23"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Middleware/Permiso.php">
+        <class name="Atlas\Http\Middleware\Permiso" namespace="Atlas\Http\Middleware">
+          <metrics complexity="3" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="14" elements="16" coveredelements="16"/>
+        </class>
+        <line num="21" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="64"/>
+        <line num="23" type="stmt" count="64"/>
+        <line num="25" type="method" name="handle" visibility="public" complexity="2" crap="2" count="62"/>
+        <line num="27" type="stmt" count="62"/>
+        <line num="28" type="stmt" count="62"/>
+        <line num="29" type="stmt" count="12"/>
+        <line num="30" type="stmt" count="12"/>
+        <line num="31" type="stmt" count="12"/>
+        <line num="32" type="stmt" count="12"/>
+        <line num="33" type="stmt" count="12"/>
+        <line num="34" type="stmt" count="12"/>
+        <line num="35" type="stmt" count="12"/>
+        <line num="36" type="stmt" count="12"/>
+        <line num="37" type="stmt" count="12"/>
+        <line num="38" type="stmt" count="12"/>
+        <line num="41" type="stmt" count="52"/>
+        <metrics loc="44" ncloc="38" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="14" elements="16" coveredelements="16"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Middleware/Ruta.php">
+        <class name="Atlas\Http\Middleware\Ruta" namespace="Atlas\Http\Middleware">
+          <metrics complexity="2" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="2" elements="3" coveredelements="3"/>
+        </class>
+        <line num="12" type="method" name="de" visibility="public" complexity="2" crap="2" count="56"/>
+        <line num="14" type="stmt" count="56"/>
+        <line num="16" type="stmt" count="56"/>
+        <metrics loc="19" ncloc="18" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="2" elements="3" coveredelements="3"/>
+      </file>
+    </package>
+    <package name="Atlas\Http\Requests">
+      <file name="/home/user/tesis/atlas/app/Http/Requests/ActividadRequest.php">
+        <class name="Atlas\Http\Requests\ActividadRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="6" elements="7" coveredelements="7"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="42"/>
+        <line num="12" type="stmt" count="42"/>
+        <line num="13" type="stmt" count="42"/>
+        <line num="14" type="stmt" count="42"/>
+        <line num="15" type="stmt" count="42"/>
+        <line num="16" type="stmt" count="42"/>
+        <line num="17" type="stmt" count="42"/>
+        <metrics loc="20" ncloc="19" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="6" elements="7" coveredelements="7"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/AtlasRequest.php">
+        <class name="Atlas\Http\Requests\AtlasRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="9" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="14" elements="18" coveredelements="16"/>
+        </class>
+        <line num="22" type="method" name="authorize" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="24" type="stmt" count="70"/>
+        <line num="27" type="method" name="failedValidation" visibility="protected" complexity="1" crap="1" count="3"/>
+        <line num="29" type="stmt" count="3"/>
+        <line num="38" type="method" name="validados" visibility="public" complexity="7" crap="7.02" count="70"/>
+        <line num="40" type="stmt" count="70"/>
+        <line num="41" type="stmt" count="70"/>
+        <line num="42" type="stmt" count="70"/>
+        <line num="43" type="stmt" count="70"/>
+        <line num="44" type="stmt" count="0"/>
+        <line num="46" type="stmt" count="70"/>
+        <line num="47" type="stmt" count="70"/>
+        <line num="48" type="stmt" count="70"/>
+        <line num="49" type="stmt" count="70"/>
+        <line num="50" type="stmt" count="70"/>
+        <line num="51" type="stmt" count="70"/>
+        <line num="52" type="stmt" count="70"/>
+        <line num="55" type="stmt" count="70"/>
+        <metrics loc="58" ncloc="45" classes="1" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="14" elements="18" coveredelements="16"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/ConsultaAsistenteRequest.php">
+        <class name="Atlas\Http\Requests\ConsultaAsistenteRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="6"/>
+        <line num="12" type="stmt" count="6"/>
+        <line num="13" type="stmt" count="6"/>
+        <line num="14" type="stmt" count="6"/>
+        <metrics loc="17" ncloc="16" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/CrearGrupoRequest.php">
+        <class name="Atlas\Http\Requests\CrearGrupoRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="6" coveredelements="6"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="12" type="stmt" count="1"/>
+        <line num="13" type="stmt" count="1"/>
+        <line num="14" type="stmt" count="1"/>
+        <line num="15" type="stmt" count="1"/>
+        <line num="16" type="stmt" count="1"/>
+        <metrics loc="19" ncloc="18" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="6" coveredelements="6"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/CrearInstitucionRequest.php">
+        <class name="Atlas\Http\Requests\CrearInstitucionRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="5" coveredelements="5"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="4"/>
+        <line num="12" type="stmt" count="4"/>
+        <line num="13" type="stmt" count="4"/>
+        <line num="14" type="stmt" count="4"/>
+        <line num="15" type="stmt" count="4"/>
+        <metrics loc="18" ncloc="17" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="5" coveredelements="5"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/CrearUsuarioRequest.php">
+        <class name="Atlas\Http\Requests\CrearUsuarioRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" elements="9" coveredelements="9"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="5"/>
+        <line num="12" type="stmt" count="5"/>
+        <line num="13" type="stmt" count="5"/>
+        <line num="14" type="stmt" count="5"/>
+        <line num="15" type="stmt" count="5"/>
+        <line num="16" type="stmt" count="5"/>
+        <line num="17" type="stmt" count="5"/>
+        <line num="18" type="stmt" count="5"/>
+        <line num="19" type="stmt" count="5"/>
+        <metrics loc="22" ncloc="21" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" elements="9" coveredelements="9"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/DecisionRequest.php">
+        <class name="Atlas\Http\Requests\DecisionRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="12" type="stmt" count="1"/>
+        <line num="13" type="stmt" count="1"/>
+        <line num="14" type="stmt" count="1"/>
+        <metrics loc="17" ncloc="16" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/EventosRequest.php">
+        <class name="Atlas\Http\Requests\EventosRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="24"/>
+        <line num="12" type="stmt" count="24"/>
+        <line num="13" type="stmt" count="24"/>
+        <line num="14" type="stmt" count="24"/>
+        <metrics loc="17" ncloc="16" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/IniciarIntentoRequest.php">
+        <class name="Atlas\Http\Requests\IniciarIntentoRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="30"/>
+        <line num="12" type="stmt" count="30"/>
+        <line num="13" type="stmt" count="30"/>
+        <line num="14" type="stmt" count="30"/>
+        <metrics loc="17" ncloc="16" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/LoginRequest.php">
+        <class name="Atlas\Http\Requests\LoginRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="5" coveredelements="5"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="12" type="stmt" count="70"/>
+        <line num="13" type="stmt" count="70"/>
+        <line num="14" type="stmt" count="70"/>
+        <line num="15" type="stmt" count="70"/>
+        <metrics loc="18" ncloc="17" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="5" coveredelements="5"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/MiembrosRequest.php">
+        <class name="Atlas\Http\Requests\MiembrosRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="12" type="stmt" count="1"/>
+        <line num="13" type="stmt" count="1"/>
+        <line num="14" type="stmt" count="1"/>
+        <metrics loc="17" ncloc="16" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/ModificarInstitucionRequest.php">
+        <class name="Atlas\Http\Requests\ModificarInstitucionRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="6" coveredelements="6"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="12" type="stmt" count="1"/>
+        <line num="13" type="stmt" count="1"/>
+        <line num="14" type="stmt" count="1"/>
+        <line num="15" type="stmt" count="1"/>
+        <line num="16" type="stmt" count="1"/>
+        <metrics loc="19" ncloc="18" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="6" coveredelements="6"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/ModificarUsuarioRequest.php">
+        <class name="Atlas\Http\Requests\ModificarUsuarioRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" elements="9" coveredelements="9"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="12" type="stmt" count="2"/>
+        <line num="13" type="stmt" count="2"/>
+        <line num="14" type="stmt" count="2"/>
+        <line num="15" type="stmt" count="2"/>
+        <line num="16" type="stmt" count="2"/>
+        <line num="17" type="stmt" count="2"/>
+        <line num="18" type="stmt" count="2"/>
+        <line num="19" type="stmt" count="2"/>
+        <metrics loc="22" ncloc="21" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" elements="9" coveredelements="9"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/PermisosRolRequest.php">
+        <class name="Atlas\Http\Requests\PermisosRolRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="12" type="stmt" count="1"/>
+        <line num="13" type="stmt" count="1"/>
+        <line num="14" type="stmt" count="1"/>
+        <metrics loc="17" ncloc="16" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/PublicarRequest.php">
+        <class name="Atlas\Http\Requests\PublicarRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="36"/>
+        <line num="12" type="stmt" count="36"/>
+        <line num="13" type="stmt" count="36"/>
+        <line num="14" type="stmt" count="36"/>
+        <metrics loc="17" ncloc="16" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/RechazarRequest.php">
+        <class name="Atlas\Http\Requests\RechazarRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="12" type="stmt" count="1"/>
+        <line num="13" type="stmt" count="1"/>
+        <line num="14" type="stmt" count="1"/>
+        <metrics loc="17" ncloc="16" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="4" coveredelements="4"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Http/Requests/ResponderRequest.php">
+        <class name="Atlas\Http\Requests\ResponderRequest" namespace="Atlas\Http\Requests">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="5" coveredelements="5"/>
+        </class>
+        <line num="10" type="method" name="rules" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="12" type="stmt" count="23"/>
+        <line num="13" type="stmt" count="23"/>
+        <line num="14" type="stmt" count="23"/>
+        <line num="15" type="stmt" count="23"/>
+        <metrics loc="18" ncloc="17" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="5" coveredelements="5"/>
+      </file>
+    </package>
+    <package name="Atlas\Providers">
+      <file name="/home/user/tesis/atlas/app/Providers/AtlasServiceProvider.php">
+        <class name="Atlas\Providers\AtlasServiceProvider" namespace="Atlas\Providers">
+          <metrics complexity="3" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="6" elements="7" coveredelements="7"/>
+        </class>
+        <line num="21" type="method" name="register" visibility="public" complexity="3" crap="3" count="76"/>
+        <line num="23" type="stmt" count="76"/>
+        <line num="24" type="stmt" count="76"/>
+        <line num="25" type="stmt" count="76"/>
+        <line num="26" type="stmt" count="76"/>
+        <line num="27" type="stmt" count="76"/>
+        <line num="28" type="stmt" count="76"/>
+        <metrics loc="31" ncloc="25" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="6" elements="7" coveredelements="7"/>
+      </file>
+    </package>
+    <package name="Atlas\Repositories">
+      <file name="/home/user/tesis/atlas/app/Repositories/ActividadRepository.php">
+        <class name="Atlas\Repositories\ActividadRepository" namespace="Atlas\Repositories">
+          <metrics complexity="30" methods="14" coveredmethods="13" conditionals="0" coveredconditionals="0" statements="122" coveredstatements="120" elements="136" coveredelements="133"/>
+        </class>
+        <line num="26" type="method" name="obtener" visibility="public" complexity="1" crap="1" count="40"/>
+        <line num="28" type="stmt" count="40"/>
+        <line num="32" type="method" name="listar" visibility="public" complexity="4" crap="4.10" count="1"/>
+        <line num="34" type="stmt" count="1"/>
+        <line num="35" type="stmt" count="1"/>
+        <line num="36" type="stmt" count="1"/>
+        <line num="37" type="stmt" count="0"/>
+        <line num="38" type="stmt" count="0"/>
+        <line num="40" type="stmt" count="1"/>
+        <line num="41" type="stmt" count="1"/>
+        <line num="42" type="stmt" count="1"/>
+        <line num="44" type="stmt" count="1"/>
+        <line num="45" type="stmt" count="1"/>
+        <line num="47" type="stmt" count="1"/>
+        <line num="56" type="method" name="preguntas" visibility="public" complexity="5" crap="5" count="40"/>
+        <line num="58" type="stmt" count="40"/>
+        <line num="59" type="stmt" count="40"/>
+        <line num="60" type="stmt" count="40"/>
+        <line num="61" type="stmt" count="40"/>
+        <line num="62" type="stmt" count="40"/>
+        <line num="63" type="stmt" count="40"/>
+        <line num="65" type="stmt" count="40"/>
+        <line num="66" type="stmt" count="40"/>
+        <line num="67" type="stmt" count="40"/>
+        <line num="68" type="stmt" count="40"/>
+        <line num="69" type="stmt" count="40"/>
+        <line num="70" type="stmt" count="39"/>
+        <line num="71" type="stmt" count="39"/>
+        <line num="72" type="stmt" count="39"/>
+        <line num="74" type="stmt" count="39"/>
+        <line num="76" type="stmt" count="40"/>
+        <line num="78" type="stmt" count="40"/>
+        <line num="79" type="stmt" count="40"/>
+        <line num="82" type="stmt" count="40"/>
+        <line num="83" type="stmt" count="40"/>
+        <line num="84" type="stmt" count="40"/>
+        <line num="86" type="stmt" count="38"/>
+        <line num="88" type="stmt" count="40"/>
+        <line num="89" type="stmt" count="39"/>
+        <line num="90" type="stmt" count="39"/>
+        <line num="91" type="stmt" count="39"/>
+        <line num="92" type="stmt" count="39"/>
+        <line num="95" type="stmt" count="40"/>
+        <line num="99" type="method" name="habilidadesActivas" visibility="public" complexity="1" crap="1" count="41"/>
+        <line num="101" type="stmt" count="41"/>
+        <line num="102" type="stmt" count="41"/>
+        <line num="103" type="stmt" count="41"/>
+        <line num="104" type="stmt" count="41"/>
+        <line num="105" type="stmt" count="41"/>
+        <line num="108" type="method" name="crear" visibility="public" complexity="1" crap="1" count="40"/>
+        <line num="110" type="stmt" count="40"/>
+        <line num="111" type="stmt" count="40"/>
+        <line num="112" type="stmt" count="40"/>
+        <line num="113" type="stmt" count="40"/>
+        <line num="114" type="stmt" count="40"/>
+        <line num="115" type="stmt" count="40"/>
+        <line num="118" type="method" name="actualizarDatos" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="125" type="stmt" count="1"/>
+        <line num="126" type="stmt" count="1"/>
+        <line num="127" type="stmt" count="1"/>
+        <line num="128" type="stmt" count="1"/>
+        <line num="129" type="stmt" count="1"/>
+        <line num="133" type="method" name="reemplazarContenido" visibility="public" complexity="4" crap="4" count="40"/>
+        <line num="135" type="stmt" count="40"/>
+        <line num="136" type="stmt" count="40"/>
+        <line num="137" type="stmt" count="40"/>
+        <line num="138" type="stmt" count="40"/>
+        <line num="139" type="stmt" count="40"/>
+        <line num="140" type="stmt" count="40"/>
+        <line num="141" type="stmt" count="39"/>
+        <line num="142" type="stmt" count="39"/>
+        <line num="143" type="stmt" count="39"/>
+        <line num="144" type="stmt" count="39"/>
+        <line num="145" type="stmt" count="39"/>
+        <line num="146" type="stmt" count="39"/>
+        <line num="147" type="stmt" count="39"/>
+        <line num="148" type="stmt" count="39"/>
+        <line num="149" type="stmt" count="39"/>
+        <line num="152" type="stmt" count="39"/>
+        <line num="153" type="stmt" count="38"/>
+        <line num="154" type="stmt" count="38"/>
+        <line num="155" type="stmt" count="38"/>
+        <line num="156" type="stmt" count="38"/>
+        <line num="161" type="method" name="cambiarEstado" visibility="public" complexity="3" crap="3" count="40"/>
+        <line num="168" type="stmt" count="40"/>
+        <line num="169" type="stmt" count="34"/>
+        <line num="170" type="stmt" count="34"/>
+        <line num="171" type="stmt" count="34"/>
+        <line num="172" type="stmt" count="34"/>
+        <line num="174" type="stmt" count="40"/>
+        <line num="175" type="stmt" count="40"/>
+        <line num="177" type="stmt" count="40"/>
+        <line num="178" type="stmt" count="40"/>
+        <line num="179" type="stmt" count="40"/>
+        <line num="180" type="stmt" count="40"/>
+        <line num="184" type="method" name="transiciones" visibility="public" complexity="1" crap="1" count="40"/>
+        <line num="186" type="stmt" count="40"/>
+        <line num="187" type="stmt" count="40"/>
+        <line num="193" type="stmt" count="40"/>
+        <line num="194" type="stmt" count="40"/>
+        <line num="195" type="stmt" count="40"/>
+        <line num="198" type="method" name="publicarEnGrupo" visibility="public" complexity="1" crap="1" count="32"/>
+        <line num="200" type="stmt" count="32"/>
+        <line num="201" type="stmt" count="32"/>
+        <line num="202" type="stmt" count="32"/>
+        <line num="203" type="stmt" count="32"/>
+        <line num="207" type="method" name="gruposPublicados" visibility="public" complexity="1" crap="1" count="40"/>
+        <line num="209" type="stmt" count="40"/>
+        <line num="210" type="stmt" count="40"/>
+        <line num="211" type="stmt" count="40"/>
+        <line num="212" type="stmt" count="40"/>
+        <line num="213" type="stmt" count="40"/>
+        <line num="223" type="method" name="publicadasParaEstudiante" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="225" type="stmt" count="2"/>
+        <line num="226" type="stmt" count="2"/>
+        <line num="239" type="stmt" count="2"/>
+        <line num="243" type="stmt" count="2"/>
+        <line num="244" type="stmt" count="2"/>
+        <line num="245" type="stmt" count="2"/>
+        <line num="247" type="stmt" count="2"/>
+        <line num="250" type="method" name="visibleParaEstudiante" visibility="public" complexity="1" crap="1" count="30"/>
+        <line num="252" type="stmt" count="30"/>
+        <line num="253" type="stmt" count="30"/>
+        <line num="257" type="stmt" count="30"/>
+        <line num="258" type="stmt" count="30"/>
+        <line num="259" type="stmt" count="30"/>
+        <line num="260" type="stmt" count="30"/>
+        <line num="264" type="method" name="catalogo" visibility="public" complexity="5" crap="5" count="7"/>
+        <line num="266" type="stmt" count="7"/>
+        <line num="267" type="stmt" count="1"/>
+        <line num="268" type="stmt" count="7"/>
+        <line num="270" type="stmt" count="1"/>
+        <line num="271" type="stmt" count="1"/>
+        <line num="272" type="stmt" count="1"/>
+        <line num="273" type="stmt" count="7"/>
+        <line num="274" type="stmt" count="7"/>
+        <metrics loc="277" ncloc="251" classes="1" methods="14" coveredmethods="13" conditionals="0" coveredconditionals="0" statements="122" coveredstatements="120" elements="136" coveredelements="133"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Repositories/AnalisisRepository.php">
+        <class name="Atlas\Repositories\AnalisisRepository" namespace="Atlas\Repositories">
+          <metrics complexity="31" methods="24" coveredmethods="24" conditionals="0" coveredconditionals="0" statements="141" coveredstatements="141" elements="165" coveredelements="165"/>
+        </class>
+        <line num="14" type="method" name="contextoIntento" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="16" type="stmt" count="23"/>
+        <line num="17" type="stmt" count="23"/>
+        <line num="19" type="stmt" count="23"/>
+        <line num="20" type="stmt" count="23"/>
+        <line num="21" type="stmt" count="23"/>
+        <line num="25" type="method" name="intentosDeActividad" visibility="public" complexity="3" crap="3" count="23"/>
+        <line num="27" type="stmt" count="23"/>
+        <line num="28" type="stmt" count="23"/>
+        <line num="29" type="stmt" count="23"/>
+        <line num="30" type="stmt" count="23"/>
+        <line num="31" type="stmt" count="23"/>
+        <line num="32" type="stmt" count="23"/>
+        <line num="33" type="stmt" count="23"/>
+        <line num="34" type="stmt" count="23"/>
+        <line num="36" type="stmt" count="23"/>
+        <line num="37" type="stmt" count="23"/>
+        <line num="38" type="stmt" count="23"/>
+        <line num="47" type="method" name="duracionGrupo" visibility="public" complexity="2" crap="2" count="23"/>
+        <line num="49" type="stmt" count="23"/>
+        <line num="50" type="stmt" count="23"/>
+        <line num="58" type="stmt" count="23"/>
+        <line num="59" type="stmt" count="23"/>
+        <line num="60" type="stmt" count="23"/>
+        <line num="62" type="stmt" count="23"/>
+        <line num="71" type="method" name="agregadosCategoria" visibility="public" complexity="2" crap="2" count="23"/>
+        <line num="73" type="stmt" count="23"/>
+        <line num="74" type="stmt" count="23"/>
+        <line num="83" type="stmt" count="23"/>
+        <line num="84" type="stmt" count="23"/>
+        <line num="85" type="stmt" count="23"/>
+        <line num="87" type="stmt" count="23"/>
+        <line num="88" type="stmt" count="23"/>
+        <line num="89" type="stmt" count="23"/>
+        <line num="90" type="stmt" count="23"/>
+        <line num="93" type="method" name="perfil" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="95" type="stmt" count="23"/>
+        <line num="96" type="stmt" count="23"/>
+        <line num="97" type="stmt" count="23"/>
+        <line num="98" type="stmt" count="23"/>
+        <line num="99" type="stmt" count="23"/>
+        <line num="101" type="stmt" count="23"/>
+        <line num="102" type="stmt" count="23"/>
+        <line num="103" type="stmt" count="23"/>
+        <line num="104" type="stmt" count="23"/>
+        <line num="107" type="method" name="guardarIndicador" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="109" type="stmt" count="23"/>
+        <line num="110" type="stmt" count="23"/>
+        <line num="111" type="stmt" count="23"/>
+        <line num="112" type="stmt" count="23"/>
+        <line num="116" type="method" name="reglasActivas" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="118" type="stmt" count="23"/>
+        <line num="119" type="stmt" count="23"/>
+        <line num="120" type="stmt" count="23"/>
+        <line num="121" type="stmt" count="23"/>
+        <line num="125" type="method" name="reglas" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="127" type="stmt" count="1"/>
+        <line num="128" type="stmt" count="1"/>
+        <line num="129" type="stmt" count="1"/>
+        <line num="130" type="stmt" count="1"/>
+        <line num="134" type="method" name="regla" visibility="public" complexity="2" crap="2" count="1"/>
+        <line num="136" type="stmt" count="1"/>
+        <line num="137" type="stmt" count="1"/>
+        <line num="138" type="stmt" count="1"/>
+        <line num="139" type="stmt" count="1"/>
+        <line num="140" type="stmt" count="1"/>
+        <line num="142" type="stmt" count="1"/>
+        <line num="146" type="method" name="actualizarRegla" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="148" type="stmt" count="1"/>
+        <line num="149" type="stmt" count="1"/>
+        <line num="150" type="stmt" count="1"/>
+        <line num="151" type="stmt" count="1"/>
+        <line num="158" type="method" name="actividadSugerida" visibility="public" complexity="2" crap="2" count="20"/>
+        <line num="160" type="stmt" count="20"/>
+        <line num="161" type="stmt" count="20"/>
+        <line num="169" type="stmt" count="20"/>
+        <line num="170" type="stmt" count="20"/>
+        <line num="171" type="stmt" count="20"/>
+        <line num="173" type="stmt" count="20"/>
+        <line num="176" type="method" name="existeNivel" visibility="public" complexity="1" crap="1" count="20"/>
+        <line num="178" type="stmt" count="20"/>
+        <line num="181" type="method" name="tituloActividad" visibility="public" complexity="1" crap="1" count="20"/>
+        <line num="183" type="stmt" count="20"/>
+        <line num="186" type="method" name="crearRecomendacion" visibility="public" complexity="1" crap="1" count="20"/>
+        <line num="188" type="stmt" count="20"/>
+        <line num="189" type="stmt" count="20"/>
+        <line num="190" type="stmt" count="20"/>
+        <line num="191" type="stmt" count="20"/>
+        <line num="195" type="method" name="vincularRegla" visibility="public" complexity="1" crap="1" count="20"/>
+        <line num="197" type="stmt" count="20"/>
+        <line num="198" type="stmt" count="20"/>
+        <line num="199" type="stmt" count="20"/>
+        <line num="200" type="stmt" count="20"/>
+        <line num="201" type="stmt" count="20"/>
+        <line num="202" type="stmt" count="20"/>
+        <line num="203" type="stmt" count="20"/>
+        <line num="204" type="stmt" count="20"/>
+        <line num="205" type="stmt" count="20"/>
+        <line num="206" type="stmt" count="20"/>
+        <line num="210" type="method" name="indicadoresDelPerfil" visibility="public" complexity="1" crap="1" count="5"/>
+        <line num="212" type="stmt" count="5"/>
+        <line num="213" type="stmt" count="5"/>
+        <line num="220" type="stmt" count="5"/>
+        <line num="221" type="stmt" count="5"/>
+        <line num="222" type="stmt" count="5"/>
+        <line num="226" type="method" name="indicadoresNivel2" visibility="public" complexity="1" crap="1" count="5"/>
+        <line num="228" type="stmt" count="5"/>
+        <line num="229" type="stmt" count="5"/>
+        <line num="230" type="stmt" count="5"/>
+        <line num="231" type="stmt" count="5"/>
+        <line num="232" type="stmt" count="5"/>
+        <line num="236" type="method" name="perfilDe" visibility="public" complexity="1" crap="1" count="7"/>
+        <line num="238" type="stmt" count="7"/>
+        <line num="239" type="stmt" count="7"/>
+        <line num="240" type="stmt" count="7"/>
+        <line num="241" type="stmt" count="7"/>
+        <line num="242" type="stmt" count="7"/>
+        <line num="246" type="method" name="recomendacionesDelPerfil" visibility="public" complexity="2" crap="2" count="7"/>
+        <line num="248" type="stmt" count="7"/>
+        <line num="249" type="stmt" count="7"/>
+        <line num="255" type="stmt" count="7"/>
+        <line num="256" type="stmt" count="7"/>
+        <line num="257" type="stmt" count="7"/>
+        <line num="258" type="stmt" count="7"/>
+        <line num="259" type="stmt" count="6"/>
+        <line num="260" type="stmt" count="6"/>
+        <line num="261" type="stmt" count="6"/>
+        <line num="262" type="stmt" count="6"/>
+        <line num="263" type="stmt" count="6"/>
+        <line num="266" type="stmt" count="7"/>
+        <line num="270" type="method" name="decisionTomada" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="272" type="stmt" count="1"/>
+        <line num="273" type="stmt" count="1"/>
+        <line num="274" type="stmt" count="1"/>
+        <line num="275" type="stmt" count="1"/>
+        <line num="279" type="method" name="guardarDecision" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="281" type="stmt" count="1"/>
+        <line num="282" type="stmt" count="1"/>
+        <line num="283" type="stmt" count="1"/>
+        <line num="284" type="stmt" count="1"/>
+        <line num="285" type="stmt" count="1"/>
+        <line num="289" type="method" name="recomendacion" visibility="public" complexity="1" crap="1" count="3"/>
+        <line num="291" type="stmt" count="3"/>
+        <line num="292" type="stmt" count="3"/>
+        <line num="300" type="stmt" count="3"/>
+        <line num="301" type="stmt" count="3"/>
+        <line num="302" type="stmt" count="3"/>
+        <line num="306" type="method" name="fundamento" visibility="public" complexity="1" crap="1" count="4"/>
+        <line num="308" type="stmt" count="4"/>
+        <line num="309" type="stmt" count="4"/>
+        <line num="310" type="stmt" count="4"/>
+        <line num="312" type="stmt" count="4"/>
+        <line num="313" type="stmt" count="4"/>
+        <line num="314" type="stmt" count="4"/>
+        <line num="317" type="stmt" count="4"/>
+        <line num="318" type="stmt" count="4"/>
+        <line num="319" type="stmt" count="4"/>
+        <line num="323" type="method" name="decodificarRegla" visibility="private" complexity="1" crap="1" count="24"/>
+        <line num="325" type="stmt" count="24"/>
+        <line num="326" type="stmt" count="24"/>
+        <line num="327" type="stmt" count="24"/>
+        <line num="328" type="stmt" count="24"/>
+        <line num="329" type="stmt" count="24"/>
+        <line num="330" type="stmt" count="24"/>
+        <line num="332" type="stmt" count="24"/>
+        <metrics loc="335" ncloc="299" classes="1" methods="24" coveredmethods="24" conditionals="0" coveredconditionals="0" statements="141" coveredstatements="141" elements="165" coveredelements="165"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Repositories/AuditoriaRepository.php">
+        <class name="Atlas\Repositories\AuditoriaRepository" namespace="Atlas\Repositories">
+          <metrics complexity="10" methods="2" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="23" elements="31" coveredelements="24"/>
+        </class>
+        <line num="10" type="method" name="insertar" visibility="public" complexity="4" crap="4" count="70"/>
+        <line num="19" type="stmt" count="70"/>
+        <line num="20" type="stmt" count="70"/>
+        <line num="21" type="stmt" count="70"/>
+        <line num="22" type="stmt" count="70"/>
+        <line num="23" type="stmt" count="70"/>
+        <line num="24" type="stmt" count="70"/>
+        <line num="25" type="stmt" count="70"/>
+        <line num="32" type="method" name="listar" visibility="public" complexity="6" crap="6.73" count="1"/>
+        <line num="34" type="stmt" count="1"/>
+        <line num="35" type="stmt" count="1"/>
+        <line num="36" type="stmt" count="1"/>
+        <line num="37" type="stmt" count="1"/>
+        <line num="38" type="stmt" count="0"/>
+        <line num="39" type="stmt" count="0"/>
+        <line num="42" type="stmt" count="1"/>
+        <line num="43" type="stmt" count="1"/>
+        <line num="44" type="stmt" count="1"/>
+        <line num="46" type="stmt" count="1"/>
+        <line num="47" type="stmt" count="0"/>
+        <line num="48" type="stmt" count="0"/>
+        <line num="50" type="stmt" count="1"/>
+        <line num="51" type="stmt" count="0"/>
+        <line num="52" type="stmt" count="0"/>
+        <line num="54" type="stmt" count="1"/>
+        <line num="56" type="stmt" count="1"/>
+        <line num="57" type="stmt" count="1"/>
+        <line num="60" type="stmt" count="1"/>
+        <line num="61" type="stmt" count="1"/>
+        <line num="62" type="stmt" count="1"/>
+        <line num="63" type="stmt" count="1"/>
+        <metrics loc="66" ncloc="61" classes="1" methods="2" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="23" elements="31" coveredelements="24"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Repositories/ConversacionRepository.php">
+        <class name="Atlas\Repositories\ConversacionRepository" namespace="Atlas\Repositories">
+          <metrics complexity="5" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="16" elements="18" coveredelements="18"/>
+        </class>
+        <line num="10" type="method" name="guardar" visibility="public" complexity="2" crap="2" count="6"/>
+        <line num="18" type="stmt" count="6"/>
+        <line num="19" type="stmt" count="6"/>
+        <line num="20" type="stmt" count="6"/>
+        <line num="21" type="stmt" count="6"/>
+        <line num="22" type="stmt" count="6"/>
+        <line num="23" type="stmt" count="6"/>
+        <line num="24" type="stmt" count="6"/>
+        <line num="28" type="method" name="historial" visibility="public" complexity="3" crap="3" count="1"/>
+        <line num="30" type="stmt" count="1"/>
+        <line num="31" type="stmt" count="1"/>
+        <line num="32" type="stmt" count="1"/>
+        <line num="33" type="stmt" count="1"/>
+        <line num="34" type="stmt" count="1"/>
+        <line num="35" type="stmt" count="1"/>
+        <line num="36" type="stmt" count="1"/>
+        <line num="37" type="stmt" count="1"/>
+        <line num="40" type="stmt" count="1"/>
+        <metrics loc="43" ncloc="41" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="16" elements="18" coveredelements="18"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Repositories/IntentoRepository.php">
+        <class name="Atlas\Repositories\IntentoRepository" namespace="Atlas\Repositories">
+          <metrics complexity="15" methods="14" coveredmethods="13" conditionals="0" coveredconditionals="0" statements="72" coveredstatements="67" elements="86" coveredelements="80"/>
+        </class>
+        <line num="13" type="method" name="obtener" visibility="public" complexity="1" crap="1" count="29"/>
+        <line num="15" type="stmt" count="29"/>
+        <line num="16" type="stmt" count="29"/>
+        <line num="20" type="stmt" count="29"/>
+        <line num="21" type="stmt" count="29"/>
+        <line num="22" type="stmt" count="29"/>
+        <line num="26" type="method" name="enCurso" visibility="public" complexity="2" crap="2" count="29"/>
+        <line num="28" type="stmt" count="29"/>
+        <line num="29" type="stmt" count="29"/>
+        <line num="30" type="stmt" count="29"/>
+        <line num="31" type="stmt" count="29"/>
+        <line num="32" type="stmt" count="29"/>
+        <line num="34" type="stmt" count="29"/>
+        <line num="37" type="method" name="crear" visibility="public" complexity="1" crap="1" count="29"/>
+        <line num="39" type="stmt" count="29"/>
+        <line num="40" type="stmt" count="29"/>
+        <line num="41" type="stmt" count="29"/>
+        <line num="42" type="stmt" count="29"/>
+        <line num="43" type="stmt" count="29"/>
+        <line num="45" type="stmt" count="29"/>
+        <line num="46" type="stmt" count="29"/>
+        <line num="47" type="stmt" count="29"/>
+        <line num="48" type="stmt" count="29"/>
+        <line num="52" type="method" name="registrarEvento" visibility="public" complexity="1" crap="1" count="29"/>
+        <line num="61" type="stmt" count="29"/>
+        <line num="62" type="stmt" count="29"/>
+        <line num="64" type="stmt" count="29"/>
+        <line num="65" type="stmt" count="29"/>
+        <line num="66" type="stmt" count="29"/>
+        <line num="69" type="method" name="preguntaDeLaActividad" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="71" type="stmt" count="23"/>
+        <line num="72" type="stmt" count="23"/>
+        <line num="73" type="stmt" count="23"/>
+        <line num="74" type="stmt" count="23"/>
+        <line num="77" type="method" name="opcionDeLaPregunta" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="79" type="stmt" count="23"/>
+        <line num="80" type="stmt" count="23"/>
+        <line num="81" type="stmt" count="23"/>
+        <line num="82" type="stmt" count="23"/>
+        <line num="85" type="method" name="responder" visibility="public" complexity="1" crap="1" count="22"/>
+        <line num="87" type="stmt" count="22"/>
+        <line num="88" type="stmt" count="22"/>
+        <line num="90" type="stmt" count="22"/>
+        <line num="91" type="stmt" count="22"/>
+        <line num="92" type="stmt" count="22"/>
+        <line num="95" type="method" name="cerrar" visibility="public" complexity="1" crap="1" count="26"/>
+        <line num="97" type="stmt" count="26"/>
+        <line num="98" type="stmt" count="26"/>
+        <line num="99" type="stmt" count="26"/>
+        <line num="100" type="stmt" count="26"/>
+        <line num="101" type="stmt" count="26"/>
+        <line num="110" type="method" name="conteoParaResultado" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="112" type="stmt" count="23"/>
+        <line num="113" type="stmt" count="23"/>
+        <line num="116" type="stmt" count="23"/>
+        <line num="117" type="stmt" count="23"/>
+        <line num="118" type="stmt" count="23"/>
+        <line num="120" type="stmt" count="23"/>
+        <line num="124" type="method" name="guardarResultado" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="126" type="stmt" count="23"/>
+        <line num="127" type="stmt" count="23"/>
+        <line num="128" type="stmt" count="23"/>
+        <line num="129" type="stmt" count="23"/>
+        <line num="133" type="method" name="resultado" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="135" type="stmt" count="23"/>
+        <line num="136" type="stmt" count="23"/>
+        <line num="137" type="stmt" count="23"/>
+        <line num="138" type="stmt" count="23"/>
+        <line num="142" type="method" name="detalleRespuestas" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="144" type="stmt" count="23"/>
+        <line num="145" type="stmt" count="23"/>
+        <line num="153" type="stmt" count="23"/>
+        <line num="154" type="stmt" count="23"/>
+        <line num="155" type="stmt" count="23"/>
+        <line num="159" type="method" name="interacciones" visibility="public" complexity="1" crap="1" count="26"/>
+        <line num="161" type="stmt" count="26"/>
+        <line num="162" type="stmt" count="26"/>
+        <line num="163" type="stmt" count="26"/>
+        <line num="164" type="stmt" count="26"/>
+        <line num="165" type="stmt" count="26"/>
+        <line num="169" type="method" name="inactivos" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="171" type="stmt" count="0"/>
+        <line num="172" type="stmt" count="0"/>
+        <line num="179" type="stmt" count="0"/>
+        <line num="180" type="stmt" count="0"/>
+        <line num="181" type="stmt" count="0"/>
+        <metrics loc="184" ncloc="167" classes="1" methods="14" coveredmethods="13" conditionals="0" coveredconditionals="0" statements="72" coveredstatements="67" elements="86" coveredelements="80"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Repositories/OrganizacionRepository.php">
+        <class name="Atlas\Repositories\OrganizacionRepository" namespace="Atlas\Repositories">
+          <metrics complexity="25" methods="17" coveredmethods="14" conditionals="0" coveredconditionals="0" statements="91" coveredstatements="68" elements="108" coveredelements="82"/>
+        </class>
+        <line num="13" type="method" name="instituciones" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="15" type="stmt" count="0"/>
+        <line num="16" type="stmt" count="0"/>
+        <line num="17" type="stmt" count="0"/>
+        <line num="18" type="stmt" count="0"/>
+        <line num="22" type="method" name="institucion" visibility="public" complexity="2" crap="2" count="4"/>
+        <line num="24" type="stmt" count="4"/>
+        <line num="26" type="stmt" count="4"/>
+        <line num="27" type="stmt" count="4"/>
+        <line num="31" type="method" name="crearInstitucion" visibility="public" complexity="2" crap="2" count="4"/>
+        <line num="33" type="stmt" count="4"/>
+        <line num="34" type="stmt" count="4"/>
+        <line num="35" type="stmt" count="4"/>
+        <line num="36" type="stmt" count="4"/>
+        <line num="37" type="stmt" count="4"/>
+        <line num="38" type="stmt" count="4"/>
+        <line num="41" type="method" name="actualizarInstitucion" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="43" type="stmt" count="1"/>
+        <line num="44" type="stmt" count="1"/>
+        <line num="45" type="stmt" count="1"/>
+        <line num="46" type="stmt" count="1"/>
+        <line num="50" type="method" name="requiereAprobacion" visibility="public" complexity="1" crap="1" count="40"/>
+        <line num="52" type="stmt" count="40"/>
+        <line num="53" type="stmt" count="40"/>
+        <line num="54" type="stmt" count="40"/>
+        <line num="55" type="stmt" count="40"/>
+        <line num="56" type="stmt" count="40"/>
+        <line num="59" type="method" name="existeInstitucion" visibility="public" complexity="1" crap="1" count="5"/>
+        <line num="61" type="stmt" count="5"/>
+        <line num="65" type="method" name="grupos" visibility="public" complexity="2" crap="2.26" count="6"/>
+        <line num="67" type="stmt" count="6"/>
+        <line num="68" type="stmt" count="0"/>
+        <line num="69" type="stmt" count="0"/>
+        <line num="73" type="stmt" count="0"/>
+        <line num="74" type="stmt" count="0"/>
+        <line num="77" type="stmt" count="6"/>
+        <line num="78" type="stmt" count="6"/>
+        <line num="83" type="stmt" count="6"/>
+        <line num="84" type="stmt" count="6"/>
+        <line num="85" type="stmt" count="6"/>
+        <line num="89" type="method" name="grupo" visibility="public" complexity="1" crap="1" count="6"/>
+        <line num="91" type="stmt" count="6"/>
+        <line num="94" type="method" name="crearGrupo" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="96" type="stmt" count="1"/>
+        <line num="97" type="stmt" count="1"/>
+        <line num="98" type="stmt" count="1"/>
+        <line num="99" type="stmt" count="1"/>
+        <line num="103" type="method" name="definirMiembros" visibility="public" complexity="2" crap="2" count="1"/>
+        <line num="105" type="stmt" count="1"/>
+        <line num="106" type="stmt" count="1"/>
+        <line num="107" type="stmt" count="1"/>
+        <line num="108" type="stmt" count="1"/>
+        <line num="109" type="stmt" count="1"/>
+        <line num="110" type="stmt" count="1"/>
+        <line num="111" type="stmt" count="1"/>
+        <line num="112" type="stmt" count="1"/>
+        <line num="114" type="stmt" count="1"/>
+        <line num="118" type="method" name="miembros" visibility="public" complexity="2" crap="2" count="11"/>
+        <line num="120" type="stmt" count="11"/>
+        <line num="122" type="stmt" count="11"/>
+        <line num="123" type="stmt" count="11"/>
+        <line num="124" type="stmt" count="11"/>
+        <line num="125" type="stmt" count="10"/>
+        <line num="126" type="stmt" count="10"/>
+        <line num="129" type="stmt" count="11"/>
+        <line num="132" type="method" name="perteneceAGrupo" visibility="public" complexity="1" crap="1" count="34"/>
+        <line num="134" type="stmt" count="34"/>
+        <line num="135" type="stmt" count="34"/>
+        <line num="136" type="stmt" count="34"/>
+        <line num="137" type="stmt" count="34"/>
+        <line num="141" type="method" name="docenteTieneAlEstudiante" visibility="public" complexity="1" crap="1" count="5"/>
+        <line num="143" type="stmt" count="5"/>
+        <line num="144" type="stmt" count="5"/>
+        <line num="145" type="stmt" count="5"/>
+        <line num="146" type="stmt" count="5"/>
+        <line num="147" type="stmt" count="5"/>
+        <line num="151" type="method" name="gruposDelUsuario" visibility="public" complexity="1" crap="1" count="7"/>
+        <line num="153" type="stmt" count="7"/>
+        <line num="154" type="stmt" count="7"/>
+        <line num="155" type="stmt" count="7"/>
+        <line num="156" type="stmt" count="7"/>
+        <line num="160" type="method" name="definirPermisosDeRol" visibility="public" complexity="3" crap="12" count="0"/>
+        <line num="162" type="stmt" count="0"/>
+        <line num="163" type="stmt" count="0"/>
+        <line num="164" type="stmt" count="0"/>
+        <line num="166" type="stmt" count="0"/>
+        <line num="167" type="stmt" count="0"/>
+        <line num="169" type="stmt" count="0"/>
+        <line num="170" type="stmt" count="0"/>
+        <line num="171" type="stmt" count="0"/>
+        <line num="172" type="stmt" count="0"/>
+        <line num="173" type="stmt" count="0"/>
+        <line num="174" type="stmt" count="0"/>
+        <line num="176" type="stmt" count="0"/>
+        <line num="177" type="stmt" count="0"/>
+        <line num="178" type="stmt" count="0"/>
+        <line num="180" type="stmt" count="0"/>
+        <line num="184" type="method" name="roles" visibility="public" complexity="2" crap="2" count="1"/>
+        <line num="186" type="stmt" count="1"/>
+        <line num="187" type="stmt" count="1"/>
+        <line num="188" type="stmt" count="1"/>
+        <line num="189" type="stmt" count="1"/>
+        <line num="190" type="stmt" count="1"/>
+        <line num="191" type="stmt" count="1"/>
+        <line num="192" type="stmt" count="1"/>
+        <line num="195" type="stmt" count="1"/>
+        <line num="199" type="method" name="codigosPermisos" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="201" type="stmt" count="1"/>
+        <metrics loc="204" ncloc="188" classes="1" methods="17" coveredmethods="14" conditionals="0" coveredconditionals="0" statements="91" coveredstatements="68" elements="108" coveredelements="82"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Repositories/ReporteRepository.php">
+        <class name="Atlas\Repositories\ReporteRepository" namespace="Atlas\Repositories">
+          <metrics complexity="23" methods="10" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="125" coveredstatements="115" elements="135" coveredelements="120"/>
+        </class>
+        <line num="15" type="method" name="lectura" visibility="private" complexity="1" crap="1" count="12"/>
+        <line num="17" type="stmt" count="12"/>
+        <line num="21" type="method" name="distribucion" visibility="public" complexity="1" crap="1" count="4"/>
+        <line num="23" type="stmt" count="4"/>
+        <line num="24" type="stmt" count="4"/>
+        <line num="25" type="stmt" count="4"/>
+        <line num="26" type="stmt" count="4"/>
+        <line num="27" type="stmt" count="4"/>
+        <line num="28" type="stmt" count="4"/>
+        <line num="40" type="method" name="preguntasConMasError" visibility="public" complexity="3" crap="3" count="5"/>
+        <line num="47" type="stmt" count="5"/>
+        <line num="48" type="stmt" count="5"/>
+        <line num="58" type="stmt" count="5"/>
+        <line num="59" type="stmt" count="5"/>
+        <line num="60" type="stmt" count="5"/>
+        <line num="61" type="stmt" count="5"/>
+        <line num="62" type="stmt" count="5"/>
+        <line num="63" type="stmt" count="5"/>
+        <line num="64" type="stmt" count="0"/>
+        <line num="66" type="stmt" count="5"/>
+        <line num="67" type="stmt" count="5"/>
+        <line num="68" type="stmt" count="5"/>
+        <line num="69" type="stmt" count="5"/>
+        <line num="70" type="stmt" count="5"/>
+        <line num="71" type="stmt" count="5"/>
+        <line num="72" type="stmt" count="5"/>
+        <line num="73" type="stmt" count="5"/>
+        <line num="74" type="stmt" count="5"/>
+        <line num="76" type="stmt" count="5"/>
+        <line num="77" type="stmt" count="5"/>
+        <line num="78" type="stmt" count="5"/>
+        <line num="79" type="stmt" count="5"/>
+        <line num="81" type="stmt" count="5"/>
+        <line num="85" type="method" name="riesgoEnPeriodo" visibility="public" complexity="2" crap="2.00" count="6"/>
+        <line num="87" type="stmt" count="6"/>
+        <line num="88" type="stmt" count="0"/>
+        <line num="90" type="stmt" count="6"/>
+        <line num="92" type="stmt" count="6"/>
+        <line num="93" type="stmt" count="6"/>
+        <line num="95" type="stmt" count="6"/>
+        <line num="96" type="stmt" count="6"/>
+        <line num="97" type="stmt" count="6"/>
+        <line num="98" type="stmt" count="6"/>
+        <line num="99" type="stmt" count="6"/>
+        <line num="103" type="method" name="evolucion" visibility="public" complexity="1" crap="1" count="5"/>
+        <line num="105" type="stmt" count="5"/>
+        <line num="106" type="stmt" count="5"/>
+        <line num="107" type="stmt" count="5"/>
+        <line num="108" type="stmt" count="5"/>
+        <line num="109" type="stmt" count="5"/>
+        <line num="110" type="stmt" count="5"/>
+        <line num="119" type="method" name="resultados" visibility="public" complexity="7" crap="7" count="2"/>
+        <line num="121" type="stmt" count="2"/>
+        <line num="122" type="stmt" count="2"/>
+        <line num="123" type="stmt" count="2"/>
+        <line num="124" type="stmt" count="2"/>
+        <line num="125" type="stmt" count="0"/>
+        <line num="127" type="stmt" count="2"/>
+        <line num="128" type="stmt" count="2"/>
+        <line num="130" type="stmt" count="2"/>
+        <line num="131" type="stmt" count="2"/>
+        <line num="132" type="stmt" count="2"/>
+        <line num="133" type="stmt" count="2"/>
+        <line num="136" type="stmt" count="2"/>
+        <line num="137" type="stmt" count="2"/>
+        <line num="138" type="stmt" count="2"/>
+        <line num="140" type="stmt" count="2"/>
+        <line num="141" type="stmt" count="2"/>
+        <line num="142" type="stmt" count="2"/>
+        <line num="144" type="stmt" count="2"/>
+        <line num="145" type="stmt" count="2"/>
+        <line num="146" type="stmt" count="2"/>
+        <line num="149" type="stmt" count="2"/>
+        <line num="150" type="stmt" count="2"/>
+        <line num="151" type="stmt" count="2"/>
+        <line num="152" type="stmt" count="2"/>
+        <line num="153" type="stmt" count="2"/>
+        <line num="154" type="stmt" count="2"/>
+        <line num="158" type="stmt" count="2"/>
+        <line num="159" type="stmt" count="2"/>
+        <line num="160" type="stmt" count="2"/>
+        <line num="161" type="stmt" count="2"/>
+        <line num="162" type="stmt" count="2"/>
+        <line num="164" type="stmt" count="2"/>
+        <line num="174" type="method" name="ultimosPuntajes" visibility="public" complexity="1" crap="1" count="4"/>
+        <line num="176" type="stmt" count="4"/>
+        <line num="177" type="stmt" count="4"/>
+        <line num="190" type="stmt" count="4"/>
+        <line num="191" type="stmt" count="4"/>
+        <line num="192" type="stmt" count="4"/>
+        <line num="194" type="stmt" count="4"/>
+        <line num="195" type="stmt" count="4"/>
+        <line num="196" type="stmt" count="4"/>
+        <line num="197" type="stmt" count="4"/>
+        <line num="209" type="method" name="aciertosPorHabilidad" visibility="public" complexity="4" crap="4.00" count="8"/>
+        <line num="211" type="stmt" count="8"/>
+        <line num="212" type="stmt" count="0"/>
+        <line num="214" type="stmt" count="8"/>
+        <line num="215" type="stmt" count="8"/>
+        <line num="216" type="stmt" count="5"/>
+        <line num="217" type="stmt" count="4"/>
+        <line num="218" type="stmt" count="8"/>
+        <line num="219" type="stmt" count="8"/>
+        <line num="223" type="stmt" count="8"/>
+        <line num="224" type="stmt" count="8"/>
+        <line num="231" type="stmt" count="8"/>
+        <line num="232" type="stmt" count="8"/>
+        <line num="233" type="stmt" count="8"/>
+        <line num="235" type="stmt" count="8"/>
+        <line num="236" type="stmt" count="8"/>
+        <line num="237" type="stmt" count="8"/>
+        <line num="238" type="stmt" count="8"/>
+        <line num="239" type="stmt" count="8"/>
+        <line num="240" type="stmt" count="8"/>
+        <line num="249" type="method" name="guardarAnalisisGrupal" visibility="public" complexity="1" crap="1" count="4"/>
+        <line num="256" type="stmt" count="4"/>
+        <line num="257" type="stmt" count="4"/>
+        <line num="259" type="stmt" count="4"/>
+        <line num="260" type="stmt" count="4"/>
+        <line num="261" type="stmt" count="4"/>
+        <line num="262" type="stmt" count="4"/>
+        <line num="266" type="method" name="agrupamiento" visibility="public" complexity="2" crap="2.39" count="4"/>
+        <line num="268" type="stmt" count="4"/>
+        <line num="269" type="stmt" count="4"/>
+        <line num="270" type="stmt" count="4"/>
+        <line num="271" type="stmt" count="4"/>
+        <line num="272" type="stmt" count="4"/>
+        <line num="273" type="stmt" count="4"/>
+        <line num="274" type="stmt" count="4"/>
+        <line num="276" type="stmt" count="0"/>
+        <line num="277" type="stmt" count="0"/>
+        <line num="279" type="stmt" count="0"/>
+        <line num="280" type="stmt" count="0"/>
+        <line num="281" type="stmt" count="0"/>
+        <line num="283" type="stmt" count="0"/>
+        <metrics loc="286" ncloc="241" classes="1" methods="10" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="125" coveredstatements="115" elements="135" coveredelements="120"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Repositories/Repository.php">
+        <class name="Atlas\Repositories\Repository" namespace="Atlas\Repositories">
+          <metrics complexity="11" methods="8" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="25" coveredstatements="23" elements="33" coveredelements="30"/>
+        </class>
+        <line num="16" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="18" type="stmt" count="70"/>
+        <line num="20" type="method" name="pdo" visibility="protected" complexity="1" crap="1" count="70"/>
+        <line num="22" type="stmt" count="70"/>
+        <line num="26" type="method" name="todos" visibility="protected" complexity="1" crap="1" count="67"/>
+        <line num="28" type="stmt" count="67"/>
+        <line num="29" type="stmt" count="67"/>
+        <line num="31" type="stmt" count="67"/>
+        <line num="35" type="method" name="uno" visibility="protected" complexity="2" crap="2" count="70"/>
+        <line num="37" type="stmt" count="70"/>
+        <line num="38" type="stmt" count="70"/>
+        <line num="39" type="stmt" count="70"/>
+        <line num="41" type="stmt" count="70"/>
+        <line num="45" type="method" name="valor" visibility="protected" complexity="1" crap="1" count="65"/>
+        <line num="47" type="stmt" count="65"/>
+        <line num="48" type="stmt" count="65"/>
+        <line num="50" type="stmt" count="65"/>
+        <line num="54" type="method" name="ejecutar" visibility="protected" complexity="1" crap="1" count="70"/>
+        <line num="56" type="stmt" count="70"/>
+        <line num="57" type="stmt" count="70"/>
+        <line num="59" type="stmt" count="70"/>
+        <line num="63" type="method" name="afectadas" visibility="protected" complexity="1" crap="1" count="69"/>
+        <line num="65" type="stmt" count="69"/>
+        <line num="66" type="stmt" count="69"/>
+        <line num="68" type="stmt" count="69"/>
+        <line num="71" type="method" name="idCatalogo" visibility="protected" complexity="3" crap="3.21" count="42"/>
+        <line num="73" type="stmt" count="42"/>
+        <line num="74" type="stmt" count="42"/>
+        <line num="75" type="stmt" count="0"/>
+        <line num="77" type="stmt" count="42"/>
+        <line num="78" type="stmt" count="42"/>
+        <line num="79" type="stmt" count="0"/>
+        <line num="82" type="stmt" count="42"/>
+        <metrics loc="85" ncloc="76" classes="1" methods="8" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="25" coveredstatements="23" elements="33" coveredelements="30"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Repositories/UsuarioRepository.php">
+        <class name="Atlas\Repositories\UsuarioRepository" namespace="Atlas\Repositories">
+          <metrics complexity="17" methods="11" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="66" coveredstatements="53" elements="77" coveredelements="62"/>
+        </class>
+        <line num="13" type="method" name="porId" visibility="public" complexity="1" crap="1" count="64"/>
+        <line num="15" type="stmt" count="64"/>
+        <line num="16" type="stmt" count="64"/>
+        <line num="17" type="stmt" count="64"/>
+        <line num="18" type="stmt" count="64"/>
+        <line num="22" type="method" name="paraLogin" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="24" type="stmt" count="70"/>
+        <line num="25" type="stmt" count="70"/>
+        <line num="26" type="stmt" count="70"/>
+        <line num="27" type="stmt" count="70"/>
+        <line num="28" type="stmt" count="70"/>
+        <line num="31" type="method" name="existeCorreo" visibility="public" complexity="1" crap="1" count="4"/>
+        <line num="33" type="stmt" count="4"/>
+        <line num="34" type="stmt" count="4"/>
+        <line num="35" type="stmt" count="4"/>
+        <line num="36" type="stmt" count="4"/>
+        <line num="40" type="method" name="listar" visibility="public" complexity="2" crap="6" count="0"/>
+        <line num="42" type="stmt" count="0"/>
+        <line num="43" type="stmt" count="0"/>
+        <line num="44" type="stmt" count="0"/>
+        <line num="45" type="stmt" count="0"/>
+        <line num="46" type="stmt" count="0"/>
+        <line num="47" type="stmt" count="0"/>
+        <line num="48" type="stmt" count="0"/>
+        <line num="49" type="stmt" count="0"/>
+        <line num="50" type="stmt" count="0"/>
+        <line num="51" type="stmt" count="0"/>
+        <line num="53" type="stmt" count="0"/>
+        <line num="56" type="method" name="crear" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="64" type="stmt" count="2"/>
+        <line num="65" type="stmt" count="2"/>
+        <line num="66" type="stmt" count="2"/>
+        <line num="67" type="stmt" count="2"/>
+        <line num="68" type="stmt" count="2"/>
+        <line num="72" type="method" name="actualizar" visibility="public" complexity="5" crap="5.12" count="2"/>
+        <line num="74" type="stmt" count="2"/>
+        <line num="75" type="stmt" count="2"/>
+        <line num="76" type="stmt" count="2"/>
+        <line num="77" type="stmt" count="2"/>
+        <line num="78" type="stmt" count="2"/>
+        <line num="79" type="stmt" count="0"/>
+        <line num="81" type="stmt" count="2"/>
+        <line num="82" type="stmt" count="2"/>
+        <line num="84" type="stmt" count="2"/>
+        <line num="85" type="stmt" count="0"/>
+        <line num="87" type="stmt" count="2"/>
+        <line num="88" type="stmt" count="2"/>
+        <line num="91" type="method" name="registrarFallo" visibility="public" complexity="1" crap="1" count="3"/>
+        <line num="93" type="stmt" count="3"/>
+        <line num="94" type="stmt" count="3"/>
+        <line num="97" type="stmt" count="3"/>
+        <line num="98" type="stmt" count="3"/>
+        <line num="99" type="stmt" count="3"/>
+        <line num="101" type="stmt" count="3"/>
+        <line num="104" type="method" name="reiniciarFallos" visibility="public" complexity="1" crap="1" count="67"/>
+        <line num="106" type="stmt" count="67"/>
+        <line num="109" type="method" name="rolTienePermiso" visibility="public" complexity="1" crap="1" count="62"/>
+        <line num="111" type="stmt" count="62"/>
+        <line num="112" type="stmt" count="62"/>
+        <line num="113" type="stmt" count="62"/>
+        <line num="114" type="stmt" count="62"/>
+        <line num="115" type="stmt" count="62"/>
+        <line num="119" type="method" name="permisosDeRol" visibility="public" complexity="1" crap="1" count="67"/>
+        <line num="121" type="stmt" count="67"/>
+        <line num="122" type="stmt" count="67"/>
+        <line num="123" type="stmt" count="67"/>
+        <line num="124" type="stmt" count="67"/>
+        <line num="125" type="stmt" count="67"/>
+        <line num="129" type="method" name="normalizar" visibility="private" complexity="2" crap="2" count="70"/>
+        <line num="131" type="stmt" count="70"/>
+        <line num="132" type="stmt" count="1"/>
+        <line num="134" type="stmt" count="70"/>
+        <line num="135" type="stmt" count="70"/>
+        <line num="136" type="stmt" count="70"/>
+        <line num="137" type="stmt" count="70"/>
+        <line num="138" type="stmt" count="70"/>
+        <line num="140" type="stmt" count="70"/>
+        <metrics loc="143" ncloc="137" classes="1" methods="11" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="66" coveredstatements="53" elements="77" coveredelements="62"/>
+      </file>
+    </package>
+    <package name="Atlas\Services">
+      <file name="/home/user/tesis/atlas/app/Services/ActividadService.php">
+        <class name="Atlas\Services\ActividadService" namespace="Atlas\Services">
+          <metrics complexity="54" methods="16" coveredmethods="13" conditionals="0" coveredconditionals="0" statements="136" coveredstatements="126" elements="152" coveredelements="139"/>
+        </class>
+        <line num="27" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="41"/>
+        <line num="32" type="stmt" count="41"/>
+        <line num="35" type="method" name="crear" visibility="public" complexity="1" crap="1" count="41"/>
+        <line num="37" type="stmt" count="41"/>
+        <line num="38" type="stmt" count="40"/>
+        <line num="39" type="stmt" count="40"/>
+        <line num="40" type="stmt" count="40"/>
+        <line num="41" type="stmt" count="40"/>
+        <line num="42" type="stmt" count="40"/>
+        <line num="43" type="stmt" count="40"/>
+        <line num="44" type="stmt" count="40"/>
+        <line num="45" type="stmt" count="40"/>
+        <line num="46" type="stmt" count="40"/>
+        <line num="47" type="stmt" count="40"/>
+        <line num="49" type="stmt" count="40"/>
+        <line num="50" type="stmt" count="40"/>
+        <line num="52" type="stmt" count="40"/>
+        <line num="56" type="method" name="editar" visibility="public" complexity="3" crap="3.00" count="1"/>
+        <line num="58" type="stmt" count="1"/>
+        <line num="59" type="stmt" count="1"/>
+        <line num="60" type="stmt" count="0"/>
+        <line num="62" type="stmt" count="1"/>
+        <line num="63" type="stmt" count="1"/>
+        <line num="64" type="stmt" count="1"/>
+        <line num="66" type="stmt" count="1"/>
+        <line num="68" type="stmt" count="1"/>
+        <line num="69" type="stmt" count="1"/>
+        <line num="70" type="stmt" count="1"/>
+        <line num="71" type="stmt" count="1"/>
+        <line num="72" type="stmt" count="1"/>
+        <line num="73" type="stmt" count="1"/>
+        <line num="74" type="stmt" count="1"/>
+        <line num="75" type="stmt" count="1"/>
+        <line num="76" type="stmt" count="1"/>
+        <line num="78" type="stmt" count="1"/>
+        <line num="81" type="method" name="enviar" visibility="public" complexity="2" crap="2" count="36"/>
+        <line num="83" type="stmt" count="36"/>
+        <line num="84" type="stmt" count="35"/>
+        <line num="85" type="stmt" count="35"/>
+        <line num="86" type="stmt" count="1"/>
+        <line num="87" type="stmt" count="1"/>
+        <line num="88" type="stmt" count="1"/>
+        <line num="90" type="stmt" count="34"/>
+        <line num="91" type="stmt" count="33"/>
+        <line num="93" type="stmt" count="33"/>
+        <line num="96" type="method" name="aprobar" visibility="public" complexity="1" crap="1" count="32"/>
+        <line num="98" type="stmt" count="32"/>
+        <line num="99" type="stmt" count="32"/>
+        <line num="101" type="stmt" count="32"/>
+        <line num="104" type="method" name="rechazar" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="106" type="stmt" count="1"/>
+        <line num="107" type="stmt" count="1"/>
+        <line num="109" type="stmt" count="1"/>
+        <line num="118" type="method" name="publicar" visibility="public" complexity="8" crap="8" count="36"/>
+        <line num="120" type="stmt" count="36"/>
+        <line num="121" type="stmt" count="36"/>
+        <line num="122" type="stmt" count="36"/>
+        <line num="123" type="stmt" count="34"/>
+        <line num="125" type="stmt" count="34"/>
+        <line num="126" type="stmt" count="34"/>
+        <line num="127" type="stmt" count="34"/>
+        <line num="128" type="stmt" count="1"/>
+        <line num="131" type="stmt" count="33"/>
+        <line num="132" type="stmt" count="2"/>
+        <line num="134" type="stmt" count="32"/>
+        <line num="135" type="stmt" count="32"/>
+        <line num="136" type="stmt" count="32"/>
+        <line num="137" type="stmt" count="32"/>
+        <line num="139" type="stmt" count="32"/>
+        <line num="140" type="stmt" count="32"/>
+        <line num="142" type="stmt" count="32"/>
+        <line num="146" type="method" name="detalle" visibility="public" complexity="2" crap="2" count="40"/>
+        <line num="148" type="stmt" count="40"/>
+        <line num="149" type="stmt" count="40"/>
+        <line num="150" type="stmt" count="40"/>
+        <line num="151" type="stmt" count="40"/>
+        <line num="152" type="stmt" count="40"/>
+        <line num="153" type="stmt" count="40"/>
+        <line num="154" type="stmt" count="40"/>
+        <line num="156" type="stmt" count="40"/>
+        <line num="158" type="stmt" count="40"/>
+        <line num="161" type="method" name="exigirContenido" visibility="private" complexity="2" crap="2" count="36"/>
+        <line num="163" type="stmt" count="36"/>
+        <line num="164" type="stmt" count="36"/>
+        <line num="165" type="stmt" count="3"/>
+        <line num="170" type="method" name="detalleSegunRol" visibility="public" complexity="3" crap="3" count="3"/>
+        <line num="172" type="stmt" count="3"/>
+        <line num="173" type="stmt" count="3"/>
+        <line num="174" type="stmt" count="1"/>
+        <line num="177" type="stmt" count="2"/>
+        <line num="184" type="method" name="erroresDeContenido" visibility="public" complexity="6" crap="6.02" count="36"/>
+        <line num="186" type="stmt" count="36"/>
+        <line num="187" type="stmt" count="2"/>
+        <line num="189" type="stmt" count="35"/>
+        <line num="190" type="stmt" count="35"/>
+        <line num="191" type="stmt" count="35"/>
+        <line num="192" type="stmt" count="35"/>
+        <line num="193" type="stmt" count="35"/>
+        <line num="194" type="stmt" count="0"/>
+        <line num="195" type="stmt" count="35"/>
+        <line num="196" type="stmt" count="1"/>
+        <line num="197" type="stmt" count="35"/>
+        <line num="199" type="stmt" count="1"/>
+        <line num="203" type="stmt" count="35"/>
+        <line num="206" type="method" name="transicion" visibility="private" complexity="1" crap="1" count="33"/>
+        <line num="208" type="stmt" count="33"/>
+        <line num="212" type="method" name="existente" visibility="private" complexity="1" crap="1" count="40"/>
+        <line num="214" type="stmt" count="40"/>
+        <line num="218" type="method" name="propia" visibility="private" complexity="2" crap="2" count="39"/>
+        <line num="220" type="stmt" count="39"/>
+        <line num="221" type="stmt" count="39"/>
+        <line num="222" type="stmt" count="1"/>
+        <line num="225" type="stmt" count="38"/>
+        <line num="229" type="method" name="exigirEstado" visibility="private" complexity="2" crap="2" count="37"/>
+        <line num="231" type="stmt" count="37"/>
+        <line num="232" type="stmt" count="2"/>
+        <line num="233" type="stmt" count="2"/>
+        <line num="234" type="stmt" count="2"/>
+        <line num="244" type="method" name="normalizarPreguntas" visibility="private" complexity="18" crap="22.62" count="41"/>
+        <line num="246" type="stmt" count="41"/>
+        <line num="247" type="stmt" count="0"/>
+        <line num="249" type="stmt" count="41"/>
+        <line num="250" type="stmt" count="41"/>
+        <line num="251" type="stmt" count="41"/>
+        <line num="252" type="stmt" count="41"/>
+        <line num="253" type="stmt" count="40"/>
+        <line num="254" type="stmt" count="40"/>
+        <line num="255" type="stmt" count="0"/>
+        <line num="256" type="stmt" count="0"/>
+        <line num="258" type="stmt" count="40"/>
+        <line num="259" type="stmt" count="40"/>
+        <line num="260" type="stmt" count="40"/>
+        <line num="261" type="stmt" count="40"/>
+        <line num="262" type="stmt" count="0"/>
+        <line num="263" type="stmt" count="0"/>
+        <line num="265" type="stmt" count="40"/>
+        <line num="267" type="stmt" count="40"/>
+        <line num="268" type="stmt" count="0"/>
+        <line num="271" type="stmt" count="40"/>
+        <line num="272" type="stmt" count="40"/>
+        <line num="273" type="stmt" count="0"/>
+        <line num="274" type="stmt" count="0"/>
+        <line num="276" type="stmt" count="40"/>
+        <line num="277" type="stmt" count="40"/>
+        <line num="278" type="stmt" count="39"/>
+        <line num="279" type="stmt" count="1"/>
+        <line num="280" type="stmt" count="1"/>
+        <line num="282" type="stmt" count="38"/>
+        <line num="284" type="stmt" count="40"/>
+        <line num="286" type="stmt" count="41"/>
+        <line num="287" type="stmt" count="1"/>
+        <line num="290" type="stmt" count="40"/>
+        <metrics loc="293" ncloc="253" classes="1" methods="16" coveredmethods="13" conditionals="0" coveredconditionals="0" statements="136" coveredstatements="126" elements="152" coveredelements="139"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/AnalisisClient.php">
+        <class name="Atlas\Services\AnalisisClient" namespace="Atlas\Services">
+          <metrics complexity="13" methods="6" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="39" coveredstatements="11" elements="45" coveredelements="14"/>
+        </class>
+        <line num="14" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="18" type="stmt" count="0"/>
+        <line num="21" type="method" name="salud" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="23" type="stmt" count="1"/>
+        <line num="27" type="method" name="estadoGrupo" visibility="public" complexity="1" crap="1" count="4"/>
+        <line num="29" type="stmt" count="4"/>
+        <line num="30" type="stmt" count="4"/>
+        <line num="31" type="stmt" count="4"/>
+        <line num="32" type="stmt" count="4"/>
+        <line num="33" type="stmt" count="4"/>
+        <line num="37" type="method" name="recalcular" visibility="public" complexity="1" crap="2" count="0"/>
+        <line num="39" type="stmt" count="0"/>
+        <line num="40" type="stmt" count="0"/>
+        <line num="41" type="stmt" count="0"/>
+        <line num="42" type="stmt" count="0"/>
+        <line num="43" type="stmt" count="0"/>
+        <line num="44" type="stmt" count="0"/>
+        <line num="53" type="method" name="redactar" visibility="public" complexity="1" crap="1" count="5"/>
+        <line num="55" type="stmt" count="5"/>
+        <line num="56" type="stmt" count="5"/>
+        <line num="57" type="stmt" count="5"/>
+        <line num="58" type="stmt" count="5"/>
+        <line num="59" type="stmt" count="5"/>
+        <line num="63" type="method" name="solicitar" visibility="protected" complexity="8" crap="72" count="0"/>
+        <line num="65" type="stmt" count="0"/>
+        <line num="66" type="stmt" count="0"/>
+        <line num="67" type="stmt" count="0"/>
+        <line num="68" type="stmt" count="0"/>
+        <line num="69" type="stmt" count="0"/>
+        <line num="70" type="stmt" count="0"/>
+        <line num="71" type="stmt" count="0"/>
+        <line num="72" type="stmt" count="0"/>
+        <line num="73" type="stmt" count="0"/>
+        <line num="74" type="stmt" count="0"/>
+        <line num="76" type="stmt" count="0"/>
+        <line num="77" type="stmt" count="0"/>
+        <line num="78" type="stmt" count="0"/>
+        <line num="80" type="stmt" count="0"/>
+        <line num="81" type="stmt" count="0"/>
+        <line num="82" type="stmt" count="0"/>
+        <line num="83" type="stmt" count="0"/>
+        <line num="86" type="stmt" count="0"/>
+        <line num="87" type="stmt" count="0"/>
+        <line num="88" type="stmt" count="0"/>
+        <line num="91" type="stmt" count="0"/>
+        <metrics loc="94" ncloc="79" classes="1" methods="6" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="39" coveredstatements="11" elements="45" coveredelements="14"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/AuditoriaService.php">
+        <class name="Atlas\Services\AuditoriaService" namespace="Atlas\Services">
+          <metrics complexity="4" methods="2" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="13" elements="17" coveredelements="14"/>
+        </class>
+        <line num="17" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="22" type="stmt" count="70"/>
+        <line num="25" type="method" name="registrar" visibility="public" complexity="3" crap="3.03" count="70"/>
+        <line num="34" type="stmt" count="70"/>
+        <line num="35" type="stmt" count="70"/>
+        <line num="36" type="stmt" count="0"/>
+        <line num="38" type="stmt" count="70"/>
+        <line num="39" type="stmt" count="70"/>
+        <line num="40" type="stmt" count="70"/>
+        <line num="41" type="stmt" count="70"/>
+        <line num="42" type="stmt" count="70"/>
+        <line num="43" type="stmt" count="70"/>
+        <line num="44" type="stmt" count="70"/>
+        <line num="45" type="stmt" count="70"/>
+        <line num="46" type="stmt" count="70"/>
+        <line num="48" type="stmt" count="70"/>
+        <line num="49" type="stmt" count="0"/>
+        <metrics loc="53" ncloc="46" classes="1" methods="2" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="13" elements="17" coveredelements="14"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/AuthService.php">
+        <class name="Atlas\Services\AuthService" namespace="Atlas\Services">
+          <metrics complexity="14" methods="6" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="76" coveredstatements="75" elements="82" coveredelements="80"/>
+        </class>
+        <line num="23" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="70"/>
+        <line num="31" type="stmt" count="70"/>
+        <line num="34" type="method" name="iniciarSesion" visibility="public" complexity="9" crap="9" count="70"/>
+        <line num="36" type="stmt" count="70"/>
+        <line num="38" type="stmt" count="70"/>
+        <line num="40" type="stmt" count="3"/>
+        <line num="41" type="stmt" count="3"/>
+        <line num="42" type="stmt" count="3"/>
+        <line num="43" type="stmt" count="3"/>
+        <line num="44" type="stmt" count="3"/>
+        <line num="45" type="stmt" count="3"/>
+        <line num="46" type="stmt" count="3"/>
+        <line num="47" type="stmt" count="3"/>
+        <line num="48" type="stmt" count="3"/>
+        <line num="49" type="stmt" count="3"/>
+        <line num="50" type="stmt" count="3"/>
+        <line num="54" type="stmt" count="69"/>
+        <line num="55" type="stmt" count="69"/>
+        <line num="57" type="stmt" count="1"/>
+        <line num="58" type="stmt" count="1"/>
+        <line num="59" type="stmt" count="1"/>
+        <line num="60" type="stmt" count="1"/>
+        <line num="61" type="stmt" count="1"/>
+        <line num="62" type="stmt" count="1"/>
+        <line num="63" type="stmt" count="1"/>
+        <line num="64" type="stmt" count="1"/>
+        <line num="65" type="stmt" count="1"/>
+        <line num="66" type="stmt" count="1"/>
+        <line num="67" type="stmt" count="1"/>
+        <line num="68" type="stmt" count="1"/>
+        <line num="69" type="stmt" count="1"/>
+        <line num="72" type="stmt" count="69"/>
+        <line num="73" type="stmt" count="3"/>
+        <line num="74" type="stmt" count="3"/>
+        <line num="75" type="stmt" count="3"/>
+        <line num="76" type="stmt" count="3"/>
+        <line num="77" type="stmt" count="3"/>
+        <line num="78" type="stmt" count="3"/>
+        <line num="79" type="stmt" count="3"/>
+        <line num="80" type="stmt" count="3"/>
+        <line num="81" type="stmt" count="3"/>
+        <line num="82" type="stmt" count="3"/>
+        <line num="83" type="stmt" count="3"/>
+        <line num="84" type="stmt" count="1"/>
+        <line num="85" type="stmt" count="1"/>
+        <line num="86" type="stmt" count="1"/>
+        <line num="87" type="stmt" count="1"/>
+        <line num="88" type="stmt" count="1"/>
+        <line num="89" type="stmt" count="1"/>
+        <line num="90" type="stmt" count="1"/>
+        <line num="91" type="stmt" count="1"/>
+        <line num="92" type="stmt" count="1"/>
+        <line num="94" type="stmt" count="3"/>
+        <line num="97" type="stmt" count="67"/>
+        <line num="98" type="stmt" count="67"/>
+        <line num="99" type="stmt" count="0"/>
+        <line num="101" type="stmt" count="67"/>
+        <line num="102" type="stmt" count="67"/>
+        <line num="103" type="stmt" count="67"/>
+        <line num="104" type="stmt" count="67"/>
+        <line num="105" type="stmt" count="67"/>
+        <line num="107" type="stmt" count="67"/>
+        <line num="110" type="method" name="cerrarSesion" visibility="public" complexity="1" crap="1" count="1"/>
+        <line num="112" type="stmt" count="1"/>
+        <line num="113" type="stmt" count="1"/>
+        <line num="117" type="method" name="perfilSesion" visibility="public" complexity="1" crap="1" count="67"/>
+        <line num="119" type="stmt" count="67"/>
+        <line num="120" type="stmt" count="67"/>
+        <line num="121" type="stmt" count="67"/>
+        <line num="122" type="stmt" count="67"/>
+        <line num="123" type="stmt" count="67"/>
+        <line num="124" type="stmt" count="67"/>
+        <line num="125" type="stmt" count="67"/>
+        <line num="126" type="stmt" count="67"/>
+        <line num="127" type="stmt" count="67"/>
+        <line num="128" type="stmt" count="67"/>
+        <line num="129" type="stmt" count="67"/>
+        <line num="133" type="method" name="hashFicticio" visibility="private" complexity="1" crap="1" count="3"/>
+        <line num="135" type="stmt" count="3"/>
+        <line num="137" type="stmt" count="3"/>
+        <line num="140" type="method" name="hash" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="142" type="stmt" count="2"/>
+        <metrics loc="145" ncloc="134" classes="1" methods="6" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="76" coveredstatements="75" elements="82" coveredelements="80"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/IntentoService.php">
+        <class name="Atlas\Services\IntentoService" namespace="Atlas\Services">
+          <metrics complexity="48" methods="17" coveredmethods="12" conditionals="0" coveredconditionals="0" statements="179" coveredstatements="153" elements="196" coveredelements="165"/>
+        </class>
+        <line num="31" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="30"/>
+        <line num="38" type="stmt" count="30"/>
+        <line num="41" type="method" name="iniciar" visibility="public" complexity="3" crap="3" count="30"/>
+        <line num="43" type="stmt" count="30"/>
+        <line num="45" type="stmt" count="1"/>
+        <line num="47" type="stmt" count="29"/>
+        <line num="48" type="stmt" count="29"/>
+        <line num="49" type="stmt" count="29"/>
+        <line num="50" type="stmt" count="29"/>
+        <line num="51" type="stmt" count="29"/>
+        <line num="52" type="stmt" count="29"/>
+        <line num="54" type="stmt" count="29"/>
+        <line num="55" type="stmt" count="29"/>
+        <line num="56" type="stmt" count="29"/>
+        <line num="58" type="stmt" count="29"/>
+        <line num="60" type="stmt" count="29"/>
+        <line num="61" type="stmt" count="29"/>
+        <line num="62" type="stmt" count="29"/>
+        <line num="63" type="stmt" count="29"/>
+        <line num="64" type="stmt" count="29"/>
+        <line num="65" type="stmt" count="29"/>
+        <line num="66" type="stmt" count="29"/>
+        <line num="67" type="stmt" count="29"/>
+        <line num="68" type="stmt" count="29"/>
+        <line num="69" type="stmt" count="29"/>
+        <line num="70" type="stmt" count="29"/>
+        <line num="71" type="stmt" count="29"/>
+        <line num="78" type="method" name="registrarEventos" visibility="public" complexity="6" crap="6.01" count="24"/>
+        <line num="80" type="stmt" count="24"/>
+        <line num="81" type="stmt" count="24"/>
+        <line num="82" type="stmt" count="0"/>
+        <line num="84" type="stmt" count="24"/>
+        <line num="85" type="stmt" count="24"/>
+        <line num="86" type="stmt" count="24"/>
+        <line num="87" type="stmt" count="24"/>
+        <line num="88" type="stmt" count="24"/>
+        <line num="89" type="stmt" count="24"/>
+        <line num="90" type="stmt" count="24"/>
+        <line num="91" type="stmt" count="24"/>
+        <line num="92" type="stmt" count="24"/>
+        <line num="93" type="stmt" count="24"/>
+        <line num="94" type="stmt" count="24"/>
+        <line num="95" type="stmt" count="24"/>
+        <line num="96" type="stmt" count="24"/>
+        <line num="98" type="stmt" count="24"/>
+        <line num="100" type="stmt" count="24"/>
+        <line num="103" type="method" name="responder" visibility="public" complexity="3" crap="3" count="23"/>
+        <line num="105" type="stmt" count="23"/>
+        <line num="107" type="stmt" count="23"/>
+        <line num="108" type="stmt" count="23"/>
+        <line num="110" type="stmt" count="1"/>
+        <line num="111" type="stmt" count="1"/>
+        <line num="112" type="stmt" count="1"/>
+        <line num="114" type="stmt" count="22"/>
+        <line num="118" type="method" name="finalizar" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="120" type="stmt" count="23"/>
+        <line num="121" type="stmt" count="23"/>
+        <line num="122" type="stmt" count="23"/>
+        <line num="123" type="stmt" count="23"/>
+        <line num="124" type="stmt" count="23"/>
+        <line num="125" type="stmt" count="23"/>
+        <line num="126" type="stmt" count="23"/>
+        <line num="127" type="stmt" count="23"/>
+        <line num="128" type="stmt" count="23"/>
+        <line num="129" type="stmt" count="23"/>
+        <line num="130" type="stmt" count="23"/>
+        <line num="131" type="stmt" count="23"/>
+        <line num="132" type="stmt" count="23"/>
+        <line num="133" type="stmt" count="23"/>
+        <line num="135" type="stmt" count="23"/>
+        <line num="136" type="stmt" count="23"/>
+        <line num="137" type="stmt" count="23"/>
+        <line num="138" type="stmt" count="23"/>
+        <line num="139" type="stmt" count="23"/>
+        <line num="140" type="stmt" count="23"/>
+        <line num="141" type="stmt" count="23"/>
+        <line num="143" type="stmt" count="23"/>
+        <line num="144" type="stmt" count="23"/>
+        <line num="146" type="stmt" count="23"/>
+        <line num="150" type="method" name="abandonar" visibility="public" complexity="1" crap="1" count="3"/>
+        <line num="152" type="stmt" count="3"/>
+        <line num="153" type="stmt" count="3"/>
+        <line num="154" type="stmt" count="3"/>
+        <line num="155" type="stmt" count="3"/>
+        <line num="156" type="stmt" count="3"/>
+        <line num="157" type="stmt" count="3"/>
+        <line num="158" type="stmt" count="3"/>
+        <line num="159" type="stmt" count="3"/>
+        <line num="160" type="stmt" count="3"/>
+        <line num="161" type="stmt" count="3"/>
+        <line num="162" type="stmt" count="3"/>
+        <line num="163" type="stmt" count="3"/>
+        <line num="164" type="stmt" count="3"/>
+        <line num="165" type="stmt" count="3"/>
+        <line num="167" type="stmt" count="3"/>
+        <line num="174" type="method" name="cerrarAbandonados" visibility="public" complexity="2" crap="6" count="0"/>
+        <line num="176" type="stmt" count="0"/>
+        <line num="177" type="stmt" count="0"/>
+        <line num="178" type="stmt" count="0"/>
+        <line num="179" type="stmt" count="0"/>
+        <line num="180" type="stmt" count="0"/>
+        <line num="181" type="stmt" count="0"/>
+        <line num="182" type="stmt" count="0"/>
+        <line num="183" type="stmt" count="0"/>
+        <line num="184" type="stmt" count="0"/>
+        <line num="185" type="stmt" count="0"/>
+        <line num="186" type="stmt" count="0"/>
+        <line num="187" type="stmt" count="0"/>
+        <line num="188" type="stmt" count="0"/>
+        <line num="189" type="stmt" count="0"/>
+        <line num="190" type="stmt" count="0"/>
+        <line num="191" type="stmt" count="0"/>
+        <line num="192" type="stmt" count="0"/>
+        <line num="195" type="stmt" count="0"/>
+        <line num="199" type="method" name="resultado" visibility="public" complexity="4" crap="4" count="24"/>
+        <line num="201" type="stmt" count="24"/>
+        <line num="202" type="stmt" count="24"/>
+        <line num="203" type="stmt" count="1"/>
+        <line num="204" type="stmt" count="1"/>
+        <line num="205" type="stmt" count="1"/>
+        <line num="207" type="stmt" count="23"/>
+        <line num="209" type="stmt" count="23"/>
+        <line num="210" type="stmt" count="23"/>
+        <line num="211" type="stmt" count="23"/>
+        <line num="212" type="stmt" count="23"/>
+        <line num="213" type="stmt" count="23"/>
+        <line num="214" type="stmt" count="23"/>
+        <line num="215" type="stmt" count="23"/>
+        <line num="216" type="stmt" count="23"/>
+        <line num="217" type="stmt" count="23"/>
+        <line num="218" type="stmt" count="23"/>
+        <line num="219" type="stmt" count="23"/>
+        <line num="220" type="stmt" count="23"/>
+        <line num="221" type="stmt" count="23"/>
+        <line num="222" type="stmt" count="23"/>
+        <line num="223" type="stmt" count="23"/>
+        <line num="227" type="method" name="validarEvento" visibility="private" complexity="10" crap="12.91" count="24"/>
+        <line num="230" type="stmt" count="24"/>
+        <line num="231" type="stmt" count="24"/>
+        <line num="232" type="stmt" count="24"/>
+        <line num="233" type="stmt" count="24"/>
+        <line num="235" type="stmt" count="0"/>
+        <line num="237" type="stmt" count="24"/>
+        <line num="238" type="stmt" count="0"/>
+        <line num="241" type="stmt" count="24"/>
+        <line num="242" type="stmt" count="24"/>
+        <line num="244" type="stmt" count="0"/>
+        <line num="247" type="stmt" count="24"/>
+        <line num="248" type="stmt" count="24"/>
+        <line num="250" type="stmt" count="0"/>
+        <line num="255" type="method" name="instante" visibility="private" complexity="5" crap="5.15" count="24"/>
+        <line num="257" type="stmt" count="24"/>
+        <line num="258" type="stmt" count="24"/>
+        <line num="259" type="stmt" count="24"/>
+        <line num="260" type="stmt" count="24"/>
+        <line num="261" type="stmt" count="0"/>
+        <line num="263" type="stmt" count="24"/>
+        <line num="264" type="stmt" count="24"/>
+        <line num="265" type="stmt" count="22"/>
+        <line num="267" type="stmt" count="24"/>
+        <line num="268" type="stmt" count="0"/>
+        <line num="271" type="stmt" count="24"/>
+        <line num="275" type="method" name="propio" visibility="private" complexity="3" crap="3" count="28"/>
+        <line num="277" type="stmt" count="28"/>
+        <line num="278" type="stmt" count="28"/>
+        <line num="279" type="stmt" count="1"/>
+        <line num="282" type="stmt" count="28"/>
+        <line num="286" type="method" name="propioEnCurso" visibility="private" complexity="2" crap="2.06" count="28"/>
+        <line num="288" type="stmt" count="28"/>
+        <line num="289" type="stmt" count="28"/>
+        <line num="290" type="stmt" count="0"/>
+        <line num="293" type="stmt" count="28"/>
+        <line num="297" type="method" name="publico" visibility="private" complexity="3" crap="3" count="29"/>
+        <line num="299" type="stmt" count="29"/>
+        <line num="300" type="stmt" count="29"/>
+        <line num="301" type="stmt" count="29"/>
+        <line num="302" type="stmt" count="29"/>
+        <line num="303" type="stmt" count="29"/>
+        <line num="304" type="stmt" count="29"/>
+        <line num="305" type="stmt" count="29"/>
+        <line num="306" type="stmt" count="29"/>
+        <line num="308" type="stmt" count="29"/>
+        <line num="309" type="stmt" count="29"/>
+        <line num="310" type="stmt" count="29"/>
+        <line num="317" type="method" name="cerrarConTiempos" visibility="private" complexity="1" crap="1" count="26"/>
+        <line num="319" type="stmt" count="26"/>
+        <line num="320" type="stmt" count="26"/>
+        <line num="321" type="stmt" count="26"/>
+        <line num="322" type="stmt" count="26"/>
+        <line num="325" type="method" name="segundosDesde" visibility="private" complexity="1" crap="1" count="26"/>
+        <line num="327" type="stmt" count="26"/>
+        <line num="329" type="stmt" count="26"/>
+        <line num="332" type="method" name="ahora" visibility="private" complexity="1" crap="1" count="29"/>
+        <line num="334" type="stmt" count="29"/>
+        <line num="337" type="method" name="formato" visibility="private" complexity="1" crap="1" count="29"/>
+        <line num="339" type="stmt" count="29"/>
+        <metrics loc="342" ncloc="309" classes="1" methods="17" coveredmethods="12" conditionals="0" coveredconditionals="0" statements="179" coveredstatements="153" elements="196" coveredelements="165"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/PanelDocenteService.php">
+        <class name="Atlas\Services\PanelDocenteService" namespace="Atlas\Services">
+          <metrics complexity="37" methods="9" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="145" coveredstatements="138" elements="154" coveredelements="141"/>
+        </class>
+        <line num="27" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="10"/>
+        <line num="35" type="stmt" count="10"/>
+        <line num="38" type="method" name="analisisGrupal" visibility="public" complexity="8" crap="8" count="5"/>
+        <line num="40" type="stmt" count="5"/>
+        <line num="41" type="stmt" count="4"/>
+        <line num="42" type="stmt" count="4"/>
+        <line num="43" type="stmt" count="4"/>
+        <line num="44" type="stmt" count="4"/>
+        <line num="45" type="stmt" count="4"/>
+        <line num="49" type="stmt" count="4"/>
+        <line num="50" type="stmt" count="4"/>
+        <line num="51" type="stmt" count="4"/>
+        <line num="52" type="stmt" count="4"/>
+        <line num="53" type="stmt" count="4"/>
+        <line num="54" type="stmt" count="4"/>
+        <line num="55" type="stmt" count="4"/>
+        <line num="56" type="stmt" count="4"/>
+        <line num="57" type="stmt" count="4"/>
+        <line num="58" type="stmt" count="4"/>
+        <line num="59" type="stmt" count="4"/>
+        <line num="60" type="stmt" count="4"/>
+        <line num="61" type="stmt" count="4"/>
+        <line num="62" type="stmt" count="4"/>
+        <line num="64" type="stmt" count="4"/>
+        <line num="65" type="stmt" count="4"/>
+        <line num="66" type="stmt" count="4"/>
+        <line num="67" type="stmt" count="4"/>
+        <line num="68" type="stmt" count="4"/>
+        <line num="69" type="stmt" count="4"/>
+        <line num="70" type="stmt" count="4"/>
+        <line num="71" type="stmt" count="4"/>
+        <line num="73" type="stmt" count="4"/>
+        <line num="74" type="stmt" count="4"/>
+        <line num="75" type="stmt" count="4"/>
+        <line num="76" type="stmt" count="4"/>
+        <line num="77" type="stmt" count="4"/>
+        <line num="78" type="stmt" count="4"/>
+        <line num="81" type="stmt" count="4"/>
+        <line num="82" type="stmt" count="0"/>
+        <line num="84" type="stmt" count="4"/>
+        <line num="85" type="stmt" count="4"/>
+        <line num="86" type="stmt" count="4"/>
+        <line num="87" type="stmt" count="4"/>
+        <line num="89" type="stmt" count="4"/>
+        <line num="90" type="stmt" count="4"/>
+        <line num="91" type="stmt" count="4"/>
+        <line num="92" type="stmt" count="4"/>
+        <line num="93" type="stmt" count="4"/>
+        <line num="94" type="stmt" count="4"/>
+        <line num="95" type="stmt" count="4"/>
+        <line num="96" type="stmt" count="4"/>
+        <line num="97" type="stmt" count="4"/>
+        <line num="98" type="stmt" count="4"/>
+        <line num="99" type="stmt" count="4"/>
+        <line num="100" type="stmt" count="4"/>
+        <line num="101" type="stmt" count="4"/>
+        <line num="102" type="stmt" count="4"/>
+        <line num="103" type="stmt" count="4"/>
+        <line num="104" type="stmt" count="4"/>
+        <line num="105" type="stmt" count="4"/>
+        <line num="106" type="stmt" count="4"/>
+        <line num="107" type="stmt" count="4"/>
+        <line num="109" type="stmt" count="4"/>
+        <line num="110" type="stmt" count="4"/>
+        <line num="111" type="stmt" count="4"/>
+        <line num="112" type="stmt" count="4"/>
+        <line num="113" type="stmt" count="4"/>
+        <line num="114" type="stmt" count="4"/>
+        <line num="115" type="stmt" count="4"/>
+        <line num="116" type="stmt" count="4"/>
+        <line num="120" type="method" name="perfilEstudiante" visibility="public" complexity="7" crap="7" count="5"/>
+        <line num="122" type="stmt" count="5"/>
+        <line num="123" type="stmt" count="5"/>
+        <line num="124" type="stmt" count="5"/>
+        <line num="125" type="stmt" count="5"/>
+        <line num="126" type="stmt" count="5"/>
+        <line num="127" type="stmt" count="5"/>
+        <line num="128" type="stmt" count="5"/>
+        <line num="129" type="stmt" count="5"/>
+        <line num="130" type="stmt" count="5"/>
+        <line num="131" type="stmt" count="5"/>
+        <line num="132" type="stmt" count="0"/>
+        <line num="133" type="stmt" count="5"/>
+        <line num="134" type="stmt" count="5"/>
+        <line num="136" type="stmt" count="5"/>
+        <line num="137" type="stmt" count="5"/>
+        <line num="138" type="stmt" count="5"/>
+        <line num="139" type="stmt" count="5"/>
+        <line num="140" type="stmt" count="5"/>
+        <line num="141" type="stmt" count="5"/>
+        <line num="142" type="stmt" count="5"/>
+        <line num="143" type="stmt" count="5"/>
+        <line num="144" type="stmt" count="5"/>
+        <line num="145" type="stmt" count="5"/>
+        <line num="146" type="stmt" count="5"/>
+        <line num="147" type="stmt" count="5"/>
+        <line num="148" type="stmt" count="5"/>
+        <line num="152" type="method" name="fundamento" visibility="public" complexity="1" crap="1.01" count="3"/>
+        <line num="154" type="stmt" count="3"/>
+        <line num="155" type="stmt" count="0"/>
+        <line num="156" type="stmt" count="3"/>
+        <line num="157" type="stmt" count="2"/>
+        <line num="159" type="stmt" count="2"/>
+        <line num="169" type="method" name="decidir" visibility="public" complexity="5" crap="5" count="1"/>
+        <line num="171" type="stmt" count="1"/>
+        <line num="172" type="stmt" count="0"/>
+        <line num="173" type="stmt" count="1"/>
+        <line num="174" type="stmt" count="1"/>
+        <line num="175" type="stmt" count="1"/>
+        <line num="177" type="stmt" count="1"/>
+        <line num="178" type="stmt" count="1"/>
+        <line num="179" type="stmt" count="1"/>
+        <line num="180" type="stmt" count="1"/>
+        <line num="181" type="stmt" count="1"/>
+        <line num="182" type="stmt" count="1"/>
+        <line num="183" type="stmt" count="1"/>
+        <line num="184" type="stmt" count="1"/>
+        <line num="185" type="stmt" count="1"/>
+        <line num="187" type="stmt" count="1"/>
+        <line num="188" type="stmt" count="1"/>
+        <line num="189" type="stmt" count="1"/>
+        <line num="190" type="stmt" count="1"/>
+        <line num="191" type="stmt" count="1"/>
+        <line num="192" type="stmt" count="1"/>
+        <line num="194" type="stmt" count="1"/>
+        <line num="198" type="method" name="reporte" visibility="public" complexity="5" crap="5" count="2"/>
+        <line num="200" type="stmt" count="2"/>
+        <line num="201" type="stmt" count="2"/>
+        <line num="202" type="stmt" count="1"/>
+        <line num="205" type="stmt" count="1"/>
+        <line num="206" type="stmt" count="1"/>
+        <line num="210" type="method" name="estadoNivel2" visibility="private" complexity="3" crap="3.05" count="4"/>
+        <line num="212" type="stmt" count="4"/>
+        <line num="213" type="stmt" count="4"/>
+        <line num="214" type="stmt" count="4"/>
+        <line num="215" type="stmt" count="0"/>
+        <line num="216" type="stmt" count="0"/>
+        <line num="220" type="stmt" count="4"/>
+        <line num="221" type="stmt" count="4"/>
+        <line num="222" type="stmt" count="4"/>
+        <line num="223" type="stmt" count="4"/>
+        <line num="224" type="stmt" count="4"/>
+        <line num="225" type="stmt" count="4"/>
+        <line num="228" type="method" name="exigirGrupo" visibility="private" complexity="4" crap="4.25" count="5"/>
+        <line num="230" type="stmt" count="5"/>
+        <line num="231" type="stmt" count="0"/>
+        <line num="233" type="stmt" count="5"/>
+        <line num="234" type="stmt" count="1"/>
+        <line num="238" type="method" name="exigirEstudiante" visibility="private" complexity="3" crap="3" count="5"/>
+        <line num="241" type="stmt" count="5"/>
+        <line num="242" type="stmt" count="5"/>
+        <line num="243" type="stmt" count="5"/>
+        <line num="244" type="stmt" count="5"/>
+        <line num="246" type="stmt" count="2"/>
+        <metrics loc="250" ncloc="227" classes="1" methods="9" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="145" coveredstatements="138" elements="154" coveredelements="141"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/UsuarioService.php">
+        <class name="Atlas\Services\UsuarioService" namespace="Atlas\Services">
+          <metrics complexity="12" methods="5" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="35" coveredstatements="34" elements="40" coveredelements="38"/>
+        </class>
+        <line num="18" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="6"/>
+        <line num="20" type="stmt" count="6"/>
+        <line num="23" type="method" name="crear" visibility="public" complexity="2" crap="2" count="4"/>
+        <line num="25" type="stmt" count="4"/>
+        <line num="27" type="stmt" count="1"/>
+        <line num="29" type="stmt" count="3"/>
+        <line num="30" type="stmt" count="2"/>
+        <line num="31" type="stmt" count="2"/>
+        <line num="32" type="stmt" count="2"/>
+        <line num="33" type="stmt" count="2"/>
+        <line num="34" type="stmt" count="2"/>
+        <line num="35" type="stmt" count="2"/>
+        <line num="36" type="stmt" count="2"/>
+        <line num="37" type="stmt" count="2"/>
+        <line num="39" type="stmt" count="2"/>
+        <line num="43" type="method" name="modificar" visibility="public" complexity="6" crap="6.03" count="3"/>
+        <line num="45" type="stmt" count="3"/>
+        <line num="46" type="stmt" count="3"/>
+        <line num="47" type="stmt" count="3"/>
+        <line num="48" type="stmt" count="0"/>
+        <line num="50" type="stmt" count="3"/>
+        <line num="51" type="stmt" count="1"/>
+        <line num="52" type="stmt" count="1"/>
+        <line num="54" type="stmt" count="3"/>
+        <line num="55" type="stmt" count="1"/>
+        <line num="57" type="stmt" count="2"/>
+        <line num="59" type="stmt" count="2"/>
+        <line num="71" type="method" name="cambiosAuditables" visibility="public" complexity="1" crap="1" count="2"/>
+        <line num="73" type="stmt" count="2"/>
+        <line num="74" type="stmt" count="2"/>
+        <line num="75" type="stmt" count="2"/>
+        <line num="76" type="stmt" count="2"/>
+        <line num="77" type="stmt" count="2"/>
+        <line num="78" type="stmt" count="2"/>
+        <line num="79" type="stmt" count="2"/>
+        <line num="82" type="method" name="validarContrasena" visibility="private" complexity="2" crap="2" count="3"/>
+        <line num="84" type="stmt" count="3"/>
+        <line num="85" type="stmt" count="1"/>
+        <line num="86" type="stmt" count="1"/>
+        <line num="87" type="stmt" count="1"/>
+        <metrics loc="91" ncloc="75" classes="1" methods="5" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="35" coveredstatements="34" elements="40" coveredelements="38"/>
+      </file>
+    </package>
+    <package name="Atlas\Services\Analysis">
+      <file name="/home/user/tesis/atlas/app/Services/Analysis/AnalisisService.php">
+        <class name="Atlas\Services\Analysis\AnalisisService" namespace="Atlas\Services\Analysis">
+          <metrics complexity="16" methods="3" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="75" coveredstatements="69" elements="78" coveredelements="70"/>
+        </class>
+        <line num="24" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="30"/>
+        <line num="26" type="stmt" count="30"/>
+        <line num="29" type="method" name="procesarIntento" visibility="public" complexity="8" crap="8" count="23"/>
+        <line num="31" type="stmt" count="23"/>
+        <line num="32" type="stmt" count="23"/>
+        <line num="33" type="stmt" count="23"/>
+        <line num="34" type="stmt" count="23"/>
+        <line num="35" type="stmt" count="23"/>
+        <line num="36" type="stmt" count="23"/>
+        <line num="37" type="stmt" count="23"/>
+        <line num="38" type="stmt" count="23"/>
+        <line num="39" type="stmt" count="23"/>
+        <line num="40" type="stmt" count="23"/>
+        <line num="41" type="stmt" count="0"/>
+        <line num="44" type="stmt" count="23"/>
+        <line num="45" type="stmt" count="23"/>
+        <line num="47" type="stmt" count="23"/>
+        <line num="48" type="stmt" count="23"/>
+        <line num="49" type="stmt" count="23"/>
+        <line num="50" type="stmt" count="23"/>
+        <line num="51" type="stmt" count="23"/>
+        <line num="52" type="stmt" count="23"/>
+        <line num="54" type="stmt" count="23"/>
+        <line num="55" type="stmt" count="23"/>
+        <line num="59" type="stmt" count="23"/>
+        <line num="60" type="stmt" count="23"/>
+        <line num="61" type="stmt" count="23"/>
+        <line num="62" type="stmt" count="23"/>
+        <line num="63" type="stmt" count="23"/>
+        <line num="64" type="stmt" count="23"/>
+        <line num="65" type="stmt" count="23"/>
+        <line num="68" type="stmt" count="23"/>
+        <line num="69" type="stmt" count="23"/>
+        <line num="70" type="stmt" count="20"/>
+        <line num="73" type="stmt" count="23"/>
+        <line num="74" type="stmt" count="23"/>
+        <line num="75" type="stmt" count="20"/>
+        <line num="76" type="stmt" count="20"/>
+        <line num="77" type="stmt" count="20"/>
+        <line num="78" type="stmt" count="20"/>
+        <line num="79" type="stmt" count="20"/>
+        <line num="80" type="stmt" count="20"/>
+        <line num="81" type="stmt" count="20"/>
+        <line num="82" type="stmt" count="20"/>
+        <line num="83" type="stmt" count="20"/>
+        <line num="84" type="stmt" count="20"/>
+        <line num="85" type="stmt" count="20"/>
+        <line num="86" type="stmt" count="20"/>
+        <line num="87" type="stmt" count="20"/>
+        <line num="88" type="stmt" count="20"/>
+        <line num="89" type="stmt" count="20"/>
+        <line num="91" type="stmt" count="20"/>
+        <line num="94" type="stmt" count="23"/>
+        <line num="102" type="method" name="elegirActividad" visibility="private" complexity="7" crap="7.44" count="20"/>
+        <line num="104" type="stmt" count="20"/>
+        <line num="105" type="stmt" count="20"/>
+        <line num="107" type="stmt" count="20"/>
+        <line num="108" type="stmt" count="3"/>
+        <line num="109" type="stmt" count="0"/>
+        <line num="110" type="stmt" count="20"/>
+        <line num="111" type="stmt" count="20"/>
+        <line num="112" type="stmt" count="20"/>
+        <line num="113" type="stmt" count="0"/>
+        <line num="114" type="stmt" count="0"/>
+        <line num="115" type="stmt" count="0"/>
+        <line num="116" type="stmt" count="0"/>
+        <line num="118" type="stmt" count="20"/>
+        <line num="119" type="stmt" count="20"/>
+        <line num="120" type="stmt" count="20"/>
+        <line num="121" type="stmt" count="20"/>
+        <line num="122" type="stmt" count="20"/>
+        <line num="123" type="stmt" count="20"/>
+        <line num="125" type="stmt" count="20"/>
+        <line num="126" type="stmt" count="2"/>
+        <line num="127" type="stmt" count="20"/>
+        <line num="128" type="stmt" count="20"/>
+        <line num="129" type="stmt" count="20"/>
+        <line num="130" type="stmt" count="20"/>
+        <metrics loc="133" ncloc="115" classes="1" methods="3" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="75" coveredstatements="69" elements="78" coveredelements="70"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/Analysis/Indicadores.php">
+        <class name="Atlas\Services\Analysis\Indicadores" namespace="Atlas\Services\Analysis">
+          <metrics complexity="11" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="26" elements="29" coveredelements="29"/>
+        </class>
+        <line num="20" type="method" name="puntaje" visibility="public" complexity="2" crap="2" count="29"/>
+        <line num="22" type="stmt" count="29"/>
+        <line num="23" type="stmt" count="1"/>
+        <line num="26" type="stmt" count="29"/>
+        <line num="37" type="method" name="calcular" visibility="public" complexity="3" crap="3" count="26"/>
+        <line num="39" type="stmt" count="26"/>
+        <line num="40" type="stmt" count="26"/>
+        <line num="41" type="stmt" count="26"/>
+        <line num="42" type="stmt" count="26"/>
+        <line num="43" type="stmt" count="26"/>
+        <line num="44" type="stmt" count="26"/>
+        <line num="45" type="stmt" count="1"/>
+        <line num="47" type="stmt" count="25"/>
+        <line num="48" type="stmt" count="25"/>
+        <line num="51" type="stmt" count="25"/>
+        <line num="53" type="stmt" count="25"/>
+        <line num="55" type="stmt" count="25"/>
+        <line num="57" type="stmt" count="25"/>
+        <line num="58" type="stmt" count="25"/>
+        <line num="59" type="stmt" count="25"/>
+        <line num="60" type="stmt" count="25"/>
+        <line num="61" type="stmt" count="25"/>
+        <line num="62" type="stmt" count="25"/>
+        <line num="69" type="method" name="eficiencia" visibility="public" complexity="6" crap="6" count="26"/>
+        <line num="72" type="stmt" count="26"/>
+        <line num="73" type="stmt" count="26"/>
+        <line num="75" type="stmt" count="25"/>
+        <line num="77" type="stmt" count="3"/>
+        <line num="79" type="stmt" count="3"/>
+        <metrics loc="82" ncloc="59" classes="1" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="26" elements="29" coveredelements="29"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/Analysis/IndicadoresHabilidad.php">
+        <class name="Atlas\Services\Analysis\IndicadoresHabilidad" namespace="Atlas\Services\Analysis">
+          <metrics complexity="3" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="31" coveredstatements="31" elements="32" coveredelements="32"/>
+        </class>
+        <line num="26" type="method" name="calcular" visibility="public" complexity="3" crap="3" count="11"/>
+        <line num="28" type="stmt" count="11"/>
+        <line num="29" type="stmt" count="11"/>
+        <line num="30" type="stmt" count="10"/>
+        <line num="31" type="stmt" count="10"/>
+        <line num="32" type="stmt" count="10"/>
+        <line num="33" type="stmt" count="10"/>
+        <line num="34" type="stmt" count="10"/>
+        <line num="35" type="stmt" count="10"/>
+        <line num="36" type="stmt" count="10"/>
+        <line num="37" type="stmt" count="10"/>
+        <line num="38" type="stmt" count="10"/>
+        <line num="39" type="stmt" count="10"/>
+        <line num="41" type="stmt" count="11"/>
+        <line num="42" type="stmt" count="11"/>
+        <line num="43" type="stmt" count="10"/>
+        <line num="44" type="stmt" count="10"/>
+        <line num="45" type="stmt" count="10"/>
+        <line num="46" type="stmt" count="10"/>
+        <line num="47" type="stmt" count="10"/>
+        <line num="48" type="stmt" count="10"/>
+        <line num="49" type="stmt" count="10"/>
+        <line num="50" type="stmt" count="10"/>
+        <line num="51" type="stmt" count="10"/>
+        <line num="52" type="stmt" count="10"/>
+        <line num="53" type="stmt" count="10"/>
+        <line num="54" type="stmt" count="10"/>
+        <line num="55" type="stmt" count="10"/>
+        <line num="56" type="stmt" count="10"/>
+        <line num="57" type="stmt" count="10"/>
+        <line num="59" type="stmt" count="11"/>
+        <line num="61" type="stmt" count="11"/>
+        <metrics loc="64" ncloc="49" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="31" coveredstatements="31" elements="32" coveredelements="32"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/Analysis/MotorReglas.php">
+        <class name="Atlas\Services\Analysis\MotorReglas" namespace="Atlas\Services\Analysis">
+          <metrics complexity="32" methods="4" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="41" elements="49" coveredelements="43"/>
+        </class>
+        <line num="26" type="method" name="evaluar" visibility="public" complexity="3" crap="3" count="30"/>
+        <line num="28" type="stmt" count="30"/>
+        <line num="29" type="stmt" count="30"/>
+        <line num="30" type="stmt" count="30"/>
+        <line num="31" type="stmt" count="30"/>
+        <line num="32" type="stmt" count="27"/>
+        <line num="36" type="stmt" count="30"/>
+        <line num="44" type="method" name="evaluarRegla" visibility="public" complexity="5" crap="5" count="32"/>
+        <line num="46" type="stmt" count="32"/>
+        <line num="47" type="stmt" count="32"/>
+        <line num="48" type="stmt" count="32"/>
+        <line num="49" type="stmt" count="32"/>
+        <line num="50" type="stmt" count="32"/>
+        <line num="51" type="stmt" count="32"/>
+        <line num="52" type="stmt" count="32"/>
+        <line num="53" type="stmt" count="31"/>
+        <line num="54" type="stmt" count="31"/>
+        <line num="55" type="stmt" count="31"/>
+        <line num="57" type="stmt" count="32"/>
+        <line num="58" type="stmt" count="30"/>
+        <line num="62" type="stmt" count="32"/>
+        <line num="71" type="method" name="validarCondicion" visibility="public" complexity="16" crap="16.50" count="3"/>
+        <line num="74" type="stmt" count="3"/>
+        <line num="75" type="stmt" count="3"/>
+        <line num="77" type="stmt" count="1"/>
+        <line num="79" type="stmt" count="3"/>
+        <line num="80" type="stmt" count="3"/>
+        <line num="81" type="stmt" count="3"/>
+        <line num="82" type="stmt" count="3"/>
+        <line num="83" type="stmt" count="3"/>
+        <line num="84" type="stmt" count="2"/>
+        <line num="86" type="stmt" count="3"/>
+        <line num="87" type="stmt" count="1"/>
+        <line num="89" type="stmt" count="3"/>
+        <line num="90" type="stmt" count="0"/>
+        <line num="92" type="stmt" count="3"/>
+        <line num="93" type="stmt" count="0"/>
+        <line num="97" type="stmt" count="3"/>
+        <line num="100" type="method" name="comparar" visibility="private" complexity="8" crap="8.51" count="32"/>
+        <line num="102" type="stmt" count="32"/>
+        <line num="104" type="stmt" count="32"/>
+        <line num="105" type="stmt" count="30"/>
+        <line num="106" type="stmt" count="31"/>
+        <line num="107" type="stmt" count="0"/>
+        <line num="108" type="stmt" count="32"/>
+        <line num="109" type="stmt" count="30"/>
+        <line num="110" type="stmt" count="0"/>
+        <line num="111" type="stmt" count="32"/>
+        <line num="112" type="stmt" count="32"/>
+        <metrics loc="115" ncloc="91" classes="1" methods="4" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="41" elements="49" coveredelements="43"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/Analysis/Periodo.php">
+        <class name="Atlas\Services\Analysis\Periodo" namespace="Atlas\Services\Analysis">
+          <metrics complexity="5" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="8" coveredelements="8"/>
+        </class>
+        <line num="12" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="14" type="stmt" count="23"/>
+        <line num="16" type="method" name="mesDe" visibility="public" complexity="1" crap="1" count="23"/>
+        <line num="18" type="stmt" count="23"/>
+        <line num="21" type="method" name="desdeTexto" visibility="public" complexity="3" crap="3" count="8"/>
+        <line num="23" type="stmt" count="8"/>
+        <line num="24" type="stmt" count="1"/>
+        <line num="27" type="stmt" count="7"/>
+        <metrics loc="30" ncloc="29" classes="1" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="8" coveredelements="8"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/Analysis/ResumenGrupal.php">
+        <class name="Atlas\Services\Analysis\ResumenGrupal" namespace="Atlas\Services\Analysis">
+          <metrics complexity="4" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="16" elements="18" coveredelements="18"/>
+        </class>
+        <line num="21" type="method" name="calcular" visibility="public" complexity="2" crap="2" count="8"/>
+        <line num="23" type="stmt" count="8"/>
+        <line num="24" type="stmt" count="8"/>
+        <line num="25" type="stmt" count="8"/>
+        <line num="26" type="stmt" count="8"/>
+        <line num="27" type="stmt" count="2"/>
+        <line num="29" type="stmt" count="7"/>
+        <line num="31" type="stmt" count="7"/>
+        <line num="32" type="stmt" count="7"/>
+        <line num="33" type="stmt" count="7"/>
+        <line num="34" type="stmt" count="7"/>
+        <line num="35" type="stmt" count="7"/>
+        <line num="36" type="stmt" count="7"/>
+        <line num="37" type="stmt" count="7"/>
+        <line num="41" type="method" name="mediana" visibility="public" complexity="2" crap="2" count="7"/>
+        <line num="43" type="stmt" count="7"/>
+        <line num="44" type="stmt" count="7"/>
+        <line num="46" type="stmt" count="7"/>
+        <metrics loc="49" ncloc="36" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="16" elements="18" coveredelements="18"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/Analysis/TiempoActivo.php">
+        <class name="Atlas\Services\Analysis\TiempoActivo" namespace="Atlas\Services\Analysis">
+          <metrics complexity="8" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="16" elements="18" coveredelements="18"/>
+        </class>
+        <line num="23" type="method" name="calcular" visibility="public" complexity="7" crap="7" count="30"/>
+        <line num="25" type="stmt" count="30"/>
+        <line num="26" type="stmt" count="30"/>
+        <line num="27" type="stmt" count="30"/>
+        <line num="28" type="stmt" count="30"/>
+        <line num="29" type="stmt" count="30"/>
+        <line num="30" type="stmt" count="30"/>
+        <line num="31" type="stmt" count="30"/>
+        <line num="32" type="stmt" count="5"/>
+        <line num="33" type="stmt" count="29"/>
+        <line num="34" type="stmt" count="4"/>
+        <line num="35" type="stmt" count="4"/>
+        <line num="38" type="stmt" count="30"/>
+        <line num="39" type="stmt" count="1"/>
+        <line num="41" type="stmt" count="30"/>
+        <line num="43" type="stmt" count="30"/>
+        <line num="46" type="method" name="instante" visibility="private" complexity="1" crap="1" count="30"/>
+        <line num="48" type="stmt" count="30"/>
+        <metrics loc="51" ncloc="40" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="16" elements="18" coveredelements="18"/>
+      </file>
+    </package>
+    <package name="Atlas\Services\Asistente">
+      <file name="/home/user/tesis/atlas/app/Services/Asistente/Anonimizador.php">
+        <class name="Atlas\Services\Asistente\Anonimizador" namespace="Atlas\Services\Asistente">
+          <metrics complexity="16" methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="45" elements="52" coveredelements="52"/>
+        </class>
+        <line num="25" type="method" name="estudiante" visibility="public" complexity="3" crap="3" count="6"/>
+        <line num="27" type="stmt" count="6"/>
+        <line num="28" type="stmt" count="6"/>
+        <line num="29" type="stmt" count="6"/>
+        <line num="30" type="stmt" count="6"/>
+        <line num="31" type="stmt" count="6"/>
+        <line num="32" type="stmt" count="6"/>
+        <line num="33" type="stmt" count="6"/>
+        <line num="37" type="stmt" count="6"/>
+        <line num="40" type="method" name="grupo" visibility="public" complexity="2" crap="2" count="7"/>
+        <line num="42" type="stmt" count="7"/>
+        <line num="43" type="stmt" count="7"/>
+        <line num="44" type="stmt" count="7"/>
+        <line num="45" type="stmt" count="7"/>
+        <line num="46" type="stmt" count="7"/>
+        <line num="49" type="stmt" count="7"/>
+        <line num="53" type="method" name="conocer" visibility="public" complexity="1" crap="1" count="6"/>
+        <line num="55" type="stmt" count="6"/>
+        <line num="59" type="method" name="sanitizar" visibility="public" complexity="3" crap="3" count="6"/>
+        <line num="61" type="stmt" count="6"/>
+        <line num="62" type="stmt" count="6"/>
+        <line num="63" type="stmt" count="6"/>
+        <line num="64" type="stmt" count="6"/>
+        <line num="65" type="stmt" count="6"/>
+        <line num="66" type="stmt" count="6"/>
+        <line num="68" type="stmt" count="6"/>
+        <line num="69" type="stmt" count="6"/>
+        <line num="70" type="stmt" count="6"/>
+        <line num="71" type="stmt" count="6"/>
+        <line num="72" type="stmt" count="6"/>
+        <line num="73" type="stmt" count="6"/>
+        <line num="74" type="stmt" count="6"/>
+        <line num="77" type="stmt" count="6"/>
+        <line num="81" type="method" name="reidentificar" visibility="public" complexity="2" crap="2" count="7"/>
+        <line num="83" type="stmt" count="7"/>
+        <line num="84" type="stmt" count="7"/>
+        <line num="86" type="stmt" count="7"/>
+        <line num="87" type="stmt" count="7"/>
+        <line num="88" type="stmt" count="7"/>
+        <line num="89" type="stmt" count="7"/>
+        <line num="90" type="stmt" count="7"/>
+        <line num="94" type="method" name="mapa" visibility="public" complexity="1" crap="1" count="5"/>
+        <line num="96" type="stmt" count="5"/>
+        <line num="100" type="method" name="contieneIdentificables" visibility="public" complexity="4" crap="4" count="6"/>
+        <line num="102" type="stmt" count="6"/>
+        <line num="103" type="stmt" count="6"/>
+        <line num="105" type="stmt" count="6"/>
+        <line num="106" type="stmt" count="6"/>
+        <line num="107" type="stmt" count="6"/>
+        <line num="108" type="stmt" count="6"/>
+        <line num="110" type="stmt" count="1"/>
+        <line num="114" type="stmt" count="6"/>
+        <metrics loc="117" ncloc="99" classes="1" methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="45" elements="52" coveredelements="52"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/Asistente/AsistenteService.php">
+        <class name="Atlas\Services\Asistente\AsistenteService" namespace="Atlas\Services\Asistente">
+          <metrics complexity="39" methods="7" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="187" coveredstatements="175" elements="194" coveredelements="177"/>
+        </class>
+        <line num="26" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="6"/>
+        <line num="36" type="stmt" count="6"/>
+        <line num="39" type="method" name="consultar" visibility="public" complexity="14" crap="14" count="6"/>
+        <line num="41" type="stmt" count="6"/>
+        <line num="42" type="stmt" count="6"/>
+        <line num="43" type="stmt" count="6"/>
+        <line num="44" type="stmt" count="6"/>
+        <line num="45" type="stmt" count="6"/>
+        <line num="48" type="stmt" count="6"/>
+        <line num="49" type="stmt" count="6"/>
+        <line num="50" type="stmt" count="6"/>
+        <line num="51" type="stmt" count="6"/>
+        <line num="52" type="stmt" count="6"/>
+        <line num="53" type="stmt" count="6"/>
+        <line num="54" type="stmt" count="6"/>
+        <line num="55" type="stmt" count="6"/>
+        <line num="56" type="stmt" count="6"/>
+        <line num="58" type="stmt" count="6"/>
+        <line num="59" type="stmt" count="6"/>
+        <line num="60" type="stmt" count="6"/>
+        <line num="62" type="stmt" count="6"/>
+        <line num="63" type="stmt" count="6"/>
+        <line num="66" type="stmt" count="6"/>
+        <line num="67" type="stmt" count="1"/>
+        <line num="68" type="stmt" count="2"/>
+        <line num="69" type="stmt" count="2"/>
+        <line num="70" type="stmt" count="2"/>
+        <line num="71" type="stmt" count="2"/>
+        <line num="72" type="stmt" count="2"/>
+        <line num="73" type="stmt" count="2"/>
+        <line num="74" type="stmt" count="1"/>
+        <line num="75" type="stmt" count="6"/>
+        <line num="77" type="stmt" count="6"/>
+        <line num="78" type="stmt" count="1"/>
+        <line num="79" type="stmt" count="1"/>
+        <line num="80" type="stmt" count="1"/>
+        <line num="81" type="stmt" count="1"/>
+        <line num="82" type="stmt" count="1"/>
+        <line num="83" type="stmt" count="1"/>
+        <line num="84" type="stmt" count="1"/>
+        <line num="85" type="stmt" count="1"/>
+        <line num="86" type="stmt" count="1"/>
+        <line num="87" type="stmt" count="1"/>
+        <line num="88" type="stmt" count="1"/>
+        <line num="89" type="stmt" count="1"/>
+        <line num="91" type="stmt" count="1"/>
+        <line num="92" type="stmt" count="1"/>
+        <line num="93" type="stmt" count="1"/>
+        <line num="94" type="stmt" count="1"/>
+        <line num="97" type="stmt" count="5"/>
+        <line num="98" type="stmt" count="5"/>
+        <line num="99" type="stmt" count="5"/>
+        <line num="100" type="stmt" count="5"/>
+        <line num="102" type="stmt" count="0"/>
+        <line num="103" type="stmt" count="0"/>
+        <line num="105" type="stmt" count="5"/>
+        <line num="108" type="stmt" count="5"/>
+        <line num="109" type="stmt" count="4"/>
+        <line num="110" type="stmt" count="4"/>
+        <line num="112" type="stmt" count="1"/>
+        <line num="113" type="stmt" count="1"/>
+        <line num="114" type="stmt" count="1"/>
+        <line num="115" type="stmt" count="1"/>
+        <line num="117" type="stmt" count="5"/>
+        <line num="118" type="stmt" count="5"/>
+        <line num="119" type="stmt" count="5"/>
+        <line num="120" type="stmt" count="5"/>
+        <line num="121" type="stmt" count="5"/>
+        <line num="122" type="stmt" count="5"/>
+        <line num="123" type="stmt" count="5"/>
+        <line num="124" type="stmt" count="5"/>
+        <line num="126" type="stmt" count="5"/>
+        <line num="127" type="stmt" count="5"/>
+        <line num="128" type="stmt" count="5"/>
+        <line num="129" type="stmt" count="5"/>
+        <line num="130" type="stmt" count="5"/>
+        <line num="131" type="stmt" count="5"/>
+        <line num="132" type="stmt" count="5"/>
+        <line num="134" type="stmt" count="5"/>
+        <line num="135" type="stmt" count="5"/>
+        <line num="138" type="method" name="periodo" visibility="private" complexity="2" crap="2" count="3"/>
+        <line num="140" type="stmt" count="3"/>
+        <line num="142" type="stmt" count="3"/>
+        <line num="143" type="stmt" count="2"/>
+        <line num="144" type="stmt" count="3"/>
+        <line num="148" type="method" name="datosEstadoGrupo" visibility="private" complexity="7" crap="7.01" count="1"/>
+        <line num="150" type="stmt" count="1"/>
+        <line num="151" type="stmt" count="0"/>
+        <line num="153" type="stmt" count="1"/>
+        <line num="154" type="stmt" count="1"/>
+        <line num="155" type="stmt" count="1"/>
+        <line num="156" type="stmt" count="1"/>
+        <line num="158" type="stmt" count="1"/>
+        <line num="159" type="stmt" count="1"/>
+        <line num="160" type="stmt" count="1"/>
+        <line num="161" type="stmt" count="1"/>
+        <line num="162" type="stmt" count="1"/>
+        <line num="163" type="stmt" count="1"/>
+        <line num="164" type="stmt" count="1"/>
+        <line num="165" type="stmt" count="1"/>
+        <line num="166" type="stmt" count="1"/>
+        <line num="167" type="stmt" count="1"/>
+        <line num="168" type="stmt" count="1"/>
+        <line num="169" type="stmt" count="1"/>
+        <line num="170" type="stmt" count="1"/>
+        <line num="171" type="stmt" count="1"/>
+        <line num="172" type="stmt" count="1"/>
+        <line num="173" type="stmt" count="1"/>
+        <line num="174" type="stmt" count="1"/>
+        <line num="175" type="stmt" count="1"/>
+        <line num="176" type="stmt" count="1"/>
+        <line num="177" type="stmt" count="1"/>
+        <line num="178" type="stmt" count="0"/>
+        <line num="179" type="stmt" count="1"/>
+        <line num="180" type="stmt" count="1"/>
+        <line num="182" type="stmt" count="1"/>
+        <line num="186" type="method" name="datosDificultad" visibility="private" complexity="6" crap="6" count="2"/>
+        <line num="188" type="stmt" count="2"/>
+        <line num="189" type="stmt" count="2"/>
+        <line num="190" type="stmt" count="2"/>
+        <line num="191" type="stmt" count="2"/>
+        <line num="192" type="stmt" count="2"/>
+        <line num="193" type="stmt" count="2"/>
+        <line num="194" type="stmt" count="2"/>
+        <line num="195" type="stmt" count="2"/>
+        <line num="197" type="stmt" count="2"/>
+        <line num="198" type="stmt" count="2"/>
+        <line num="199" type="stmt" count="2"/>
+        <line num="200" type="stmt" count="2"/>
+        <line num="201" type="stmt" count="2"/>
+        <line num="202" type="stmt" count="2"/>
+        <line num="203" type="stmt" count="2"/>
+        <line num="204" type="stmt" count="2"/>
+        <line num="206" type="stmt" count="2"/>
+        <line num="207" type="stmt" count="2"/>
+        <line num="208" type="stmt" count="2"/>
+        <line num="209" type="stmt" count="2"/>
+        <line num="210" type="stmt" count="2"/>
+        <line num="211" type="stmt" count="2"/>
+        <line num="212" type="stmt" count="2"/>
+        <line num="213" type="stmt" count="2"/>
+        <line num="214" type="stmt" count="2"/>
+        <line num="215" type="stmt" count="0"/>
+        <line num="216" type="stmt" count="2"/>
+        <line num="217" type="stmt" count="2"/>
+        <line num="218" type="stmt" count="2"/>
+        <line num="219" type="stmt" count="2"/>
+        <line num="221" type="stmt" count="2"/>
+        <line num="225" type="method" name="datosExplicacion" visibility="private" complexity="6" crap="6.12" count="2"/>
+        <line num="227" type="stmt" count="2"/>
+        <line num="228" type="stmt" count="2"/>
+        <line num="229" type="stmt" count="2"/>
+        <line num="230" type="stmt" count="2"/>
+        <line num="231" type="stmt" count="0"/>
+        <line num="233" type="stmt" count="0"/>
+        <line num="234" type="stmt" count="0"/>
+        <line num="235" type="stmt" count="0"/>
+        <line num="236" type="stmt" count="0"/>
+        <line num="237" type="stmt" count="0"/>
+        <line num="240" type="stmt" count="2"/>
+        <line num="241" type="stmt" count="2"/>
+        <line num="242" type="stmt" count="2"/>
+        <line num="244" type="stmt" count="2"/>
+        <line num="245" type="stmt" count="2"/>
+        <line num="246" type="stmt" count="2"/>
+        <line num="247" type="stmt" count="2"/>
+        <line num="248" type="stmt" count="2"/>
+        <line num="249" type="stmt" count="2"/>
+        <line num="250" type="stmt" count="2"/>
+        <line num="251" type="stmt" count="2"/>
+        <line num="252" type="stmt" count="2"/>
+        <line num="253" type="stmt" count="2"/>
+        <line num="254" type="stmt" count="2"/>
+        <line num="255" type="stmt" count="2"/>
+        <line num="256" type="stmt" count="2"/>
+        <line num="259" type="stmt" count="2"/>
+        <line num="260" type="stmt" count="2"/>
+        <line num="261" type="stmt" count="2"/>
+        <line num="262" type="stmt" count="2"/>
+        <line num="263" type="stmt" count="2"/>
+        <line num="264" type="stmt" count="2"/>
+        <line num="265" type="stmt" count="2"/>
+        <line num="266" type="stmt" count="2"/>
+        <line num="267" type="stmt" count="2"/>
+        <line num="269" type="stmt" count="2"/>
+        <line num="270" type="stmt" count="2"/>
+        <line num="271" type="stmt" count="2"/>
+        <line num="272" type="stmt" count="2"/>
+        <line num="273" type="stmt" count="2"/>
+        <line num="276" type="method" name="nombreGrupo" visibility="private" complexity="3" crap="3.14" count="3"/>
+        <line num="278" type="stmt" count="3"/>
+        <line num="279" type="stmt" count="3"/>
+        <line num="280" type="stmt" count="3"/>
+        <line num="284" type="stmt" count="0"/>
+        <metrics loc="287" ncloc="272" classes="1" methods="7" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="187" coveredstatements="175" elements="194" coveredelements="177"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/Asistente/Consulta.php">
+        <class name="Atlas\Services\Asistente\Consulta" namespace="Atlas\Services\Asistente">
+          <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
+        </class>
+        <line num="15" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="9"/>
+        <line num="22" type="stmt" count="9"/>
+        <metrics loc="24" ncloc="23" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/Asistente/IntentParser.php">
+        <class name="Atlas\Services\Asistente\IntentParser" namespace="Atlas\Services\Asistente">
+          <metrics complexity="24" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="41" coveredstatements="41" elements="44" coveredelements="44"/>
+        </class>
+        <line num="44" type="method" name="interpretar" visibility="public" complexity="16" crap="16" count="9"/>
+        <line num="46" type="stmt" count="9"/>
+        <line num="47" type="stmt" count="9"/>
+        <line num="49" type="stmt" count="9"/>
+        <line num="50" type="stmt" count="9"/>
+        <line num="51" type="stmt" count="9"/>
+        <line num="52" type="stmt" count="2"/>
+        <line num="54" type="stmt" count="2"/>
+        <line num="55" type="stmt" count="2"/>
+        <line num="59" type="stmt" count="9"/>
+        <line num="60" type="stmt" count="9"/>
+        <line num="61" type="stmt" count="9"/>
+        <line num="62" type="stmt" count="2"/>
+        <line num="63" type="stmt" count="2"/>
+        <line num="66" type="stmt" count="9"/>
+        <line num="67" type="stmt" count="5"/>
+        <line num="70" type="stmt" count="9"/>
+        <line num="72" type="stmt" count="9"/>
+        <line num="73" type="stmt" count="9"/>
+        <line num="74" type="stmt" count="9"/>
+        <line num="75" type="stmt" count="9"/>
+        <line num="77" type="stmt" count="4"/>
+        <line num="79" type="stmt" count="7"/>
+        <line num="80" type="stmt" count="3"/>
+        <line num="83" type="stmt" count="5"/>
+        <line num="84" type="stmt" count="5"/>
+        <line num="85" type="stmt" count="5"/>
+        <line num="86" type="stmt" count="5"/>
+        <line num="88" type="stmt" count="2"/>
+        <line num="91" type="stmt" count="3"/>
+        <line num="95" type="method" name="estudiante" visibility="private" complexity="5" crap="5" count="9"/>
+        <line num="98" type="stmt" count="9"/>
+        <line num="99" type="stmt" count="9"/>
+        <line num="100" type="stmt" count="2"/>
+        <line num="103" type="stmt" count="8"/>
+        <line num="104" type="stmt" count="8"/>
+        <line num="105" type="stmt" count="8"/>
+        <line num="106" type="stmt" count="8"/>
+        <line num="108" type="stmt" count="8"/>
+        <line num="112" type="method" name="alguna" visibility="private" complexity="3" crap="3" count="9"/>
+        <line num="114" type="stmt" count="9"/>
+        <line num="115" type="stmt" count="9"/>
+        <line num="116" type="stmt" count="7"/>
+        <line num="120" type="stmt" count="5"/>
+        <metrics loc="123" ncloc="108" classes="1" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="41" coveredstatements="41" elements="44" coveredelements="44"/>
+      </file>
+      <file name="/home/user/tesis/atlas/app/Services/Asistente/Texto.php">
+        <class name="Atlas\Services\Asistente\Texto" namespace="Atlas\Services\Asistente">
+          <metrics complexity="3" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="6" elements="8" coveredelements="8"/>
+        </class>
+        <line num="10" type="method" name="normalizar" visibility="public" complexity="1" crap="1" count="9"/>
+        <line num="12" type="stmt" count="9"/>
+        <line num="13" type="stmt" count="9"/>
+        <line num="14" type="stmt" count="9"/>
+        <line num="16" type="stmt" count="9"/>
+        <line num="20" type="method" name="contiene" visibility="public" complexity="2" crap="2" count="9"/>
+        <line num="22" type="stmt" count="9"/>
+        <line num="24" type="stmt" count="9"/>
+        <metrics loc="27" ncloc="25" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="6" elements="8" coveredelements="8"/>
+      </file>
+    </package>
+    <metrics files="66" loc="5674" ncloc="5070" classes="65" methods="330" coveredmethods="265" conditionals="0" coveredconditionals="0" statements="2298" coveredstatements="2091" elements="2628" coveredelements="2356"/>
+  </project>
+</coverage>

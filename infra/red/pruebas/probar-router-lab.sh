@@ -20,7 +20,7 @@
 # Uso (root, Linux con nftables):  bash infra/red/pruebas/probar-router-lab.sh
 # =============================================================================
 set -uo pipefail
-cd "$(dirname "$0")/../../.."
+cd "$(dirname "$0")/../../.." || exit 1
 [ "$(id -u)" -eq 0 ] || { echo "Correr como root."; exit 1; }
 PASS=0; FAIL=0
 ok()  { PASS=$((PASS+1)); printf '  PASS  %s\n' "$1"; }
@@ -44,6 +44,7 @@ grep -q 'chain forward' "$REGLAS" || { echo "No pude extraer las reglas del scri
 # --- El netplan que genera el script, con WAN por DHCP y con WAN fija ---------
 # (la WAN fija se agregó por el laboratorio del Hito 2, donde nadie daba DHCP)
 netplan_de() { # netplan_de <WAN_IP> <WAN_GW> -> imprime el YAML que escribiría el script
+  # shellcheck disable=SC2034  # las usa el bloque del script que se carga con eval
   local WAN_IP=$1 WAN_GW=$2 WAN_DNS=1.1.1.1 WAN_NETPLAN
   eval "$(sed -n '/^if \[ -n "\$WAN_IP" \]; then$/,/^fi$/p' infra/proxmox/04-router-lab.sh)"
   eval "cat <<EOF

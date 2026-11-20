@@ -1,0 +1,3 @@
+# ShellCheck version: 0.9.0 · severidad warning · 49 scripts · 2026-11-20T11:44:14Z
+# Después de corregir las 10 advertencias de shellcheck-advertencias.txt
+Sin advertencias ni errores.

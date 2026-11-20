@@ -64,7 +64,11 @@ else
 fi
 
 paso "4/5 Configuración de Zabbix por su API (espera a que termine de crear su base)"
-set -a; source "$CONF"; set +a
+# monitoreo.conf se genera en el paso 1/5 (por eso ShellCheck no lo puede seguir).
+set -a
+# shellcheck source=/dev/null
+source "$CONF"
+set +a
 ZBX_URL="http://127.0.0.1:${ZBX_WEB_PUERTO:-8080}" SRV_IP="$ATLAS_IP" DC_IP="$IP_DC" ATLAS_URL="https://$ATLAS_IP" \
   python3 "$DESTINO/configurar-zabbix.py"
 

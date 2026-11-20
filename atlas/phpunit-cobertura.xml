@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Igual que phpunit.xml, más la medición de cobertura del código de app/ (informe de Testing del
+     Hito 3). Necesita la extensión pcov o xdebug. Se usa con tests/cobertura.sh. -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="false"
+         failOnWarning="true"
+         failOnRisky="true"
+         cacheDirectory=".phpunit.cache">
+    <testsuites>
+        <testsuite name="unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="api">
+            <directory>tests/Api</directory>
+        </testsuite>
+        <testsuite name="database">
+            <directory>tests/Database</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">app</directory>
+        </include>
+    </source>
+</phpunit>

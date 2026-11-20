@@ -83,8 +83,8 @@ CALCULADO="SELECT x.actividad_id, COUNT(*) AS intentos, ROUND(AVG(x.p), 2) AS pr
 
 # Tiempo en el servidor de N ejecuciones (SHOW PROFILES, en una misma sesión).
 tiempos() {
-  local sql=$1 lote="" i
-  for i in $(seq 1 "$N"); do lote+="$sql; "; done
+  local sql=$1 lote=""
+  for _ in $(seq 1 "$N"); do lote+="$sql; "; done
   mq "SET profiling = 1; SET profiling_history_size = 100; $lote SELECT '@@P@@'; SHOW PROFILES;" \
     | awk -F'\t' 'p && NF>=3 && $1 ~ /^[0-9]+$/ && $3 !~ /@@P@@|^SET / {print $2*1000} $0=="@@P@@" {p=1}' | sort -n
 }

@@ -15,7 +15,7 @@
 set -uo pipefail
 # Ojo: con pipefail, «… | grep -q» falla al azar (grep corta y el productor muere por SIGPIPE);
 # en esas tuberías se usa «grep … >/dev/null», que lee toda la entrada.
-cd "$(dirname "$0")/../.."
+cd "$(dirname "$0")/../.." || exit 1
 RAIZ_REPO=$PWD
 IMAGEN=${ATLAS_TEST_MYSQL_IMAGE:-mysql:8.0}
 CONT=atlas-db-respaldo

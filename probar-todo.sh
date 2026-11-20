@@ -19,7 +19,7 @@
 # =============================================================================
 set -uo pipefail
 RAIZ="$(cd "$(dirname "$0")" && pwd)"
-cd "$RAIZ"
+cd "$RAIZ" || exit 1
 SALIDA="${SALIDA:-$RAIZ/resultados-pruebas/$(date +%Y-%m-%d_%H%M)}"
 mkdir -p "$SALIDA"
 TODOS=(unit psr12 bd api analisis firewall windows linux laboratorio respaldos monitoreo)
