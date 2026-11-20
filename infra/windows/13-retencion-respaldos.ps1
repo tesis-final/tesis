@@ -32,7 +32,8 @@ if ($Ejecutar) {
     New-Item -ItemType Directory -Path (Split-Path $registro) -Force | Out-Null
     if (-not [Diagnostics.EventLog]::SourceExists($origenEvento)) { New-EventLog -LogName Application -Source $origenEvento }
     $archivos = @(Get-ChildItem -Path $carpeta -File -ErrorAction Stop)
-    $vencidos = @(Get-AtlasRespaldoVencido -Nombres @($archivos.Name))
+    # Con la carpeta vacía, @($archivos.Name) daría @($null); así queda una lista vacía (INC-18).
+    $vencidos = @(Get-AtlasRespaldoVencido -Nombres @($archivos | ForEach-Object { $_.Name }))
     $borrados = 0
     foreach ($v in $vencidos) {
         if ($PSCmdlet.ShouldProcess((Join-Path $carpeta $v.Nombre), "Borrar ($($v.Tipo) del $($v.Fecha.ToString('yyyy-MM-dd HH:mm')) UTC)")) {

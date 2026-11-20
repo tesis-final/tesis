@@ -1,7 +1,7 @@
 {
   "fecha": "20 de noviembre",
   "entorno": "Contenedor Linux con kernel 6.18.44, Docker, PHP 8.3.6 con pcov, MySQL 8.0.46 descartable, Python 3.11, PowerShell 7 y Chromium con Playwright",
-  "resumen": "Este informe cierra el proceso de pruebas de ATLAS, la plataforma web del grupo Error404 que registra cómo resuelven los estudiantes sus actividades y le indica al docente dónde intervenir. En el Hito 2 las pruebas quedaron escritas y automatizadas; en este hito se midió qué parte del sistema ejecutan, se analizó la calidad del software a partir de los resultados y se documentaron las evidencias. La corrida completa del 20 de noviembre de 2026 aprobó los once conjuntos automáticos, con 37 pruebas unitarias, 58 de base de datos, 75 de la API y 23 del servicio de análisis, además de las pruebas de infraestructura. Las pruebas de la aplicación ejecutan el 91,8 % de las líneas del código PHP y alcanzan las 44 rutas de la API; el servicio de análisis tiene una cobertura del 76 % y la prueba de interfaz ejecuta el 81,2 % del JavaScript del navegador. El análisis de cobertura encontró cuatro rutas sin una prueba que las ejercitara completas, y se escribieron las pruebas que faltaban. El análisis estático no encontró errores, y las diez advertencias de los scripts de Bash quedaron corregidas. En el laboratorio Proxmox se ejecutó por primera vez el circuito completo de ATLAS sobre las máquinas virtuales. Quedan sin ejecutar la VPN con un cliente real, el monitoreo en el laboratorio y la integración de atlas-srv01 con el dominio, y así se informa.",
+  "resumen": "Este informe cierra el proceso de pruebas de ATLAS, la plataforma web del grupo Error404 que registra cómo resuelven los estudiantes sus actividades y le indica al docente dónde intervenir. En el Hito 2 las pruebas quedaron escritas y automatizadas; en este hito se midió qué parte del sistema ejecutan, se analizó la calidad del software a partir de los resultados y se documentaron las evidencias. La corrida completa del 20 de noviembre de 2026 aprobó los once conjuntos automáticos, con 37 pruebas unitarias, 58 de base de datos, 75 de la API y 23 del servicio de análisis, además de las pruebas de infraestructura. Las pruebas de la aplicación ejecutan el 91,8 % de las líneas del código PHP y alcanzan las 44 rutas de la API; el servicio de análisis tiene una cobertura del 76 % y la prueba de interfaz ejecuta el 81,2 % del JavaScript del navegador. El análisis de cobertura encontró cuatro rutas sin una prueba que las ejercitara completas, y se escribieron las pruebas que faltaban. El análisis estático no encontró errores, y las diez advertencias de los scripts de Bash quedaron corregidas. En el laboratorio Proxmox se ejecutó por primera vez el circuito completo de ATLAS sobre las máquinas virtuales, se probó la VPN con un cliente real y quedó funcionando el monitoreo con Zabbix, que el primer día detectó el disco del servidor casi lleno. Quedan sin ejecutar la integración de atlas-srv01 con el dominio y sus respaldos automáticos, y así se informa.",
   "corrida": {
     "texto": "Los once conjuntos automáticos dieron Aprobada en la corrida completa del 20 de noviembre de 2026, hecha con probar-todo.sh entre las 12:20 y las 12:31 (hora UTC), con el código de este hito. Es la tercera corrida del día y la única que vale como resultado. La primera se descartó porque la pila local de ATLAS había vuelto a arrancar sola y ocupaba la misma red que usa la base de datos descartable, así que los conjuntos de base de datos y de API no pudieron ni empezar (incidencia INC-T7). La segunda aprobó los once conjuntos, pero después el análisis de cobertura llevó a agregar pruebas y a corregir scripts, y la corrida se repitió entera para que el resultado corresponda al código final. La Tabla 5 presenta los resultados; la salida del script está en el Apéndice C.",
     "filas": [
@@ -494,7 +494,7 @@
           "Requisitos no funcionales (RNF)",
           "15",
           "13",
-          "6 (RNF-01, 05, 07, 08, 09 y 12)"
+          "7 (RNF-01, 05, 07, 08, 09, 10 y 12)"
         ],
         [
           "Rutas de la API",
@@ -506,7 +506,7 @@
           "Reglas del firewall de router-lab (R1 a R12, M2, NAT, VPN)",
           "16",
           "16, con tráfico real (46 pruebas)",
-          "14 de 17 pruebas en el Hito 2 y la prueba 7 repetida"
+          "Las 17 pruebas de red del plan, VPN incluida"
         ],
         [
           "Pasos del instalador de atlas-srv01",
@@ -521,13 +521,13 @@
           "Fases 1 a 7 del Hito 2"
         ]
       ],
-      "nota": "Los requisitos ejecutados en el laboratorio son los que se vieron funcionar en el circuito del 19 de noviembre o en las pruebas de red; el detalle está en el Anexo H del documento integrador (Error404, 2026a)."
+      "nota": "Los requisitos ejecutados en el laboratorio son los que se vieron funcionar en el circuito del 19 de noviembre, en las pruebas de red o con Zabbix el 20; el detalle está en el Anexo H del documento integrador (Error404, 2026a)."
     },
     "limites": "Una cobertura alta no garantiza que el sistema esté bien, y eso vale para estos números. Una línea cuenta como cubierta si se ejecutó, aunque ninguna comprobación revise lo que hizo. Por eso las pruebas de ATLAS comparan resultados concretos (el puntaje esperado, el código de respuesta, que la auditoría tenga la fila) y no solo recorren el código. La cobertura de JavaScript cuenta caracteres ejecutados y no comprobaciones; la de la infraestructura se mide con escenarios y no con líneas. Y nada de esto reemplaza al laboratorio: el 91,8 % de las líneas PHP no dice si ATLAS arranca sin Internet en atlas-srv01, ni si la VPN deja entrar a un docente desde afuera. Eso solo se sabe ejecutándolo en las máquinas virtuales."
   },
   "calidad": {
     "defectos": {
-      "texto": "En el hito se registraron 13 incidencias nuevas. Tres eran fallas del producto que aparecieron usando ATLAS en el laboratorio y ya están corregidas y verificadas. Cuatro son observaciones de la jornada de laboratorio del 19 de noviembre que todavía no tienen una causa confirmada. Las otras seis son de las pruebas o del entorno de pruebas, y cinco quedaron resueltas. La Tabla 15 muestra cada una.",
+      "texto": "En el hito se registraron 15 incidencias nuevas. Cuatro eran fallas del producto que aparecieron usando ATLAS o instalándolo en el laboratorio, y están corregidas y verificadas. Seis son observaciones de las jornadas de laboratorio del 19 y el 20 de noviembre: una ya se cerró y las demás tienen una causa probable o una decisión pendiente. Las otras cinco son de las pruebas o del entorno de pruebas, y cuatro quedaron resueltas. Además se cerró INC-T2, que venía del Hito 2. La Tabla 15 muestra cada una.",
       "filas": [
         [
           "INC-11",
@@ -551,11 +551,18 @@
           "Empieza con una; las demás se agregan. Verificada en el laboratorio"
         ],
         [
+          "INC-18",
+          "Instalación en el laboratorio (20/11)",
+          "La retención del DC terminó con «No se puede enlazar el argumento con el parámetro Nombres porque es una cadena vacía»",
+          "Con atlas-backups vacía, @($archivos.Name) daba una lista con un elemento nulo en Windows PowerShell 5.1",
+          "La lista se arma archivo por archivo y la función ignora nombres vacíos. Verificada: la prueba nueva falló como en el laboratorio y después, 54 de 54. Falta copiar el script corregido al DC"
+        ],
+        [
           "INC-14",
-          "Laboratorio (20/11)",
+          "Laboratorio (19 y 20/11)",
           "verificar-dc01.ps1 dio 63 PASS y 5 FAIL, igual que en el Hito 2",
-          "Probablemente se corrió la versión anterior del script",
-          "Abierta: copiar los scripts nuevos (paso R-2) y repetir"
+          "Se había corrido la versión anterior del script",
+          "Cerrada: con los scripts nuevos, 73 PASS y 0 FAIL. Los 5 FAIL eran los falsos de INC-06 e INC-07"
         ],
         [
           "INC-15",
@@ -577,6 +584,20 @@
           "La lista de atención sigue mostrando a un estudiante cuyo intento siguiente sacó 100",
           "La lista muestra las señales del período, no solo la del último intento",
           "Abierta: decidir si la lista debe descartar una señal ya corregida"
+        ],
+        [
+          "INC-19",
+          "Zabbix en el laboratorio (20/11)",
+          "«Space is critically low»: el disco de atlas-srv01 está al 99,1 %",
+          "Disco de 13,7 GB con ATLAS, Zabbix e imágenes de Docker",
+          "Abierta: liberar espacio o agrandar el disco. Es la primera alerta real del monitoreo"
+        ],
+        [
+          "INC-20",
+          "Registro de router-lab (20/11)",
+          "srv01 intenta sincronizar la hora con servidores de Internet y router-lab lo descarta",
+          "Sin el paso 8, chrony usa los servidores públicos en lugar del DC",
+          "Abierta: se resuelve con el paso 8; no afecta los datos (desfase de 0,000008 s)"
         ],
         [
           "INC-T5",
@@ -644,7 +665,7 @@
         [
           "INC-06 e INC-07",
           "Corregidas; falta el verificador en el controlador de dominio",
-          "El verificador se corrió y dio lo mismo que en el Hito 2; ver INC-14"
+          "Verificadas en el laboratorio: el verificador nuevo dio 73 PASS y 0 FAIL el 20/11 (INC-14)"
         ],
         [
           "INC-08",
@@ -705,7 +726,7 @@
       "nota": "Salidas en docs/evidencias/H/E-TST-013-calidad-estatica/. Los avisos de Python no se corrigieron porque no cambian el comportamiento; quedan anotados."
     },
     "evolucion": {
-      "texto": "Entre el 30 de octubre y el 20 de noviembre la cantidad de comprobaciones automáticas pasó de 382 a 471, y ninguna se sacó ni se desactivó para que el resultado diera bien. La Tabla 18 compara los dos hitos.",
+      "texto": "Entre el 30 de octubre y el 20 de noviembre la cantidad de comprobaciones automáticas pasó de 382 a 473, y ninguna se sacó ni se desactivó para que el resultado diera bien. La Tabla 18 compara los dos hitos.",
       "filas": [
         [
           "Unitarias",
@@ -740,8 +761,8 @@
         [
           "Scripts de atlas-dc01",
           "25",
-          "52",
-          "Retención de respaldos, agente de monitoreo y sintaxis de todos los scripts"
+          "54",
+          "Retención de respaldos, agente de monitoreo, sintaxis de todos los scripts y el caso de INC-18 (52 en la corrida completa, 54 después)"
         ],
         [
           "Scripts de atlas-srv01",
@@ -776,7 +797,7 @@
         [
           "Total",
           "382",
-          "471",
+          "473",
           ""
         ]
       ]
@@ -794,13 +815,13 @@
       ],
       [
         "Fiabilidad",
-        "Restauración por intento 13 de 13 en los dos entornos; respaldo y restauración de la máquina virtual; 60 de 60 respuestas en 10 minutos; respaldos automáticos probados pero no instalados",
-        "Buena; falta la medición continua"
+        "Restauración por intento 13 de 13 en los dos entornos; respaldo y restauración de la máquina virtual; 60 de 60 respuestas en 10 minutos; Zabbix midiendo en el laboratorio desde el 20/11, con una alerta real de disco; respaldos automáticos probados pero no instalados en srv01",
+        "Buena; falta un período de medición sin caídas provocadas"
       ],
       [
         "Seguridad",
-        "Acceso cruzado entre roles rechazado y auditado; atlas_app no puede alterar resultados; firewall con 46 pruebas y bloqueo registrado en el laboratorio; anonimización antes del LLM",
-        "Fuerte; falta la VPN real"
+        "Acceso cruzado entre roles rechazado y auditado; atlas_app no puede alterar resultados; firewall con 46 pruebas y las 17 pruebas de red del plan ejecutadas en el laboratorio, VPN incluida; anonimización antes del LLM",
+        "Fuerte"
       ],
       [
         "Mantenibilidad",
@@ -820,6 +841,11 @@
     ]
   },
   "ajustes": [
+    [
+      "Retención del DC con la carpeta vacía (INC-18)",
+      "infra/windows/13-retencion-respaldos.ps1, AtlasComun.psm1 y pruebas/probar-modulo.ps1",
+      "Falla reproducida y después 54 de 54"
+    ],
     [
       "Cuatro pruebas de API para las rutas sin cobertura",
       "atlas/tests/Api/ConsultasOrganizacionTest.php",
@@ -884,7 +910,7 @@
     ]
   ],
   "criterios": {
-    "texto": "De los 21 criterios que se revisaron en el Hito 2, en este hito 16 quedan aprobados con una prueba ejecutada, aunque tres de ellos solo en el entorno de pruebas; 4 son parciales y 1 no se ejecutó. Mejoraron los que dependían de respaldos, disponibilidad y alertas, que ahora tienen una prueba automática contra servicios reales, aunque todavía no en el laboratorio. La Tabla 22 compara cada criterio con el Hito 2.",
+    "texto": "De los 21 criterios que se revisaron en el Hito 2, en este hito 17 quedan aprobados con una prueba ejecutada, aunque dos solo en el entorno de pruebas; 3 son parciales y 1 no se ejecutó. Mejoraron la red, la VPN y el monitoreo, que ahora tienen pruebas ejecutadas en el laboratorio. La Tabla 22 compara cada criterio con el Hito 2.",
     "filas": [
       [
         "Objetivo 1: los tres roles acceden solo a lo suyo, con diez casos de prueba documentados",
@@ -978,15 +1004,15 @@
       ],
       [
         "Objetivo 9, RNF-08 y RNF-09: VLAN, direccionamiento y plan de pruebas de red",
-        "14 de 17 pruebas y la 7 completa con su registro; firewall con 46 pruebas",
+        "Las 17 pruebas del plan ejecutadas: 14 en el Hito 2, la 7 con su registro el 19/11 y las 14, 15 y 16 el 20/11; firewall con 46 pruebas",
         "Parcial",
-        "Parcial: las pruebas 14 a 16 siguen sin ejecutar"
+        "Aprobada, en el laboratorio"
       ],
       [
         "Objetivo 10: firewall, VPN y monitoreo con registro de eventos",
-        "Firewall en el laboratorio; reglas de la VPN cargadas; VPN y monitoreo probados fuera del laboratorio",
+        "Firewall con registro de cada bloqueo; VPN del perfil docente con las pruebas 14 a 16; Zabbix con dos agentes, alerta probada y SLA",
         "Parcial",
-        "Parcial: VPN real y Zabbix sin ejecutar en el laboratorio"
+        "Aprobada, en el laboratorio (falta probar el perfil de administración)"
       ],
       [
         "RNF-14: solo los datos necesarios, según la Ley N.º 18.331",
@@ -996,9 +1022,9 @@
       ],
       [
         "RNF-02 y RNF-10: disponibilidad del 99 % y alertas",
-        "Conjunto de monitoreo con Zabbix real: SLA y alerta al apagar ATLAS; disponibilidad.sh 60 de 60",
+        "Zabbix en el laboratorio: alerta «ATLAS no responde» abierta y resuelta, alerta real de disco y SLA midiendo; disponibilidad.sh 60 de 60",
         "No ejecutada",
-        "Aprobada en el entorno de pruebas; falta el laboratorio"
+        "Parcial: RNF-10 aprobado; el 99 % de RNF-02 necesita días de medición sin caídas provocadas"
       ],
       [
         "RNF-04: respaldos con la frecuencia definida",
@@ -1016,24 +1042,24 @@
   },
   "pendientes": [
     [
-      "Pruebas 14, 15 y 16: acceso desde afuera y VPN con un cliente real",
-      "No ejecutadas: la jornada del 19/11 no llegó a ese paso",
-      "Bloque B del plan de cierre del laboratorio"
+      "Espacio en el disco de atlas-srv01 (INC-19)",
+      "El disco está al 99,1 % según Zabbix",
+      "Liberar espacio o agrandar el disco antes de seguir"
     ],
     [
-      "Monitoreo con Zabbix en el laboratorio (RNF-02 y RNF-10)",
-      "No ejecutado en las máquinas virtuales; probado con Zabbix real en el entorno de pruebas",
-      "Bloque C del plan de cierre"
+      "Script de retención corregido en el DC (INC-18)",
+      "La corrección está probada fuera de Windows",
+      "Copiar el script nuevo y repetir 13-retencion-respaldos.ps1"
     ],
     [
-      "Pasos 8 a 14 en atlas-srv01: dominio, hora, Samba, registros, sudo, respaldos y monitoreo",
-      "No ejecutados: verificar.sh da 31 FAIL en esas secciones",
-      "Pasos R-3 a R-6 del plan de laboratorio"
+      "Perfil de administración de la VPN",
+      "Solo se probó el perfil docente",
+      "Paso R-7.9 del plan de laboratorio"
     ],
     [
-      "Verificador del controlador de dominio con los scripts nuevos (INC-14)",
-      "Corrió el script anterior, según todo indica",
-      "Bloque A y paso D1 del plan de cierre"
+      "Pasos 8 a 13 en atlas-srv01: dominio, hora, Samba, registros, sudo y respaldos",
+      "No ejecutados: verificar.sh da 24 FAIL en esas secciones",
+      "Pasos R-3 a R-5 del plan de laboratorio"
     ],
     [
       "Arranque de ATLAS sin Internet en atlas-srv01 (INC-01)",
@@ -1130,7 +1156,7 @@
       ],
       [
         "¿Qué se probó de verdad en el laboratorio?",
-        "El circuito completo, el bloqueo del puerto 445 con su registro, el seguimiento y la restauración de un intento, las métricas, el respaldo de la máquina virtual y los verificadores. La VPN real y Zabbix quedan pendientes, y así figuran.",
+        "El circuito completo, las 17 pruebas de red con la VPN de un cliente real, el monitoreo con Zabbix y su alerta, el seguimiento y la restauración de un intento, las métricas, el respaldo de la máquina virtual y los verificadores, el del DC sin FAIL. Faltan la integración de srv01 con el dominio y sus respaldos automáticos, y así figuran.",
         "Tabla 8 y pendientes"
       ],
       [
@@ -1154,7 +1180,7 @@
     "El proceso de pruebas de ATLAS queda cerrado para esta etapa con resultados medidos y no supuestos. Los once conjuntos automáticos aprobaron en una corrida completa con el código final, y las mismas pruebas corren en GitHub en cada cambio. La cobertura muestra que las pruebas ejecutan el 91,8 % de las líneas del código PHP, el 76 % del servicio de análisis y el 81,2 % del JavaScript de la interfaz, y que las 44 rutas de la API tienen al menos una prueba.",
     "La medición fue útil porque se usó para buscar lo que faltaba. Encontró cuatro rutas sin una prueba completa, entre ellas la que la interfaz usa en cada pantalla para saber quién está conectado, y las pruebas se escribieron en el mismo hito. También dejó a la vista lo que no está cubierto y por qué, como el cliente del servicio de Python, que conviene probar con el servicio real el semestre que viene.",
     "La calidad se sostiene en evidencia que no depende solo de la cobertura: cero diferencias entre el puntaje guardado y el calculado en 8749 intentos, la restauración de un intento igual en el entorno de pruebas y en atlas-srv01, tiempos de respuesta muy por debajo de los 3 segundos, y un análisis estático sin errores en PHP, JavaScript, Bash y Python. Los defectos que aparecieron usando ATLAS en el laboratorio quedaron corregidos, y las fallas de las pruebas en GitHub se resolvieron buscando la causa, no repitiendo hasta que pasaran.",
-    "El circuito completo de ATLAS, que en el Hito 2 se había cortado al publicar, corrió en las máquinas virtuales el 19 de noviembre: el docente creó y publicó, el estudiante resolvió desde la red de estudiantes y el docente vio los indicadores. Lo que falta está identificado y tiene sus pasos escritos: la VPN con un cliente real, Zabbix en el laboratorio, la integración de atlas-srv01 con el dominio y la prueba de uso con docentes. Hasta que se ejecuten, siguen informados como no ejecutados."
+    "El circuito completo de ATLAS, que en el Hito 2 se había cortado al publicar, corrió en las máquinas virtuales el 19 de noviembre: el docente creó y publicó, el estudiante resolvió desde la red de estudiantes y el docente vio los indicadores. El 20 se probó la VPN con un cliente real, con lo que quedaron ejecutadas las 17 pruebas de red del plan, y Zabbix quedó funcionando: en su primer día avisó que el disco del servidor estaba casi lleno. Lo que falta está identificado y tiene sus pasos escritos: la integración de atlas-srv01 con el dominio, sus respaldos automáticos y la prueba de uso con docentes. Hasta que se ejecuten, siguen informados como no ejecutados."
   ],
   "evidencias": [
     [
@@ -1204,6 +1230,18 @@
       "Capturas de la jornada del 19 y 20 de noviembre",
       "docs/hito-3/capturas/",
       "Completa para lo ejecutado"
+    ],
+    [
+      "Laboratorio, segunda jornada",
+      "VPN, Zabbix y DC del 20 de noviembre",
+      "docs/hito-3/capturas/ (H3-03 a H3-47, H3-74d y H3-74e)",
+      "Completa para lo ejecutado"
+    ],
+    [
+      "E-TST-018",
+      "Prueba del módulo del DC con el caso de INC-18: con el código anterior, 52 PASS y 2 FAIL; con la corrección, 54 de 54",
+      "E-TST-018-retencion-inc18.txt",
+      "Completa"
     ],
     [
       "Pruebas en GitHub",

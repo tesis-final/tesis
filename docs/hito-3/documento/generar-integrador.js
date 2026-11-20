@@ -1,4 +1,4 @@
-// Genera el Documento integrador de ATLAS (V3.1, Hito 3) en Word con formato APA 7.
+// Genera el Documento integrador de ATLAS (V3.2, Hito 3) en Word con formato APA 7.
 // Uso: NODE_PATH=$(npm root -g) node docs/hito-3/documento/generar-integrador.js [salida.docx]
 const fs = require('fs');
 const path = require('path');
@@ -17,7 +17,7 @@ const estilo = (id, nombre, extra) => ({ id, name: nombre, basedOn: 'Normal', ne
   run: { font: L.FUENTE, size: 24, bold: true, color: '000000', ...extra.run }, paragraph: { spacing: L.DOBLE, ...extra.paragraph } });
 const doc = new Document({
   creator: 'Grupo Error404',
-  title: 'ATLAS - Documento integrador V3.1 (Hito 3)',
+  title: 'ATLAS - Documento integrador V3.2 (Hito 3)',
   description: 'Proyecto final de egreso, Tecnicatura en Redes y Software, ITI-CETP/UTU',
   styles: {
     default: { document: { run: { font: L.FUENTE, size: 24, color: '000000' }, paragraph: { spacing: L.DOBLE } } },
@@ -34,5 +34,5 @@ const doc = new Document({
     children: hijos,
   }],
 });
-const salida = process.argv[2] || path.join(L.RAIZ, 'docs/hito-3/ATLAS_Documento_integrador_V3.1.docx');
+const salida = process.argv[2] || path.join(L.RAIZ, 'docs/hito-3/ATLAS_Documento_integrador_V3.2.docx');
 Packer.toBuffer(doc).then((b) => { fs.writeFileSync(salida, b); console.log(`ok ${salida} · ${cuenta.tablas} tablas y ${cuenta.figuras} figuras numeradas en el cuerpo`); });

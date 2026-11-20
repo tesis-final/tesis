@@ -9,18 +9,18 @@ add(H3('31.1 Resumen'));
 add(Tabla('resumen', 'Estado por área y entorno', ['Área', 'Repositorio y desarrollo', 'Laboratorio', 'Pendiente'], [
   ['Programación', `Circuito completo, interfaz rediseñada; ${R.interfaz}`, 'Circuito completo el 19/11: el docente crea y publica, el estudiante resuelve desde la VLAN 30 y el docente ve los indicadores', 'Revisar la lista de atención cuando un intento posterior corrige la señal'],
   ['Base de datos', 'Tres comprobaciones de la devolución verificadas (E-BD-016 a 018)', 'Seguimiento del intento, restauración por intento (13 de 13), métricas y respaldo de la VM', 'Cambio de respuesta en el laboratorio; reinicio de contenedores en la VM restaurada'],
-  ['Linux', 'Pasos 1 a 14; respaldos y monitoreo probados', 'Pasos 1 a 7; verificar.sh con 86 PASS y 31 FAIL', 'Pasos 8 a 14 (R-3 a R-6)'],
-  ['Windows', 'Retención y agente de Zabbix (E-WIN-004)', 'Dominio, DNS, DHCP, GPO y cliente unido; verificador con 63 PASS y 5 FAIL', 'Copiar los scripts nuevos, Fase 12 y verificador (R-2, R-5, R-6, R-11)'],
-  ['Conectividad', 'VPN y firewall en el gemelo (46 de 46); monitoreo (14 de 14)', 'VLAN, firewall y NAT; 14 de 17 pruebas en el Hito 2 y la 7 completa con su registro; reglas de la VPN cargadas', 'Túnel real y pruebas 14 a 16 (R-7); monitoreo (R-6)'],
+  ['Linux', 'Pasos 1 a 14; respaldos y monitoreo probados', 'Pasos 1 a 7 y 14 (Zabbix); verificar.sh con 93 PASS y 24 FAIL', 'Pasos 8 a 13 (R-3 a R-5); liberar espacio en disco (INC-19)'],
+  ['Windows', 'Retención y agente de Zabbix (E-WIN-004 y 54 de 54)', 'Dominio, DNS, DHCP, GPO y cliente unido; Fase 12 instalada; verificador con 73 PASS y 0 FAIL', 'Copiar el script de retención corregido (INC-18)'],
+  ['Conectividad', 'VPN y firewall en el gemelo (46 de 46); monitoreo (14 de 14)', 'Las 17 pruebas de red ejecutadas: 14 de 17 en el Hito 2 y las 14, 15 y 16 el 20/11; VPN docente y Zabbix funcionando', 'Perfil de administración de la VPN'],
   ['Gestión', 'Métricas, plan de laboratorio, plan de continuidad y anexo de devoluciones', '—', 'Actas de cierre del Sprint 5'],
 ], [2, 3.8, 3.4, 2.8]));
-add(P('La regla de las versiones anteriores se mantiene: lo que se verificó en desarrollo no se presenta como verificado en el laboratorio. Esta versión 3.1 incorpora la jornada de laboratorio del 19/11/2026. Ese día se cerró lo que más pesaba de las devoluciones: el circuito completo y las comprobaciones de base de datos en el servidor real. En cambio, la integración de srv01 con el dominio, los respaldos automáticos, el monitoreo y la VPN con un cliente real no llegaron a ejecutarse, y siguen como *No ejecutada*.'));
+add(P('La regla de las versiones anteriores se mantiene: lo que se verificó en desarrollo no se presenta como verificado en el laboratorio. Esta versión 3.2 incorpora las dos jornadas de laboratorio, la del 19 y la del 20/11/2026. Con ellas se cerró lo que más pesaba de las devoluciones: el circuito completo y las comprobaciones de base de datos en el servidor real, la VPN con un cliente real y las pruebas 14 a 16, y el monitoreo con Zabbix y su alerta. Siguen sin ejecutarse la integración de srv01 con el dominio y los respaldos automáticos en srv01, y figuran como *No ejecutada*.'));
 
 add(H3('31.2 Respuesta a las devoluciones del Hito 2'));
 add(P('El detalle de cada devolución y de lo que se hizo está en el Anexo I. En resumen:'));
 add(Tabla('devoluciones', 'Devoluciones del Hito 2 y respuesta', ['Devolución', 'Qué se hizo', 'Estado'], [
   ['Gestión: resolver el 422 y completar el circuito en el laboratorio', 'Causa corregida en la interfaz (INC-09); circuito completo en el laboratorio con auditoría', 'Cumplido el 19/11/2026 (sección 26.6)'],
-  ['Gestión: completar VPN, monitoreo y configuraciones del servidor Linux', 'VPN por perfiles, Zabbix, pasos 13 y 14, scripts del DC; todo probado fuera del laboratorio', 'Implementado; en el laboratorio solo las reglas de la VPN (R-3 a R-7 sin ejecutar)'],
+  ['Gestión: completar VPN, monitoreo y configuraciones del servidor Linux', 'VPN por perfiles, Zabbix, pasos 13 y 14, scripts del DC; todo probado fuera del laboratorio', 'VPN y monitoreo funcionando en el laboratorio el 20/11; de srv01 faltan los pasos 8 a 13'],
   ['Gestión: verificar respaldos, recuperación y controles de acceso', 'Respaldos automáticos con copia al DC que no se puede borrar desde Linux; restauración por intento; rechazos de atlas_app', 'Recuperación verificada en el laboratorio; respaldos automáticos solo en desarrollo (R-5)'],
   ['Gestión: fortalecer actas, seguimiento y evidencias Scrum', 'Registro por pull request (sección 22.9) y formato de acta (Anexo I)', 'Hecho'],
   ['Gestión: entregar las devoluciones de los hitos anteriores', 'Anexo I', 'Hecho'],
@@ -51,10 +51,10 @@ add(Tabla('metricas', 'Métricas de verificación, meta y valores medidos', ['ID
   ['M10', 'Respaldos exitosos en 30 días (RNF-04)', '100 %', 'Sin registros', 'Sin registros (paso 13 sin correr)', 'metricas.sh'],
   ['M11', 'Horas desde el último respaldo (RPO)', '≤ 24 h', 'Sin registros', 'Sin registros (paso 13 sin correr)', 'metricas.sh'],
   ['M12', 'Tiempo de respuesta, percentil 95 (RNF-03)', '≤ 3 s', R.rendimiento.p95max, 'No medido', 'medir.py (E-TST-008); Zabbix'],
-  ['M13', 'Disponibilidad (RNF-02)', '≥ 99 %', R.disponibilidad.replace(/ \(.*/, ''), 'No medida (sin Zabbix)', 'disponibilidad.sh (E-TST-009); SLA de Zabbix'],
+  ['M13', 'Disponibilidad (RNF-02)', '≥ 99 %', R.disponibilidad.replace(/ \(.*/, ''), 'SLA de Zabbix desde el 20/11: 89,7 % el primer día, con la caída provocada', 'disponibilidad.sh (E-TST-009); SLA de Zabbix'],
   ['M14', 'Recuperación: tiempo y último intento recuperado (RNF-05)', 'RTO < 4 h; RPO ≤ 24 h', '1 s; último intento recuperado', '1 s (base); último intento recuperado', 'restaurar_intento.sh (E-BD-018, E-BD-020)'],
-  ['M15', 'Alertas de infraestructura (RNF-10)', 'Al 80 % de CPU, memoria y disco', 'Alerta de disco disparada al 81,6 %', 'No medida (sin Zabbix)', 'Zabbix (E-RED-012)'],
-  ['M16', 'Eventos de seguridad de red detectados (obj. 10)', 'Todo bloqueo registrado', 'Registro ATLAS-* en el gemelo', 'ATLAS-R12 del 445 desde la VLAN 30', 'journalctl -k en router-lab'],
+  ['M15', 'Alertas de infraestructura (RNF-10)', 'Al 80 % de CPU, memoria y disco', 'Alerta de disco disparada al 81,6 %', 'Alerta real: disco de srv01 al 99,1 %', 'Zabbix (E-RED-012; H3-29)'],
+  ['M16', 'Eventos de seguridad de red detectados (obj. 10)', 'Todo bloqueo registrado', 'Registro ATLAS-* en el gemelo', 'ATLAS-R12 del 445 desde la VLAN 30, del SSH por la VPN y del 443 desde la WAN', 'journalctl -k en router-lab'],
 ], [0.8, 3.6, 1.8, 1.9, 2.1, 1.8], 'Fuente: E-TST-007 (M1 a M11 en desarrollo), E-BD-021 (M1 a M11 en el laboratorio), E-TST-008, E-TST-009, E-BD-018, E-BD-020, E-RED-012 y la captura H3-57. M10 y M11 no tienen valor en ningún entorno porque los respaldos automáticos todavía no corren en un servidor; la prueba de respaldos sí verifica que cada copia se anote en registro_respaldos.'));
 add(Figura('metricasLab', 'docs/hito-3/capturas/H3-72-srv01-metricas.png', 'metricas.sh sobre la base de atlas-srv01', 'Captura H3-72 (E-BD-021), Shell de Proxmox, 19/11/2026, 23:40. MySQL 8.0.46; base con 5 usuarios, 3 intentos, 3 resultados y 12 interacciones. Resultado: 6 PASS, 0 FAIL y 5 informativas. Debajo, las métricas que se miden con otras herramientas.', { maxAlto: 560 }));
 add(P('La precisión de las recomendaciones, que pedía la propuesta, no se puede medir sin docentes reales: se aproxima con M6, el porcentaje de sugerencias que el docente confirma sin cambiar. Esa medición es parte de la prueba piloto de la sección 32.'));
@@ -72,15 +72,18 @@ add(Tabla('incidencias', 'Incidencias del laboratorio del Hito 2 y su correcció
 ], [1.4, 3.6, 4, 3], 'Fuente: informe de Testing del Hito 2 (Equipo Error404, 2026b), sección de incidencias.'));
 
 add(H3('31.6 Lo que dejó la jornada de laboratorio'));
-add(P('La jornada del 19/11/2026 dejó, además de los resultados, cuatro observaciones que no estaban previstas en el plan. Se anotan acá para no perderlas:'));
+add(P('Las jornadas del 19 y el 20/11/2026 dejaron, además de los resultados, observaciones que no estaban previstas en el plan. Se anotan acá para no perderlas:'));
 add(Vineta([
   'La lista de atención prioritaria sigue mostrando al estudiante por R07 y R01 aunque su intento siguiente sacó 100 (sección 26.6). El cálculo es correcto; lo que hay que decidir es si la lista debe descartar una señal que ya se corrigió.',
   'El reloj de cliente-doc marca tres horas menos que la hora de Uruguay. Los datos no se afectan porque los tiempos los pone el servidor; hay que revisar la zona horaria del cliente.',
-  'El verificador del DC dio exactamente lo mismo que en el Hito 2 (63 PASS y 5 FAIL). Todo indica que en C:\\ATLAS sigue la versión anterior del script; se confirma con el archivo E-WIN-005 y se resuelve con el paso R-2.',
+  'El verificador del DC dio el 19/11 lo mismo que en el Hito 2 (63 PASS y 5 FAIL). El 20/11, con los scripts nuevos copiados, dio 73 PASS y 0 FAIL: era el script viejo (INC-14, cerrada).',
+  'La retención del DC falló con la carpeta atlas-backups vacía (INC-18). Ya está corregida y tiene una prueba que reproduce el caso; falta copiar el script corregido al DC.',
+  'Zabbix detectó en su primer día que el disco de atlas-srv01 está al 99,1 % (INC-19). Hay que liberar espacio antes de que ATLAS o MySQL se queden sin lugar.',
+  'router-lab registra a srv01 intentando sincronizar la hora con servidores de Internet (UDP 123), algo que la política bloquea (INC-20). Se resuelve con el paso 8, que hace que srv01 tome la hora del DC.',
   'En la VM restaurada con la placa desconectada, atlas-web no arranca porque no tiene dónde publicar sus puertos. Para que la prueba de restauración de la VM sea completa, hay que hacerla en una red aislada con la misma dirección, no solo sin placa.',
 ]));
 add(H3('31.7 Trabajo pendiente'));
-add(P('Lo que falta está en el laboratorio y tiene su paso en el Anexo J: dejar las VM y srv01 al día y comprobar el arranque sin Internet (R-1 a R-3), unir srv01 al dominio e instalar el certificado de ATLAS-CA (R-4), activar los respaldos con la copia al DC y la retención (R-5), el monitoreo (R-6), la VPN con un cliente real y las pruebas 14 a 16 (R-7), repetir la verificación completa (R-11) y rotar las credenciales que quedaron expuestas en el Hito 2 (R-12). Hasta que se ejecuten, cada una de esas pruebas figura como *No ejecutada*. El circuito completo (R-8), las comprobaciones de base de datos (R-9) y el respaldo de la VM (R-10) ya se ejecutaron.'));
+add(P('Ya se ejecutaron el circuito completo (R-8), las comprobaciones de base de datos (R-9), el respaldo de la VM (R-10), la VPN con las pruebas 14 a 16 (R-7), el monitoreo con los dos agentes (R-6), la Fase 12 del DC y su verificación (R-2, parte de R-5 y R-11). Lo que falta tiene su paso en el Anexo J: liberar espacio en el disco de srv01 (INC-19) y comprobar el arranque sin Internet (R-3), unir srv01 al dominio e instalar el certificado de ATLAS-CA (R-4), activar los respaldos con la copia al DC y copiar al DC el script de retención corregido (R-5), y rotar las credenciales que quedaron expuestas en el Hito 2 (R-12). Hasta que se ejecuten, cada una de esas pruebas figura como *No ejecutada*.'));
 
 // 32 ------------------------------------------------------------------------------------------
 add(H2('32. Continuidad: plan para los semestres siguientes'));
@@ -89,7 +92,7 @@ add(H3('32.1 Punto de partida'));
 add(P('Cualquier integrante (o un equipo nuevo) puede retomar el proyecto desde el repositorio: el README explica la estructura; ./probar-local.sh levanta ATLAS con datos de demostración en una notebook; ./probar-todo.sh corre todas las pruebas; infra/linux/instalar.sh y los scripts de infra/windows y infra/proxmox reconstruyen el laboratorio; y el Anexo J deja el procedimiento de laboratorio con resultados esperados. Las contraseñas no están en el repositorio: se generan al instalar o se piden sin eco.'));
 add(H3('32.2 Plan por semestre'));
 add(Tabla('plan', 'Plan de trabajo para los semestres siguientes', ['Período', 'Objetivo', 'Entregables', 'Cómo se verifica'], [
-  ['Cierre 2026 (Sprint 5)', 'Terminar en el laboratorio lo implementado en el Hito 3', 'Pasos R-1 a R-7, R-11 y R-12 del Anexo J; nueva versión del documento con esos resultados', 'Pruebas 14 a 16 aprobadas; verificar.sh y verificar-dc01 sin FAIL; M10 y M11 con datos'],
+  ['Cierre 2026 (Sprint 5)', 'Terminar en el laboratorio lo implementado en el Hito 3', 'Pasos R-3, R-4, R-5 y R-12 del Anexo J; nueva versión del documento con esos resultados', 'Pruebas 14 a 16 aprobadas; verificar.sh y verificar-dc01 sin FAIL; M10 y M11 con datos'],
   ['Semestre 1 de 2027', 'Prueba piloto controlada en el ITI', 'Protocolo con consentimiento informado (Uruguay, 2008; Unidad Reguladora y de Control de Datos Personales, 2023); relevamiento ampliado a docentes del ITI; dos o tres grupos usando ATLAS durante cuatro semanas', 'Al menos 20 respuestas al relevamiento; SLA ≥ 99 % en el período (Zabbix); tareas principales completadas sin asistencia (RNF-11)'],
   ['Semestre 1 de 2027', 'Usabilidad y accesibilidad', 'Prueba de uso con docentes; revisión con las pautas WCAG 2.2 nivel AA (W3C, 2023)', 'Lista de hallazgos con su corrección; prueba de interfaz ampliada'],
   ['Semestre 2 de 2027', 'Análisis con datos reales', 'Evaluación de las reglas R01 a R08 frente a la decisión docente; evaluación de K-means y regresión logística con datos suficientes', 'M6 (acuerdo docente) y comparación con y sin ML; decisión documentada de mantener o retirar el ML'],
@@ -99,7 +102,8 @@ add(Tabla('plan', 'Plan de trabajo para los semestres siguientes', ['Período', 
 ], [2.2, 2.8, 3.8, 3.2]));
 add(H3('32.3 Backlog priorizado'));
 add(Tabla('backlog', 'Backlog para la siguiente etapa', ['Prioridad', 'Ítem', 'Motivo'], [
-  ['Alta', 'Completar el Anexo J (R-1 a R-7, R-11 y R-12)', 'Cierra los pendientes de laboratorio que quedaron después del 19/11.'],
+  ['Alta', 'Liberar espacio en el disco de atlas-srv01 (INC-19)', 'Zabbix lo marcó al 99,1 %; sin espacio, MySQL deja de escribir.'],
+  ['Alta', 'Completar el Anexo J (R-3, R-4, R-5 y R-12)', 'Cierra los pendientes de laboratorio que quedaron después del 20/11.'],
   ['Media', 'Lista de atención: descartar señales ya corregidas por un intento posterior', 'Observación de la jornada del 19/11 (sección 31.6).'],
   ['Alta', 'Protocolo de la prueba piloto y consentimiento', 'Condición para usar datos de estudiantes reales.'],
   ['Alta', 'Medición continua de disponibilidad y tiempos en el laboratorio', 'RNF-02 y RNF-03 con datos del entorno real.'],
@@ -144,7 +148,7 @@ add(Tabla('anexos', 'Anexos y estado en esta edición', ['Anexo', 'Contenido', '
   ['A', 'Formulario y resultados del relevamiento', 'Sin cambios respecto de la V2.4.'],
   ['B', 'Evidencias de programación', 'Actualizado: interfaz nueva (E-APP-015) y capturas del laboratorio (E-APP-014).'],
   ['C', 'Evidencias del servidor Linux', 'Actualizado: pasos 13 y 14, E-LNX-005 y verificación del laboratorio (E-LNX-006).'],
-  ['D', 'Evidencias de Windows y dominio', 'Actualizado: Fase 12, E-WIN-004, verificador del laboratorio (E-WIN-005) y cliente en la VLAN 30.'],
+  ['D', 'Evidencias de Windows y dominio', 'Actualizado: Fase 12, E-WIN-004, verificador del laboratorio (63/5 y después 73/0), agente de Zabbix y cliente en la VLAN 30.'],
   ['E', 'Implementación y verificación del laboratorio Proxmox', 'Informe de Redes del Hito 2, incorporado completo al final de este documento.'],
   ['F', 'Decisiones del proyecto', 'D-1 a D-8 y decisiones de infraestructura que se aplicaron en el Hito 3.'],
   ['G', 'Evidencias de base de datos', 'Actualizado: E-BD-016 a E-BD-018 en desarrollo; E-BD-015 y E-BD-019 a 021 en el laboratorio.'],

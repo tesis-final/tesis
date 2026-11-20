@@ -103,7 +103,7 @@ c.push(P(R.bd.texto));
 c.push(...Tabla('Comprobaciones de la base de datos pedidas en la devolución del Hito 2', ['Comprobación', 'Entorno de pruebas', 'Laboratorio', 'Estado'], R.bd.filas, [3.4, 3.6, 3.4, 1.6]));
 
 c.push(H2('Pruebas en el laboratorio Proxmox'));
-c.push(P('El 19 y el 20 de noviembre se ejecutó en el laboratorio una parte del plan del Hito 3. Es la primera vez que el circuito completo de ATLAS corrió sobre las máquinas virtuales: en el Hito 2 se había cortado al publicar. La Tabla 8 resume lo ejecutado y las figuras 5 a 8 muestran las evidencias principales; el resto de las capturas está en el documento integrador y en el repositorio.'));
+c.push(P('El 19 y el 20 de noviembre se ejecutó en el laboratorio casi todo el plan del Hito 3, en dos jornadas. Es la primera vez que el circuito completo de ATLAS corrió sobre las máquinas virtuales (en el Hito 2 se había cortado al publicar), y la primera vez que se probaron la VPN con un cliente real y el monitoreo. La Tabla 8 resume lo ejecutado y las figuras 5 a 10 muestran las evidencias principales; el resto de las capturas está en el documento integrador y en el repositorio.'));
 c.push(...Tabla('Pruebas ejecutadas en el laboratorio Proxmox el 19 y el 20 de noviembre de 2026', ['Prueba', 'Resultado', 'Estado'], [
   ['Circuito completo: el docente crea y publica, el estudiante resuelve desde la VLAN 30 y el docente ve los indicadores', 'Se completó. La publicación sin opción correcta se rechazó con el motivo y, ya corregida, pasó a publicada sin aprobación (D-2). Matias Perez resolvió dos veces (0 y 100) y el docente vio el grupo, el perfil, la consulta y el reporte', 'Aprobada'],
   ['Prueba 7 de la red: el puerto 445 de atlas-srv01 desde la VLAN 30', 'TcpTestSucceeded False desde 172.16.30.100 y cinco líneas ATLAS-R12 en router-lab', 'Aprobada'],
@@ -111,8 +111,13 @@ c.push(...Tabla('Pruebas ejecutadas en el laboratorio Proxmox el 19 y el 20 de n
   ['Restauración por intento', '13 de 13 comparaciones iguales; respaldo en 165 ms y restauración en 1004 ms', 'Aprobada'],
   ['Métricas M1 a M11 sobre la base real', '6 PASS, 0 FAIL y 5 informativas', 'Aprobada'],
   ['Respaldo de la máquina virtual 130 y restauración como 930', 'vzdump en 124 s y restauración en 81 s; en la copia sin placa de red, el contenedor web no arranca', 'Aprobada, con observación'],
-  ['verificar.sh en atlas-srv01', '86 PASS y 31 FAIL; los 31 son de los pasos 8 a 14 del instalador, que no se corrieron en esa máquina', 'Fallada (pasos sin ejecutar)'],
-  ['verificar-dc01.ps1 en atlas-dc01', '63 PASS y 5 FAIL, igual que en el Hito 2; todo indica que se corrió la versión anterior del script', 'Fallada (a confirmar)'],
+  ['Prueba 15: con la VPN, el docente llega a ATLAS', 'Test-NetConnection al 443 True desde 10.8.0.130 y la pantalla de ingreso en el navegador de la PC; el servidor registra el origen 10.8.0.130 (sin NAT)', 'Aprobada'],
+  ['Prueba 16: con la VPN, el docente no llega al SSH', 'TcpTestSucceeded False y cinco líneas ATLAS-R12 desde wg0 en router-lab', 'Aprobada'],
+  ['Prueba 14: sin VPN, desde la WAN no se entra', 'curl terminó con rc=28 y router-lab registró ATLAS-R12 desde ens19 hacia el 443', 'Aprobada'],
+  ['Monitoreo con Zabbix en atlas-srv01', 'Dos agentes respondiendo, chequeo web en 11 ms, SLA definido; al apagar ATLAS se abrió «ATLAS no responde» y se resolvió al encenderlo (3 min 40 s). Detectó el disco de srv01 al 99,1 %', 'Aprobada'],
+  ['Retención de respaldos en atlas-dc01', 'La tarea quedó instalada, pero la simulación falló con la carpeta vacía (INC-18); corregida y verificada fuera de Windows', 'Fallada, corregida'],
+  ['verificar.sh en atlas-srv01', '86 PASS y 31 FAIL el 19/11; después del paso 14, 93 PASS y 24 FAIL, y monitoreo y firewall 23 de 23. Los FAIL que quedan son de los pasos 8 a 13, que no se corrieron', 'Fallada (pasos sin ejecutar)'],
+  ['verificar-dc01.ps1 en atlas-dc01', '63 PASS y 5 FAIL con el script viejo el 19/11; 73 PASS y 0 FAIL con los scripts nuevos el 20/11', 'Aprobada'],
   ['Firewall de router-lab', 'El volcado de nftables muestra cargadas las reglas de la VPN (R8 y R9) y la entrada UDP 51820', 'Aprobada'],
 ], [4.2, 6, 1.8], 'Detalle y capturas en el documento integrador V3.1, sección 26.6 y Anexo K (Error404, 2026a), y en docs/hito-3/capturas/ del repositorio.'));
 c.push(...Fig(LAB + 'H3-53-app-aviso-motivo.png', 'ATLAS no publica una actividad sin opción correcta y explica el motivo',
@@ -123,6 +128,10 @@ c.push(...Fig(LAB + 'H3-71-srv01-restaurar-intento.png', 'Restauración por inte
   'Captura del laboratorio, 19 de noviembre de 2026. Las cuatro partes del intento tienen la misma huella sha256 en la base en uso y en la restaurada, y las nueve tablas tienen la misma cantidad de filas.', 560, 600));
 c.push(...Fig(LAB + 'H3-74a-srv01-verificar.png', 'Final de verificar.sh en atlas-srv01',
   'Captura del laboratorio, 20 de noviembre de 2026. Las secciones con FAIL son las de los pasos 8 a 14 del instalador (hora, dominio, Samba, registros, sudo, respaldos y monitoreo). Las secciones de la base del servidor no tienen fallas.', 560, 600));
+c.push(...Fig(LAB + 'H3-43-router-registro-prueba16.png', 'Prueba 16: el SSH del servidor desde la VPN queda bloqueado y registrado',
+  'Captura del laboratorio, router-lab, 20 de noviembre de 2026 (hora UTC). A las 21:17 aparecen los intentos desde 10.8.0.130, entrando por wg0, hacia 172.16.40.10:22, descartados por R12. Las otras líneas son de atlas-srv01 intentando sincronizar la hora con Internet (INC-20).', 560, 600));
+c.push(...Fig(LAB + 'H3-34-zabbix-alerta-resuelta.png', 'Zabbix avisa que ATLAS no responde y registra cuando vuelve',
+  'Captura del laboratorio, Zabbix, 20 de noviembre de 2026. Con ATLAS apagado a propósito, el problema «ATLAS no responde» se abrió a las 19:02 y se resolvió a las 19:06, al volver a encenderlo. Siguen abiertos el disco de atlas-srv01 por encima del 90 % (INC-19) y dos avisos que no son del servicio.', 560, 520));
 
 c.push(H2('Ejecución en GitHub Actions'));
 c.push(P(R.ci.texto));
